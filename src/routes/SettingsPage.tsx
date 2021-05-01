@@ -68,34 +68,26 @@ export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
       <div className={classes.main}>
         <Box hidden={value !== 0}>
           <FormControl variant="filled" fullWidth>
-            <InputLabel>Language</InputLabel>
+            <InputLabel>{t("language")}</InputLabel>
             <Select value={language} onChange={changeLanguage}>
               <MenuItem value="en-us">English</MenuItem>
               <MenuItem value="zh-cn">中文简体</MenuItem>
             </Select>
           </FormControl>
           <TextField
-            label="Java Path"
-            placeholder="Java Path"
+            label={t("javaPath")}
+            placeholder={t("javaPath")}
             margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
             value={javaPath}
             onChange={changeJavaPath}
             variant="filled"
             fullWidth
           />
           <div>
-            <Button
-              className={classes.btn}
-              color="inherit"
-              variant="contained"
-              onClick={hist.goBack}
-            >
+            <Button className={classes.btn} onClick={hist.goBack}>
               {t("cancel")}
             </Button>
-            <Button color="secondary" variant="contained" onClick={save}>
+            <Button color="secondary" onClick={save}>
               {t("save")}
             </Button>
           </div>

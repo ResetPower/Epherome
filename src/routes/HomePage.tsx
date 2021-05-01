@@ -15,10 +15,9 @@ import { getById } from "../tools/arrays";
 import { MinecraftAccount } from "../renderer/accounts";
 import { useBooleanState, useConfigState } from "../renderer/hooks";
 import { MinecraftProfile } from "../renderer/profiles";
-//import { launchGame } from "../renderer/launch";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
-import { launchMinecraft } from "../core/core";
+import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
 
 const useStyle = makeStyles({
   card: {
@@ -40,6 +39,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const [minecraftDialog, openMinecraftDialog, closeMinecraftDialog] = useBooleanState(false);
   const [profiles] = useConfigState("profiles", []);
   const selectedProfile = readConfig("selectedProfile", -1);
+  const [details, setDetails] = useState<MinecraftLaunchDetail[]>([]);
   const [helperText, setHelperText] = useState("...");
   const [value, setValue] = useState<unknown>(
     getById(profiles, selectedProfile) === null ? "" : selectedProfile
@@ -62,9 +62,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
         launchMinecraft({
           account,
           profile,
-          setDetails: () => {
-            /**/
-          },
+          setDetails,
           setHelper: setHelperText,
           java: "java",
           onDone: closeMinecraftDialog,
@@ -78,7 +76,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
       <Card className={classes.card}>
         <CardContent>
           <Typography color="textSecondary" gutterBottom>
-            你～好！
+            {t("hello")}
           </Typography>
           <Typography variant="h5">{username === undefined ? "Tourist" : username}</Typography>
           <Typography>海内存知己，天涯若比邻。</Typography>
@@ -124,7 +122,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
       <LaunchProgress
         open={minecraftDialog}
         onClose={closeMinecraftDialog}
-        details={[{ stat: false, text: "Launching..." }]}
+        details={details}
         helperText={helperText}
       />
     </Container>

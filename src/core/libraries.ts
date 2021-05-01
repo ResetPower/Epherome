@@ -1,9 +1,7 @@
 import fs from "fs";
-import log from "electron-log";
 import { removePrefix } from "../tools/strings";
 import { isCompliant, equalOS } from "./rules";
-
-const lc = log.scope("Core");
+import { lc } from "./core";
 
 /**
  * returns a object contains (cp, missing, natives)
@@ -11,7 +9,7 @@ const lc = log.scope("Core");
  * missing: list of 'artifact' or 'natives-${platform}' object (cross-platform or native library or native library, need to download), contains (path, sha1, size, url)
  * nativeLibs: list of string (only native library, need to unzip)
  */
-export function analyzeLibrary(dir: string, ver: string, library: any): any {
+export function analyzeLibrary(dir: string, library: any): any {
   lc.info("Analyzing Library in JSON");
   const buff = [];
   const missing = [];

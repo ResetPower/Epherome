@@ -10,7 +10,8 @@ import { analyzeLibrary } from "./libraries";
 
 const OPERATING_SYSTEM = os.platform();
 const OPERATING_VERSION = os.release();
-const lc = log.scope("core");
+// logger for minecraft launch core
+export const lc = log.scope("core");
 const lm = log.scope("minecraft");
 
 export interface MinecraftLaunchDetail {
@@ -32,16 +33,41 @@ export function launchMinecraft(options: MinecraftLaunchOptions): void {
   const account = options.account;
   const profile = options.profile;
   const java = options.java;
-  const details = [{ text: "", stat: true }];
+  const details: MinecraftLaunchDetail[] = [{ stat: true, text: "Authenticating" }];
   const onDone = options.onDone;
   const setDetails = options.setDetails;
   const setHelper = options.setHelper;
 
-  lc.info("start to analyze json file");
-  details.push({
-    text: "progress.analyze-json",
-    stat: false,
-  });
+  setHelper("Launching Minecraft");
+
+  function useMinecraftLaunchDetail(text: string): [MinecraftLaunchDetail, () => void] {
+    const det = {
+      stat: false,
+      text,
+    };
+    details.push(det);
+    setDetails(details);
+    return [
+      det, // detail
+      () => {
+        setDetails(
+          details.map((value, index) => {
+            if (value.text === text) {
+              details[index].stat = true;
+              return {
+                stat: true,
+                text: value.text,
+              };
+            } else {
+              return value;
+            }
+          })
+        );
+      }, // doneDetail
+    ];
+  }
+
+  const [_analyzeJson, doneAnalyzeJson] = useMinecraftLaunchDetail("Analyze JSON");
 
   const dir = removeSuffix(profile["dir"], "/");
   const data = fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`);
@@ -79,36 +105,25 @@ export function launchMinecraft(options: MinecraftLaunchOptions): void {
     `-Dminecraft.launcher.brand=Epherome`,
     `-Dminecraft.launcher.version=${process.env.npm_package_version}`
   );
-  const obj = analyzeLibrary(dir, profile.ver, parsed["libraries"]);
-  details[1]["stat"] = true;
+  const obj = analyzeLibrary(dir, parsed["libraries"]);
+
+  doneAnalyzeJson();
   // finished
 
   // start to download missing assets
-  lc.info("start to download missing assets");
-  details.push({
-    text: "progress.down-asset",
-    stat: false,
-  });
-  // TODO downloading missing assets
-  details[2]["stat"] = true;
-  // finished
+  lc.info("start to download missing assets and libraries");
 
-  // start to download missing libraries
-  lc.info("start to download missing libraries");
-  details.push({
-    text: "progress.down-lib",
-    stat: false,
-  });
-  // TODO downloading missing libraries
-  details[3]["stat"] = true;
-  // finished
+  const [_download, doneDownload] = useMinecraftLaunchDetail(
+    "Download missing assets and libraries"
+  );
+  // TODO downloading missing assets and libraries
+  doneDownload();
 
   // start to unzip native libraries
   lc.info("start to unzip native libraries");
-  details.push({
-    text: "progress.unzip",
-    stat: false,
-  });
+
+  const [_unzip, doneUnzip] = useMinecraftLaunchDetail("Unzipping");
+
   const nativeLibs = obj["nativeLibs"];
   for (const i in nativeLibs) {
     const file = nativeLibs[i];
@@ -125,7 +140,8 @@ export function launchMinecraft(options: MinecraftLaunchOptions): void {
       });
     });
   }
-  details[4]["stat"] = true;
+
+  doneUnzip();
 
   const cp = obj["cp"];
   cp.push(clientJar);
@@ -156,10 +172,7 @@ export function launchMinecraft(options: MinecraftLaunchOptions): void {
     parsed["type"]
   );
 
-  details.push({
-    text: "progress.running",
-    stat: false,
-  });
+  useMinecraftLaunchDetail("Running");
 
   let firstTimeToReceiveStdout = true;
 

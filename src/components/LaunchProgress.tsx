@@ -35,8 +35,8 @@ export default function LaunchProgress(
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{t("launching")}</DialogTitle>
       <DialogContent className={classes.content}>
-        {props.details.map((detail) => (
-          <Typography>
+        {props.details.map((detail, index) => (
+          <Typography key={index}>
             <Icon>{detail.stat ? "checked" : "arrow_forward"}</Icon>
             {detail.text}
           </Typography>
@@ -44,7 +44,7 @@ export default function LaunchProgress(
       </DialogContent>
       <DialogActions>
         <Typography className={classes.helperText}>{props.helperText}</Typography>
-        <Button color="secondary">Cancel</Button>
+        <Button color="secondary">{t("cancel")}</Button>
       </DialogActions>
     </Dialog>
   );

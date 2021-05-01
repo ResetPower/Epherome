@@ -1,4 +1,5 @@
 {
+  hello: "Hello!",
   epherome: "Epherome",
   settings: "Settings",
   accounts: "Accounts",
@@ -39,4 +40,5 @@
   noAccountsYet: 'No accounts yet. Click "Create" to create a new one.',
   noProfilesYet: 'No profiles yet. Click "Create" to create a new one.',
   launching: "Launching",
+  javaPath: "Java Path",
 }

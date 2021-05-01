@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { readConfig, writeConfig } from "./config";
+import { MinecraftLaunchDetail } from "../core/core";
 
 export function useBooleanState(value: boolean): [boolean, () => void, () => void, () => void] {
   const state = useState(value);

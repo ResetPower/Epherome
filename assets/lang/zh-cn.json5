@@ -1,4 +1,5 @@
 {
+  hello: "你好！",
   epherome: "Epherome",
   settings: "设定",
   accounts: "账户管理",
@@ -39,4 +40,5 @@
   noAccountsYet: "还没有账户。点击「创建」来新建一个吧。",
   noProfilesYet: "还没有档案。点击「创建」来新建一个吧。",
   launching: "启动中",
+  javaPath: "Java 路径",
 }
