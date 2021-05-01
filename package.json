@@ -1,0 +1,86 @@
+{
+  "name": "epherome",
+  "version": "0.0.2",
+  "description": "Powerful Minecraft Launcher",
+  "main": "out/main/main.js",
+  "scripts": {
+    "start": "tsc && electron .",
+    "dev": "gulp dev",
+    "prod": "gulp prod",
+    "test": "jest",
+    "pack": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ResetPower/epherome.git"
+  },
+  "author": "ResetPower <resetpower20@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/ResetPower/epherome/issues"
+  },
+  "homepage": "https://github.com/ResetPower/epherome#readme",
+  "build": {
+    "productName": "Epherome",
+    "appId": "com.epherome",
+    "copyright": "Copyright (c) 2021 ResetPower. All rights reserved.",
+    "compression": "store",
+    "directories": {
+      "output": "package"
+    },
+    "asar": false,
+    "icon": "assets/logo.png",
+    "win": {
+      "target": "portable"
+    },
+    "files": [
+      "assets/",
+      "out/",
+      "index.html"
+    ]
+  },
+  "jest": {
+    "runner": "jest-electron/runner",
+    "testEnvironment": "jest-electron/environment",
+    "preset": "ts-jest",
+    "testRegex": "(/test/.*\\.(test|spec))\\.ts?$"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.21",
+    "@types/node": "^14.14.35",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
+    "@types/react-router-dom": "^5.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "fancy-log": "^1.3.3",
+    "gulp": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/lab": "*",
+    "electron-log": "^4.3.4",
+    "history": "^4.10.1",
+    "jest": "^24.9.0",
+    "jest-electron": "^0.1.11",
+    "json5": "^2.2.0",
+    "json5-loader": "^4.0.1",
+    "material-design-icons": "^3.0.1",
+    "node-stream-zip": "^1.13.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "react-transition-group": "^4.4.1",
+    "require-json5": "^1.1.0"
+  }
+}

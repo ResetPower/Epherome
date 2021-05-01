@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "CommonJS",
+    "jsx": "react",
+    "inlineSourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./out",
+    "strict": true,
+    "alwaysStrict": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["./src"]
+}
