@@ -11,7 +11,7 @@ import { resolveTitle } from "../renderer/titles";
 import { hist, theme } from "../renderer/global";
 
 const useStyle = makeStyles({
-  title: {
+  titleText: {
     flexGrow: 1,
     fontWeight: 400,
     paddingLeft: "10px",
@@ -39,7 +39,7 @@ export default function App(): FunctionComponentElement<EmptyProps> {
           <IconButton edge="start" color="inherit" onClick={handleBack}>
             <Icon>{icon}</Icon>
           </IconButton>
-          <Typography className={classes.title} variant="h6">
+          <Typography className={classes.titleText} variant="h6">
             {title}
           </Typography>
         </Toolbar>

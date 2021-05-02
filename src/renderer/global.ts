@@ -4,6 +4,8 @@ import { createHashHistory } from "history";
 import log from "electron-log";
 import { I18n } from "../tools/i18n";
 import { constraints, readConfig, writeConfig } from "./config";
+import enUs from "../assets/lang/en-us.json";
+import zhCn from "../assets/lang/zh-cn.json";
 
 const systemLanguage = navigator.language;
 const defaultLanguage = systemLanguage.startsWith("zh") ? "zh-cn" : "en-us";
@@ -13,8 +15,8 @@ const lang = readConfig("language", defaultLanguage);
 export const i18n = new I18n({
   language: lang,
   messages: {
-    "en-us": require("../../assets/lang/en-us.json5"),
-    "zh-cn": require("../../assets/lang/zh-cn.json5"),
+    "en-us": enUs,
+    "zh-cn": zhCn,
   },
 });
 
