@@ -40,5 +40,7 @@
   "noAccountsYet": "No accounts yet. Click 'Create' to create a new one.",
   "noProfilesYet": "No profiles yet. Click 'Create' to create a new one.",
   "launching": "Launching",
-  "javaPath": "Java Path"
+  "javaPath": "Java Path",
+  "openDirectory": "Open Directory",
+  "usuallyDotMinecraftEtc": "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux"
 }

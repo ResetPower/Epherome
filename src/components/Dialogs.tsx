@@ -9,6 +9,7 @@ import {
   Button,
   MenuItem,
   makeStyles,
+  Icon,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { FunctionComponentElement, useState } from "react";
@@ -18,6 +19,7 @@ import { readConfig } from "../renderer/config";
 import { createProfile, editProfile, MinecraftProfile, removeProfile } from "../renderer/profiles";
 import { getById } from "../tools/arrays";
 import { useBindingState, useBooleanState } from "../renderer/hooks";
+import { ipcRenderer } from "electron";
 
 export interface CustomDialogProps {
   open: boolean;
@@ -50,6 +52,9 @@ export interface EditProfileDialogProps extends CustomDialogProps {
 const useStyle = makeStyles({
   dialog: {
     minWidth: 500,
+  },
+  space: {
+    flexGrow: 1,
   },
 });
 
@@ -158,7 +163,7 @@ export function CreateProfileDialog(
 ): FunctionComponentElement<CreateProfileDialogProps> {
   const classes = useStyle();
   const [name, changeName] = useBindingState("");
-  const [dir, changeDir] = useBindingState("");
+  const [dir, changeDir, setDir] = useBindingState("");
   const [ver, changeVer] = useBindingState("");
   const handleCreate = () => {
     const rs = createProfile(name, dir, ver);
@@ -167,16 +172,33 @@ export function CreateProfileDialog(
       props.updateProfiles();
     }
   };
+  const handleOpenDirectory = () => {
+    ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
+      console.log(arg);
+      setDir(arg);
+    });
+    ipcRenderer.send("openDirectory");
+  };
 
   return (
     <Dialog onClose={props.onClose} open={props.open}>
       <DialogTitle>{t("newProfile")}</DialogTitle>
       <DialogContent className={classes.dialog}>
-        <TextField label={t("name")} onChange={changeName} fullWidth />
-        <TextField label={t("directory")} onChange={changeDir} fullWidth />
-        <TextField label={t("version")} onChange={changeVer} fullWidth />
+        <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
+        <TextField
+          label={t("directory")}
+          value={dir}
+          onChange={changeDir}
+          helperText={t("usuallyDotMinecraftEtc")}
+          fullWidth
+        />
+        <TextField label={t("version")} value={ver} onChange={changeVer} fullWidth />
       </DialogContent>
       <DialogActions>
+        <Button color="secondary" onClick={handleOpenDirectory}>
+          <Icon>folder</Icon> {t("openDirectory")}
+        </Button>
+        <div className={classes.space}></div>
         <Button color="primary" onClick={props.onClose}>
           {t("cancel")}
         </Button>
@@ -214,7 +236,13 @@ export function EditProfileDialog(
       <DialogTitle>{t("editProfile")}</DialogTitle>
       <DialogContent className={classes.dialog}>
         <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
-        <TextField label={t("directory")} value={dir} onChange={changeDir} fullWidth />
+        <TextField
+          label={t("directory")}
+          value={dir}
+          onChange={changeDir}
+          helperText={t("usuallyDotMinecraftEtc")}
+          fullWidth
+        />
         <TextField label={t("version")} value={ver} onChange={changeVer} fullWidth />
       </DialogContent>
       <DialogActions>

@@ -40,5 +40,7 @@
   "noAccountsYet": "还没有账户。点击「创建」来新建一个吧。",
   "noProfilesYet": "还没有档案。点击「创建」来新建一个吧。",
   "launching": "启动中",
-  "javaPath": "Java 路径"
+  "javaPath": "Java 路径",
+  "openDirectory": "打开文件夹",
+  "usuallyDotMinecraftEtc": "在 Windows 上通常是 '.minecraft' 而在 macOS 与 Linux 上通常是 'minecraft'"
 }

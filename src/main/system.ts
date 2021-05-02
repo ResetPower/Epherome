@@ -1,4 +1,4 @@
-import { ipcMain, app } from "electron";
+import { ipcMain, dialog, app } from "electron";
 import os from "os";
 import log from "electron-log";
 
@@ -20,6 +20,19 @@ ipcMain.on("initialize", (ev) => {
     dir,
     javaHome,
   };
+});
+
+// deal open folder action
+ipcMain.on("openDirectory", (ev) => {
+  dialog
+    .showOpenDialog({
+      properties: ["openDirectory"],
+    })
+    .then((files) => {
+      if (!files.canceled) {
+        ev.sender.send("replyOpenDirectory", files.filePaths[0]);
+      }
+    });
 });
 
 // global main-process logger

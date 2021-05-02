@@ -28,12 +28,15 @@ export function useConfigState<T>(key: string, def: T): [T, (value: T) => void, 
 
 export function useBindingState<T>(
   value: T
-): [T, (ev: React.ChangeEvent<{ value: unknown }>) => void] {
+): [T, (ev: React.ChangeEvent<{ value: unknown }>) => void, (value: T) => void] {
   const state = useState(value);
   return [
     state[0], // state
     (ev: React.ChangeEvent<{ value: unknown }>) => {
       state[1](ev.target.value as T);
     }, // changeState
+    (value: T) => {
+      state[1](value);
+    }, // setState
   ];
 }

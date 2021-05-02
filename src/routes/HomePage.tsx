@@ -82,14 +82,14 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
           <Typography>海内存知己，天涯若比邻。</Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={() => hist.push("/accounts")}>
+          <Button variant="outlined" color="secondary" onClick={() => hist.push("/accounts")}>
             <Icon>account_circle</Icon> {t("accounts")}
           </Button>
-          <Button size="small" onClick={() => hist.push("/profiles")}>
+          <Button variant="outlined" color="primary" onClick={() => hist.push("/profiles")}>
             <Icon>gamepad</Icon> {t("profiles")}
           </Button>
           <div className={classes.space}></div>
-          <Button size="small" onClick={() => hist.push("/settings")}>
+          <Button variant="outlined" onClick={() => hist.push("/settings")}>
             <Icon>settings</Icon> {t("settings")}
           </Button>
         </CardActions>
