@@ -122,7 +122,7 @@ export function CreateAccountDialog(
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button color="primary" onClick={handleClose}>
+        <Button color="secondary" onClick={handleClose}>
           {t("cancel")}
         </Button>
         <Button color="default" disabled={isLoading} onClick={handleCreate}>

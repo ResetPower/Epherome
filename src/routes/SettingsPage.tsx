@@ -15,18 +15,15 @@ import path from "path";
 import React, { FunctionComponentElement, useState } from "react";
 import Link from "../components/Link";
 import { constraints, readConfig, writeConfig } from "../renderer/config";
-import { theme, t, i18n, hist } from "../renderer/global";
+import { t, i18n, hist } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
-import { useBindingState } from "../renderer/hooks";
+import { useBindingState, useConfigState } from "../renderer/hooks";
 
 const useStyle = makeStyles({
   root: {
-    flexGrow: 1,
     display: "flex",
   },
-  tabs: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
+  tabs: {},
   main: {
     paddingLeft: "1rem",
     paddingTop: "1rem",
@@ -36,7 +33,13 @@ const useStyle = makeStyles({
   },
 });
 
-export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
+export interface SettingsPageProps {
+  setTheme: (str: string) => void;
+}
+
+export default function SettingsPage(
+  props: SettingsPageProps
+): FunctionComponentElement<SettingsPageProps> {
   const [value, setValue] = useState(0);
   const classes = useStyle();
   const cnst = constraints;
@@ -50,6 +53,12 @@ export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
     i18n.changeLanguage(newLanguage);
     setLanguage(newLanguage);
   };
+  const [theme, setTheme] = useConfigState("theme", "light");
+  const changeTheme = (ev: React.ChangeEvent<{ value: unknown }>) => {
+    const v = ev.target.value as string;
+    setTheme(v);
+    props.setTheme(v);
+  };
   const [javaPath, changeJavaPath] = useBindingState(readConfig("javaPath", "java"));
 
   const save = () => {
@@ -61,9 +70,9 @@ export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
   return (
     <div className={`eph-page ${classes.root}`}>
       <Tabs orientation="vertical" className={classes.tabs} value={value} onChange={handleChange}>
-        <Tab label={t("general")} />
-        <Tab label={t("appearance")} />
-        <Tab label={t("about")} />
+        <Tab value={0} label={t("general")} />
+        <Tab value={1} label={t("appearance")} />
+        <Tab value={2} label={t("about")} />
       </Tabs>
       <div className={classes.main}>
         <Box hidden={value !== 0}>
@@ -93,7 +102,13 @@ export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
           </div>
         </Box>
         <Box hidden={value !== 1}>
-          <Typography>Sorry, there is no appearance settings yet.</Typography>
+          <FormControl variant="filled" fullWidth>
+            <InputLabel>{t("theme")}</InputLabel>
+            <Select value={theme} onChange={changeTheme}>
+              <MenuItem value="light">Light</MenuItem>
+              <MenuItem value="dark">Dark</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         <Box hidden={value !== 2}>
           <strong>Epherome: {cnst.version} (Alpha)</strong>
@@ -110,10 +125,10 @@ export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
           </Paragraph>
           <Paragraph>
             <Typography>{t("cfgFilePath")}:</Typography>
-            <strong>
+            <Typography color="secondary">
               {cnst.dir}
               {path.sep}config.json5
-            </strong>
+            </Typography>
           </Paragraph>
           <Paragraph>
             <Typography>

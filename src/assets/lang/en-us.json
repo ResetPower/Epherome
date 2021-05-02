@@ -42,5 +42,6 @@
   "launching": "Launching",
   "javaPath": "Java Path",
   "openDirectory": "Open Directory",
-  "usuallyDotMinecraftEtc": "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux"
+  "usuallyDotMinecraftEtc": "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux",
+  "theme": "Theme"
 }

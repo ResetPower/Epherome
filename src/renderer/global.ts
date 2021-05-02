@@ -1,5 +1,19 @@
 import { createMuiTheme } from "@material-ui/core";
-import { lightBlue } from "@material-ui/core/colors";
+import {
+  blue,
+  blueGrey,
+  cyan,
+  deepPurple,
+  green,
+  grey,
+  indigo,
+  lightBlue,
+  lightGreen,
+  orange,
+  pink,
+  purple,
+  teal,
+} from "@material-ui/core/colors";
 import { createHashHistory } from "history";
 import log from "electron-log";
 import { I18n } from "../tools/i18n";
@@ -29,10 +43,29 @@ if (java === undefined) {
 export const t = i18n.shortcut();
 
 // global material-ui theme
-export const theme = createMuiTheme({
+export const lightTheme = createMuiTheme({
   palette: {
+    type: "light",
     primary: {
-      main: lightBlue[600],
+      main: blue[600],
+      contrastText: "#ffffff",
+    },
+    secondary: {
+      main: pink[500],
+      contrastText: "#ffffff",
+    },
+  },
+});
+
+export const darkTheme = createMuiTheme({
+  palette: {
+    type: "dark",
+    primary: {
+      main: indigo[400],
+      contrastText: "#ffffff",
+    },
+    secondary: {
+      main: blue[600],
       contrastText: "#ffffff",
     },
   },

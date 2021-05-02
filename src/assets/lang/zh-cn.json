@@ -42,5 +42,6 @@
   "launching": "启动中",
   "javaPath": "Java 路径",
   "openDirectory": "打开文件夹",
-  "usuallyDotMinecraftEtc": "在 Windows 上通常是 '.minecraft' 而在 macOS 与 Linux 上通常是 'minecraft'"
+  "usuallyDotMinecraftEtc": "在 Windows 上通常是 '.minecraft' 而在 macOS 与 Linux 上通常是 'minecraft'",
+  "theme": "主题"
 }

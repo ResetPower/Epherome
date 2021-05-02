@@ -18,6 +18,7 @@ import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
+import { lightGreen } from "@material-ui/core/colors";
 
 const useStyle = makeStyles({
   card: {
@@ -82,10 +83,10 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
           <Typography>海内存知己，天涯若比邻。</Typography>
         </CardContent>
         <CardActions>
-          <Button variant="outlined" color="secondary" onClick={() => hist.push("/accounts")}>
+          <Button onClick={() => hist.push("/accounts")}>
             <Icon>account_circle</Icon> {t("accounts")}
           </Button>
-          <Button variant="outlined" color="primary" onClick={() => hist.push("/profiles")}>
+          <Button onClick={() => hist.push("/profiles")}>
             <Icon>gamepad</Icon> {t("profiles")}
           </Button>
           <div className={classes.space}></div>
@@ -107,7 +108,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
                 ))}
               </Select>
             </FormControl>
-            <Button variant="contained" color="secondary" onClick={handleLaunch}>
+            <Button variant="outlined" size="large" color="secondary" onClick={handleLaunch}>
               {t("launch")}
             </Button>
           </Card>
