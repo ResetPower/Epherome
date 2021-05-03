@@ -30,6 +30,12 @@ export function readConfig<T>(key: string, def: T): T {
   return ret === undefined ? def : (ret as T);
 }
 
+export function operateConfig<T>(key: string, def: T, action: (value: T) => T, save = false): void {
+  const ret = data[key];
+  const value = ret === undefined ? def : (ret as T);
+  writeConfig(key, action(value), save);
+}
+
 export function writeConfig<T>(key: string, value: T, save = false): void {
   data[key] = value;
   save && saveConfig();

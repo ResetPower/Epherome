@@ -18,6 +18,7 @@ import { constraints, readConfig, writeConfig } from "../renderer/config";
 import { t, i18n, hist } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
 import { useBindingState, useConfigState } from "../renderer/hooks";
+import { setSession } from "../renderer/session";
 
 const useStyle = makeStyles({
   root: {
@@ -33,13 +34,7 @@ const useStyle = makeStyles({
   },
 });
 
-export interface SettingsPageProps {
-  setTheme: (str: string) => void;
-}
-
-export default function SettingsPage(
-  props: SettingsPageProps
-): FunctionComponentElement<SettingsPageProps> {
+export default function SettingsPage(): FunctionComponentElement<EmptyProps> {
   const [value, setValue] = useState(0);
   const classes = useStyle();
   const cnst = constraints;
@@ -57,7 +52,7 @@ export default function SettingsPage(
   const changeTheme = (ev: React.ChangeEvent<{ value: unknown }>) => {
     const v = ev.target.value as string;
     setTheme(v);
-    props.setTheme(v);
+    setSession("theme", v);
   };
   const [javaPath, changeJavaPath] = useBindingState(readConfig("javaPath", "java"));
 

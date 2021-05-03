@@ -1,4 +1,4 @@
-import React, { FunctionComponentElement, useState } from "react";
+import React, { FunctionComponentElement, useEffect, useState } from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import {
   AppBar,
@@ -17,7 +17,7 @@ import ProfilesPage from "../routes/ProfilesPage";
 import SettingsPage from "../routes/SettingsPage";
 import { resolveTitle } from "../renderer/titles";
 import { hist, lightTheme, darkTheme } from "../renderer/global";
-import { readConfig } from "../renderer/config";
+import { useSessionState } from "../renderer/hooks";
 
 const useStyle = makeStyles({
   titleText: {
@@ -31,16 +31,12 @@ const useStyle = makeStyles({
 export default function App(): FunctionComponentElement<EmptyProps> {
   const classes = useStyle();
   const location = hist.location;
-  const [theTheme, setTheTheme] = useState(
-    readConfig<string>("theme", "light") === "dark" ? darkTheme : lightTheme
-  );
+  const [theme, unsubscribeTheme] = useSessionState("theme");
   const [title, setTitle] = useState(resolveTitle(location.pathname));
   const [icon, setIcon] = useState(location.pathname === "/" ? "menu" : "arrow_back");
+  useEffect(() => unsubscribeTheme);
   const handleBack = () => {
     hist.goBack();
-  };
-  const setTheme = (str: string) => {
-    setTheTheme(str === "dark" ? darkTheme : lightTheme);
   };
   hist.listen((loc) => {
     setIcon(loc.pathname === "/" ? "menu" : "arrow_back");
@@ -48,7 +44,7 @@ export default function App(): FunctionComponentElement<EmptyProps> {
   });
 
   return (
-    <ThemeProvider theme={theTheme}>
+    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar>
@@ -67,9 +63,7 @@ export default function App(): FunctionComponentElement<EmptyProps> {
               <Route exact path="/" component={HomePage} />
               <Route exact path="/accounts" component={AccountsPage} />
               <Route exact path="/profiles" component={ProfilesPage} />
-              <Route exact path="/settings">
-                <SettingsPage setTheme={setTheme} />
-              </Route>
+              <Route exact path="/settings" component={SettingsPage} />
             </RouterSwitch>
           </CSSTransition>
         </TransitionGroup>

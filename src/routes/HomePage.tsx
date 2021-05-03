@@ -18,7 +18,6 @@ import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
-import { lightGreen } from "@material-ui/core/colors";
 
 const useStyle = makeStyles({
   card: {
@@ -45,10 +44,8 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const [value, setValue] = useState<unknown>(
     getById(profiles, selectedProfile) === null ? "" : selectedProfile
   );
-  const account = getById<MinecraftAccount>(
-    readConfig("accounts", []),
-    readConfig("selectedAccount", 0)
-  );
+  const accountId = readConfig("selectedAccount", 0);
+  const account = getById<MinecraftAccount>(readConfig("accounts", []), accountId);
   const username = account?.name;
   // handle minecraft profile select
   const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {

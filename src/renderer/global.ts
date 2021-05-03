@@ -1,19 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import {
-  blue,
-  blueGrey,
-  cyan,
-  deepPurple,
-  green,
-  grey,
-  indigo,
-  lightBlue,
-  lightGreen,
-  orange,
-  pink,
-  purple,
-  teal,
-} from "@material-ui/core/colors";
+import { blue, indigo, pink } from "@material-ui/core/colors";
 import { createHashHistory } from "history";
 import log from "electron-log";
 import { I18n } from "../tools/i18n";

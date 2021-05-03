@@ -75,3 +75,18 @@ export function removeAccount(id: number): void {
     true
   );
 }
+
+export function updateAccountToken(id: number, newToken: string): void {
+  writeConfig(
+    "accounts",
+    readConfig<MinecraftAccount[]>("accounts", []).map((value) => {
+      if (value.id === id) {
+        value.token = newToken;
+        return value;
+      } else {
+        return value;
+      }
+    }),
+    true
+  );
+}

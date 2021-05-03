@@ -1,7 +1,7 @@
 import fs from "fs";
 import { removePrefix } from "../tools/strings";
 import { isCompliant, equalOS } from "./rules";
-import { lc } from "./core";
+import { loggerCore } from "./core";
 
 /**
  * returns a object contains (cp, missing, natives)
@@ -10,7 +10,7 @@ import { lc } from "./core";
  * nativeLibs: list of string (only native library, need to unzip)
  */
 export function analyzeLibrary(dir: string, library: any): any {
-  lc.info("Analyzing Library in JSON");
+  loggerCore.info("Analyzing Library in JSON");
   const buff = [];
   const missing = [];
   const nativeLibs = [];
@@ -39,7 +39,7 @@ export function analyzeLibrary(dir: string, library: any): any {
             try {
               fs.accessSync(file);
             } catch (e) {
-              lc.warn(`Native library file ${file} not exists`);
+              loggerCore.warn(`Native library file ${file} not exists`);
               missing.push(cl[n]);
             }
             nativeLibs.push(file);
@@ -53,7 +53,7 @@ export function analyzeLibrary(dir: string, library: any): any {
       try {
         fs.accessSync(file);
       } catch (e) {
-        lc.warn(`Library file ${file} not exists`);
+        loggerCore.warn(`Library file ${file} not exists`);
         missing.push(ar);
       }
       buff.push(file);
