@@ -21,9 +21,11 @@ export interface LaunchProgressProps extends CustomDialogProps {
 const useStyle = makeStyles({
   helperText: {
     flexGrow: 1,
+    paddingLeft: 10,
   },
   content: {
-    minWidth: "500px",
+    minWidth: 600,
+    height: 250,
   },
 });
 

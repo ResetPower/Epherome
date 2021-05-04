@@ -52,8 +52,27 @@ export function useSessionState<T>(key: string): [T, () => void] {
   });
   return [
     val, // state
-    () => {
-      unsubscribe(index);
-    }, // unsubscribe
+    () => unsubscribe(index), // unsubscribe
   ];
+}
+
+export function useSubscription<T>(key: string, onUpdate: (value: T) => void): [T, () => void] {
+  const val = getSession<T>(key);
+  const index = subscribe({ key, onUpdate: (v) => onUpdate(v as T) });
+  return [
+    val, // value
+    () => unsubscribe(index), // unsubscribe
+  ];
+}
+
+export function useSubscriptionAsync<T>(key: string): Promise<T> {
+  return new Promise((resolve) => {
+    const index = subscribe({
+      key,
+      onUpdate: (v) => {
+        unsubscribe(index);
+        resolve(v as T);
+      },
+    });
+  });
 }

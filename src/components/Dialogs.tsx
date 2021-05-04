@@ -49,6 +49,10 @@ export interface EditProfileDialogProps extends CustomDialogProps {
   id: number;
 }
 
+export interface RequestPasswordDialogProps extends CustomDialogProps {
+  callback: (password: string) => void;
+}
+
 const useStyle = makeStyles({
   dialog: {
     minWidth: 500,
@@ -276,6 +280,37 @@ export function RemoveProfileDialog(
         </Button>
         <Button color="secondary" onClick={handleRemove}>
           {t("remove")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export function RequestPasswordDialog(
+  props: RequestPasswordDialogProps
+): FunctionComponentElement<RequestPasswordDialogProps> {
+  const classes = useStyle();
+  const [password, changePassword] = useBindingState("");
+  const handler = () => {
+    props.onClose();
+    props.callback(password);
+  };
+  return (
+    <Dialog open={props.open} onClose={props.onClose}>
+      <DialogTitle>Please Input Password</DialogTitle>
+      <DialogContent className={classes.dialog}>
+        <TextField
+          value={password}
+          onChange={changePassword}
+          label={t("password")}
+          type="password"
+          fullWidth
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={props.onClose}>{t("cancel")}</Button>
+        <Button color="primary" onClick={handler}>
+          OK
         </Button>
       </DialogActions>
     </Dialog>

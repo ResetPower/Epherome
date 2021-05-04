@@ -4,7 +4,7 @@
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
-    "start": "webpack --config webpack/dev-main.js && electron .",
+    "start": "webpack --config webpack/dev-main.js && electron . --remote-debugging-port=9222",
     "dev": "webpack serve --config webpack/dev-renderer.js",
     "test": "jest",
     "pack": "webpack --config webpack/prod.js && electron-builder"

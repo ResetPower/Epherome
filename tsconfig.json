@@ -3,7 +3,7 @@
     "target": "ES2015",
     "module": "CommonJS",
     "jsx": "react",
-    "inlineSourceMap": true,
+    "sourceMap": true,
     "rootDir": "./src",
     "outDir": "./out",
     "strict": true,

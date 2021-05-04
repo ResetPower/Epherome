@@ -13,11 +13,13 @@ import { hist } from "../renderer/global";
 import { readConfig, writeConfig } from "../renderer/config";
 import { getById } from "../tools/arrays";
 import { MinecraftAccount } from "../renderer/accounts";
-import { useBooleanState, useConfigState } from "../renderer/hooks";
+import { useBooleanState, useConfigState, useSubscriptionAsync } from "../renderer/hooks";
 import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
+import { RequestPasswordDialog } from "../components/Dialogs";
+import { setSession } from "../renderer/session";
 
 const useStyle = makeStyles({
   card: {
@@ -44,6 +46,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const [value, setValue] = useState<unknown>(
     getById(profiles, selectedProfile) === null ? "" : selectedProfile
   );
+  const [reqPw, openReqPw, closeReqPw] = useBooleanState(false);
   const accountId = readConfig("selectedAccount", 0);
   const account = getById<MinecraftAccount>(readConfig("accounts", []), accountId);
   const username = account?.name;
@@ -51,6 +54,9 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {
     writeConfig("selectedProfile", ev.target.value as number);
     setValue(ev.target.value as number);
+  };
+  const handlePassword = (password: string) => {
+    setSession("password", password);
   };
   const handleLaunch = () => {
     if (typeof value === "number") {
@@ -64,6 +70,10 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
           setHelper: setHelperText,
           java: "java",
           onDone: closeMinecraftDialog,
+          requestPassword: async () => {
+            openReqPw();
+            return await useSubscriptionAsync<string>("password");
+          },
         });
       }
     }
@@ -106,6 +116,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
               </Select>
             </FormControl>
             <Button variant="outlined" size="large" color="secondary" onClick={handleLaunch}>
+              <Icon>play_arrow</Icon>
               {t("launch")}
             </Button>
           </Card>
@@ -123,6 +134,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
         details={details}
         helperText={helperText}
       />
+      <RequestPasswordDialog callback={handlePassword} open={reqPw} onClose={closeReqPw} />
     </Container>
   );
 }
