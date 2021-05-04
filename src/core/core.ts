@@ -12,10 +12,8 @@ import { authenticate, refresh, validate } from "../tools/auth";
 const OPERATING_SYSTEM = os.platform();
 const OPERATING_VERSION = os.release();
 
-export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+export function sleep(_ms: number): Promise<void> {
+  return new Promise((resolve) => resolve());
 }
 
 // logger for minecraft launch core

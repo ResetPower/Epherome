@@ -28,7 +28,6 @@
       "output": "package"
     },
     "asar": true,
-    "icon": "assets/logo.png",
     "win": {
       "target": "portable"
     },
