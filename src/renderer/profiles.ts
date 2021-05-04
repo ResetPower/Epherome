@@ -1,4 +1,4 @@
-import { getNextId, WithId } from "../tools/arrays";
+import { getById, getNextId, WithId } from "../tools/arrays";
 import { readConfig, writeConfig } from "./config";
 
 export interface MinecraftProfile extends WithId {
@@ -43,4 +43,8 @@ export function removeProfile(id: number): void {
     readConfig<MinecraftProfile[]>("profiles", []).filter((value) => value.id !== id),
     true
   );
+}
+
+export function getProfile(id: number): MinecraftProfile | null {
+  return getById(readConfig("profiles", []), id);
 }

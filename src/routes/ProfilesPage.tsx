@@ -15,7 +15,7 @@ import {
 import { useBooleanState, useConfigState } from "../renderer/hooks";
 import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
 import { MinecraftProfile } from "../renderer/profiles";
-import { t } from "../renderer/global";
+import { hist, t } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
 import { Alert } from "@material-ui/lab";
 
@@ -58,15 +58,10 @@ export default function ProfilesPage(): FunctionComponentElement<EmptyProps> {
                 checked ? setSelected(i.id) : null
               }
             />
-            <ListItemText
-              className={classes.text}
-              primary={i.name}
-              secondary={`${i.dir} ${i.ver}`}
-            />
+            <ListItemText className={classes.text} primary={i.name} secondary={i.dir} />
             <ListItemSecondaryAction>
               <Tooltip title={t("edit")}>
                 <IconButton
-                  size="small"
                   onClick={() => {
                     setClicked(i.id);
                     openEditDialog();
@@ -75,9 +70,17 @@ export default function ProfilesPage(): FunctionComponentElement<EmptyProps> {
                   <Icon>edit</Icon>
                 </IconButton>
               </Tooltip>
+              <Tooltip title={t("manage")}>
+                <IconButton
+                  onClick={() => {
+                    hist.push("/profile/" + i.id);
+                  }}
+                >
+                  <Icon>settings</Icon>
+                </IconButton>
+              </Tooltip>
               <Tooltip title={t("remove")}>
                 <IconButton
-                  size="small"
                   onClick={() => {
                     setClicked(i.id);
                     openRemoveDialog();

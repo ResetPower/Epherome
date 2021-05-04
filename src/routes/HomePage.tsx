@@ -18,13 +18,16 @@ import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
-import { RequestPasswordDialog } from "../components/Dialogs";
+import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
 import { setSession } from "../renderer/session";
 
 const useStyle = makeStyles({
+  topCard: {
+    padding: "20px",
+    marginBottom: "25px",
+  },
   card: {
     padding: "10px",
-    marginBottom: "10px",
   },
   space: {
     flexGrow: 1,
@@ -39,6 +42,7 @@ const useStyle = makeStyles({
 export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const classes = useStyle();
   const [minecraftDialog, openMinecraftDialog, closeMinecraftDialog] = useBooleanState(false);
+  const [errDialog, openErrDialog, closeErrDialog] = useBooleanState(false);
   const [profiles] = useConfigState("profiles", []);
   const selectedProfile = readConfig("selectedProfile", -1);
   const [details, setDetails] = useState<MinecraftLaunchDetail[]>([]);
@@ -46,6 +50,8 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
   const [value, setValue] = useState<unknown>(
     getById(profiles, selectedProfile) === null ? "" : selectedProfile
   );
+  const [againRequestPassword, setAgainRequestPassword] = useState(false);
+  const [stacktrace, setStacktrace] = useState("");
   const [reqPw, openReqPw, closeReqPw] = useBooleanState(false);
   const accountId = readConfig("selectedAccount", 0);
   const account = getById<MinecraftAccount>(readConfig("accounts", []), accountId);
@@ -68,20 +74,27 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
           profile,
           setDetails,
           setHelper: setHelperText,
-          java: "java",
+          java: readConfig("javaPath", "java"),
           onDone: closeMinecraftDialog,
-          requestPassword: async () => {
+          requestPassword: async (again: boolean) => {
+            if (again !== againRequestPassword) {
+              setAgainRequestPassword(again);
+            }
             openReqPw();
             return await useSubscriptionAsync<string>("password");
           },
+        }).catch((err) => {
+          closeMinecraftDialog();
+          setStacktrace(err.stack);
+          openErrDialog();
         });
       }
     }
   };
 
   return (
-    <Container className="eph-page">
-      <Card className={classes.card}>
+    <Container className="eph-home-page">
+      <Card className={classes.topCard} variant="outlined">
         <CardContent>
           <Typography color="textSecondary" gutterBottom>
             {t("hello")}
@@ -134,7 +147,13 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
         details={details}
         helperText={helperText}
       />
-      <RequestPasswordDialog callback={handlePassword} open={reqPw} onClose={closeReqPw} />
+      <RequestPasswordDialog
+        callback={handlePassword}
+        open={reqPw}
+        again={againRequestPassword}
+        onClose={closeReqPw}
+      />
+      <ErrorDialog open={errDialog} onClose={closeErrDialog} stacktrace={stacktrace} />
     </Container>
   );
 }

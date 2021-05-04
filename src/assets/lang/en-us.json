@@ -43,5 +43,12 @@
   "javaPath": "Java Path",
   "openDirectory": "Open Directory",
   "usuallyDotMinecraftEtc": "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux",
-  "theme": "Theme"
+  "theme": "Theme",
+  "ok": "OK",
+  "passwordWrong": "Password Wrong",
+  "pleaseInputPassword": "Please Input Password",
+  "errorOccurred": "Error Occurred",
+  "manage": "Manage",
+  "profileManagement": "Manage Profiles",
+  "notSupportedYet": "Sorry, this feature is not yet available."
 }

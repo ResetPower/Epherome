@@ -7,7 +7,7 @@ import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
 import { removeSuffix } from "../tools/strings";
 import { analyzeLibrary, analyzeModLibrary } from "./libraries";
-import { refresh, validate } from "../tools/auth";
+import { authenticate, refresh, validate } from "../tools/auth";
 
 const OPERATING_SYSTEM = os.platform();
 const OPERATING_VERSION = os.release();
@@ -30,24 +30,13 @@ export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   profile: MinecraftProfile;
   java: string;
-  setDetails: (details: MinecraftLaunchDetail[]) => void;
-  setHelper: (text: string) => void;
+  setHelper: (value: ((prevState: string) => string) | string) => void;
+  setDetails: (value: MinecraftLaunchDetail[]) => void;
+  requestPassword: (again: boolean) => Promise<string>;
   onDone: () => void;
 }
 
-export async function launchMinecraft(options: {
-  requestPassword: () => Promise<string>;
-  java: string;
-  setHelper: (value: ((prevState: string) => string) | string) => void;
-  profile: any;
-  setDetails: (
-    value:
-      | ((prevState: MinecraftLaunchDetail[]) => MinecraftLaunchDetail[])
-      | MinecraftLaunchDetail[]
-  ) => void;
-  onDone: () => void;
-  account: MinecraftAccount;
-}): Promise<void> {
+export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
   loggerCore.info("Launching Minecraft... ...");
   const account = options.account;
   const profile = options.profile;
@@ -89,7 +78,16 @@ export async function launchMinecraft(options: {
     if (!valid) {
       const refreshed = await refresh(account.token);
       if (refreshed.err) {
-        // TODO Request Password
+        async function act(again: boolean) {
+          const password = await options.requestPassword(again);
+          const result = await authenticate(account.email, password);
+          if (result.err) {
+            await act(true);
+          } else {
+            updateAccountToken(account.id, result.token);
+          }
+        }
+        await act(false);
         loggerCore.warn("Failed to refresh token");
       } else {
         updateAccountToken(account.id, refreshed.token);

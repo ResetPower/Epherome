@@ -50,7 +50,12 @@ export interface EditProfileDialogProps extends CustomDialogProps {
 }
 
 export interface RequestPasswordDialogProps extends CustomDialogProps {
+  again: boolean;
   callback: (password: string) => void;
+}
+
+export interface ErrorDialogProps extends CustomDialogProps {
+  stacktrace: string;
 }
 
 const useStyle = makeStyles({
@@ -297,20 +302,39 @@ export function RequestPasswordDialog(
   };
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>Please Input Password</DialogTitle>
+      <DialogTitle>{t("pleaseInputPassword")}</DialogTitle>
       <DialogContent className={classes.dialog}>
         <TextField
           value={password}
           onChange={changePassword}
           label={t("password")}
           type="password"
+          helperText={props.again ? t("passwordWrong") : ""}
+          error={props.again}
           fullWidth
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose}>{t("cancel")}</Button>
         <Button color="primary" onClick={handler}>
-          OK
+          {t("ok")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export function ErrorDialog(props: ErrorDialogProps): FunctionComponentElement<ErrorDialogProps> {
+  const classes = useStyle();
+  return (
+    <Dialog open={props.open} onClose={props.onClose}>
+      <DialogTitle>{t("errorOccurred")}</DialogTitle>
+      <DialogContent className={classes.dialog}>
+        <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
+      </DialogContent>
+      <DialogActions>
+        <Button color="primary" onClick={props.onClose}>
+          {t("ok")}
         </Button>
       </DialogActions>
     </Dialog>

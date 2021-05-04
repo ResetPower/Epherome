@@ -9,5 +9,7 @@ const titleMap: { [key: string]: string } = {
 
 // get title text from a uri
 export function resolveTitle(path: string): string {
-  return t(titleMap[path]);
+  if (path.startsWith("/profile/")) {
+    return t("profileManagement");
+  } else return t(titleMap[path]);
 }

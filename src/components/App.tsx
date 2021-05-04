@@ -18,6 +18,7 @@ import SettingsPage from "../routes/SettingsPage";
 import { resolveTitle } from "../renderer/titles";
 import { hist, lightTheme, darkTheme } from "../renderer/global";
 import { useSessionState } from "../renderer/hooks";
+import ProfileManagementPage from "../routes/ProfileManagementPage";
 
 const useStyle = makeStyles({
   titleText: {
@@ -64,6 +65,7 @@ export default function App(): FunctionComponentElement<EmptyProps> {
               <Route exact path="/accounts" component={AccountsPage} />
               <Route exact path="/profiles" component={ProfilesPage} />
               <Route exact path="/settings" component={SettingsPage} />
+              <Route exact path="/profile/:id" component={ProfileManagementPage} />
             </RouterSwitch>
           </CSSTransition>
         </TransitionGroup>

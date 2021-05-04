@@ -2,8 +2,8 @@
   "hello": "你好！",
   "epherome": "Epherome",
   "settings": "设定",
-  "accounts": "账户管理",
-  "profiles": "档案管理",
+  "accounts": "账户",
+  "profiles": "档案",
   "launch": "启动",
   "edit": "编辑",
   "news": "新闻",
@@ -43,5 +43,12 @@
   "javaPath": "Java 路径",
   "openDirectory": "打开文件夹",
   "usuallyDotMinecraftEtc": "在 Windows 上通常是 '.minecraft' 而在 macOS 与 Linux 上通常是 'minecraft'",
-  "theme": "主题"
+  "theme": "主题",
+  "ok": "好",
+  "passwordWrong": "密码错误",
+  "pleaseInputPassword": "请输入密码",
+  "errorOccurred": "发生了错误",
+  "manage": "管理",
+  "profileManagement": "档案管理",
+  "notSupportedYet": "抱歉，此功能尚不可用。"
 }

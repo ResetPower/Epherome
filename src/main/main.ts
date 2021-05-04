@@ -1,24 +1,25 @@
 import { app, BrowserWindow } from "electron";
 import "./system";
 
+const prod = process.env.NODE_ENV === "production";
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     autoHideMenuBar: true,
+    resizable: false,
     show: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      webSecurity: false,
+      webSecurity: prod,
     },
   });
 
   win.on("ready-to-show", win.show);
 
-  process.env.NODE_ENV === "production"
-    ? win.loadFile("dist/index.html")
-    : win.loadURL("http://localhost:3000");
+  prod ? win.loadFile("dist/index.html") : win.loadURL("http://localhost:3000");
 }
 
 app.whenReady().then(createWindow);

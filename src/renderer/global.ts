@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
-import { blue, indigo, pink } from "@material-ui/core/colors";
+import { blue, grey, indigo, pink } from "@material-ui/core/colors";
 import { createHashHistory } from "history";
 import log from "electron-log";
 import { I18n } from "../tools/i18n";
@@ -32,6 +32,9 @@ export const t = i18n.shortcut();
 export const lightTheme = createMuiTheme({
   palette: {
     type: "light",
+    background: {
+      default: grey[100],
+    },
     primary: {
       main: blue[600],
       contrastText: "#ffffff",
