@@ -4,8 +4,8 @@ const fs = require("fs");
 function copy(src, dst) {
   let paths = fs.readdirSync(src);
   paths.forEach(function (path) {
-    var _src = src + '/' + path;
-    var _dst = dst + '/' + path;
+    var _src = src + "/" + path;
+    var _dst = dst + "/" + path;
     fs.stat(_src, function (err, stats) {
       if (err) throw err;
       if (stats.isFile()) {

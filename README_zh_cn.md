@@ -8,6 +8,10 @@
 
 Epherome 是一个使用 Electron 与 React 开发的简单的 Minecraft 启动器
 
+## 截图
+
+![alt](assets/HomePage_zh_cn.jpg)
+
 ## 协议
 
-[GNU General Public License 3.0](https://github.com/ResetPower/Epherome/blob/master/LICENSE)
+[GNU General Public License 3.0](LICENSE)

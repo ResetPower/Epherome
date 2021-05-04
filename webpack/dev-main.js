@@ -6,7 +6,7 @@ module.exports = {
   },
   target: "electron-main",
   mode: "development",
-  devtool: "source-map",
+  devtool: "inline-source-map",
   module: {
     rules: [
       {
