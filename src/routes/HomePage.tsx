@@ -100,7 +100,7 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
             {t("hello")}
           </Typography>
           <Typography variant="h5">{username === undefined ? "Tourist" : username}</Typography>
-          <Typography>海内存知己，天涯若比邻。</Typography>
+          <Typography>{t("hitokoto")}</Typography>
         </CardContent>
         <CardActions>
           <Button onClick={() => hist.push("/accounts")}>
@@ -136,8 +136,10 @@ export default function HomePage(): FunctionComponentElement<EmptyProps> {
         </Grid>
         <Grid item xs={6}>
           <Card className={classes.card} variant="outlined">
-            <Typography>News</Typography>
-            <p>No news yet.</p>
+            <Typography variant="h5">{t("warning")}</Typography>
+            <Typography>{t("alphaWarning")}</Typography>
+            <br />
+            <br />
           </Card>
         </Grid>
       </Grid>

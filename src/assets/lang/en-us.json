@@ -50,5 +50,8 @@
   "errorOccurred": "Error Occurred",
   "manage": "Manage",
   "profileManagement": "Manage Profiles",
-  "notSupportedYet": "Sorry, this feature is not yet available."
+  "notSupportedYet": "Sorry, this feature is not yet available.",
+  "warning": "Warning",
+  "alphaWarning": "The program is in the alpha stage, please use it with caution.",
+  "hitokoto": "Light travels faster than sound."
 }
