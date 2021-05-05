@@ -23,14 +23,11 @@
     "productName": "Epherome",
     "appId": "com.epherome",
     "copyright": "Copyright (c) 2021 ResetPower. All rights reserved.",
-    "compression": "maximum",
     "directories": {
       "output": "package"
     },
     "asar": true,
-    "win": {
-      "target": "portable"
-    },
+    "compression": "normal",
     "files": [
       "dist/",
       "!node_modules/"
