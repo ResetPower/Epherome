@@ -72,24 +72,28 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   const doneAuthenticating = useMinecraftLaunchDetail("Authenticating");
   if (account.mode === "mojang") {
-    const valid = await validate(account.token);
-    if (!valid) {
-      const refreshed = await refresh(account.token);
-      if (refreshed.err) {
-        async function act(again: boolean) {
-          const password = await options.requestPassword(again);
-          const result = await authenticate(account.email, password);
-          if (result.err) {
-            await act(true);
-          } else {
-            updateAccountToken(account.id, result.token);
+    if (navigator.onLine) {
+      const valid = await validate(account.token);
+      if (!valid) {
+        const refreshed = await refresh(account.token);
+        if (refreshed.err) {
+          async function act(again: boolean) {
+            const password = await options.requestPassword(again);
+            const result = await authenticate(account.email, password);
+            if (result.err) {
+              await act(true);
+            } else {
+              updateAccountToken(account.id, result.token);
+            }
           }
+          await act(false);
+          loggerCore.warn("Failed to refresh token");
+        } else {
+          updateAccountToken(account.id, refreshed.token);
         }
-        await act(false);
-        loggerCore.warn("Failed to refresh token");
-      } else {
-        updateAccountToken(account.id, refreshed.token);
       }
+    } else {
+      // network not available, account validating skipped
     }
   }
   doneAuthenticating();
