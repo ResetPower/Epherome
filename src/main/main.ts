@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron";
+import touchBar from "./touchbar";
 import "./system";
 
 const prod = process.env.NODE_ENV === "production";
@@ -9,15 +10,13 @@ function createWindow() {
     height: 600,
     autoHideMenuBar: true,
     resizable: false,
-    show: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       webSecurity: prod,
     },
   });
-
-  win.on("ready-to-show", win.show);
+  win.setTouchBar(touchBar(win));
 
   prod ? win.loadFile("dist/index.html") : win.loadURL("http://localhost:3000");
 }

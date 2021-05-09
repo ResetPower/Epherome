@@ -1,6 +1,12 @@
-const path = require("path");
+import path from "path";
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 
-module.exports = {
+interface Configuration extends WebpackConfiguration {
+  devServer: WebpackDevServerConfiguration;
+}
+
+const config: Configuration = {
   entry: {
     app: "./src/renderer/index.ts",
   },
@@ -13,6 +19,14 @@ module.exports = {
         test: /\.(js|ts|tsx)?$/,
         exclude: /node_modules/,
         loader: "ts-loader",
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(eot|woff|woff2|ttf)?$/,
+        loader: "file-loader",
       },
     ],
   },
@@ -40,3 +54,5 @@ module.exports = {
     port: 3000,
   },
 };
+
+export default config;

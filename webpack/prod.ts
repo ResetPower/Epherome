@@ -1,37 +1,10 @@
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import fs from "fs";
+import { Configuration } from "webpack";
 
-function copy(src, dst) {
-  let paths = fs.readdirSync(src);
-  paths.forEach(function (path) {
-    var _src = src + "/" + path;
-    var _dst = dst + "/" + path;
-    fs.stat(_src, function (err, stats) {
-      if (err) throw err;
-      if (stats.isFile()) {
-        let readable = fs.createReadStream(_src);
-        let writable = fs.createWriteStream(_dst);
-        readable.pipe(writable);
-      } else if (stats.isDirectory()) {
-        checkDirectory(_src, _dst, copy);
-      }
-    });
-  });
-}
-function checkDirectory(src, dst, callback) {
-  fs.access(dst, fs.constants.F_OK, (err) => {
-    if (err) {
-      fs.mkdirSync(dst);
-      callback(src, dst);
-    } else {
-      callback(src, dst);
-    }
-  });
-}
+fs.writeFileSync("dist/index.html", fs.readFileSync("public/index.html"));
 
-copy("public", "dist");
-
-module.exports = [
+const configs: Configuration[] = [
   {
     entry: {
       main: "./src/main/main.ts",
@@ -44,6 +17,14 @@ module.exports = [
           test: /\.(js|ts)?$/,
           exclude: /node_modules/,
           loader: "ts-loader",
+        },
+        {
+          test: /\.css$/,
+          use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.(eot|woff|woff2|ttf)?$/,
+          loader: "file-loader",
         },
       ],
     },
@@ -90,3 +71,5 @@ module.exports = [
     },
   },
 ];
+
+export default configs;

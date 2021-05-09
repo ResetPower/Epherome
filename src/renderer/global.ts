@@ -6,6 +6,7 @@ import { I18n } from "../tools/i18n";
 import { constraints, readConfig, writeConfig } from "./config";
 import enUs from "../assets/lang/en-us.json";
 import zhCn from "../assets/lang/zh-cn.json";
+import { ipcRenderer } from "electron";
 
 const systemLanguage = navigator.language;
 const defaultLanguage = systemLanguage.startsWith("zh") ? "zh-cn" : "en-us";
@@ -65,3 +66,7 @@ export const logger = log.scope("renderer");
 
 // global history for react-router
 export const hist = createHashHistory();
+
+// response main-process calls
+ipcRenderer.on("nav-back", () => hist.goBack());
+ipcRenderer.on("nav-home", () => hist.push("/"));

@@ -28,7 +28,7 @@ export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   profile: MinecraftProfile;
   java: string;
-  setHelper: (value: ((prevState: string) => string) | string) => void;
+  setHelper: (value: string) => void;
   setDetails: (value: MinecraftLaunchDetail[]) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: () => void;

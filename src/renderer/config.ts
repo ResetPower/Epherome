@@ -2,10 +2,29 @@ import fs from "fs";
 import path from "path";
 import json5 from "json5";
 import { ipcRenderer } from "electron";
+import { MinecraftProfile } from "./profiles";
+import { MinecraftAccount } from "./accounts";
 
 export const constraints = ipcRenderer.sendSync("initialize");
 
-let data: { [key: string]: unknown } = {};
+export interface Config {
+  accounts: MinecraftAccount[];
+  profiles: MinecraftProfile[];
+  selectedAccount: number;
+  selectedProfile: number;
+  javaPath: string;
+  theme: string;
+}
+
+export let epheromeConfigs: Config = {
+  accounts: <MinecraftAccount[]>[],
+  profiles: <MinecraftProfile[]>[],
+  selectedAccount: 0,
+  selectedProfile: 0,
+  javaPath: "java",
+  theme: "light",
+};
+
 const ud = constraints.dir;
 const cfg = ud + path.sep + "config.json5";
 
@@ -13,7 +32,7 @@ try {
   fs.accessSync(cfg);
   // file does exist
   const str = fs.readFileSync(cfg).toString();
-  data = json5.parse(str);
+  epheromeConfigs = json5.parse(str);
 } catch {
   // file does not exist
   fs.writeFileSync(cfg, "{}");
@@ -21,22 +40,16 @@ try {
 
 // write config to disk
 export function saveConfig(): void {
-  fs.writeFileSync(cfg, json5.stringify(data));
+  fs.writeFileSync(cfg, json5.stringify(epheromeConfigs));
 }
 
 // read config from memory
 export function readConfig<T>(key: string, def: T): T {
-  const ret = data[key];
+  const ret = (epheromeConfigs as any)[key];
   return ret === undefined ? def : (ret as T);
 }
 
-export function operateConfig<T>(key: string, def: T, action: (value: T) => T, save = false): void {
-  const ret = data[key];
-  const value = ret === undefined ? def : (ret as T);
-  writeConfig(key, action(value), save);
-}
-
 export function writeConfig<T>(key: string, value: T, save = false): void {
-  data[key] = value;
+  (epheromeConfigs as any)[key] = value;
   save && saveConfig();
 }
