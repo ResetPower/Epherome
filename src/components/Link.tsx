@@ -1,26 +1,21 @@
-import React, { FunctionComponentElement } from "react";
+import { PureComponent } from "react";
 import { shell } from "electron";
-import { lightBlue } from "@material-ui/core/colors";
+import "../styles/link.css";
 
 export interface LinkProps {
   href: string;
   children: string;
 }
 
-export default function Link(props: LinkProps): FunctionComponentElement<LinkProps> {
-  const handleClick = () => {
-    shell.openExternal(props.href);
+export default class Link extends PureComponent<LinkProps> {
+  handleClick = () => {
+    shell.openExternal(this.props.href).then();
   };
-  return (
-    <span
-      style={{
-        userSelect: "none",
-        cursor: "pointer",
-        color: lightBlue[500],
-      }}
-      onClick={handleClick}
-    >
-      {props.children}
-    </span>
-  );
+  render() {
+    return (
+      <span className="eph-link" onClick={this.handleClick}>
+        {this.props.children}
+      </span>
+    );
+  }
 }

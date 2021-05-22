@@ -1,5 +1,6 @@
 import { t } from "./global";
 
+// map of common titles
 const titleMap: { [key: string]: string } = {
   "/": "epherome",
   "/accounts": "accounts",

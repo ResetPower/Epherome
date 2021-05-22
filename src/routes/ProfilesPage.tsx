@@ -1,9 +1,8 @@
-import React, { FunctionComponentElement, useState } from "react";
+import React, { Component } from "react";
 import {
   Button,
   Container,
   Icon,
-  makeStyles,
   List,
   ListItem,
   ListItemText,
@@ -12,104 +11,117 @@ import {
   Radio,
   Tooltip,
 } from "@material-ui/core";
-import { useBooleanState, useConfigState } from "../renderer/hooks";
 import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
 import { MinecraftProfile } from "../renderer/profiles";
 import { hist, t } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
 import { Alert } from "@material-ui/lab";
+import { ephConfigs } from "../renderer/config";
+import { EmptyProps } from "../tools/types";
 
-const useStyle = makeStyles({
-  text: {
-    userSelect: "none",
-  },
-});
+export interface ProfilesPageState {
+  clicked: number;
+  createDialog: boolean;
+  editDialog: boolean;
+  removeDialog: boolean;
+}
 
-export default function ProfilesPage(): FunctionComponentElement<EmptyProps> {
-  const classes = useStyle();
-  const [selected, setSelected] = useConfigState("selectedProfile", 0);
-  const [clicked, setClicked] = useState(0);
-  const [profiles, _setProfiles, updateProfiles] = useConfigState<MinecraftProfile[]>(
-    "profiles",
-    []
-  );
-  const [createDialog, openCreateDialog, closeCreateDialog] = useBooleanState(false);
-  const [editDialog, openEditDialog, closeEditDialog] = useBooleanState(false);
-  const [removeDialog, openRemoveDialog, closeRemoveDialog] = useBooleanState(false);
-
-  return (
-    <Container className="eph-page">
-      <Paragraph padding="both">
-        <Button variant="contained" color="secondary" onClick={openCreateDialog}>
-          <Icon>create</Icon> {t("create")}
-        </Button>
-      </Paragraph>
-      {profiles.length === 0 && (
-        <Paragraph padding="top">
-          <Alert severity="info">{t("noProfilesYet")}</Alert>
+export default class ProfilesPage extends Component<EmptyProps, ProfilesPageState> {
+  state: ProfilesPageState = {
+    clicked: 0,
+    createDialog: false,
+    editDialog: false,
+    removeDialog: false,
+  };
+  render() {
+    const profiles = ephConfigs.profiles;
+    return (
+      <Container className="eph-page">
+        <Paragraph padding="both">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.setState({ createDialog: true })}
+          >
+            <Icon>create</Icon> {t("create")}
+          </Button>
         </Paragraph>
-      )}
-      <List>
-        {profiles.map((i: MinecraftProfile) => (
-          <ListItem key={i.id}>
-            <Radio
-              checked={selected === i.id}
-              onChange={(_ev: React.ChangeEvent, checked: boolean) =>
-                checked ? setSelected(i.id) : null
-              }
-            />
-            <ListItemText className={classes.text} primary={i.name} secondary={i.dir} />
-            <ListItemSecondaryAction>
-              <Tooltip title={t("edit")}>
-                <IconButton
-                  onClick={() => {
-                    setClicked(i.id);
-                    openEditDialog();
-                  }}
-                >
-                  <Icon>edit</Icon>
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t("manage")}>
-                <IconButton
-                  onClick={() => {
-                    hist.push("/profile/" + i.id);
-                  }}
-                >
-                  <Icon>settings</Icon>
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t("remove")}>
-                <IconButton
-                  onClick={() => {
-                    setClicked(i.id);
-                    openRemoveDialog();
-                  }}
-                >
-                  <Icon>delete</Icon>
-                </IconButton>
-              </Tooltip>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
-      <CreateProfileDialog
-        open={createDialog}
-        onClose={closeCreateDialog}
-        updateProfiles={updateProfiles}
-      />
-      <EditProfileDialog
-        open={editDialog}
-        id={clicked}
-        onClose={closeEditDialog}
-        updateProfiles={updateProfiles}
-      />
-      <RemoveProfileDialog
-        open={removeDialog}
-        onClose={closeRemoveDialog}
-        updateProfiles={updateProfiles}
-        id={clicked}
-      />
-    </Container>
-  );
+        {profiles.length === 0 && (
+          <Paragraph padding="top">
+            <Alert severity="info">{t("noProfilesYet")}</Alert>
+          </Paragraph>
+        )}
+        <List>
+          {profiles.map((i: MinecraftProfile) => (
+            <ListItem key={i.id}>
+              <Radio
+                checked={ephConfigs.selectedProfile === i.id}
+                onChange={(_ev: React.ChangeEvent, checked: boolean) =>
+                  checked
+                    ? (() => {
+                        ephConfigs.selectedProfile = i.id;
+                        this.setState({});
+                      })()
+                    : null
+                }
+              />
+              <ListItemText primary={i.name} secondary={i.dir} />
+              <ListItemSecondaryAction>
+                <Tooltip title={t("edit")}>
+                  <IconButton
+                    onClick={() =>
+                      this.setState({
+                        clicked: i.id,
+                        editDialog: true,
+                      })
+                    }
+                  >
+                    <Icon>edit</Icon>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t("manage")}>
+                  <IconButton
+                    onClick={() => {
+                      hist.push("/profile/" + i.id);
+                    }}
+                  >
+                    <Icon>settings</Icon>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t("remove")}>
+                  <IconButton
+                    onClick={() =>
+                      this.setState({
+                        clicked: i.id,
+                        removeDialog: true,
+                      })
+                    }
+                  >
+                    <Icon>delete</Icon>
+                  </IconButton>
+                </Tooltip>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <CreateProfileDialog
+          open={this.state.createDialog}
+          onClose={() => this.setState({ createDialog: false })}
+          updateProfiles={() => this.setState({})}
+        />
+        <EditProfileDialog
+          open={this.state.editDialog}
+          id={this.state.clicked}
+          onClose={() => this.setState({ editDialog: false })}
+          updateProfiles={() => this.setState({})}
+        />
+        <RemoveProfileDialog
+          open={this.state.removeDialog}
+          onClose={() => this.setState({ removeDialog: false })}
+          updateProfiles={() => this.setState({})}
+          id={this.state.clicked}
+        />
+      </Container>
+    );
+  }
 }

@@ -1,75 +1,16 @@
-import path from "path";
-import fs from "fs";
 import { Configuration } from "webpack";
 
-fs.writeFileSync("dist/index.html", fs.readFileSync("public/index.html"));
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { mainProcess, rendererProcess } from "./base";
 
-const configs: Configuration[] = [
-  {
-    entry: {
-      main: "./src/main/main.ts",
-    },
-    target: "electron-main",
+export default [
+  Object.assign<Configuration, Configuration>(mainProcess, {
     mode: "production",
-    module: {
-      rules: [
-        {
-          test: /\.(js|ts)?$/,
-          exclude: /node_modules/,
-          loader: "ts-loader",
-        },
-        {
-          test: /\.css$/,
-          use: ["style-loader", "css-loader"],
-        },
-        {
-          test: /\.(eot|woff|woff2|ttf)?$/,
-          loader: "file-loader",
-        },
-      ],
-    },
-    resolve: {
-      extensions: [".js", ".ts"],
-    },
-    output: {
-      path: path.join(__dirname, "../dist"),
-      filename: "main.js",
-    },
-  },
-  {
-    entry: {
-      app: "./src/renderer/index.ts",
-    },
-    target: "electron-renderer",
+    devtool: "source-map",
+  }),
+  Object.assign<Configuration, Configuration>(rendererProcess, {
     mode: "production",
-    module: {
-      rules: [
-        {
-          test: /\.(js|ts|tsx)?$/,
-          exclude: /node_modules/,
-          loader: "ts-loader",
-        },
-      ],
-    },
-    resolve: {
-      extensions: [".js", ".ts", ".tsx"],
-    },
-    optimization: {
-      splitChunks: {
-        chunks: "all",
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-          },
-        },
-      },
-    },
-    output: {
-      path: path.join(__dirname, "../dist"),
-      filename: "[name].js",
-    },
-  },
+    devtool: "source-map",
+  }),
 ];
-
-export default configs;

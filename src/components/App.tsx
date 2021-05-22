@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import { AppBar, CssBaseline, Icon, IconButton, Toolbar, Typography } from "@material-ui/core";
 import { Router, Switch as RouterSwitch, Route } from "react-router";
@@ -10,15 +10,17 @@ import { resolveTitle } from "../renderer/titles";
 import { hist, lightTheme, darkTheme } from "../renderer/global";
 import ProfileManagementPage from "../routes/ProfileManagementPage";
 import "../styles/app.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { subscribe } from "../renderer/session";
+import { ephConfigs } from "../renderer/config";
+import { EmptyProps } from "../tools/types";
 
 export interface AppState {
-  theme: string;
   title: string;
 }
 
 export default class App extends Component<EmptyProps, AppState> {
   state: AppState = {
-    theme: "dark",
     title: resolveTitle(hist.location.pathname),
   };
   constructor(props: EmptyProps) {
@@ -28,10 +30,11 @@ export default class App extends Component<EmptyProps, AppState> {
         title: resolveTitle(loc.pathname),
       })
     );
+    subscribe("theme", () => this.setState({}));
   }
   render() {
     return (
-      <ThemeProvider theme={this.state.theme === "dark" ? darkTheme : lightTheme}>
+      <ThemeProvider theme={ephConfigs.theme === "dark" ? darkTheme : lightTheme}>
         <CssBaseline />
         <AppBar position="fixed">
           <Toolbar>
@@ -44,13 +47,17 @@ export default class App extends Component<EmptyProps, AppState> {
           </Toolbar>
         </AppBar>
         <Router history={hist}>
-          <RouterSwitch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/accounts" component={AccountsPage} />
-            <Route exact path="/profiles" component={ProfilesPage} />
-            <Route exact path="/settings" component={SettingsPage} />
-            <Route exact path="/profile/:id" component={ProfileManagementPage} />
-          </RouterSwitch>
+          <TransitionGroup>
+            <CSSTransition classNames="fade" key={hist.location.pathname} timeout={250}>
+              <RouterSwitch location={hist.location}>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/accounts" component={AccountsPage} />
+                <Route exact path="/profiles" component={ProfilesPage} />
+                <Route exact path="/settings" component={SettingsPage} />
+                <Route exact path="/profile/:id" component={ProfileManagementPage} />
+              </RouterSwitch>
+            </CSSTransition>
+          </TransitionGroup>
         </Router>
       </ThemeProvider>
     );

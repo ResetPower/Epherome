@@ -1,9 +1,8 @@
-import React, { FunctionComponentElement, useState } from "react";
+import React, { Component } from "react";
 import {
   Button,
   Container,
   Icon,
-  makeStyles,
   List,
   ListItem,
   ListItemText,
@@ -12,79 +11,92 @@ import {
   Radio,
   Tooltip,
 } from "@material-ui/core";
-import { useBooleanState, useConfigState } from "../renderer/hooks";
 import { CreateAccountDialog, RemoveAccountDialog } from "../components/Dialogs";
 import { MinecraftAccount } from "../renderer/accounts";
 import { t } from "../renderer/global";
 import { Alert } from "@material-ui/lab";
 import Paragraph from "../components/Paragraph";
+import { ephConfigs, setConfig } from "../renderer/config";
+import { EmptyProps } from "../tools/types";
 
-const useStyle = makeStyles({
-  text: {
-    userSelect: "none",
-  },
-});
+export interface AccountsPageState {
+  clicked: number;
+  createDialog: boolean;
+  removeDialog: boolean;
+}
 
-export default function AccountsPage(): FunctionComponentElement<EmptyProps> {
-  const classes = useStyle();
-  const [selected, setSelected] = useConfigState("selectedAccount", 0);
-  const [clicked, setClicked] = useState(0);
-  const [accounts, _setAccounts, updateAccounts] = useConfigState<MinecraftAccount[]>(
-    "accounts",
-    []
-  );
-  const [createDialog, openCreateDialog, closeCreateDialog] = useBooleanState(false);
-  const [removeDialog, openRemoveDialog, closeRemoveDialog] = useBooleanState(false);
-
-  return (
-    <Container className="eph-page">
-      <Paragraph padding="both">
-        <Button variant="contained" color="secondary" onClick={openCreateDialog}>
-          <Icon>create</Icon> {t("create")}
-        </Button>
-      </Paragraph>
-      {accounts.length === 0 && (
-        <Paragraph padding="top">
-          <Alert severity="info">{t("noAccountsYet")}</Alert>
+export default class AccountsPage extends Component<EmptyProps, AccountsPageState> {
+  state: AccountsPageState = {
+    clicked: 0,
+    createDialog: false,
+    removeDialog: false,
+  };
+  constructor(props: EmptyProps) {
+    super(props);
+  }
+  render() {
+    const accounts = ephConfigs.accounts;
+    return (
+      <Container className="eph-page">
+        <Paragraph padding="both">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => this.setState({ createDialog: true })}
+          >
+            <Icon>create</Icon> {t("create")}
+          </Button>
         </Paragraph>
-      )}
-      <List>
-        {accounts.map((i: MinecraftAccount) => (
-          <ListItem key={i.id}>
-            <Radio
-              checked={selected === i.id}
-              onChange={(_ev: React.ChangeEvent, checked: boolean) =>
-                checked ? setSelected(i.id) : null
-              }
-            />
-            <ListItemText className={classes.text} primary={i.name} secondary={t(i.mode)} />
-            <ListItemSecondaryAction>
-              <Tooltip title={t("remove")}>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    setClicked(i.id);
-                    openRemoveDialog();
-                  }}
-                >
-                  <Icon>delete</Icon>
-                </IconButton>
-              </Tooltip>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
-      <CreateAccountDialog
-        open={createDialog}
-        onClose={closeCreateDialog}
-        updateAccounts={updateAccounts}
-      />
-      <RemoveAccountDialog
-        open={removeDialog}
-        onClose={closeRemoveDialog}
-        updateAccounts={updateAccounts}
-        id={clicked}
-      />
-    </Container>
-  );
+        {accounts.length === 0 && (
+          <Paragraph padding="top">
+            <Alert severity="info">{t("noAccountsYet")}</Alert>
+          </Paragraph>
+        )}
+        <List>
+          {accounts.map((i: MinecraftAccount) => (
+            <ListItem key={i.id}>
+              <Radio
+                checked={ephConfigs.selectedAccount === i.id}
+                onChange={(_ev: React.ChangeEvent, checked: boolean) =>
+                  checked
+                    ? (() => {
+                        setConfig(() => (ephConfigs.selectedAccount = i.id));
+                        this.setState({});
+                      })()
+                    : null
+                }
+              />
+              <ListItemText primary={i.name} secondary={t(i.mode)} />
+              <ListItemSecondaryAction>
+                <Tooltip title={t("remove")}>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      this.setState({
+                        clicked: i.id,
+                        removeDialog: true,
+                      });
+                    }}
+                  >
+                    <Icon>delete</Icon>
+                  </IconButton>
+                </Tooltip>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <CreateAccountDialog
+          open={this.state.createDialog}
+          onClose={() => this.setState({ createDialog: false })}
+          updateAccounts={() => this.setState({})}
+        />
+        <RemoveAccountDialog
+          open={this.state.removeDialog}
+          onClose={() => this.setState({ removeDialog: false })}
+          updateAccounts={() => this.setState({})}
+          id={this.state.clicked}
+        />
+      </Container>
+    );
+  }
 }

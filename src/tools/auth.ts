@@ -1,5 +1,5 @@
 // official authentication server url
-const MOJANG_AUTHSERVER_URL = "https://authserver.mojang.com";
+export const MOJANG_AUTHSERVER_URL = "https://authserver.mojang.com";
 
 interface AuthenticateResult {
   err: boolean;

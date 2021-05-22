@@ -2,17 +2,17 @@ import { FormControl, Grid, Icon, InputLabel, MenuItem, Select } from "@material
 import { Container, Button, Typography, Card, CardActions, CardContent } from "@material-ui/core";
 import React, { Component } from "react";
 import { hist } from "../renderer/global";
-import { epheromeConfigs, readConfig, writeConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "../renderer/config";
 import { getById } from "../tools/arrays";
 import { MinecraftAccount } from "../renderer/accounts";
-import { useSubscriptionAsync } from "../renderer/hooks";
+import { broadcast, subscribeAsync } from "../renderer/session";
 import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
 import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
-import { setSession } from "../renderer/session";
 import "../styles/home.css";
+import { EmptyProps } from "../tools/types";
 
 export interface HomePageState {
   minecraftDialog: boolean;
@@ -30,7 +30,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   state: HomePageState = {
     minecraftDialog: false,
     errDialog: false,
-    profiles: epheromeConfigs.profiles,
+    profiles: ephConfigs.profiles,
     details: [],
     helperText: "...",
     value: "",
@@ -40,21 +40,21 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   };
   constructor(props: EmptyProps) {
     super(props);
-    const tId = epheromeConfigs.selectedProfile;
+    const tId = ephConfigs.selectedProfile;
     const profile = getById(this.state.profiles, tId);
     this.state.value = profile === null ? "" : tId;
   }
   render() {
-    const accountId = readConfig("selectedAccount", 0);
-    const account = getById<MinecraftAccount>(readConfig("accounts", []), accountId);
+    const accountId = ephConfigs.selectedAccount;
+    const account = getById<MinecraftAccount>(ephConfigs.accounts, accountId);
     const username = account?.name;
     // handle minecraft profile select
     const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {
-      writeConfig("selectedProfile", ev.target.value as number);
+      setConfig(() => (ephConfigs.selectedProfile = ev.target.value as number));
       this.setState({ value: ev.target.value as number });
     };
     const handlePassword = (password: string) => {
-      setSession("password", password);
+      broadcast("password", password);
     };
     const handleLaunch = () => {
       if (typeof this.state.value === "number") {
@@ -68,7 +68,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             profile,
             setDetails: (det) => this.setState({ details: det }),
             setHelper: (hel) => this.setState({ helperText: hel }),
-            java: readConfig("javaPath", "java"),
+            java: ephConfigs.javaPath,
             onDone: () => this.setState({ minecraftDialog: false }),
             requestPassword: async (again: boolean) => {
               if (again !== this.state.againRequestPassword) {
@@ -79,7 +79,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
               this.setState({
                 reqPw: true,
               });
-              return await useSubscriptionAsync<string>("password");
+              return await subscribeAsync("password");
             },
           }).catch((err) => {
             this.setState({

@@ -3,14 +3,12 @@ import { blue, grey, indigo, pink } from "@material-ui/core/colors";
 import { createHashHistory } from "history";
 import log from "electron-log";
 import { I18n } from "../tools/i18n";
-import { constraints, readConfig, writeConfig } from "./config";
-import enUs from "../assets/lang/en-us.json";
-import zhCn from "../assets/lang/zh-cn.json";
+import { constraints, ephConfigs, setConfig } from "./config";
+import enUs from "../lang/en-us";
+import zhCn from "../lang/zh-cn";
 import { ipcRenderer } from "electron";
 
-const systemLanguage = navigator.language;
-const defaultLanguage = systemLanguage.startsWith("zh") ? "zh-cn" : "en-us";
-const lang = readConfig("language", defaultLanguage);
+const lang = ephConfigs.language;
 
 // global i18n toolkit class
 export const i18n = new I18n({
@@ -21,9 +19,9 @@ export const i18n = new I18n({
   },
 });
 
-const java = readConfig("javaPath", undefined);
+const java = ephConfigs.javaPath;
 if (java === undefined) {
-  writeConfig("javaPath", constraints.javaHome, true);
+  setConfig(() => (ephConfigs.javaPath = constraints.javaHome));
 }
 
 // global i18n translator shortcut

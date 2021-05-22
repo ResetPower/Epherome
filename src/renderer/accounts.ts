@@ -1,6 +1,6 @@
 import { getNextId, WithId } from "../tools/arrays";
 import { authenticate, genOfflineToken, genUUID } from "../tools/auth";
-import { readConfig, writeConfig } from "./config";
+import { ephConfigs, setConfig } from "./config";
 
 export interface MinecraftAccount extends WithId {
   email: string;
@@ -16,9 +16,9 @@ export async function createAccount(
   password: string,
   authserver: string
 ): Promise<boolean> {
-  const array = readConfig("accounts", []);
+  const array = ephConfigs.accounts;
   const appendAccount = (account: MinecraftAccount) => {
-    writeConfig<MinecraftAccount[]>("accounts", [...array, account], true);
+    setConfig(() => ephConfigs.accounts.push(account));
   };
   if (mode === "mojang") {
     if (username === "" || password === "") return false;
@@ -69,24 +69,19 @@ export async function createAccount(
 }
 
 export function removeAccount(id: number): void {
-  writeConfig(
-    "accounts",
-    readConfig<MinecraftAccount[]>("accounts", []).filter((value) => value.id !== id),
-    true
-  );
+  setConfig(() => (ephConfigs.accounts = ephConfigs.accounts.filter((value) => value.id !== id)));
 }
 
 export function updateAccountToken(id: number, newToken: string): void {
-  writeConfig(
-    "accounts",
-    readConfig<MinecraftAccount[]>("accounts", []).map((value) => {
-      if (value.id === id) {
-        value.token = newToken;
-        return value;
-      } else {
-        return value;
-      }
-    }),
-    true
+  setConfig(
+    () =>
+      (ephConfigs.accounts = ephConfigs.accounts.map((value) => {
+        if (value.id === id) {
+          value.token = newToken;
+          return value;
+        } else {
+          return value;
+        }
+      }))
   );
 }

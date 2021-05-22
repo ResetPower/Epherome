@@ -8,18 +8,32 @@ import {
   DialogActions,
   Button,
   MenuItem,
-  makeStyles,
   Icon,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { FunctionComponentElement, useState } from "react";
 import { t } from "../renderer/global";
 import { createAccount, removeAccount } from "../renderer/accounts";
-import { readConfig } from "../renderer/config";
 import { createProfile, editProfile, MinecraftProfile, removeProfile } from "../renderer/profiles";
 import { getById } from "../tools/arrays";
-import { useBindingState, useBooleanState } from "../renderer/hooks";
 import { ipcRenderer } from "electron";
+import { ephConfigs } from "../renderer/config";
+import "../styles/dialogs.css";
+
+export function useBindingState<T>(
+  value: T
+): [T, (ev: React.ChangeEvent<{ value: unknown }>) => void, (value: T) => void] {
+  const state = useState(value);
+  return [
+    state[0], // state
+    (ev: React.ChangeEvent<{ value: unknown }>) => {
+      state[1](ev.target.value as T);
+    }, // changeState
+    (value: T) => {
+      state[1](value);
+    }, // setState
+  ];
+}
 
 export interface CustomDialogProps {
   open: boolean;
@@ -58,42 +72,32 @@ export interface ErrorDialogProps extends CustomDialogProps {
   stacktrace: string;
 }
 
-const useStyle = makeStyles({
-  dialog: {
-    minWidth: 500,
-  },
-  space: {
-    flexGrow: 1,
-  },
-});
-
 export function CreateAccountDialog(
   props: CreateAccountDialogProps
 ): FunctionComponentElement<CreateAccountDialogProps> {
-  const classes = useStyle();
-  const [isLoading, startLoading, endLoading] = useBooleanState(false);
-  const [errorAlert, openErrorAlert, closeErrorAlert] = useBooleanState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
   const [value, setValue] = useState("mojang");
   const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {
     setValue(ev.target.value as string);
   };
   const handleClose = () => {
-    closeErrorAlert();
+    setErrorAlert(false);
     props.onClose();
   };
   const [username, changeUsername] = useBindingState("");
   const [password, changePassword] = useBindingState("");
   const [authserver, changeAuthserver] = useBindingState("");
   const handleCreate = () => {
-    startLoading();
-    closeErrorAlert();
+    setLoading(true);
+    setErrorAlert(false);
     createAccount(value, username, password, authserver).then((value: boolean) => {
-      endLoading();
+      setLoading(false);
       if (value) {
         handleClose();
         props.updateAccounts();
       } else {
-        openErrorAlert();
+        setErrorAlert(true);
       }
     });
   };
@@ -101,7 +105,7 @@ export function CreateAccountDialog(
   return (
     <Dialog onClose={handleClose} open={props.open}>
       <DialogTitle>{t("newAccount")}</DialogTitle>
-      <DialogContent className={classes.dialog}>
+      <DialogContent className="dialog-content">
         {errorAlert && (
           <div>
             <Alert severity="warning">{t("errCreatingAccount")}</Alert>
@@ -145,7 +149,6 @@ export function CreateAccountDialog(
 export function RemoveAccountDialog(
   props: RemoveAccountDialogProps
 ): FunctionComponentElement<RemoveAccountDialogProps> {
-  const classes = useStyle();
   const handleRemove = () => {
     removeAccount(props.id);
     props.onClose();
@@ -154,7 +157,7 @@ export function RemoveAccountDialog(
   return (
     <Dialog onClose={props.onClose} open={props.open}>
       <DialogTitle>{t("removeAccount")}</DialogTitle>
-      <DialogContent className={classes.dialog}>{t("confirmRemoving")}</DialogContent>
+      <DialogContent className="dialog-content">{t("confirmRemoving")}</DialogContent>
       <DialogActions>
         <Button color="primary" onClick={props.onClose}>
           {t("cancel")}
@@ -170,7 +173,6 @@ export function RemoveAccountDialog(
 export function CreateProfileDialog(
   props: CreateProfileDialogProps
 ): FunctionComponentElement<CreateProfileDialogProps> {
-  const classes = useStyle();
   const [name, changeName] = useBindingState("");
   const [dir, changeDir, setDir] = useBindingState("");
   const [ver, changeVer] = useBindingState("");
@@ -192,7 +194,7 @@ export function CreateProfileDialog(
   return (
     <Dialog onClose={props.onClose} open={props.open}>
       <DialogTitle>{t("newProfile")}</DialogTitle>
-      <DialogContent className={classes.dialog}>
+      <DialogContent className="dialog-content">
         <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
         <TextField
           label={t("directory")}
@@ -207,7 +209,7 @@ export function CreateProfileDialog(
         <Button color="secondary" onClick={handleOpenDirectory}>
           <Icon>folder</Icon> {t("openDirectory")}
         </Button>
-        <div className={classes.space}></div>
+        <div className="eph-space"></div>
         <Button color="primary" onClick={props.onClose}>
           {t("cancel")}
         </Button>
@@ -222,13 +224,12 @@ export function CreateProfileDialog(
 export function EditProfileDialog(
   props: EditProfileDialogProps
 ): FunctionComponentElement<EditProfileDialogProps> {
-  const old = getById<MinecraftProfile>(readConfig("profiles", []), props.id) ?? {
+  const old = getById<MinecraftProfile>(ephConfigs.profiles, props.id) ?? {
     id: -1,
     name: "",
     dir: "",
     ver: "",
   };
-  const classes = useStyle();
   const [name, changeName] = useBindingState(old.name);
   const [dir, changeDir] = useBindingState(old.dir);
   const [ver, changeVer] = useBindingState(old.ver);
@@ -243,7 +244,7 @@ export function EditProfileDialog(
   return (
     <Dialog onClose={props.onClose} open={props.open}>
       <DialogTitle>{t("editProfile")}</DialogTitle>
-      <DialogContent className={classes.dialog}>
+      <DialogContent className="dialog-content">
         <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
         <TextField
           label={t("directory")}
@@ -269,7 +270,6 @@ export function EditProfileDialog(
 export function RemoveProfileDialog(
   props: RemoveProfileDialogProps
 ): FunctionComponentElement<RemoveProfileDialogProps> {
-  const classes = useStyle();
   const handleRemove = () => {
     removeProfile(props.id);
     props.onClose();
@@ -278,7 +278,7 @@ export function RemoveProfileDialog(
   return (
     <Dialog onClose={props.onClose} open={props.open}>
       <DialogTitle>{t("removeProfile")}</DialogTitle>
-      <DialogContent className={classes.dialog}>{t("confirmRemoving")}</DialogContent>
+      <DialogContent className="dialog-content">{t("confirmRemoving")}</DialogContent>
       <DialogActions>
         <Button color="primary" onClick={props.onClose}>
           {t("cancel")}
@@ -294,7 +294,6 @@ export function RemoveProfileDialog(
 export function RequestPasswordDialog(
   props: RequestPasswordDialogProps
 ): FunctionComponentElement<RequestPasswordDialogProps> {
-  const classes = useStyle();
   const [password, changePassword] = useBindingState("");
   const handler = () => {
     props.onClose();
@@ -303,7 +302,7 @@ export function RequestPasswordDialog(
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{t("pleaseInputPassword")}</DialogTitle>
-      <DialogContent className={classes.dialog}>
+      <DialogContent className="dialog-content">
         <TextField
           value={password}
           onChange={changePassword}
@@ -325,11 +324,10 @@ export function RequestPasswordDialog(
 }
 
 export function ErrorDialog(props: ErrorDialogProps): FunctionComponentElement<ErrorDialogProps> {
-  const classes = useStyle();
   return (
     <Dialog open={props.open} onClose={props.onClose}>
       <DialogTitle>{t("errorOccurred")}</DialogTitle>
-      <DialogContent className={classes.dialog}>
+      <DialogContent className="dialog-content">
         <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
       </DialogContent>
       <DialogActions>

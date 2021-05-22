@@ -13,7 +13,6 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      webSecurity: prod,
     },
   });
   win.setTouchBar(touchBar(win));

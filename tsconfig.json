@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "CommonJS",
-    "jsx": "react",
-    "sourceMap": true,
-    "rootDir": "./src",
-    "outDir": "./out",
-    "strict": true,
-    "alwaysStrict": true,
     "allowJs": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./out",
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2015"
   },
   "include": ["./src"]
 }

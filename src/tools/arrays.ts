@@ -13,6 +13,7 @@ export function getNextId<T extends WithId>(arr: T[]): number {
   return arr.length === 0 ? 0 : arr[arr.length - 1].id + 1;
 }
 
+// object type that contains an unique id
 export interface WithId {
   id: number;
 }

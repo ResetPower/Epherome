@@ -5,9 +5,10 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "webpack --config webpack/dev-main.ts && electron . --remote-debugging-port=9222",
-    "dev": "webpack serve --config webpack/dev-renderer.ts",
+    "dev": "webpack serve --config webpack/dev-renderer.ts --progress",
     "test": "jest",
-    "pack": "webpack --config webpack/prod.ts && electron-builder"
+    "prod": "webpack --config webpack/prod.ts",
+    "pack": "npm run prod && electron-builder"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.21",
+    "@types/mini-css-extract-plugin": "^1.4.3",
     "@types/node": "^14.14.35",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
@@ -50,16 +52,18 @@
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "css-loader": "^5.2.4",
-    "electron": "^12.0.2",
+    "electron": "^12.0.9",
     "electron-builder": "^22.10.5",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "html-webpack-root-plugin": "^0.10.0",
     "jest": "^24.9.0",
     "jest-electron": "^0.1.11",
+    "mini-css-extract-plugin": "^1.6.0",
     "prettier": "^2.2.1",
-    "style-loader": "^2.0.0",
     "ts-jest": "^26.5.4",
     "ts-loader": "^9.1.1",
     "ts-node": "^9.1.1",

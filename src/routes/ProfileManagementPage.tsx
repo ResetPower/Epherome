@@ -1,26 +1,38 @@
 import { Container, Typography } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import React, { FunctionComponentElement } from "react";
-import { useParams } from "react-router";
+import { Component } from "react";
 import { t } from "../renderer/global";
 import { getProfile } from "../renderer/profiles";
 
 export interface ProfileManagementPageProps {
-  id: string;
+  match: {
+    isExact: boolean;
+    params: { [key: string]: string };
+    path: string;
+    url: string;
+  };
 }
+export type ProfileManagementPageState = Record<string, never>;
 
-export default function ProfileManagementPage(): FunctionComponentElement<EmptyProps> {
-  const id = useParams<ProfileManagementPageProps>().id;
-  const profile = getProfile(Number(id));
-  return (
-    <Container className="eph-page">
-      {profile === null ? (
-        <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
-      ) : (
-        <div>
-          <Typography>{t("notSupportedYet")}</Typography>
-        </div>
-      )}
-    </Container>
-  );
+export default class ProfileManagementPage extends Component<
+  ProfileManagementPageProps,
+  ProfileManagementPageState
+> {
+  constructor(props: ProfileManagementPageProps) {
+    super(props);
+  }
+  render() {
+    const profile = getProfile(Number(this.props.match.params.id));
+    return (
+      <Container className="eph-page">
+        {profile === null ? (
+          <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
+        ) : (
+          <div>
+            <Typography>{t("notSupportedYet")}</Typography>
+          </div>
+        )}
+      </Container>
+    );
+  }
 }
