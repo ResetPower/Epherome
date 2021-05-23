@@ -1,6 +1,6 @@
 {
   "name": "epherome",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
   Button,
   Container,
@@ -34,7 +34,7 @@ export default class AccountsPage extends Component<EmptyProps, AccountsPageStat
   constructor(props: EmptyProps) {
     super(props);
   }
-  render() {
+  render(): JSX.Element {
     const accounts = ephConfigs.accounts;
     return (
       <Container className="eph-page">

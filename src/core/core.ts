@@ -5,16 +5,16 @@ import fs from "fs";
 import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
-import { removeSuffix } from "../tools/strings";
-import { analyzeLibrary, analyzeModLibrary } from "./libraries";
 import { authenticate, refresh, validate } from "../tools/auth";
+import { removeSuffix } from "../tools/strings";
+import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
 
-const OPERATING_SYSTEM = os.platform();
-const OPERATING_VERSION = os.release();
+// must use any at this condition
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Parsed = { [key: string]: any };
 
-export function sleep(_ms: number): Promise<void> {
-  return new Promise((resolve) => resolve());
-}
+export const OPERATING_SYSTEM = os.platform();
+export const OPERATING_VERSION = os.release();
 
 // logger for minecraft launch core
 export const loggerCore = log.scope("core");
@@ -32,6 +32,7 @@ export interface MinecraftLaunchOptions {
   setDetails: (value: MinecraftLaunchDetail[]) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: () => void;
+  onErr: (error: Error) => void;
 }
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
@@ -99,47 +100,54 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   doneAuthenticating();
 
   const doneAnalyzeJson = useMinecraftLaunchDetail("Analyze JSON");
-  await sleep(1000);
   const dir = removeSuffix(profile.dir, "/");
   const data = fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`);
-  const parsed = JSON.parse(data.toString());
+  const parsed: Parsed = JSON.parse(data.toString());
   const buff = [];
-  const clientJar = `${dir}/versions/${profile.ver}/${profile.ver}.jar`;
-  const nativeDir = `${dir}/versions/${profile.ver}/${profile.ver}-natives`;
+  let parsedVanilla: Parsed = {};
+  let parsedMod: Parsed = {};
   let withModLoader = false;
-  let parsedInheritsFrom: any;
-  function analyzeVanilla(parsed: any) {
-    if (parsed.hasOwnProperty("arguments")) {
-      // 1.13, 1.13+
-      if (OPERATING_SYSTEM === "darwin") {
-        // macos
-        buff.push("-XstartOnFirstThread", "-Xdock:name=Minecraft");
-      } else if (OPERATING_SYSTEM === "win32") {
-        // windows
-        buff.push(
-          "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump"
-        );
-        if (OPERATING_VERSION.startsWith("10")) {
-          // windows 10
-          buff.push("-Dos.name=Windows 10", "-Dos.version=10.0");
-        }
-      }
-      buff.push("-Xss1M");
-    } else {
-      // 1.12, 1.12-
-      buff.push(`-Dminecraft.client.jar=${clientJar}`);
-    }
-  }
-  if (parsed.hasOwnProperty("inheritsFrom")) {
+
+  if ("inheritsFrom" in parsed) {
     // with mod loader
     withModLoader = true;
     const inheritsFrom = parsed.inheritsFrom;
     const data = fs.readFileSync(`${dir}/versions/${inheritsFrom}/${inheritsFrom}.json`);
-    parsedInheritsFrom = JSON.parse(data.toString());
-    analyzeVanilla(parsedInheritsFrom);
+    parsedVanilla = JSON.parse(data.toString());
+    parsedMod = parsed;
   } else {
-    // vanilla minecraft
-    analyzeVanilla(parsed);
+    // without mod loader
+    parsedVanilla = parsed;
+  }
+
+  const clientJar =
+    "jar" in parsedMod
+      ? `${dir}/versions/${parsedMod.jar}/${parsedMod.jar}.jar`
+      : `${dir}/versions/${profile.ver}/${profile.ver}.jar`;
+  const nativeDir = `${dir}/versions/${profile.ver}/${profile.ver}-natives`;
+
+  if ("arguments" in parsedVanilla) {
+    // 1.13, 1.13+
+    if (OPERATING_SYSTEM === "darwin") {
+      // macos
+      buff.push("-XstartOnFirstThread", "-Xdock:name=Minecraft");
+    } else if (OPERATING_SYSTEM === "win32") {
+      // windows
+      buff.push(
+        "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump"
+      );
+      if (OPERATING_VERSION.startsWith("10")) {
+        // windows 10
+        buff.push("-Dos.name=Windows 10", "-Dos.version=10.0");
+      }
+    }
+    buff.push("-Xss1M");
+  } else {
+    // 1.12, 1.12-
+    buff.push(`-Dminecraft.client.jar=${clientJar}`);
+    if (OPERATING_SYSTEM === "darwin") {
+      buff.push("-Xdock:name=Minecraft");
+    }
   }
   try {
     fs.accessSync(nativeDir);
@@ -151,27 +159,25 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     `-Dminecraft.launcher.brand=Epherome`,
     `-Dminecraft.launcher.version=${process.env.npm_package_version}`
   );
-  let obj: any;
+  let obj: AnalyzedLibraries = { classpath: [], missing: [], nativeLibs: [] };
   if (withModLoader) {
-    const pureLibrary = analyzeLibrary(dir, parsedInheritsFrom.libraries);
-    const modLibrary = analyzeModLibrary(dir, parsed.libraries);
+    const pureLibrary = analyzeLibrary(dir, parsedVanilla.libraries);
+    const modLibrary = analyzeLibrary(dir, parsedMod.libraries);
     obj = {
-      cp: modLibrary.cp.concat(pureLibrary.cp),
+      classpath: modLibrary.classpath.concat(pureLibrary.classpath),
       missing: modLibrary.missing.concat(pureLibrary.missing),
       nativeLibs: modLibrary.nativeLibs.concat(pureLibrary.nativeLibs),
     };
   } else {
-    obj = analyzeLibrary(dir, parsed.libraries);
+    obj = analyzeLibrary(dir, parsedVanilla.libraries);
   }
   doneAnalyzeJson();
 
   const doneDownload = useMinecraftLaunchDetail("Download missing assets and libraries");
-  await sleep(1000);
   doneDownload();
 
   const doneUnzip = useMinecraftLaunchDetail("Unzipping");
-  await sleep(1000);
-  const nativeLibs = obj["nativeLibs"];
+  const nativeLibs: Parsed = obj.nativeLibs;
   for (const i in nativeLibs) {
     const file = nativeLibs[i];
     const zip = new StreamZip({
@@ -190,10 +196,24 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   doneUnzip();
 
   useMinecraftLaunchDetail("Running");
-  const cp = obj["cp"];
+  const cp = obj.classpath;
   cp.push(clientJar);
   buff.push("-cp", OPERATING_SYSTEM === "win32" ? cp.join(";") : cp.join(":"));
   buff.push(parsed["mainClass"]);
+  if (withModLoader) {
+    if ("arguments" in parsedMod) {
+      buff.push(parsedMod.arguments.game);
+    } else if ("minecraftArguments" in parsedMod) {
+      const arr = parsedMod.minecraftArguments.split(" ");
+      for (const i in arr) {
+        const arg = arr[i];
+        if (arg.startsWith("--")) {
+          const nextArg = arr[parseInt(i) + 1];
+          nextArg.indexOf("$") === -1 && buff.push(arg, nextArg);
+        }
+      }
+    }
+  }
   buff.push(
     "--username",
     account.name,
@@ -204,7 +224,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     "--assetsDir",
     `${dir}/assets`,
     "--assetIndex",
-    withModLoader ? parsedInheritsFrom["assetIndex"]["id"] : parsed["assetIndex"]["id"],
+    parsedVanilla.assetIndex.id,
     "--uuid",
     account.uuid,
     "--accessToken",
@@ -214,24 +234,22 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     "--versionType",
     parsed["type"]
   );
-  if (withModLoader) {
-    buff.push(...parsed["arguments"]["game"]);
-  }
   let firstTimeToReceiveStdout = true;
+  console.log(buff);
   const minecraftProcess = spawn(java, buff, {
     cwd: dir,
   });
-  minecraftProcess.stdout.on("data", (data) => {
+  minecraftProcess.on("error", (err) => options.onErr(err));
+  minecraftProcess.stdout.on("data", () => {
     if (firstTimeToReceiveStdout) {
       firstTimeToReceiveStdout = false;
       onDone();
     }
-    loggerCore.info("[Minecraft] stdout >>> " + data.toString());
+  });
+  minecraftProcess.stdout.on("data", (data) => {
+    loggerCore.log("minecraft out >> " + data);
   });
   minecraftProcess.stderr.on("data", (data) => {
-    loggerCore.info("[Minecraft] stderr >>> " + data.toString());
-  });
-  minecraftProcess.on("exit", (code: number) => {
-    loggerCore.debug("Minecraft process exit, exit code:" + code);
+    loggerCore.log("minecraft err >> " + data);
   });
 }

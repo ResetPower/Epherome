@@ -3,7 +3,7 @@ import os from "os";
 import log from "electron-log";
 
 // epherome application constraints
-const version = "0.0.2"; // major.minor.patch
+const version = process.env.npm_package_version; // major.minor.patch
 const platform = os.platform(); // operating system name
 const arch = os.arch(); // operating system arch
 const release = os.release(); // operating system release version

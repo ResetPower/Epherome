@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
   Button,
   Container,
@@ -33,7 +33,7 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
     editDialog: false,
     removeDialog: false,
   };
-  render() {
+  render(): JSX.Element {
     const profiles = ephConfigs.profiles;
     return (
       <Container className="eph-page">

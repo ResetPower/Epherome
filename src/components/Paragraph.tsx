@@ -6,7 +6,7 @@ export interface ParagraphProps {
 }
 
 export default class Paragraph extends PureComponent<ParagraphProps> {
-  render() {
+  render(): JSX.Element {
     const padding = this.props.padding ?? "bottom";
     return (
       <div>

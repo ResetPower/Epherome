@@ -24,7 +24,7 @@ export function subscribeAsync(key: string): Promise<string> {
   });
 }
 
-export function broadcast(tunnel: string, arg = "") {
+export function broadcast(tunnel: string, arg = ""): void {
   for (const i of subscriptions) {
     if (i !== undefined) {
       // run subscription callback

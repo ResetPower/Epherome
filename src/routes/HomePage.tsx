@@ -1,6 +1,6 @@
 import { FormControl, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Container, Button, Typography, Card, CardActions, CardContent } from "@material-ui/core";
-import React, { Component } from "react";
+import { Component } from "react";
 import { hist } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getById } from "../tools/arrays";
@@ -44,7 +44,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     const profile = getById(this.state.profiles, tId);
     this.state.value = profile === null ? "" : tId;
   }
-  render() {
+  render(): JSX.Element {
     const accountId = ephConfigs.selectedAccount;
     const account = getById<MinecraftAccount>(ephConfigs.accounts, accountId);
     const username = account?.name;
@@ -63,6 +63,12 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
           this.setState({
             minecraftDialog: true,
           });
+          const onErr = (err: Error) =>
+            this.setState({
+              minecraftDialog: false,
+              stacktrace: err.stack ?? "",
+              errDialog: true,
+            });
           launchMinecraft({
             account,
             profile,
@@ -81,13 +87,8 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
               });
               return await subscribeAsync("password");
             },
-          }).catch((err) => {
-            this.setState({
-              minecraftDialog: false,
-              stacktrace: err.stack,
-              errDialog: true,
-            });
-          });
+            onErr,
+          }).catch(onErr);
         }
       }
     };
@@ -108,7 +109,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             <Button onClick={() => hist.push("/profiles")}>
               <Icon>gamepad</Icon> {t("profiles")}
             </Button>
-            <div className="eph-space"></div>
+            <div className="eph-space" />
             <Button variant="outlined" onClick={() => hist.push("/settings")}>
               <Icon>settings</Icon> {t("settings")}
             </Button>

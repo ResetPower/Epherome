@@ -6,7 +6,6 @@ module.exports = {
     "prettier/prettier": 1,
     "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars-experimental": 1,
-    "@typescript-eslint/explicit-module-boundary-types": 0,
     eqeqeq: ["error", "always"],
   },
 };

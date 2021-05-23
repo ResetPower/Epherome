@@ -19,7 +19,7 @@ export interface LaunchProgressProps extends CustomDialogProps {
 }
 
 export default class LaunchProgress extends PureComponent<LaunchProgressProps> {
-  render() {
+  render(): JSX.Element {
     return (
       <Dialog open={this.props.open} onClose={this.props.onClose}>
         <DialogTitle>{t("launching")}</DialogTitle>

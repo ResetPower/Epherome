@@ -54,4 +54,5 @@ export default {
   warning: "Warning",
   alphaWarning: "The program is in the alpha stage, please use it with caution.",
   hitokoto: "Light travels faster than sound.",
+  download: "Download",
 };

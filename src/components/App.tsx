@@ -32,7 +32,7 @@ export default class App extends Component<EmptyProps, AppState> {
     );
     subscribe("theme", () => this.setState({}));
   }
-  render() {
+  render(): JSX.Element {
     return (
       <ThemeProvider theme={ephConfigs.theme === "dark" ? darkTheme : lightTheme}>
         <CssBaseline />

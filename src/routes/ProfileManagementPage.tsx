@@ -21,7 +21,7 @@ export default class ProfileManagementPage extends Component<
   constructor(props: ProfileManagementPageProps) {
     super(props);
   }
-  render() {
+  render(): JSX.Element {
     const profile = getProfile(Number(this.props.match.params.id));
     return (
       <Container className="eph-page">

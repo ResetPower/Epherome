@@ -8,10 +8,10 @@ export interface LinkProps {
 }
 
 export default class Link extends PureComponent<LinkProps> {
-  handleClick = () => {
+  handleClick = (): void => {
     shell.openExternal(this.props.href).then();
   };
-  render() {
+  render(): JSX.Element {
     return (
       <span className="eph-link" onClick={this.handleClick}>
         {this.props.children}

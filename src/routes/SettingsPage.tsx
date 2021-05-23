@@ -31,25 +31,26 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     javaPath: ephConfigs.javaPath,
   };
   cnst = constraints;
-  handleChange = (_ev: ChangeEvent<EmptyProps>, value: number) => this.setState({ value: value });
-  changeLanguage = (ev: ChangeEvent<{ value: unknown }>) => {
+  handleChange = (_ev: ChangeEvent<EmptyProps>, value: number): void =>
+    this.setState({ value: value });
+  changeLanguage = (ev: ChangeEvent<{ value: unknown }>): void => {
     const newLanguage = ev.target.value as string;
     i18n.changeLanguage(newLanguage);
     this.setState({});
   };
-  changeTheme = (ev: ChangeEvent<{ value: unknown }>) => {
+  changeTheme = (ev: ChangeEvent<{ value: unknown }>): void => {
     setConfig(() => (ephConfigs.theme = ev.target.value as string));
     broadcast("theme");
     this.setState({});
   };
-  changeJavaPath = (ev: ChangeEvent<{ value: unknown }>) => {
+  changeJavaPath = (ev: ChangeEvent<{ value: unknown }>): void => {
     this.setState({ javaPath: ev.target.value as string });
   };
-  save = () => {
+  save = (): void => {
     setConfig(() => (ephConfigs.javaPath = this.state.javaPath));
     hist.goBack();
   };
-  render() {
+  render(): JSX.Element {
     return (
       <div className={"eph-page eph-root"}>
         <Tabs orientation="vertical" value={this.state.value} onChange={this.handleChange}>

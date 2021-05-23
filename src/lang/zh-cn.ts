@@ -55,4 +55,5 @@ export default {
   warning: "警告",
   alphaWarning: "程序处于内测阶段，请谨慎使用。",
   hitokoto: "海内存知己，天涯若比邻。",
+  download: "下载",
 };

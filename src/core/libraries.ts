@@ -1,141 +1,87 @@
 import fs from "fs";
-import path from "path";
-import { removePrefix } from "../tools/strings";
 import { isCompliant, equalOS } from "./rules";
-import { loggerCore } from "./core";
+import { loggerCore, Parsed } from "./core";
 
-/**
- * returns a object contains (cp, missing, natives)
- * cp: classpath
- * missing: list of 'artifact' or 'natives-${platform}' object (cross-platform or native library or native library, need to download), contains (path, sha1, size, url)
- * nativeLibs: list of string (only native library, need to unzip)
- */
-export function analyzeLibrary(dir: string, library: any): any {
-  loggerCore.info("Analyzing Library in JSON");
-  const buff = [];
-  const missing = [];
-  const nativeLibs = [];
-  for (const i in library) {
-    const l = library[i];
-    if (Object.prototype.hasOwnProperty.call(l, "rules")) {
-      if (!isCompliant(l["rules"])) {
-        continue;
-      }
-    }
-    const d = l["downloads"];
-    if (Object.prototype.hasOwnProperty.call(d, "classifiers")) {
-      // has classifier (maybe it also has artifact): native library
-      const cl = d["classifiers"];
-      if (Object.prototype.hasOwnProperty.call(l, "rules")) {
-        if (!isCompliant(l["rules"])) {
-          continue;
-        }
-      }
-      if (Object.prototype.hasOwnProperty.call(l, "natives")) {
-        const natives = l["natives"];
-        for (const i in natives) {
-          const n = natives[i];
-          if (equalOS(removePrefix(n, "natives-"))) {
-            const file = `${dir}/libraries/${cl[n]["path"]}`;
-            try {
-              fs.accessSync(file);
-            } catch (e) {
-              loggerCore.warn(`Native library file ${file} not exists`);
-              missing.push(cl[n]);
-            }
-            nativeLibs.push(file);
-          }
-        }
-      }
-    } else if (Object.prototype.hasOwnProperty.call(d, "artifact")) {
-      // has artifact only: java cross-platform library
-      const ar = d["artifact"];
-      const file = `${dir}/libraries/${ar["path"]}`;
-      try {
-        fs.accessSync(file);
-      } catch (e) {
-        loggerCore.warn(`Library file ${file} not exists`);
-        missing.push(ar);
-      }
-      buff.push(file);
-    }
-  }
-  return {
-    cp: buff,
-    missing: missing,
-    nativeLibs: nativeLibs,
-  };
+export interface MissingLibrary {
+  name: string;
+  path: string;
+  url: string;
 }
 
-export function analyzeModLibrary(dir: string, library: any): any {
-  loggerCore.info("Analyzing Mod Library in JSON");
-  const buff = [];
-  const missing = [];
-  const nativeLibs = [];
-  for (const i in library) {
-    const l = library[i];
-    if (Object.prototype.hasOwnProperty.call(l, "rules")) {
-      if (!isCompliant(l["rules"])) {
+export interface AnalyzedLibraries {
+  classpath: string[];
+  missing: MissingLibrary[];
+  nativeLibs: string[];
+}
+
+export function analyzeLibrary(dir: string, libraries: Parsed[]): AnalyzedLibraries {
+  const classpath: string[] = [];
+  const missing: MissingLibrary[] = [];
+  const nativeLibs: string[] = [];
+  for (const lib of libraries) {
+    if ("rules" in lib) {
+      if (!isCompliant(lib.rules)) {
         continue;
       }
     }
-    if (l.hasOwnProperty("downloads")) {
-      // forge
-      const d = l["downloads"];
-      if (Object.prototype.hasOwnProperty.call(d, "classifiers")) {
+    if ("downloads" in lib) {
+      const downloads = lib.downloads;
+      if ("classifiers" in downloads) {
         // has classifier (maybe it also has artifact): native library
-        const cl = d["classifiers"];
-        if (Object.prototype.hasOwnProperty.call(l, "rules")) {
-          if (!isCompliant(l["rules"])) {
-            continue;
-          }
-        }
-        if (Object.prototype.hasOwnProperty.call(l, "natives")) {
-          const natives = l["natives"];
-          for (const i in natives) {
-            const n = natives[i];
-            if (equalOS(removePrefix(n, "natives-"))) {
-              const file = `${dir}/libraries/${cl[n]["path"]}`;
+        const classifiers = downloads.classifiers;
+        if ("natives" in lib) {
+          for (const nativeKey in lib.natives) {
+            const native = lib.natives[nativeKey];
+            if (equalOS(nativeKey)) {
+              const file = `${dir}/libraries/${classifiers[native].path}`;
               try {
                 fs.accessSync(file);
               } catch (e) {
                 loggerCore.warn(`Native library file ${file} not exists`);
-                missing.push(cl[n]);
+                missing.push({
+                  name: classifiers[native].path.split("/").pop(),
+                  path: classifiers[native].path,
+                  url: classifiers[native].url,
+                });
               }
               nativeLibs.push(file);
             }
           }
         }
-      } else if (Object.prototype.hasOwnProperty.call(d, "artifact")) {
+      } else if ("artifact" in downloads) {
         // has artifact only: java cross-platform library
-        const ar = d["artifact"];
+        const ar = downloads.artifact;
         const file = `${dir}/libraries/${ar["path"]}`;
         try {
           fs.accessSync(file);
         } catch (e) {
           loggerCore.warn(`Library file ${file} not exists`);
-          missing.push(ar);
+          missing.push({
+            name: ar.path.split("/").pop(),
+            path: ar.path,
+            url: ar.url,
+          });
         }
-        buff.push(file);
+        classpath.push(file);
       }
     } else {
-      // fabric
-      const name = l.name.split(":");
-      const file = `${dir}/libraries/${name[0].replaceAll(".", path.sep)}/${name[1]}/${name[2]}/${
+      const name = lib.name.split(":");
+      const url = lib.url;
+      const path = `${dir}/libraries/${name[0].replaceAll(".", "/")}/${name[1]}/${name[2]}/${
         name[1]
       }-${name[2]}.jar`;
       try {
-        fs.accessSync(file);
+        fs.accessSync(path);
       } catch (e) {
-        loggerCore.warn(`Library file ${file} not exists`);
-        missing.push(l);
+        loggerCore.warn(`Library file ${path} not exists`);
+        missing.push({ name: `${name[1]}-${name[2]}`, url, path });
       }
-      buff.push(file);
+      classpath.push(path);
     }
   }
   return {
-    cp: buff,
-    missing: missing,
-    nativeLibs: nativeLibs,
+    classpath,
+    missing,
+    nativeLibs,
   };
 }

@@ -185,7 +185,6 @@ export function CreateProfileDialog(
   };
   const handleOpenDirectory = () => {
     ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
-      console.log(arg);
       setDir(arg);
     });
     ipcRenderer.send("openDirectory");
