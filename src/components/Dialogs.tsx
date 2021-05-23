@@ -11,7 +11,7 @@ import {
   Icon,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import React, { FunctionComponentElement, useState } from "react";
+import React, { Component, FunctionComponentElement, useState } from "react";
 import { t } from "../renderer/global";
 import { createAccount, removeAccount } from "../renderer/accounts";
 import { createProfile, editProfile, MinecraftProfile, removeProfile } from "../renderer/profiles";
@@ -20,16 +20,16 @@ import { ipcRenderer } from "electron";
 import { ephConfigs } from "../renderer/config";
 import "../styles/dialogs.css";
 
-export function useBindingState<T>(
-  value: T
-): [T, (ev: React.ChangeEvent<{ value: unknown }>) => void, (value: T) => void] {
+export function useBindingState(
+  value: string
+): [string, (ev: React.ChangeEvent<{ value: unknown }>) => void, (value: string) => void] {
   const state = useState(value);
   return [
     state[0], // state
     (ev: React.ChangeEvent<{ value: unknown }>) => {
-      state[1](ev.target.value as T);
+      state[1](ev.target.value as string);
     }, // changeState
-    (value: T) => {
+    (value) => {
       state[1](value);
     }, // setState
   ];
@@ -220,50 +220,78 @@ export function CreateProfileDialog(
   );
 }
 
-export function EditProfileDialog(
-  props: EditProfileDialogProps
-): FunctionComponentElement<EditProfileDialogProps> {
-  const old = getById<MinecraftProfile>(ephConfigs.profiles, props.id) ?? {
-    id: -1,
+export interface EditProfileDialogState {
+  name: string;
+  dir: string;
+  ver: string;
+}
+
+export class EditProfileDialog extends Component<EditProfileDialogProps, EditProfileDialogState> {
+  state = {
     name: "",
     dir: "",
     ver: "",
   };
-  const [name, changeName] = useBindingState(old.name);
-  const [dir, changeDir] = useBindingState(old.dir);
-  const [ver, changeVer] = useBindingState(old.ver);
-  const handleCreate = () => {
-    const rs = editProfile(props.id, name, dir, ver);
-    if (rs) {
-      props.onClose();
-      props.updateProfiles();
+  componentDidUpdate(
+    prevProps: Readonly<EditProfileDialogProps>,
+    prevState: Readonly<EditProfileDialogState>,
+    snapshot?: any
+  ) {
+    if (this.props.open && !prevProps.open) {
+      const old = getById<MinecraftProfile>(ephConfigs.profiles, this.props.id) ?? {
+        id: -1,
+        name: "",
+        dir: "",
+        ver: "",
+      };
+      this.setState({
+        name: old.name,
+        dir: old.dir,
+        ver: old.ver,
+      });
     }
+  }
+  handleEdit = () => {
+    editProfile(this.props.id, this.state.name, this.state.dir, this.state.ver);
+    this.props.updateProfiles();
+    this.props.onClose();
   };
-
-  return (
-    <Dialog onClose={props.onClose} open={props.open}>
-      <DialogTitle>{t("editProfile")}</DialogTitle>
-      <DialogContent className="dialog-content">
-        <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
-        <TextField
-          label={t("directory")}
-          value={dir}
-          onChange={changeDir}
-          helperText={t("usuallyDotMinecraftEtc")}
-          fullWidth
-        />
-        <TextField label={t("version")} value={ver} onChange={changeVer} fullWidth />
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={props.onClose}>
-          {t("cancel")}
-        </Button>
-        <Button color="default" onClick={handleCreate}>
-          {t("edit")}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  render() {
+    return (
+      <Dialog onClose={this.props.onClose} open={this.props.open}>
+        <DialogTitle>{t("editProfile")}</DialogTitle>
+        <DialogContent className="dialog-content">
+          <TextField
+            label={t("name")}
+            value={this.state.name}
+            onChange={(e) => this.setState({ name: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label={t("directory")}
+            value={this.state.dir}
+            onChange={(e) => this.setState({ dir: e.target.value })}
+            helperText={t("usuallyDotMinecraftEtc")}
+            fullWidth
+          />
+          <TextField
+            label={t("version")}
+            value={this.state.ver}
+            onChange={(e) => this.setState({ ver: e.target.value })}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={this.props.onClose}>
+            {t("cancel")}
+          </Button>
+          <Button color="default" onClick={this.handleEdit}>
+            {t("edit")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
 }
 
 export function RemoveProfileDialog(

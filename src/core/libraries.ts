@@ -40,7 +40,7 @@ export function analyzeLibrary(dir: string, libraries: Parsed[]): AnalyzedLibrar
                 loggerCore.warn(`Native library file ${file} not exists`);
                 missing.push({
                   name: classifiers[native].path.split("/").pop(),
-                  path: classifiers[native].path,
+                  path: `${dir}/libraries/${classifiers[native].path}`,
                   url: classifiers[native].url,
                 });
               }
@@ -58,7 +58,7 @@ export function analyzeLibrary(dir: string, libraries: Parsed[]): AnalyzedLibrar
           loggerCore.warn(`Library file ${file} not exists`);
           missing.push({
             name: ar.path.split("/").pop(),
-            path: ar.path,
+            path: `${dir}/libraries/${ar.path}`,
             url: ar.url,
           });
         }
@@ -74,7 +74,7 @@ export function analyzeLibrary(dir: string, libraries: Parsed[]): AnalyzedLibrar
         fs.accessSync(path);
       } catch (e) {
         loggerCore.warn(`Library file ${path} not exists`);
-        missing.push({ name: `${name[1]}-${name[2]}`, url, path });
+        missing.push({ name: `${name[1]}-${name[2]}`, url: `${dir}/libraries/${url}`, path });
       }
       classpath.push(path);
     }

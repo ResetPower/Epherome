@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { ChangeEvent, Component } from "react";
 import {
   Button,
   Container,
@@ -16,7 +16,7 @@ import { MinecraftProfile } from "../renderer/profiles";
 import { hist, t } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
 import { Alert } from "@material-ui/lab";
-import { ephConfigs } from "../renderer/config";
+import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyProps } from "../tools/types";
 
 export interface ProfilesPageState {
@@ -56,10 +56,10 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
             <ListItem key={i.id}>
               <Radio
                 checked={ephConfigs.selectedProfile === i.id}
-                onChange={(_ev: React.ChangeEvent, checked: boolean) =>
+                onChange={(_ev: ChangeEvent, checked: boolean) =>
                   checked
                     ? (() => {
-                        ephConfigs.selectedProfile = i.id;
+                        setConfig(() => (ephConfigs.selectedProfile = i.id));
                         this.setState({});
                       })()
                     : null

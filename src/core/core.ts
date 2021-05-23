@@ -1,13 +1,15 @@
 import { spawn } from "child_process";
 import StreamZip from "node-stream-zip";
 import os from "os";
-import fs from "fs";
+import request from "request";
+import fs, { writeFileSync } from "fs";
 import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
 import { removeSuffix } from "../tools/strings";
 import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
+import { mkdirByFile } from "../tools/files";
 
 // must use any at this condition
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,9 +106,10 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const data = fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`);
   const parsed: Parsed = JSON.parse(data.toString());
   const buff = [];
-  let parsedVanilla: Parsed = {};
+  let parsedVanilla: Parsed;
   let parsedMod: Parsed = {};
   let withModLoader = false;
+  let withHMCLPatch = false;
 
   if ("inheritsFrom" in parsed) {
     // with mod loader
@@ -115,6 +118,11 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     const data = fs.readFileSync(`${dir}/versions/${inheritsFrom}/${inheritsFrom}.json`);
     parsedVanilla = JSON.parse(data.toString());
     parsedMod = parsed;
+  } else if ("patches" in parsed) {
+    // with hmcl patch
+    // NOTE: HMCL will combine both vanilla and mod loader to the same JSON file, so we need a special way to analyze it.
+    withHMCLPatch = true;
+    parsedVanilla = parsed;
   } else {
     // without mod loader
     parsedVanilla = parsed;
@@ -159,7 +167,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     `-Dminecraft.launcher.brand=Epherome`,
     `-Dminecraft.launcher.version=${process.env.npm_package_version}`
   );
-  let obj: AnalyzedLibraries = { classpath: [], missing: [], nativeLibs: [] };
+  let obj: AnalyzedLibraries;
   if (withModLoader) {
     const pureLibrary = analyzeLibrary(dir, parsedVanilla.libraries);
     const modLibrary = analyzeLibrary(dir, parsedMod.libraries);
@@ -174,7 +182,22 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   doneAnalyzeJson();
 
   const doneDownload = useMinecraftLaunchDetail("Download missing assets and libraries");
+  for (const item of obj.missing) {
+    setHelper("Downloading: " + item.name);
+    try {
+      fs.accessSync(item.path);
+    } catch (e) {
+      mkdirByFile(item.path);
+    }
+    const req = request(item.url, { method: "GET" });
+    const stream = fs.createWriteStream(item.path);
+    req.pipe(stream);
+    const wait = new Promise((resolve) => stream.on("finish", resolve));
+    await wait;
+  }
   doneDownload();
+
+  setHelper("Launching Minecraft");
 
   const doneUnzip = useMinecraftLaunchDetail("Unzipping");
   const nativeLibs: Parsed = obj.nativeLibs;
@@ -200,11 +223,19 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   cp.push(clientJar);
   buff.push("-cp", OPERATING_SYSTEM === "win32" ? cp.join(";") : cp.join(":"));
   buff.push(parsed["mainClass"]);
-  if (withModLoader) {
-    if ("arguments" in parsedMod) {
-      buff.push(parsedMod.arguments.game);
-    } else if ("minecraftArguments" in parsedMod) {
-      const arr = parsedMod.minecraftArguments.split(" ");
+  if (withModLoader || withHMCLPatch) {
+    const p = withModLoader ? parsedMod : parsedVanilla;
+    if ("arguments" in p) {
+      const arr = p.arguments.game;
+      for (const i in arr) {
+        const arg = arr[i];
+        if (arg.startsWith("--")) {
+          const nextArg = arr[parseInt(i) + 1];
+          nextArg.indexOf("$") === -1 && buff.push(arg, nextArg);
+        }
+      }
+    } else if ("minecraftArguments" in p) {
+      const arr = p.minecraftArguments.split(" ");
       for (const i in arr) {
         const arg = arr[i];
         if (arg.startsWith("--")) {
