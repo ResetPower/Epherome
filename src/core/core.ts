@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import StreamZip from "node-stream-zip";
 import os from "os";
 import request from "request";
-import fs, { writeFileSync } from "fs";
+import fs from "fs";
 import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
@@ -10,6 +10,7 @@ import { authenticate, refresh, validate } from "../tools/auth";
 import { removeSuffix } from "../tools/strings";
 import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
 import { mkdirByFile } from "../tools/files";
+import { constraints } from "../renderer/config";
 
 // must use any at this condition
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -165,7 +166,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   buff.push(
     `-Djava.library.path=${nativeDir}`,
     `-Dminecraft.launcher.brand=Epherome`,
-    `-Dminecraft.launcher.version=${process.env.npm_package_version}`
+    `-Dminecraft.launcher.version=${constraints.version}`
   );
   let obj: AnalyzedLibraries;
   if (withModLoader) {

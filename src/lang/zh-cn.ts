@@ -56,4 +56,5 @@ export default {
   alphaWarning: "程序处于内测阶段，请谨慎使用。",
   hitokoto: "海内存知己，天涯若比邻。",
   download: "下载",
+  clickToLogin: "点击「创建」来登录您的微软账户",
 };

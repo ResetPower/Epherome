@@ -4,10 +4,10 @@
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
-    "start": "webpack --config webpack/dev-main.ts && electron . --remote-debugging-port=9222",
-    "dev": "webpack serve --config webpack/dev-renderer.ts --progress",
+    "start": "webpack build --env dev --env process='main' && electron . --remote-debugging-port=9222",
+    "dev": "webpack serve --env dev --env process='renderer' --progress",
     "test": "jest",
-    "prod": "webpack --config webpack/prod.ts",
+    "prod": "webpack build --env prod --env process='all'",
     "pack": "npm run prod && electron-builder"
   },
   "repository": {
@@ -41,6 +41,7 @@
     "testRegex": "(/test/.*\\.(test|spec))\\.ts?$"
   },
   "devDependencies": {
+    "@types/css-minimizer-webpack-plugin": "^1.3.0",
     "@types/jest": "^26.0.21",
     "@types/mini-css-extract-plugin": "^1.4.3",
     "@types/node": "^14.14.35",
@@ -54,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "css-loader": "^5.2.4",
+    "css-minimizer-webpack-plugin": "^3.0.0",
     "electron": "^12.0.9",
     "electron-builder": "^22.10.5",
     "eslint": "^7.21.0",

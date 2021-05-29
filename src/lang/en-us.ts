@@ -55,4 +55,5 @@ export default {
   alphaWarning: "The program is in the alpha stage, please use it with caution.",
   hitokoto: "Light travels faster than sound.",
   download: "Download",
+  clickToLogin: 'Click "Create" to log in to your Microsoft account',
 };

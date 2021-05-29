@@ -45,6 +45,14 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
           >
             <Icon>create</Icon> {t("create")}
           </Button>
+          <span style={{ padding: "5px" }} />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.setState({ createDialog: true })}
+          >
+            <Icon>file_download</Icon> {t("download")}
+          </Button>
         </Paragraph>
         {profiles.length === 0 && (
           <Paragraph padding="top">

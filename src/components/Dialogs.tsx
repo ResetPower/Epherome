@@ -124,7 +124,7 @@ export function CreateAccountDialog(
           <TextField label={t("email")} onChange={changeUsername} fullWidth />
           <TextField label={t("password")} onChange={changePassword} type="password" fullWidth />
         </Box>
-        <Box hidden={value !== "microsoft"} />
+        <Box hidden={value !== "microsoft"}>{t("clickToLogin")}</Box>
         <Box hidden={value !== "authlib"}>
           <TextField label={t("authserver")} onChange={changeAuthserver} fullWidth />
           <TextField label={t("email")} onChange={changeUsername} fullWidth />
