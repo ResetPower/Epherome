@@ -1,30 +1,21 @@
 body {
-    margin: 0;
+  margin: 0;
 }
 ::-webkit-scrollbar {
-    width: 0 !important;
+  width: 0 !important;
 }
 .fade-enter,
 .fade-exit {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transition: 250ms ease opacity;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 250ms ease opacity;
 }
 .fade-enter,
 .fade-exit-active {
-    opacity: 0;
+  opacity: 0;
 }
 .fade-enter-active {
-    opacity: 1;
-    z-index: 1;
-}
-.eph-page {
-    margin-top: 65px;
-}
-.eph-home-page {
-    margin-top: 85px;
-}
-.eph-space {
-    flex-grow: 1;
+  opacity: 1;
+  z-index: 1;
 }

@@ -1,19 +1,20 @@
 import { Component } from "react";
-import { ThemeProvider } from "@material-ui/styles";
-import { AppBar, CssBaseline, Icon, IconButton, Toolbar, Typography } from "@material-ui/core";
-import { Router, Switch as RouterSwitch, Route } from "react-router";
-import HomePage from "../routes/HomePage";
-import AccountsPage from "../routes/AccountsPage";
-import ProfilesPage from "../routes/ProfilesPage";
-import SettingsPage from "../routes/SettingsPage";
+import AppBar from "../components/AppBar";
+import Icon from "../components/Icon";
+import IconButton from "../components/IconButton";
+import HomePage from "../pages/HomePage";
+import AccountsPage from "../pages/AccountsPage";
+import ProfilesPage from "../pages/ProfilesPage";
+import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "../renderer/titles";
-import { hist, lightTheme, darkTheme } from "../renderer/global";
-import ProfileManagementPage from "../routes/ProfileManagementPage";
-import "../styles/app.css";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import ProfileManagementPage from "../pages/ProfileManagementPage";
 import { subscribe } from "../renderer/session";
-import { ephConfigs } from "../renderer/config";
 import { EmptyProps } from "../tools/types";
+import DownloadsPage from "../pages/DownloadsPage";
+import GlobalOverlay from "./GlobalOverlay";
+import Router from "../router/Router";
+import Route from "../router/Route";
+import { hist } from "../renderer/global";
 
 export interface AppState {
   title: string;
@@ -21,45 +22,36 @@ export interface AppState {
 
 export default class App extends Component<EmptyProps, AppState> {
   state: AppState = {
-    title: resolveTitle(hist.location.pathname),
+    title: resolveTitle(hist.pathname()),
   };
   constructor(props: EmptyProps) {
     super(props);
-    hist.listen((loc) =>
+    hist.listen((location) => {
       this.setState({
-        title: resolveTitle(loc.pathname),
-      })
-    );
+        title: resolveTitle(location.pathname),
+      });
+    });
     subscribe("theme", () => this.setState({}));
   }
   render(): JSX.Element {
     return (
-      <ThemeProvider theme={ephConfigs.theme === "dark" ? darkTheme : lightTheme}>
-        <CssBaseline />
-        <AppBar position="fixed">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={hist.goBack}>
-              <Icon>{this.state.title === "Epherome" ? "menu" : "arrow_back"}</Icon>
-            </IconButton>
-            <Typography className="eph-title" variant="h6">
-              {this.state.title}
-            </Typography>
-          </Toolbar>
+      <>
+        <GlobalOverlay />
+        <AppBar>
+          <IconButton onClick={hist.goBack}>
+            <Icon>{this.state.title === "Epherome" ? "menu" : "arrow_back"}</Icon>
+          </IconButton>
+          <p className="flex-grow pl-4 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
-        <Router history={hist}>
-          <TransitionGroup>
-            <CSSTransition classNames="fade" key={hist.location.pathname} timeout={250}>
-              <RouterSwitch location={hist.location}>
-                <Route exact path="/" component={HomePage} />
-                <Route exact path="/accounts" component={AccountsPage} />
-                <Route exact path="/profiles" component={ProfilesPage} />
-                <Route exact path="/settings" component={SettingsPage} />
-                <Route exact path="/profile/:id" component={ProfileManagementPage} />
-              </RouterSwitch>
-            </CSSTransition>
-          </TransitionGroup>
+        <Router>
+          <Route component={HomePage} path="/" />
+          <Route component={AccountsPage} path="/accounts" />
+          <Route component={ProfilesPage} path="/profiles" />
+          <Route component={SettingsPage} path="/settings" />
+          <Route component={DownloadsPage} path="/downloads" />
+          <Route component={ProfileManagementPage} path="/profile" />
         </Router>
-      </ThemeProvider>
+      </>
     );
   }
 }

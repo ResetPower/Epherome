@@ -1,6 +1,12 @@
-import { FormControl, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { Container, Button, Typography, Card, CardActions, CardContent } from "@material-ui/core";
-import { Component } from "react";
+import Grid from "../components/Grid";
+import Card from "../components/Card";
+import Select from "../components/Select";
+import SelectItem from "../components/SelectItem";
+import Typography from "../components/Typography";
+import Container from "../components/Container";
+import Icon from "../components/Icon";
+import Button from "../components/Button";
+import { ChangeEvent, Component } from "react";
 import { hist } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getById } from "../tools/arrays";
@@ -8,10 +14,7 @@ import { MinecraftAccount } from "../renderer/accounts";
 import { broadcast, subscribeAsync } from "../renderer/session";
 import { MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
-import LaunchProgress from "../components/LaunchProgress";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
-import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
-import "../styles/home.css";
 import { EmptyProps } from "../tools/types";
 
 export interface HomePageState {
@@ -49,9 +52,9 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     const account = getById<MinecraftAccount>(ephConfigs.accounts, accountId);
     const username = account?.name;
     // handle minecraft profile select
-    const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {
-      setConfig(() => (ephConfigs.selectedProfile = ev.target.value as number));
-      this.setState({ value: ev.target.value as number });
+    const handleChange = (ev: ChangeEvent<HTMLSelectElement>) => {
+      setConfig(() => (ephConfigs.selectedProfile = parseInt(ev.target.value)));
+      this.setState({ value: parseInt(ev.target.value) });
     };
     const handlePassword = (password: string) => {
       broadcast("password", password);
@@ -94,50 +97,43 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     };
     return (
       <Container className="eph-home-page">
-        <Card className="eph-top-card" variant="outlined">
-          <CardContent>
-            <Typography color="textSecondary" gutterBottom>
-              {t("hello")}
-            </Typography>
-            <Typography variant="h5">{username === undefined ? "Tourist" : username}</Typography>
-            <Typography>{t("hitokoto")}</Typography>
-          </CardContent>
-          <CardActions>
+        <Card className="p-4 mb-3" variant="outlined">
+          <div>
+            <div className="text-gray-500 mt-0">{t("hello")}</div>
+            <div className="text-2xl">{username === undefined ? "Tourist" : username}</div>
+            <div>{t("hitokoto")}</div>
+          </div>
+          <div>
             <Button onClick={() => hist.push("/accounts")}>
               <Icon>account_circle</Icon> {t("accounts")}
             </Button>
             <Button onClick={() => hist.push("/profiles")}>
               <Icon>gamepad</Icon> {t("profiles")}
             </Button>
-            <div className="eph-space" />
-            <Button variant="outlined" onClick={() => hist.push("/settings")}>
+            <div className="flex-grow" />
+            <Button variant="contained" onClick={() => hist.push("/settings")}>
               <Icon>settings</Icon> {t("settings")}
             </Button>
-          </CardActions>
+          </div>
         </Card>
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <Card className="eph-card" variant="outlined">
-              <div className="eph-padding" />
-              <FormControl variant="standard" fullWidth>
-                <InputLabel>Minecraft</InputLabel>
-                <Select value={this.state.value} onChange={handleChange}>
-                  {this.state.profiles.map((i: MinecraftProfile) => (
-                    <MenuItem key={i.id} value={i.id}>
-                      {i.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <div className="eph-padding" />
-              <Button variant="outlined" size="large" color="secondary" onClick={handleLaunch}>
+            <Card className="p-4" variant="outlined">
+              <Select value={this.state.value} onChange={handleChange}>
+                {this.state.profiles.map((i: MinecraftProfile) => (
+                  <SelectItem key={i.id} value={i.id}>
+                    {i.name}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Button onClick={handleLaunch}>
                 <Icon>play_arrow</Icon>
                 {t("launch")}
               </Button>
             </Card>
           </Grid>
           <Grid item xs={6}>
-            <Card className="eph-card" variant="outlined">
+            <Card className="p-3" variant="outlined">
               <Typography variant="h5">{t("warning")}</Typography>
               <Typography>{t("alphaWarning")}</Typography>
               <br />
@@ -145,31 +141,6 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             </Card>
           </Grid>
         </Grid>
-        <LaunchProgress
-          open={this.state.minecraftDialog}
-          onClose={() =>
-            this.setState({
-              minecraftDialog: false,
-            })
-          }
-          details={this.state.details}
-          helperText={this.state.helperText}
-        />
-        <RequestPasswordDialog
-          callback={handlePassword}
-          open={this.state.reqPw}
-          again={this.state.againRequestPassword}
-          onClose={() =>
-            this.setState({
-              reqPw: false,
-            })
-          }
-        />
-        <ErrorDialog
-          open={this.state.errDialog}
-          onClose={() => this.setState({ errDialog: false })}
-          stacktrace={this.state.stacktrace}
-        />
       </Container>
     );
   }

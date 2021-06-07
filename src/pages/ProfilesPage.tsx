@@ -1,23 +1,20 @@
 import { ChangeEvent, Component } from "react";
-import {
-  Button,
-  Container,
-  Icon,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Radio,
-  Tooltip,
-} from "@material-ui/core";
-import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
+import ListItemText from "../components/ListItemText";
+import Button from "../components/Button";
+import Container from "../components/Container";
+import Icon from "../components/Icon";
+import IconButton from "../components/IconButton";
+import Radio from "../components/Radio";
+import Tooltip from "../components/Tooltip";
 import { MinecraftProfile } from "../renderer/profiles";
 import { hist, t } from "../renderer/global";
 import Paragraph from "../components/Paragraph";
-import { Alert } from "@material-ui/lab";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyProps } from "../tools/types";
+import ListItem from "../components/ListItem";
+import ListItemTrailing from "../components/ListItemTrailing";
+import List from "../components/List";
+import Alert from "../components/Alert";
 
 export interface ProfilesPageState {
   clicked: number;
@@ -38,19 +35,11 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
     return (
       <Container className="eph-page">
         <Paragraph padding="both">
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => this.setState({ createDialog: true })}
-          >
+          <Button variant="contained" onClick={() => this.setState({ createDialog: true })}>
             <Icon>create</Icon> {t("create")}
           </Button>
           <span style={{ padding: "5px" }} />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.setState({ createDialog: true })}
-          >
+          <Button variant="contained" onClick={() => hist.push("/downloads")}>
             <Icon>file_download</Icon> {t("download")}
           </Button>
         </Paragraph>
@@ -64,7 +53,7 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
             <ListItem key={i.id}>
               <Radio
                 checked={ephConfigs.selectedProfile === i.id}
-                onChange={(_ev: ChangeEvent, checked: boolean) =>
+                onChange={(checked: boolean) =>
                   checked
                     ? (() => {
                         setConfig(() => (ephConfigs.selectedProfile = i.id));
@@ -74,7 +63,7 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
                 }
               />
               <ListItemText primary={i.name} secondary={i.dir} />
-              <ListItemSecondaryAction>
+              <ListItemTrailing>
                 <Tooltip title={t("edit")}>
                   <IconButton
                     onClick={() =>
@@ -90,7 +79,7 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
                 <Tooltip title={t("manage")}>
                   <IconButton
                     onClick={() => {
-                      hist.push("/profile/" + i.id);
+                      hist.push("/profile", { id: i.id.toString() });
                     }}
                   >
                     <Icon>settings</Icon>
@@ -108,27 +97,10 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
                     <Icon>delete</Icon>
                   </IconButton>
                 </Tooltip>
-              </ListItemSecondaryAction>
+              </ListItemTrailing>
             </ListItem>
           ))}
         </List>
-        <CreateProfileDialog
-          open={this.state.createDialog}
-          onClose={() => this.setState({ createDialog: false })}
-          updateProfiles={() => this.setState({})}
-        />
-        <EditProfileDialog
-          open={this.state.editDialog}
-          id={this.state.clicked}
-          onClose={() => this.setState({ editDialog: false })}
-          updateProfiles={() => this.setState({})}
-        />
-        <RemoveProfileDialog
-          open={this.state.removeDialog}
-          onClose={() => this.setState({ removeDialog: false })}
-          updateProfiles={() => this.setState({})}
-          id={this.state.clicked}
-        />
       </Container>
     );
   }

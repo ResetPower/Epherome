@@ -1,35 +1,32 @@
 import { Component } from "react";
-import {
-  Button,
-  Container,
-  Icon,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Radio,
-  Tooltip,
-} from "@material-ui/core";
-import { CreateAccountDialog, RemoveAccountDialog } from "../components/Dialogs";
+import Tooltip from "../components/Tooltip";
+import IconButton from "../components/IconButton";
+import Radio from "../components/Radio";
+import Container from "../components/Container";
+import Button from "../components/Button";
+import Icon from "../components/Icon";
 import { MinecraftAccount } from "../renderer/accounts";
 import { t } from "../renderer/global";
-import { Alert } from "@material-ui/lab";
 import Paragraph from "../components/Paragraph";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyProps } from "../tools/types";
+import List from "../components/List";
+import ListItem from "../components/ListItem";
+import ListItemText from "../components/ListItemText";
+import ListItemTrailing from "../components/ListItemTrailing";
+import Alert from "../components/Alert";
+import { showDialog } from "../renderer/overlay";
+import { CreateAccountDialog } from "../components/Dialogs";
+
+// TODO MISSING DIALOGS (CREATE ACCOUNT DIALOG, REMOVE ACCOUNT DIALOG)
 
 export interface AccountsPageState {
   clicked: number;
-  createDialog: boolean;
-  removeDialog: boolean;
 }
 
 export default class AccountsPage extends Component<EmptyProps, AccountsPageState> {
   state: AccountsPageState = {
     clicked: 0,
-    createDialog: false,
-    removeDialog: false,
   };
   constructor(props: EmptyProps) {
     super(props);
@@ -41,8 +38,15 @@ export default class AccountsPage extends Component<EmptyProps, AccountsPageStat
         <Paragraph padding="both">
           <Button
             variant="contained"
-            color="secondary"
-            onClick={() => this.setState({ createDialog: true })}
+            onClick={() =>
+              showDialog((close) => (
+                <CreateAccountDialog
+                  updateAccounts={() => this.setState({})}
+                  open={false}
+                  onClose={close}
+                />
+              ))
+            }
           >
             <Icon>create</Icon> {t("create")}
           </Button>
@@ -57,9 +61,10 @@ export default class AccountsPage extends Component<EmptyProps, AccountsPageStat
             <ListItem key={i.id}>
               <Radio
                 checked={ephConfigs.selectedAccount === i.id}
-                onChange={(_ev: React.ChangeEvent, checked: boolean) =>
+                onChange={(checked: boolean) =>
                   checked
                     ? (() => {
+                        console.log("onchanged!");
                         setConfig(() => (ephConfigs.selectedAccount = i.id));
                         this.setState({});
                       })()
@@ -67,35 +72,22 @@ export default class AccountsPage extends Component<EmptyProps, AccountsPageStat
                 }
               />
               <ListItemText primary={i.name} secondary={t(i.mode)} />
-              <ListItemSecondaryAction>
+              <ListItemTrailing>
                 <Tooltip title={t("remove")}>
                   <IconButton
-                    size="small"
                     onClick={() => {
                       this.setState({
                         clicked: i.id,
-                        removeDialog: true,
                       });
                     }}
                   >
                     <Icon>delete</Icon>
                   </IconButton>
                 </Tooltip>
-              </ListItemSecondaryAction>
+              </ListItemTrailing>
             </ListItem>
           ))}
         </List>
-        <CreateAccountDialog
-          open={this.state.createDialog}
-          onClose={() => this.setState({ createDialog: false })}
-          updateAccounts={() => this.setState({})}
-        />
-        <RemoveAccountDialog
-          open={this.state.removeDialog}
-          onClose={() => this.setState({ removeDialog: false })}
-          updateAccounts={() => this.setState({})}
-          id={this.state.clicked}
-        />
       </Container>
     );
   }

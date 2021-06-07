@@ -1,39 +1,17 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Select,
-  Box,
-  TextField,
-  DialogActions,
-  Button,
-  MenuItem,
-  Icon,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import React, { Component, FunctionComponentElement, useState } from "react";
+import Dialog from "./Dialog";
+import Select from "./Select";
+import SelectItem from "./SelectItem";
+import Button from "./Button";
+import Icon from "./Icon";
+import TextField from "./TextField";
+import Alert from "./Alert";
+import { Component, ChangeEvent } from "react";
 import { t } from "../renderer/global";
 import { createAccount, removeAccount } from "../renderer/accounts";
 import { createProfile, editProfile, MinecraftProfile, removeProfile } from "../renderer/profiles";
 import { getById } from "../tools/arrays";
 import { ipcRenderer } from "electron";
 import { ephConfigs } from "../renderer/config";
-import "../styles/dialogs.css";
-
-export function useBindingState(
-  value: string
-): [string, (ev: React.ChangeEvent<{ value: unknown }>) => void, (value: string) => void] {
-  const state = useState(value);
-  return [
-    state[0], // state
-    (ev: React.ChangeEvent<{ value: unknown }>) => {
-      state[1](ev.target.value as string);
-    }, // changeState
-    (value) => {
-      state[1](value);
-    }, // setState
-  ];
-}
 
 export interface CustomDialogProps {
   open: boolean;
@@ -72,152 +50,203 @@ export interface ErrorDialogProps extends CustomDialogProps {
   stacktrace: string;
 }
 
-export function CreateAccountDialog(
-  props: CreateAccountDialogProps
-): FunctionComponentElement<CreateAccountDialogProps> {
-  const [isLoading, setLoading] = useState(false);
-  const [errorAlert, setErrorAlert] = useState(false);
-  const [value, setValue] = useState("mojang");
-  const handleChange = (ev: React.ChangeEvent<{ value: unknown }>) => {
-    setValue(ev.target.value as string);
+export interface CreateAccountDialogState {
+  isLoading: boolean;
+  errorAlert: boolean;
+  value: string;
+  username: string;
+  password: string;
+  authserver: string;
+}
+
+export class CreateAccountDialog extends Component<
+  CreateAccountDialogProps,
+  CreateAccountDialogState
+> {
+  state: CreateAccountDialogState = {
+    isLoading: false,
+    errorAlert: false,
+    value: "mojang",
+    username: "",
+    password: "",
+    authserver: "",
   };
-  const handleClose = () => {
-    setErrorAlert(false);
-    props.onClose();
+  handleChange = (ev: ChangeEvent<{ value: unknown }>) => {
+    this.setState({ value: ev.target.value as string });
   };
-  const [username, changeUsername] = useBindingState("");
-  const [password, changePassword] = useBindingState("");
-  const [authserver, changeAuthserver] = useBindingState("");
-  const handleCreate = () => {
-    setLoading(true);
-    setErrorAlert(false);
-    createAccount(value, username, password, authserver).then((value: boolean) => {
-      setLoading(false);
+  handleClose = () => {
+    this.setState({
+      errorAlert: false,
+    });
+    this.props.onClose();
+  };
+  handleCreate = () => {
+    this.setState({
+      isLoading: true,
+      errorAlert: false,
+    });
+    createAccount(
+      this.state.value,
+      this.state.username,
+      this.state.password,
+      this.state.authserver
+    ).then((value: boolean) => {
+      this.setState({
+        isLoading: false,
+      });
       if (value) {
-        handleClose();
-        props.updateAccounts();
+        this.handleClose();
+        this.props.updateAccounts();
       } else {
-        setErrorAlert(true);
+        this.setState({
+          errorAlert: false,
+        });
       }
     });
   };
-
-  return (
-    <Dialog onClose={handleClose} open={props.open}>
-      <DialogTitle>{t("newAccount")}</DialogTitle>
-      <DialogContent className="dialog-content">
-        {errorAlert && (
-          <div>
-            <Alert severity="warning">{t("errCreatingAccount")}</Alert>
-            <br />
+  render() {
+    return (
+      <Dialog>
+        <p className="text-lg">{t("newAccount")}</p>
+        <div>
+          {this.state.errorAlert && (
+            <div>
+              <Alert severity="warn">{t("errCreatingAccount")}</Alert>
+              <br />
+            </div>
+          )}
+          <Select value={this.state.value} onChange={this.handleChange}>
+            <SelectItem value={"mojang"}>{t("mojang")}</SelectItem>
+            <SelectItem value={"microsoft"}>{t("microsoft")}</SelectItem>
+            <SelectItem value={"authlib"}>{t("authlib")}</SelectItem>
+            <SelectItem value={"offline"}>{t("offline")}</SelectItem>
+          </Select>
+          <br />
+          <br />
+          <div hidden={this.state.value !== "mojang"}>
+            <TextField
+              label={t("email")}
+              onChange={(ev: any) => this.setState({ username: ev.target.value })}
+            />
+            <TextField
+              label={t("password")}
+              onChange={(ev: any) => this.setState({ password: ev.target.value })}
+              type="password"
+            />
           </div>
-        )}
-        <Select value={value} onChange={handleChange}>
-          <MenuItem value={"mojang"}>{t("mojang")}</MenuItem>
-          <MenuItem value={"microsoft"}>{t("microsoft")}</MenuItem>
-          <MenuItem value={"authlib"}>{t("authlib")}</MenuItem>
-          <MenuItem value={"offline"}>{t("offline")}</MenuItem>
-        </Select>
-        <br />
-        <br />
-        <Box hidden={value !== "mojang"}>
-          <TextField label={t("email")} onChange={changeUsername} fullWidth />
-          <TextField label={t("password")} onChange={changePassword} type="password" fullWidth />
-        </Box>
-        <Box hidden={value !== "microsoft"}>{t("clickToLogin")}</Box>
-        <Box hidden={value !== "authlib"}>
-          <TextField label={t("authserver")} onChange={changeAuthserver} fullWidth />
-          <TextField label={t("email")} onChange={changeUsername} fullWidth />
-          <TextField label={t("password")} onChange={changePassword} type="password" fullWidth />
-        </Box>
-        <Box hidden={value !== "offline"}>
-          <TextField label={t("username")} onChange={changeUsername} fullWidth />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" onClick={handleClose}>
-          {t("cancel")}
-        </Button>
-        <Button color="default" disabled={isLoading} onClick={handleCreate}>
-          {t("create")}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+          <div hidden={this.state.value !== "microsoft"}>{t("clickToLogin")}</div>
+          <div hidden={this.state.value !== "authlib"}>
+            <TextField
+              label={t("authserver")}
+              onChange={(ev: any) => this.setState({ authserver: ev.target.value })}
+            />
+            <TextField
+              label={t("email")}
+              onChange={(ev: any) => this.setState({ username: ev.target.value })}
+            />
+            <TextField
+              label={t("password")}
+              onChange={(ev: any) => this.setState({ password: ev.target.value })}
+              type="password"
+            />
+          </div>
+          <div hidden={this.state.value !== "offline"}>
+            <TextField
+              label={t("username")}
+              onChange={(ev: any) => this.setState({ username: ev.target.value })}
+            />
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={this.handleClose}>{t("cancel")}</Button>
+          <Button disabled={this.state.isLoading} onClick={this.handleCreate}>
+            {t("create")}
+          </Button>
+        </div>
+      </Dialog>
+    );
+  }
 }
 
-export function RemoveAccountDialog(
-  props: RemoveAccountDialogProps
-): FunctionComponentElement<RemoveAccountDialogProps> {
+export function RemoveAccountDialog(props: RemoveAccountDialogProps): JSX.Element {
   const handleRemove = () => {
     removeAccount(props.id);
     props.onClose();
     props.updateAccounts();
   };
   return (
-    <Dialog onClose={props.onClose} open={props.open}>
-      <DialogTitle>{t("removeAccount")}</DialogTitle>
-      <DialogContent className="dialog-content">{t("confirmRemoving")}</DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={props.onClose}>
-          {t("cancel")}
-        </Button>
-        <Button color="secondary" onClick={handleRemove}>
-          {t("remove")}
-        </Button>
-      </DialogActions>
+    <Dialog>
+      <p className="text-lg">{t("removeAccount")}</p>
+      <div>{t("confirmRemoving")}</div>
+      <div className="flex justify-end">
+        <Button onClick={props.onClose}>{t("cancel")}</Button>
+        <Button onClick={handleRemove}>{t("remove")}</Button>
+      </div>
     </Dialog>
   );
 }
 
-export function CreateProfileDialog(
-  props: CreateProfileDialogProps
-): FunctionComponentElement<CreateProfileDialogProps> {
-  const [name, changeName] = useBindingState("");
-  const [dir, changeDir, setDir] = useBindingState("");
-  const [ver, changeVer] = useBindingState("");
-  const handleCreate = () => {
-    const rs = createProfile(name, dir, ver);
+export interface CreateProfileDialogState {
+  name: string;
+  dir: string;
+  ver: string;
+}
+
+export class CreateProfileDialog extends Component<
+  CreateProfileDialogProps,
+  CreateProfileDialogState
+> {
+  state: CreateProfileDialogState = {
+    name: "",
+    dir: "",
+    ver: "",
+  };
+  handleCreate = () => {
+    const rs = createProfile(this.state.name, this.state.dir, this.state.ver);
     if (rs) {
-      props.onClose();
-      props.updateProfiles();
+      this.props.onClose();
+      this.props.updateProfiles();
     }
   };
-  const handleOpenDirectory = () => {
+  handleOpenDirectory = () => {
     ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
-      setDir(arg);
+      this.setState({ dir: arg });
     });
     ipcRenderer.send("openDirectory");
   };
-
-  return (
-    <Dialog onClose={props.onClose} open={props.open}>
-      <DialogTitle>{t("newProfile")}</DialogTitle>
-      <DialogContent className="dialog-content">
-        <TextField label={t("name")} value={name} onChange={changeName} fullWidth />
-        <TextField
-          label={t("directory")}
-          value={dir}
-          onChange={changeDir}
-          helperText={t("usuallyDotMinecraftEtc")}
-          fullWidth
-        />
-        <TextField label={t("version")} value={ver} onChange={changeVer} fullWidth />
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" onClick={handleOpenDirectory}>
-          <Icon>folder</Icon> {t("openDirectory")}
-        </Button>
-        <div className="eph-space"></div>
-        <Button color="primary" onClick={props.onClose}>
-          {t("cancel")}
-        </Button>
-        <Button color="default" onClick={handleCreate}>
-          {t("create")}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  render() {
+    return (
+      <Dialog>
+        <p className="text-lg">{t("newProfile")}</p>
+        <div>
+          <TextField
+            label={t("name")}
+            value={this.state.name}
+            onChange={(ev: any) => this.setState({ name: ev.target.value })}
+          />
+          <TextField
+            label={t("directory")}
+            value={this.state.dir}
+            onChange={(ev: any) => this.setState({ dir: ev.target.value })}
+            helperText={t("usuallyDotMinecraftEtc")}
+          />
+          <TextField
+            label={t("version")}
+            value={this.state.ver}
+            onChange={(ev: any) => this.setState({ ver: ev.target.value })}
+          />
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={this.handleOpenDirectory}>
+            <Icon>folder</Icon> {t("openDirectory")}
+          </Button>
+          <div className="flex-grow"></div>
+          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button onClick={this.handleCreate}>{t("create")}</Button>
+        </div>
+      </Dialog>
+    );
+  }
 }
 
 export interface EditProfileDialogState {
@@ -258,110 +287,101 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
   };
   render() {
     return (
-      <Dialog onClose={this.props.onClose} open={this.props.open}>
-        <DialogTitle>{t("editProfile")}</DialogTitle>
-        <DialogContent className="dialog-content">
+      <Dialog>
+        <p className="text-lg">{t("editProfile")}</p>
+        <div>
           <TextField
             label={t("name")}
             value={this.state.name}
-            onChange={(e) => this.setState({ name: e.target.value })}
-            fullWidth
+            onChange={(e: any) => this.setState({ name: e.target.value })}
           />
           <TextField
             label={t("directory")}
             value={this.state.dir}
-            onChange={(e) => this.setState({ dir: e.target.value })}
+            onChange={(e: any) => this.setState({ dir: e.target.value })}
             helperText={t("usuallyDotMinecraftEtc")}
-            fullWidth
           />
           <TextField
             label={t("version")}
             value={this.state.ver}
-            onChange={(e) => this.setState({ ver: e.target.value })}
-            fullWidth
+            onChange={(e: any) => this.setState({ ver: e.target.value })}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={this.props.onClose}>
-            {t("cancel")}
-          </Button>
-          <Button color="default" onClick={this.handleEdit}>
-            {t("edit")}
-          </Button>
-        </DialogActions>
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button onClick={this.handleEdit}>{t("edit")}</Button>
+        </div>
       </Dialog>
     );
   }
 }
 
-export function RemoveProfileDialog(
-  props: RemoveProfileDialogProps
-): FunctionComponentElement<RemoveProfileDialogProps> {
+export function RemoveProfileDialog(props: RemoveProfileDialogProps): JSX.Element {
   const handleRemove = () => {
     removeProfile(props.id);
     props.onClose();
     props.updateProfiles();
   };
   return (
-    <Dialog onClose={props.onClose} open={props.open}>
-      <DialogTitle>{t("removeProfile")}</DialogTitle>
-      <DialogContent className="dialog-content">{t("confirmRemoving")}</DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={props.onClose}>
-          {t("cancel")}
-        </Button>
-        <Button color="secondary" onClick={handleRemove}>
-          {t("remove")}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-export function RequestPasswordDialog(
-  props: RequestPasswordDialogProps
-): FunctionComponentElement<RequestPasswordDialogProps> {
-  const [password, changePassword] = useBindingState("");
-  const handler = () => {
-    props.onClose();
-    props.callback(password);
-  };
-  return (
-    <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{t("pleaseInputPassword")}</DialogTitle>
-      <DialogContent className="dialog-content">
-        <TextField
-          value={password}
-          onChange={changePassword}
-          label={t("password")}
-          type="password"
-          helperText={props.again ? t("passwordWrong") : ""}
-          error={props.again}
-          fullWidth
-        />
-      </DialogContent>
-      <DialogActions>
+    <Dialog>
+      <p className="text-lg">{t("removeProfile")}</p>
+      <div>{t("confirmRemoving")}</div>
+      <div className="flex justify-end">
         <Button onClick={props.onClose}>{t("cancel")}</Button>
-        <Button color="primary" onClick={handler}>
-          {t("ok")}
-        </Button>
-      </DialogActions>
+        <Button onClick={handleRemove}>{t("remove")}</Button>
+      </div>
     </Dialog>
   );
 }
 
-export function ErrorDialog(props: ErrorDialogProps): FunctionComponentElement<ErrorDialogProps> {
+export interface RequestPasswordDialogState {
+  password: string;
+}
+
+export class RequestPasswordDialog extends Component<
+  RequestPasswordDialogProps,
+  RequestPasswordDialogState
+> {
+  state: RequestPasswordDialogState = {
+    password: "",
+  };
+  handler = () => {
+    this.props.onClose();
+    this.props.callback(this.state.password);
+  };
+  render() {
+    return (
+      <Dialog>
+        <p className="text-lg">{t("pleaseInputPassword")}</p>
+        <div>
+          <TextField
+            value={this.state.password}
+            onChange={(ev: any) => this.setState({ password: ev.target.value })}
+            label={t("password")}
+            type="password"
+            helperText={this.props.again ? t("passwordWrong") : ""}
+            error={this.props.again}
+          />
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button onClick={this.handler}>{t("ok")}</Button>
+        </div>
+      </Dialog>
+    );
+  }
+}
+
+export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
   return (
-    <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{t("errorOccurred")}</DialogTitle>
-      <DialogContent className="dialog-content">
+    <Dialog>
+      <p className="text-lg">{t("errorOccurred")}</p>
+      <div>
         <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={props.onClose}>
-          {t("ok")}
-        </Button>
-      </DialogActions>
+      </div>
+      <div className="flex justify-end">
+        <Button onClick={props.onClose}>{t("ok")}</Button>
+      </div>
     </Dialog>
   );
 }

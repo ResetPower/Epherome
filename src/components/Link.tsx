@@ -1,6 +1,5 @@
 import { PureComponent } from "react";
 import { shell } from "electron";
-import "../styles/link.css";
 
 export interface LinkProps {
   href: string;
@@ -13,7 +12,7 @@ export default class Link extends PureComponent<LinkProps> {
   };
   render(): JSX.Element {
     return (
-      <span className="eph-link" onClick={this.handleClick}>
+      <span className="text-blue-500 cursor-pointer select-none" onClick={this.handleClick}>
         {this.props.children}
       </span>
     );

@@ -1,5 +1,6 @@
-import { Container, Typography } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import Container from "../components/Container";
+import Typography from "../components/Typography";
+import Alert from "../components/Alert";
 import { Component } from "react";
 import { t } from "../renderer/global";
 import { getProfile } from "../renderer/profiles";

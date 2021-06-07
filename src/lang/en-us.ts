@@ -56,4 +56,5 @@ export default {
   hitokoto: "Light travels faster than sound.",
   download: "Download",
   clickToLogin: 'Click "Create" to log in to your Microsoft account',
+  downloads: "Downloads",
 };
