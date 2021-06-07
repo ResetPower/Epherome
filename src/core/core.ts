@@ -9,7 +9,6 @@ import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
 import { removeSuffix } from "../tools/strings";
 import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
-import { mkdirByFile } from "../tools/files";
 import { constraints } from "../renderer/config";
 
 // must use any at this condition
@@ -188,7 +187,9 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     try {
       fs.accessSync(item.path);
     } catch (e) {
-      mkdirByFile(item.path);
+      const arr = item.path.split("/");
+      arr.pop();
+      fs.mkdirSync(arr.join("/"), { recursive: true });
     }
     const req = request(item.url, { method: "GET" });
     const stream = fs.createWriteStream(item.path);
@@ -267,7 +268,6 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     parsed["type"]
   );
   let firstTimeToReceiveStdout = true;
-  console.log(buff);
   const minecraftProcess = spawn(java, buff, {
     cwd: dir,
   });

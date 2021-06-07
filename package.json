@@ -35,20 +35,15 @@
     ]
   },
   "jest": {
-    "runner": "jest-electron/runner",
-    "testEnvironment": "jest-electron/environment",
     "preset": "ts-jest",
     "testRegex": "(/test/.*\\.(test|spec))\\.ts?$"
   },
   "devDependencies": {
     "@types/css-minimizer-webpack-plugin": "^1.3.0",
-    "@types/jest": "^26.0.21",
     "@types/mini-css-extract-plugin": "^1.4.3",
     "@types/node": "^14.14.35",
-    "@types/node-fetch": "^2.5.10",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
-    "@types/react-router-dom": "^5.1.7",
     "@types/request": "^2.48.5",
     "@types/webpack": "^5.28.0",
     "@types/webpack-dev-server": "^3.11.4",
@@ -56,19 +51,18 @@
     "@typescript-eslint/parser": "^4.16.1",
     "css-loader": "^5.2.4",
     "css-minimizer-webpack-plugin": "^3.0.0",
-    "electron": "^12.0.9",
+    "electron": "^13.0.1",
     "electron-builder": "^22.10.5",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
-    "html-webpack-root-plugin": "^0.10.0",
-    "jest": "^24.9.0",
-    "jest-electron": "^0.1.11",
     "mini-css-extract-plugin": "^1.6.0",
+    "postcss": "^8.3.0",
+    "postcss-loader": "^5.3.0",
     "prettier": "^2.2.1",
-    "ts-jest": "^26.5.4",
+    "tailwindcss": "^2.1.2",
     "ts-loader": "^9.1.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3",
@@ -77,17 +71,12 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/lab": "*",
     "electron-log": "^4.3.4",
-    "history": "^4.10.1",
     "json5": "^2.2.0",
     "material-design-icons": "^3.0.1",
     "node-stream-zip": "^1.13.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.2.0",
-    "react-transition-group": "^4.4.1",
     "request": "^2.88.2"
   }
 }

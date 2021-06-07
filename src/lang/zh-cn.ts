@@ -57,4 +57,5 @@ export default {
   hitokoto: "海内存知己，天涯若比邻。",
   download: "下载",
   clickToLogin: "点击「创建」来登录您的微软账户",
+  downloads: "客户端下载",
 };
