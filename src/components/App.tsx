@@ -15,7 +15,7 @@ import GlobalOverlay from "./GlobalOverlay";
 import Router from "../router/Router";
 import Route from "../router/Route";
 import { darkTheme, hist, lightTheme } from "../renderer/global";
-import { applyTheme } from "../renderer/styles";
+import { applyTheme } from "../renderer/theme";
 import { ephConfigs } from "../renderer/config";
 
 export interface AppState {

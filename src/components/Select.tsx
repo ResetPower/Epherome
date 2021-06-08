@@ -7,7 +7,7 @@ export default function Select(props: {
 }): JSX.Element {
   return (
     <select
-      className="border border-divide text-text p-2 rounded-md bg-card focus:outline-none"
+      className="border border-divide text-black dark:text-white p-2 rounded-md bg-card focus:outline-none"
       value={props.value}
       onChange={props.onChange}
     >

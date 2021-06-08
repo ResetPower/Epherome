@@ -11,11 +11,13 @@ export default function TextField(props: {
   return (
     <div>
       {props.label && (
-        <label className="block text-sm font-medium text-gray-500">{props.label}</label>
+        <label className="block text-sm font-medium text-gray-500 dark:text-gray-300">
+          {props.label}
+        </label>
       )}
       <input
         type={props.type}
-        className="focus:outline-none border border-divide bg-card text-text rounded-md w-full p-1"
+        className="focus:outline-none border border-divide bg-card text-black dark:text-white rounded-md w-full p-1"
         placeholder={props.placeholder}
         value={props.value}
         onChange={props.onChange}

@@ -5,6 +5,7 @@ export default function Button(props: {
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
+  textInherit?: boolean;
   variant?: "contained" | "outlined" | "default";
 }): JSX.Element {
   return (
@@ -13,11 +14,14 @@ export default function Button(props: {
       className={`flex items-center px-4 py-2 rounded-md text-sm font-medium m-1 focus:outline-none
         ${
           props.variant === "contained"
-            ? "bg-gray-500 transition-colors duration-200 transform bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
+            ? "bg-gray-500 transition-colors duration-200 transform bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white" // contained style
             : props.variant === "outlined"
-            ? "shadow-sm border bg-gray-500 transition-colors duration-200 transform bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 text-text"
-            : "bg-gray-500 transition-colors duration-200 transform bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 text-text"
-        } ${props.className}`}
+            ? "shadow-sm border bg-gray-500 transition-colors duration-200 transform bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10" // outlined style
+            : `bg-gray-500 transition-colors duration-200 transform bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 ${
+                props.textInherit ? "" : "text-black dark:text-white"
+              }` // default style (text button)
+        }
+        ${props.className}`}
       onClick={props.onClick}
     >
       {props.children}

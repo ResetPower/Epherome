@@ -9,7 +9,7 @@ export default function ListItemText(props: {
   return (
     <div className={props.className}>
       <Typography>{props.primary}</Typography>
-      <p className="text-gray-500">{props.secondary}</p>
+      <p className="text-shallow">{props.secondary}</p>
     </div>
   );
 }

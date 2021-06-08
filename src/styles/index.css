@@ -1,17 +1,18 @@
-/* long live the tailwind!!!!!! */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* basic css variables */
 :root {
   --eph-background-color: #f4f4f5;
   --eph-primary-color: #3b82f6;
   --eph-secondary-color: #ec4899;
-  --eph-text-color: #000000;
+  --eph-shallow-color: #71717a;
   --eph-divide-color: #e4e4e7;
   --eph-card-color: #ffffff;
 }
 
+/* long live the tailwind!!!!!! */
+@tailwind base;
+
 @import "main.css";
 @import "dialog.css";
+
+@tailwind components;
+@tailwind utilities;

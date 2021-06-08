@@ -3,6 +3,7 @@ import Alert from "../components/Alert";
 import { Component } from "react";
 import { t } from "../renderer/global";
 import { getProfile } from "../renderer/profiles";
+import Typography from "../components/Typography";
 
 export interface ProfileManagementPageProps {
   params: { [key: string]: string };
@@ -24,7 +25,7 @@ export default class ProfileManagementPage extends Component<
           <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
         ) : (
           <div>
-            <p>{t("notSupportedYet")}</p>
+            <Typography>{t("notSupportedYet")}</Typography>
           </div>
         )}
       </Container>

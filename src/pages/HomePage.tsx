@@ -104,7 +104,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
       <Container>
         <Card className="mb-3 p-6 shadow-sm">
           <div className="p-3">
-            <p className="text-gray-400 mt-0">{t("hello")}</p>
+            <p className="text-shallow mt-0">{t("hello")}</p>
             <Typography className="text-2xl">
               {username === undefined ? "Tourist" : username}
             </Typography>

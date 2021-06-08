@@ -9,6 +9,7 @@ import { t, i18n, hist } from "../renderer/global";
 import { EmptyProps } from "../tools/types";
 import { broadcast } from "../renderer/session";
 import SelectItem from "../components/SelectItem";
+import Typography from "../components/Typography";
 
 export interface SettingsPageState {
   value: number;
@@ -46,7 +47,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     return (
       <button
         className={`block focus:outline-none ${
-          this.state.value === props.value ? "text-pink-500" : ""
+          this.state.value === props.value ? "text-pink-500" : "text-black dark:text-white"
         }`}
         onClick={() => this.setState({ value: props.value })}
       >
@@ -56,7 +57,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
   };
   render(): JSX.Element {
     return (
-      <div className="flex h-full">
+      <div className="flex">
         <div className="p-6 border-r border-divide">
           <this.TabItem value={0}>{t("general")}</this.TabItem>
           <this.TabItem value={1}>{t("appearance")}</this.TabItem>
@@ -64,7 +65,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
         </div>
         <div className="p-3 flex-grow">
           <div hidden={this.state.value !== 0}>
-            {t("language")}:
+            <Typography>{t("language")}</Typography>
             <Select value={i18n.language} onChange={this.changeLanguage}>
               <SelectItem value="en-us">English</SelectItem>
               <SelectItem value="zh-cn">中文简体</SelectItem>
@@ -87,44 +88,44 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
             </div>
           </div>
           <div hidden={this.state.value !== 1}>
-            {t("theme")}:
+            <Typography>{t("theme")}</Typography>
             <Select value={ephConfigs.theme} onChange={this.changeTheme}>
               <SelectItem value="light">Light</SelectItem>
               <SelectItem value="dark">Dark</SelectItem>
             </Select>
           </div>
           <div className="space-y-3" hidden={this.state.value !== 2}>
-            <strong>Epherome: {this.cnst.version} (Alpha)</strong>
+            <Typography className="font-bold">Epherome: {this.cnst.version} (Alpha)</Typography>
             <div>
-              <p>
+              <Typography>
                 {t("os")}: {this.cnst.platform} {this.cnst.arch} {this.cnst.release}
-              </p>
+              </Typography>
             </div>
             <div>
-              <p>Electron: {process.versions.electron}</p>
-              <p>Chrome: {process.versions.chrome}</p>
-              <p>Node.js: {process.versions.node}</p>
-              <p>V8: {process.versions.v8}</p>
+              <Typography>Electron: {process.versions.electron}</Typography>
+              <Typography>Chrome: {process.versions.chrome}</Typography>
+              <Typography>Node.js: {process.versions.node}</Typography>
+              <Typography>V8: {process.versions.v8}</Typography>
             </div>
             <div>
-              <p>{t("cfgFilePath")}:</p>
-              <p className="text-gray-500">
+              <Typography>{t("cfgFilePath")}:</Typography>
+              <p className="text-gray-400">
                 {this.cnst.dir}
                 {path.sep}config.json5
               </p>
             </div>
             <div>
-              <p>
+              <Typography>
                 {t("officialSite")}: <Link href="https://epherome.com">https://epherome.com</Link>
-              </p>
-              <p>
+              </Typography>
+              <Typography>
                 GitHub:{" "}
                 <Link href="https://github.com/ResetPower/Epherome">
                   https://github.com/ResetPower/Epherome
                 </Link>
-              </p>
-              <p>Copyright © 2021 ResetPower. All rights reserved.</p>
-              <p>{t("oss")} | GNU General Public License 3.0</p>
+              </Typography>
+              <Typography>Copyright © 2021 ResetPower. All rights reserved.</Typography>
+              <Typography>{t("oss")} | GNU General Public License 3.0</Typography>
             </div>
           </div>
         </div>

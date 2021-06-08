@@ -10,7 +10,7 @@ import { t } from "../renderer/global";
 import { createAccount, removeAccount } from "../renderer/accounts";
 import { createProfile, editProfile, getProfile, removeProfile } from "../renderer/profiles";
 import { ipcRenderer } from "electron";
-import { ephConfigs } from "../renderer/config";
+import Typography from "./Typography";
 
 export interface CustomDialogProps {
   onClose: () => void;
@@ -105,7 +105,7 @@ export class CreateAccountDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <p className="text-xl">{t("newAccount")}</p>
+        <Typography className="text-xl">{t("newAccount")}</Typography>
         <div>
           {this.state.errorAlert && (
             <div>
@@ -156,7 +156,7 @@ export class CreateAccountDialog extends Component<
           </div>
         </div>
         <div className="flex justify-end">
-          <Button className="text-gray-500" onClick={this.handleClose}>
+          <Button className="text-shallow" onClick={this.handleClose} textInherit>
             {t("cancel")}
           </Button>
           <Button disabled={this.state.isLoading} onClick={this.handleCreate}>
@@ -176,13 +176,13 @@ export function RemoveAccountDialog(props: RemoveAccountDialogProps): JSX.Elemen
   };
   return (
     <Dialog indentBottom>
-      <p className="text-xl">{t("removeAccount")}</p>
-      <p>{t("confirmRemoving")}</p>
+      <Typography className="text-xl">{t("removeAccount")}</Typography>
+      <Typography>{t("confirmRemoving")}</Typography>
       <div className="flex justify-end">
-        <Button className="text-gray-500" onClick={props.onClose}>
+        <Button className="text-shallow" onClick={props.onClose} textInherit>
           {t("cancel")}
         </Button>
-        <Button className="text-red-500" onClick={handleRemove}>
+        <Button className="text-red-500" onClick={handleRemove} textInherit>
           {t("remove")}
         </Button>
       </div>
@@ -221,7 +221,7 @@ export class CreateProfileDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <p className="text-xl">{t("newProfile")}</p>
+        <Typography className="text-xl">{t("newProfile")}</Typography>
         <div>
           <TextField
             label={t("name")}
@@ -245,7 +245,7 @@ export class CreateProfileDialog extends Component<
             <Icon>folder</Icon> {t("openDirectory")}
           </Button>
           <div className="flex-grow"></div>
-          <Button className="text-gray-500" onClick={this.props.onClose}>
+          <Button className="text-shallow" onClick={this.props.onClose}>
             {t("cancel")}
           </Button>
           <Button onClick={this.handleCreate}>{t("create")}</Button>
@@ -286,7 +286,7 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <p className="text-xl">{t("editProfile")}</p>
+        <Typography className="text-xl">{t("editProfile")}</Typography>
         <div>
           <TextField
             label={t("name")}
@@ -306,7 +306,7 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
           />
         </div>
         <div className="flex justify-end">
-          <Button className="text-gray-500" onClick={this.props.onClose}>
+          <Button className="text-shallow" onClick={this.props.onClose} textInherit>
             {t("cancel")}
           </Button>
           <Button onClick={this.handleEdit}>{t("edit")}</Button>
@@ -324,13 +324,13 @@ export function RemoveProfileDialog(props: RemoveProfileDialogProps): JSX.Elemen
   };
   return (
     <Dialog indentBottom>
-      <p className="text-xl">{t("removeProfile")}</p>
-      <div>{t("confirmRemoving")}</div>
+      <Typography className="text-xl">{t("removeProfile")}</Typography>
+      <Typography>{t("confirmRemoving")}</Typography>
       <div className="flex justify-end">
-        <Button className="text-gray-500" onClick={props.onClose}>
+        <Button className="text-shallow" onClick={props.onClose} textInherit>
           {t("cancel")}
         </Button>
-        <Button className="text-red-500" onClick={handleRemove}>
+        <Button className="text-red-500" onClick={handleRemove} textInherit>
           {t("remove")}
         </Button>
       </div>
@@ -356,7 +356,7 @@ export class RequestPasswordDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <p className="text-xl">{t("pleaseInputPassword")}</p>
+        <Typography className="text-xl">{t("pleaseInputPassword")}</Typography>
         <div>
           <TextField
             value={this.state.password}
@@ -368,7 +368,7 @@ export class RequestPasswordDialog extends Component<
           />
         </div>
         <div className="flex justify-end">
-          <Button className="text-gray-500" onClick={this.props.onClose}>
+          <Button className="text-shallow" onClick={this.props.onClose} textInherit>
             {t("cancel")}
           </Button>
           <Button onClick={this.handler}>{t("ok")}</Button>
@@ -381,7 +381,7 @@ export class RequestPasswordDialog extends Component<
 export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
   return (
     <Dialog indentBottom>
-      <p className="text-xl">{t("errorOccurred")}</p>
+      <Typography className="text-xl">{t("errorOccurred")}</Typography>
       <div>
         <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
       </div>

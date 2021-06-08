@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Typography from "./Typography";
 
 export default function Alert(props: {
   children: ReactNode;
@@ -14,7 +15,7 @@ export default function Alert(props: {
           : "bg-blue-400"
       }`}
     >
-      {props.children}
+      <Typography>{props.children}</Typography>
     </div>
   );
 }
