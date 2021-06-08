@@ -24,7 +24,7 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
   render() {
     return (
       <div
-        className={`fixed inset-0 z-10 overflow-y-auto bg-opacity-30 bg-black ${
+        className={`flex fixed pin inset-0 z-50 overflow-auto bg-black bg-opacity-50 ${
           !this.state.show ? "hidden" : ""
         }`}
       >

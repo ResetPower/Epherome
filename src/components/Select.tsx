@@ -6,7 +6,11 @@ export default function Select(props: {
   children: ReactNode;
 }): JSX.Element {
   return (
-    <select value={props.value} onChange={props.onChange}>
+    <select
+      className="border border-divide text-text p-2 rounded-md bg-card focus:outline-none"
+      value={props.value}
+      onChange={props.onChange}
+    >
       {props.children}
     </select>
   );

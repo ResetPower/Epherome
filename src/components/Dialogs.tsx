@@ -8,13 +8,11 @@ import Alert from "./Alert";
 import { Component, ChangeEvent } from "react";
 import { t } from "../renderer/global";
 import { createAccount, removeAccount } from "../renderer/accounts";
-import { createProfile, editProfile, MinecraftProfile, removeProfile } from "../renderer/profiles";
-import { getById } from "../tools/arrays";
+import { createProfile, editProfile, getProfile, removeProfile } from "../renderer/profiles";
 import { ipcRenderer } from "electron";
 import { ephConfigs } from "../renderer/config";
 
 export interface CustomDialogProps {
-  open: boolean;
   onClose: () => void;
 }
 
@@ -71,16 +69,16 @@ export class CreateAccountDialog extends Component<
     password: "",
     authserver: "",
   };
-  handleChange = (ev: ChangeEvent<{ value: unknown }>) => {
+  handleChange = (ev: ChangeEvent<{ value: unknown }>): void => {
     this.setState({ value: ev.target.value as string });
   };
-  handleClose = () => {
+  handleClose = (): void => {
     this.setState({
       errorAlert: false,
     });
     this.props.onClose();
   };
-  handleCreate = () => {
+  handleCreate = (): void => {
     this.setState({
       isLoading: true,
       errorAlert: false,
@@ -104,10 +102,10 @@ export class CreateAccountDialog extends Component<
       }
     });
   };
-  render() {
+  render(): JSX.Element {
     return (
-      <Dialog>
-        <p className="text-lg">{t("newAccount")}</p>
+      <Dialog indentBottom>
+        <p className="text-xl">{t("newAccount")}</p>
         <div>
           {this.state.errorAlert && (
             <div>
@@ -158,7 +156,9 @@ export class CreateAccountDialog extends Component<
           </div>
         </div>
         <div className="flex justify-end">
-          <Button onClick={this.handleClose}>{t("cancel")}</Button>
+          <Button className="text-gray-500" onClick={this.handleClose}>
+            {t("cancel")}
+          </Button>
           <Button disabled={this.state.isLoading} onClick={this.handleCreate}>
             {t("create")}
           </Button>
@@ -175,12 +175,16 @@ export function RemoveAccountDialog(props: RemoveAccountDialogProps): JSX.Elemen
     props.updateAccounts();
   };
   return (
-    <Dialog>
-      <p className="text-lg">{t("removeAccount")}</p>
-      <div>{t("confirmRemoving")}</div>
+    <Dialog indentBottom>
+      <p className="text-xl">{t("removeAccount")}</p>
+      <p>{t("confirmRemoving")}</p>
       <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t("cancel")}</Button>
-        <Button onClick={handleRemove}>{t("remove")}</Button>
+        <Button className="text-gray-500" onClick={props.onClose}>
+          {t("cancel")}
+        </Button>
+        <Button className="text-red-500" onClick={handleRemove}>
+          {t("remove")}
+        </Button>
       </div>
     </Dialog>
   );
@@ -201,23 +205,23 @@ export class CreateProfileDialog extends Component<
     dir: "",
     ver: "",
   };
-  handleCreate = () => {
+  handleCreate = (): void => {
     const rs = createProfile(this.state.name, this.state.dir, this.state.ver);
     if (rs) {
       this.props.onClose();
       this.props.updateProfiles();
     }
   };
-  handleOpenDirectory = () => {
+  handleOpenDirectory = (): void => {
     ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
       this.setState({ dir: arg });
     });
     ipcRenderer.send("openDirectory");
   };
-  render() {
+  render(): JSX.Element {
     return (
-      <Dialog>
-        <p className="text-lg">{t("newProfile")}</p>
+      <Dialog indentBottom>
+        <p className="text-xl">{t("newProfile")}</p>
         <div>
           <TextField
             label={t("name")}
@@ -241,7 +245,9 @@ export class CreateProfileDialog extends Component<
             <Icon>folder</Icon> {t("openDirectory")}
           </Button>
           <div className="flex-grow"></div>
-          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button className="text-gray-500" onClick={this.props.onClose}>
+            {t("cancel")}
+          </Button>
           <Button onClick={this.handleCreate}>{t("create")}</Button>
         </div>
       </Dialog>
@@ -256,39 +262,31 @@ export interface EditProfileDialogState {
 }
 
 export class EditProfileDialog extends Component<EditProfileDialogProps, EditProfileDialogState> {
-  state = {
+  state: EditProfileDialogState = {
     name: "",
     dir: "",
     ver: "",
   };
-  componentDidUpdate(
-    prevProps: Readonly<EditProfileDialogProps>,
-    prevState: Readonly<EditProfileDialogState>,
-    snapshot?: any
-  ) {
-    if (this.props.open && !prevProps.open) {
-      const old = getById<MinecraftProfile>(ephConfigs.profiles, this.props.id) ?? {
-        id: -1,
-        name: "",
-        dir: "",
-        ver: "",
+  constructor(props: EditProfileDialogProps) {
+    super(props);
+    const profile = getProfile(this.props.id);
+    if (profile) {
+      this.state = {
+        name: profile.name,
+        dir: profile.dir,
+        ver: profile.ver,
       };
-      this.setState({
-        name: old.name,
-        dir: old.dir,
-        ver: old.ver,
-      });
     }
   }
-  handleEdit = () => {
+  handleEdit = (): void => {
     editProfile(this.props.id, this.state.name, this.state.dir, this.state.ver);
     this.props.updateProfiles();
     this.props.onClose();
   };
-  render() {
+  render(): JSX.Element {
     return (
-      <Dialog>
-        <p className="text-lg">{t("editProfile")}</p>
+      <Dialog indentBottom>
+        <p className="text-xl">{t("editProfile")}</p>
         <div>
           <TextField
             label={t("name")}
@@ -308,7 +306,9 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
           />
         </div>
         <div className="flex justify-end">
-          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button className="text-gray-500" onClick={this.props.onClose}>
+            {t("cancel")}
+          </Button>
           <Button onClick={this.handleEdit}>{t("edit")}</Button>
         </div>
       </Dialog>
@@ -323,12 +323,16 @@ export function RemoveProfileDialog(props: RemoveProfileDialogProps): JSX.Elemen
     props.updateProfiles();
   };
   return (
-    <Dialog>
-      <p className="text-lg">{t("removeProfile")}</p>
+    <Dialog indentBottom>
+      <p className="text-xl">{t("removeProfile")}</p>
       <div>{t("confirmRemoving")}</div>
       <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t("cancel")}</Button>
-        <Button onClick={handleRemove}>{t("remove")}</Button>
+        <Button className="text-gray-500" onClick={props.onClose}>
+          {t("cancel")}
+        </Button>
+        <Button className="text-red-500" onClick={handleRemove}>
+          {t("remove")}
+        </Button>
       </div>
     </Dialog>
   );
@@ -345,14 +349,14 @@ export class RequestPasswordDialog extends Component<
   state: RequestPasswordDialogState = {
     password: "",
   };
-  handler = () => {
+  handler = (): void => {
     this.props.onClose();
     this.props.callback(this.state.password);
   };
-  render() {
+  render(): JSX.Element {
     return (
-      <Dialog>
-        <p className="text-lg">{t("pleaseInputPassword")}</p>
+      <Dialog indentBottom>
+        <p className="text-xl">{t("pleaseInputPassword")}</p>
         <div>
           <TextField
             value={this.state.password}
@@ -364,7 +368,9 @@ export class RequestPasswordDialog extends Component<
           />
         </div>
         <div className="flex justify-end">
-          <Button onClick={this.props.onClose}>{t("cancel")}</Button>
+          <Button className="text-gray-500" onClick={this.props.onClose}>
+            {t("cancel")}
+          </Button>
           <Button onClick={this.handler}>{t("ok")}</Button>
         </div>
       </Dialog>
@@ -374,8 +380,8 @@ export class RequestPasswordDialog extends Component<
 
 export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
   return (
-    <Dialog>
-      <p className="text-lg">{t("errorOccurred")}</p>
+    <Dialog indentBottom>
+      <p className="text-xl">{t("errorOccurred")}</p>
       <div>
         <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
       </div>

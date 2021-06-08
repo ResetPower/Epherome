@@ -1,3 +1,4 @@
+// English (United States) Language Definition File
 export default {
   hello: "Hello!",
   epherome: "Epherome",

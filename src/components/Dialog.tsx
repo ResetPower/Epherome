@@ -1,9 +1,14 @@
 import { ReactNode } from "react";
 
-export default function Dialog(props: { children: ReactNode }) {
+export default function Dialog(props: {
+  children: ReactNode;
+  indentBottom?: boolean;
+}): JSX.Element {
   return (
     <div
-      className={`inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle bg-white shadow-xl rounded-2xl`}
+      className={`justify-center p-6 mx-auto my-auto shadow-xl rounded-lg bg-card eph-dialog ${
+        props.indentBottom ? "pb-4" : ""
+      }`}
     >
       {props.children}
     </div>

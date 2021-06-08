@@ -6,7 +6,6 @@
   "scripts": {
     "start": "webpack build --env dev --env process='main' && electron . --remote-debugging-port=9222",
     "dev": "webpack serve --env dev --env process='renderer' --progress",
-    "test": "jest",
     "prod": "webpack build --env prod --env process='all'",
     "pack": "npm run prod && electron-builder"
   },

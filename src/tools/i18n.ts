@@ -1,6 +1,6 @@
 export interface I18nOptions {
-  language: string; // the name of the language
-  messages: { [key: string]: { [key: string]: string } }; // the language messages
+  language: string;
+  messages: { [key: string]: { [key: string]: string } };
 }
 
 // simple i18n toolkit
@@ -27,7 +27,6 @@ export class I18n {
       return this.t(key, args);
     };
   }
-  // update language
   changeLanguage(name: string): void {
     this.language = name;
   }

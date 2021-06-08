@@ -1,10 +1,10 @@
-import { ComponentClass, PureComponent } from "react";
+import { ComponentClass } from "react";
 
-export default class Route extends PureComponent<
-  {
-    component: ComponentClass<any, any>;
-    path: string;
-    params?: string | number[];
-  },
-  Record<string, unknown>
-> {}
+// route component
+export default function Route(_props: {
+  component: ComponentClass<any, any>;
+  path: string;
+  params?: string | number[];
+}): JSX.Element {
+  return <></>;
+}

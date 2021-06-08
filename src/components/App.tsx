@@ -14,7 +14,9 @@ import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "./GlobalOverlay";
 import Router from "../router/Router";
 import Route from "../router/Route";
-import { hist } from "../renderer/global";
+import { darkTheme, hist, lightTheme } from "../renderer/global";
+import { applyTheme } from "../renderer/styles";
+import { ephConfigs } from "../renderer/config";
 
 export interface AppState {
   title: string;
@@ -26,22 +28,24 @@ export default class App extends Component<EmptyProps, AppState> {
   };
   constructor(props: EmptyProps) {
     super(props);
-    hist.listen((location) => {
-      this.setState({
-        title: resolveTitle(location.pathname),
-      });
+    applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+    // subscribe title change
+    subscribe("hist", (pathname) => this.setState({ title: resolveTitle(pathname) }));
+    // subscribe theme change
+    subscribe("theme", () => {
+      applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+      this.setState({});
     });
-    subscribe("theme", () => this.setState({}));
   }
   render(): JSX.Element {
     return (
       <>
         <GlobalOverlay />
-        <AppBar>
-          <IconButton onClick={hist.goBack}>
+        <AppBar className="px-3 mb-2">
+          <IconButton className="text-white" onClick={hist.goBack}>
             <Icon>{this.state.title === "Epherome" ? "menu" : "arrow_back"}</Icon>
           </IconButton>
-          <p className="flex-grow pl-4 select-none text-white text-xl">{this.state.title}</p>
+          <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
         <Router>
           <Route component={HomePage} path="/" />

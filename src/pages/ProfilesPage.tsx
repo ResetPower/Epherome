@@ -1,4 +1,4 @@
-import { ChangeEvent, Component } from "react";
+import { Component } from "react";
 import ListItemText from "../components/ListItemText";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -8,51 +8,41 @@ import Radio from "../components/Radio";
 import Tooltip from "../components/Tooltip";
 import { MinecraftProfile } from "../renderer/profiles";
 import { hist, t } from "../renderer/global";
-import Paragraph from "../components/Paragraph";
 import { ephConfigs, setConfig } from "../renderer/config";
-import { EmptyProps } from "../tools/types";
+import { EmptyProps, EmptyState } from "../tools/types";
 import ListItem from "../components/ListItem";
-import ListItemTrailing from "../components/ListItemTrailing";
 import List from "../components/List";
 import Alert from "../components/Alert";
+import { showDialog } from "../renderer/overlay";
+import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
 
-export interface ProfilesPageState {
-  clicked: number;
-  createDialog: boolean;
-  editDialog: boolean;
-  removeDialog: boolean;
-}
-
-export default class ProfilesPage extends Component<EmptyProps, ProfilesPageState> {
-  state: ProfilesPageState = {
-    clicked: 0,
-    createDialog: false,
-    editDialog: false,
-    removeDialog: false,
-  };
+export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
   render(): JSX.Element {
     const profiles = ephConfigs.profiles;
     return (
-      <Container className="eph-page">
-        <Paragraph padding="both">
-          <Button variant="contained" onClick={() => this.setState({ createDialog: true })}>
+      <Container>
+        <div className="flex space-x-3 my-3">
+          <Button
+            variant="contained"
+            onClick={() =>
+              showDialog((close) => (
+                <CreateProfileDialog onClose={close} updateProfiles={() => this.setState({})} />
+              ))
+            }
+          >
             <Icon>create</Icon> {t("create")}
           </Button>
-          <span style={{ padding: "5px" }} />
           <Button variant="contained" onClick={() => hist.push("/downloads")}>
             <Icon>file_download</Icon> {t("download")}
           </Button>
-        </Paragraph>
-        {profiles.length === 0 && (
-          <Paragraph padding="top">
-            <Alert severity="info">{t("noProfilesYet")}</Alert>
-          </Paragraph>
-        )}
-        <List>
+        </div>
+        {profiles.length === 0 && <Alert severity="info">{t("noProfilesYet")}</Alert>}
+        <List className="pl-3">
           {profiles.map((i: MinecraftProfile) => (
             <ListItem key={i.id}>
               <Radio
                 checked={ephConfigs.selectedProfile === i.id}
+                className="self-center mr-3"
                 onChange={(checked: boolean) =>
                   checked
                     ? (() => {
@@ -62,42 +52,46 @@ export default class ProfilesPage extends Component<EmptyProps, ProfilesPageStat
                     : null
                 }
               />
-              <ListItemText primary={i.name} secondary={i.dir} />
-              <ListItemTrailing>
-                <Tooltip title={t("edit")}>
-                  <IconButton
-                    onClick={() =>
-                      this.setState({
-                        clicked: i.id,
-                        editDialog: true,
-                      })
-                    }
-                  >
-                    <Icon>edit</Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t("manage")}>
-                  <IconButton
-                    onClick={() => {
-                      hist.push("/profile", { id: i.id.toString() });
-                    }}
-                  >
-                    <Icon>settings</Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t("remove")}>
-                  <IconButton
-                    onClick={() =>
-                      this.setState({
-                        clicked: i.id,
-                        removeDialog: true,
-                      })
-                    }
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
-                </Tooltip>
-              </ListItemTrailing>
+              <ListItemText primary={i.name} secondary={i.dir} className="flex-grow" />
+              <Tooltip title={t("edit")}>
+                <IconButton
+                  onClick={() =>
+                    showDialog((close) => (
+                      <EditProfileDialog
+                        onClose={close}
+                        updateProfiles={() => this.setState({})}
+                        id={i.id}
+                      />
+                    ))
+                  }
+                >
+                  <Icon>edit</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t("manage")}>
+                <IconButton
+                  onClick={() => {
+                    hist.push("/profile", { id: i.id.toString() });
+                  }}
+                >
+                  <Icon>settings</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t("remove")}>
+                <IconButton
+                  onClick={() =>
+                    showDialog((close) => (
+                      <RemoveProfileDialog
+                        onClose={close}
+                        updateProfiles={() => this.setState({})}
+                        id={i.id}
+                      />
+                    ))
+                  }
+                >
+                  <Icon>delete</Icon>
+                </IconButton>
+              </Tooltip>
             </ListItem>
           ))}
         </List>

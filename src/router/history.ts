@@ -1,41 +1,39 @@
+import { broadcast } from "../renderer/session";
+
 export interface EphLocation {
   pathname: string;
   params: { [key: string]: string };
 }
 
-export type EphHistoryListener = (location: EphLocation) => void;
-
 export class EphHistory {
-  location = { pathname: "/", params: {} };
+  loc = { pathname: "/", params: {} };
   paths = ["/"];
-  listeners: EphHistoryListener[] = [];
+  // the only instance of EphHistory
   static inst = new EphHistory();
   private constructor() {
     /* */
   }
   private invokeListeners() {
-    inst.listeners.forEach((i) => i(inst.location));
+    // broadcast title update message
+    broadcast("hist", inst.loc.pathname);
   }
   pathname(): string {
-    return inst.location.pathname;
+    return inst.loc.pathname;
   }
   push(pathname: string, params: { [key: string]: string } = {}): void {
     inst.paths.push(inst.pathname());
-    inst.location.pathname = pathname;
-    inst.location.params = params;
+    inst.loc.pathname = pathname;
+    inst.loc.params = params;
     inst.invokeListeners();
   }
   replace(pathname: string, params: { [key: string]: string } = {}): void {
-    inst.location.pathname = pathname;
-    inst.location.params = params;
+    inst.loc.pathname = pathname;
+    inst.loc.params = params;
     inst.invokeListeners();
   }
   goBack(): void {
-    inst.location.pathname = inst.paths.pop() ?? "/";
+    inst.loc.pathname = inst.paths.pop() ?? "/";
     inst.invokeListeners();
-  }
-  listen(listener: EphHistoryListener): void {
-    inst.listeners.push(listener);
   }
 }
 

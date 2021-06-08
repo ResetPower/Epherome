@@ -1,6 +1,5 @@
 import Button from "./Button";
 import Icon from "./Icon";
-import Typography from "./Typography";
 import Dialog from "./Dialog";
 import { PureComponent } from "react";
 import { MinecraftLaunchDetail } from "../core/core";
@@ -19,10 +18,10 @@ export default class LaunchProgress extends PureComponent<LaunchProgressProps> {
         <p className="text-lg px-3">{t("launching")}</p>
         <div className="px-3 h-60">
           {this.props.details.map((detail, index) => (
-            <Typography key={index}>
+            <p key={index}>
               <Icon>{detail.stat ? "checked" : "arrow_forward"}</Icon>
               {detail.text}
-            </Typography>
+            </p>
           ))}
         </div>
         <div className="flex justify-end px-3">

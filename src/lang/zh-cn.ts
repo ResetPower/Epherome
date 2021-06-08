@@ -1,3 +1,4 @@
+// Chinese (China Mainland, Simplified) Language Definition File
 export default {
   hello: "你好！",
   epherome: "Epherome",

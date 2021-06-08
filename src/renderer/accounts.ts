@@ -1,4 +1,4 @@
-import { getNextId, WithId } from "../tools/arrays";
+import { getById, getNextId, WithId } from "../tools/arrays";
 import { authenticate, genOfflineToken, genUUID } from "../tools/auth";
 import { ephConfigs, setConfig } from "./config";
 
@@ -70,6 +70,10 @@ export async function createAccount(
 
 export function removeAccount(id: number): void {
   setConfig(() => (ephConfigs.accounts = ephConfigs.accounts.filter((value) => value.id !== id)));
+}
+
+export function getAccount(id: number): MinecraftAccount | null {
+  return getById(ephConfigs.accounts, id);
 }
 
 export function updateAccountToken(id: number, newToken: string): void {

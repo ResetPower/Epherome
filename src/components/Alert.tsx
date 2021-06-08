@@ -1,9 +1,12 @@
 import { ReactNode } from "react";
 
-export default function Alert(props: { children: ReactNode; severity: "info" | "warn" | "error" }) {
+export default function Alert(props: {
+  children: ReactNode;
+  severity: "info" | "warn" | "error";
+}): JSX.Element {
   return (
     <div
-      className={`bg-opacity-75 text-white rounded-md p-4 ${
+      className={`bg-opacity-60 text-white rounded-md text-base p-3 ${
         props.severity === "warn"
           ? "bg-yellow-400"
           : props.severity === "error"

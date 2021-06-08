@@ -12,14 +12,17 @@ interface Config extends Configuration {
 function makeArray<T>(...items: (T | undefined)[]): T[] {
   const arr = [];
   for (const i of items) {
+    // don't add item if undefined
     i && arr.push(i);
   }
   return arr;
 }
 
 export default (env: { [key: string]: string }): Config | Config[] => {
+  // build environment
   const dev = env.dev;
 
+  // main process
   const main: Config = {
     entry: {
       main: "./src/main/main",
@@ -45,6 +48,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
     },
   };
 
+  // renderer process
   const renderer: Config = {
     entry: {
       app: "./src/renderer/index",
@@ -96,8 +100,10 @@ export default (env: { [key: string]: string }): Config | Config[] => {
       new HtmlPlugin({
         title: "Epherome",
         template: "./assets/template.html",
+        inject: "body",
       }),
       new MiniCssExtractPlugin(),
+      // minimize css in production
       dev ? undefined : new CssMinimizerPlugin()
     ),
   };
