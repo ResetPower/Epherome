@@ -69,8 +69,7 @@
     "typescript": "^4.3.2",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2",
-    "css-what": ">=5.0.1"
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "electron-log": "^4.3.5",
