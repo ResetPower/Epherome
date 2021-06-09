@@ -1,10 +1,12 @@
-import { ComponentClass } from "react";
+import { StringMap } from "../tools/i18n";
 
-// route component
-export default function Route(_props: {
-  component: ComponentClass<any, any>;
+export interface RouteProps {
+  component: (params: StringMap) => JSX.Element;
   path: string;
   params?: string | number[];
-}): JSX.Element {
+}
+
+// route component
+export default function Route(_props: RouteProps): JSX.Element {
   return <></>;
 }

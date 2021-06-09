@@ -1,7 +1,7 @@
 import Button from "./Button";
 import Icon from "./Icon";
 import Dialog from "./Dialog";
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
 import { t } from "../renderer/global";
 import { CustomDialogProps, ErrorDialog, RequestPasswordDialog } from "./Dialogs";
@@ -85,13 +85,13 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
         <div className="p-6 h-60">
           {this.state.details.map((detail, index) => (
             <div className="flex" key={index}>
-              <i className="material-icons">{detail.stat ? "done" : "arrow_forward"}</i>
+              <Icon>{detail.stat ? "done" : "arrow_forward"}</Icon>
               <Typography>{t(detail.text)}</Typography>
             </div>
           ))}
         </div>
-        <div className="flex justify-end px-3">
-          <Typography className="flex-grow pl-4">{this.state.helperText}</Typography>
+        <div className="flex justify-end">
+          <Typography className="flex-grow text-sm">{this.state.helperText}</Typography>
           <Button>{t("cancel")}</Button>
         </div>
       </Dialog>

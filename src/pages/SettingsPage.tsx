@@ -10,16 +10,19 @@ import { EmptyProps } from "../tools/types";
 import { broadcast } from "../renderer/session";
 import SelectItem from "../components/SelectItem";
 import Typography from "../components/Typography";
+import Checkbox from "../components/Checkbox";
 
 export interface SettingsPageState {
   value: number;
   javaPath: string;
+  hitokoto: boolean;
 }
 
 export default class SettingsPage extends Component<EmptyProps, SettingsPageState> {
   state: SettingsPageState = {
     value: 0,
     javaPath: ephConfigs.javaPath,
+    hitokoto: ephConfigs.hitokoto,
   };
   cnst = constraints;
   handleChange = (_ev: ChangeEvent<EmptyProps>, value: number): void =>
@@ -36,11 +39,11 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     broadcast("theme");
     this.setState({});
   };
-  changeJavaPath = (ev: ChangeEvent<{ value: unknown }>): void => {
-    this.setState({ javaPath: ev.target.value as string });
-  };
   save = (): void => {
-    setConfig(() => (ephConfigs.javaPath = this.state.javaPath));
+    setConfig(() => {
+      ephConfigs.javaPath = this.state.javaPath;
+      ephConfigs.hitokoto = this.state.hitokoto;
+    });
     hist.goBack();
   };
   TabItem = (props: { children: ReactNode; value: number }): JSX.Element => {
@@ -75,9 +78,19 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
               label={t("javaPath")}
               placeholder={t("javaPath")}
               value={this.state.javaPath}
-              onChange={this.changeJavaPath}
+              onChange={(ev): void => {
+                this.setState({ javaPath: ev });
+              }}
               variant="filled"
             />
+            <br />
+            <Checkbox
+              checked={this.state.hitokoto}
+              onChange={(checked) => this.setState({ hitokoto: checked })}
+            >
+              {t("hitokoto")}
+            </Checkbox>
+            <Typography>{t("hitokotoDescription")}</Typography>
             <div className="flex">
               <Button className="text-gray-500" onClick={hist.goBack}>
                 {t("cancel")}

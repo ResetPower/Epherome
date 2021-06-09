@@ -6,6 +6,7 @@ export type EmptyState = Record<string, unknown>;
 
 // response object transformed from main process
 export interface EphResponse {
+  err: boolean;
   text: string;
   status: number;
 }

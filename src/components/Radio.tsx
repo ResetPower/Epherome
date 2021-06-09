@@ -1,3 +1,5 @@
+import unwrapFunction from "../tools/objects";
+
 export default function Radio(props: {
   checked: boolean;
   className?: string;
@@ -6,14 +8,7 @@ export default function Radio(props: {
   return (
     <i
       className={`material-icons select-none text-pink-500 cursor-pointer ${props.className}`}
-      onClick={() =>
-        (
-          props.onChange ??
-          ((_checked) => {
-            /**/
-          })
-        )(!props.checked)
-      }
+      onClick={() => unwrapFunction(props.onChange)(!props.checked)}
     >
       {props.checked ? "radio_button_checked" : "radio_button_unchecked"}
     </i>

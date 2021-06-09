@@ -16,6 +16,7 @@ export interface Config {
   javaPath: string;
   theme: string;
   language: string;
+  hitokoto: boolean;
 }
 
 // default values of config
@@ -26,6 +27,7 @@ let initConfig: Config = {
   selectedProfile: 0,
   javaPath: "java",
   theme: "light",
+  hitokoto: true,
   // if no language found in config, follow the system
   language: navigator.language.startsWith("zh") ? "zh-cn" : "en-us",
 };

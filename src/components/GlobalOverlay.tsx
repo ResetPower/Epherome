@@ -2,7 +2,6 @@ import { Component } from "react";
 import { EmptyProps } from "../tools/types";
 import { subscribe, unsubscribe } from "../renderer/session";
 import { clearOverlayStack, overlayStack, shouldOverlayHide } from "../renderer/overlay";
-import Dialog from "./Dialog";
 
 export interface GlobalOverlayState {
   show: boolean;
@@ -19,13 +18,13 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
       arg === "updated" && this.setState({ show: overlayStack.length !== 0 });
     });
   }
-  componentDidMount() {
+  componentDidMount(): void {
     !this.state.show && clearOverlayStack();
   }
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     unsubscribe(this.subscribeIndex);
   }
-  render() {
+  render(): JSX.Element {
     return (
       <div
         className={`flex fixed pin inset-0 z-50 overflow-auto bg-black bg-opacity-50 ${

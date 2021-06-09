@@ -20,7 +20,7 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
   render(): JSX.Element {
     const accounts = ephConfigs.accounts;
     return (
-      <Container>
+      <Container className="mb-3">
         <div className="my-3">
           <Button
             variant="contained"

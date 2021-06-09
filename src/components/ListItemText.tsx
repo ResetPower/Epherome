@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import Typography from "./Typography";
 
 export default function ListItemText(props: {

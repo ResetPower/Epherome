@@ -3,6 +3,14 @@ import os from "os";
 export const OPERATING_SYSTEM = os.platform();
 export const OPERATING_VERSION = os.version();
 
+export type MinecraftVersionType = "release" | "snapshot" | "old_beta" | "old_alpha";
+
+export interface MinecraftVersion {
+  id: string;
+  type: MinecraftVersionType;
+  url: string;
+}
+
 export interface MinecraftCommonRule {
   action: "allow" | "disallow";
   os: MinecraftOSRule;
