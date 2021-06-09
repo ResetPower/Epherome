@@ -3,10 +3,12 @@ export interface I18nOptions {
   messages: { [key: string]: { [key: string]: string } };
 }
 
+export type StringMap = { [key: string]: string };
+
 // simple i18n toolkit
 export class I18n {
   language: string;
-  messages: { [key: string]: { [key: string]: string } };
+  messages: { [key: string]: StringMap };
   constructor(options: I18nOptions) {
     this.language = options.language;
     this.messages = options.messages;

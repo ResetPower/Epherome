@@ -8,14 +8,12 @@ import { ChangeEvent, Component } from "react";
 import { hist } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../renderer/accounts";
-import { broadcast, subscribeAsync } from "../renderer/session";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
-import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
+import { MinecraftLaunchDetail } from "../core/core";
 import { EmptyProps } from "../tools/types";
-import { makeDialog, showDialog } from "../renderer/overlay";
+import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
-import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
 
@@ -33,21 +31,12 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     value: "",
     againRequestPassword: false,
   };
-  // launch progress dialog controllers
-  openLaunchProgress: () => void;
-  closeLaunchProgress: () => void;
-
   account: MinecraftAccount | null;
   constructor(props: EmptyProps) {
     super(props);
     const tId = ephConfigs.selectedProfile;
     const profile = getProfile(tId);
     this.state.value = profile === null ? "" : tId;
-    const controllerSet = makeDialog((close) => (
-      <LaunchProgress onClose={close} details={[]} helperText={"Launching..."} />
-    ));
-    this.openLaunchProgress = controllerSet[0];
-    this.closeLaunchProgress = controllerSet[1];
     this.account = getAccount(ephConfigs.selectedAccount);
   }
   // handle minecraft profile select
@@ -55,45 +44,16 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     setConfig(() => (ephConfigs.selectedProfile = parseInt(ev.target.value)));
     this.setState({ value: parseInt(ev.target.value) });
   };
-  // handle password response (from (RequestPasswordDialog))
-  handlePassword = (password: string) => {
-    broadcast("password", password);
-  };
   handleLaunch = () => {
     // value will be "" if not selected
     if (this.state.value !== "") {
       const val = Number(this.state.value);
+      const account = this.account;
       const profile = getProfile(val);
-      if (this.account !== null && profile !== null) {
-        this.openLaunchProgress();
-        const onErr = (err: Error) => {
-          this.closeLaunchProgress();
-          showDialog((close) => <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />);
-        };
-        launchMinecraft({
-          account: this.account,
-          profile,
-          setDetails: (det) => this.setState({ details: det }),
-          setHelper: (hel) => this.setState({ helperText: hel }),
-          java: ephConfigs.javaPath,
-          onDone: this.closeLaunchProgress,
-          requestPassword: async (again: boolean) => {
-            if (again !== this.state.againRequestPassword) {
-              this.setState({
-                againRequestPassword: again,
-              });
-            }
-            showDialog((close) => (
-              <RequestPasswordDialog
-                onClose={close}
-                again={this.state.againRequestPassword}
-                callback={this.handlePassword}
-              />
-            ));
-            return await subscribeAsync("password");
-          },
-          onErr,
-        }).catch(onErr);
+      if (account !== null && profile !== null) {
+        showDialog((close) => (
+          <LaunchProgress onClose={close} account={account} profile={profile} />
+        ));
       }
     }
   };

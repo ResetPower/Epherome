@@ -59,4 +59,9 @@ export default {
   download: "下载",
   clickToLogin: "点击「创建」来登录您的微软账户",
   downloads: "客户端下载",
+  "progress.auth": "登录",
+  "progress.analyze": "解析 JSON",
+  "progress.downloading": "下载缺失的库文件与资源文件",
+  "progress.unzipping": "解压原生库",
+  "progress.running": "运行中",
 };

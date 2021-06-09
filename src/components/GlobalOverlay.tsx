@@ -1,7 +1,8 @@
 import { Component } from "react";
 import { EmptyProps } from "../tools/types";
 import { subscribe, unsubscribe } from "../renderer/session";
-import { getOverlay, overlayStack } from "../renderer/overlay";
+import { clearOverlayStack, overlayStack, shouldOverlayHide } from "../renderer/overlay";
+import Dialog from "./Dialog";
 
 export interface GlobalOverlayState {
   show: boolean;
@@ -18,6 +19,9 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
       arg === "updated" && this.setState({ show: overlayStack.length !== 0 });
     });
   }
+  componentDidMount() {
+    !this.state.show && clearOverlayStack();
+  }
   componentWillUnmount() {
     unsubscribe(this.subscribeIndex);
   }
@@ -28,7 +32,17 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
           !this.state.show ? "hidden" : ""
         }`}
       >
-        {getOverlay()}
+        {overlayStack.map((comp, index) => {
+          return (
+            <div
+              className="justify-center mx-auto my-auto"
+              hidden={shouldOverlayHide(index)}
+              key={index}
+            >
+              {comp}
+            </div>
+          );
+        })}
       </div>
     );
   }
