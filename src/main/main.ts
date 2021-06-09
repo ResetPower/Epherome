@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import touchBar from "./touchbar";
 import "./system";
+import "./proxy";
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -13,7 +14,6 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      webSecurity: prod,
     },
   });
   win.setTouchBar(touchBar(win));

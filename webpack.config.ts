@@ -4,6 +4,7 @@ import path from "path";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import HtmlPlugin from "html-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
+import ReactRefreshPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 
 interface Config extends Configuration {
   devServer?: WebpackDevServerConfiguration;
@@ -91,11 +92,10 @@ export default (env: { [key: string]: string }): Config | Config[] => {
       path: path.join(__dirname, "./dist"),
       filename: "[name].js",
     },
-    devServer: dev
-      ? {
-          port: 3000,
-        }
-      : {},
+    devServer: {
+      hot: true,
+      port: 3000,
+    },
     plugins: makeArray(
       new HtmlPlugin({
         title: "Epherome",
@@ -104,7 +104,8 @@ export default (env: { [key: string]: string }): Config | Config[] => {
       }),
       new MiniCssExtractPlugin(),
       // minimize css in production
-      dev ? undefined : new CssMinimizerPlugin()
+      dev ? undefined : new CssMinimizerPlugin(),
+      dev ? new ReactRefreshPlugin() : undefined
     ),
   };
 

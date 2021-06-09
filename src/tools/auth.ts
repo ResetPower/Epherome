@@ -1,4 +1,6 @@
 // official authentication server url
+import { ephFetch } from "./http";
+
 export const MOJANG_AUTHSERVER_URL = "https://authserver.mojang.com";
 
 interface AuthenticateResult {
@@ -23,7 +25,7 @@ export async function authenticate(
   password: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<AuthenticateResult> {
-  const response = await fetch(url + "/authenticate", {
+  const response = await ephFetch(url + "/authenticate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,7 +40,7 @@ export async function authenticate(
     }),
   });
   if (isSuccess(response.status)) {
-    const param = await response.json();
+    const param = JSON.parse(response.text);
     const prof = param["selectedProfile"];
     return {
       err: false,
@@ -55,7 +57,7 @@ export async function refresh(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<RefreshResult> {
-  const response = await fetch(url + "/refresh", {
+  const response = await ephFetch(url + "/refresh", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -65,7 +67,7 @@ export async function refresh(
   if (isSuccess(response.status)) {
     return {
       err: false,
-      token: (await response.json())["accessToken"],
+      token: JSON.parse(response.text)["accessToken"],
     };
   } else {
     return {
@@ -79,7 +81,7 @@ export async function validate(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<boolean> {
-  const response = await fetch(url + "/validate", {
+  const response = await ephFetch(url + "/validate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

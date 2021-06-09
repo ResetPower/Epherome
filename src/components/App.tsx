@@ -9,7 +9,7 @@ import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "../renderer/titles";
 import ProfileManagementPage from "../pages/ProfileManagementPage";
 import { subscribe } from "../renderer/session";
-import { EmptyProps } from "../tools/types";
+import { EmptyProps, EphResponse } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "./GlobalOverlay";
 import Router from "../router/Router";
