@@ -59,4 +59,9 @@ export default {
   download: "ダウンロード",
   clickToLogin: "「作成」をクリックして Microsoft アカウントにログインします。",
   downloads: "クライアントのダウンロード",
+  "progress.auth": "ログイン",
+  "progress.analyze": "解析 JSON",
+  "progress.downloading": "不足しているライブラリとリソースをダウンロード",
+  "progress.unzipping": "ネイティブライブラリを解凍",
+  "progress.running": "ランニング",
 };

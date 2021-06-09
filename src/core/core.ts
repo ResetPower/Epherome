@@ -73,7 +73,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   setHelper("Launching Minecraft");
 
-  const doneAuthenticating = useMinecraftLaunchDetail("Authenticating");
+  const doneAuthenticating = useMinecraftLaunchDetail("progress.auth");
   if (account.mode === "mojang") {
     if (navigator.onLine) {
       const valid = await validate(account.token);
@@ -101,7 +101,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
   doneAuthenticating();
 
-  const doneAnalyzeJson = useMinecraftLaunchDetail("Analyze JSON");
+  const doneAnalyzeJson = useMinecraftLaunchDetail("progress.analyze");
   const dir = removeSuffix(profile.dir, "/");
   const data = fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`);
   const parsed: Parsed = JSON.parse(data.toString());
@@ -181,7 +181,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
   doneAnalyzeJson();
 
-  const doneDownload = useMinecraftLaunchDetail("Download missing assets and libraries");
+  const doneDownload = useMinecraftLaunchDetail("progress.downloading");
   for (const item of obj.missing) {
     setHelper("Downloading: " + item.name);
     try {
@@ -201,7 +201,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   setHelper("Launching Minecraft");
 
-  const doneUnzip = useMinecraftLaunchDetail("Unzipping");
+  const doneUnzip = useMinecraftLaunchDetail("progress.unzipping");
   const nativeLibs: Parsed = obj.nativeLibs;
   for (const i in nativeLibs) {
     const file = nativeLibs[i];
@@ -220,7 +220,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
   doneUnzip();
 
-  useMinecraftLaunchDetail("Running");
+  useMinecraftLaunchDetail("progress.running");
   const cp = obj.classpath;
   cp.push(clientJar);
   buff.push("-cp", OPERATING_SYSTEM === "win32" ? cp.join(";") : cp.join(":"));

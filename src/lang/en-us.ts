@@ -58,4 +58,9 @@ export default {
   download: "Download",
   clickToLogin: 'Click "Create" to log in to your Microsoft account',
   downloads: "Downloads",
+  "progress.auth": "Authenticating",
+  "progress.analyze": "Analyzing JSON",
+  "progress.downloading": "Downloading Missing Libraries and Assets",
+  "progress.unzipping": "Unzipping Native Libraries",
+  "progress.running": "Running",
 };

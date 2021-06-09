@@ -17,7 +17,9 @@ export default function TextField(props: {
       )}
       <input
         type={props.type}
-        className="focus:outline-none border border-divide bg-card text-black dark:text-white rounded-md w-full p-1"
+        className={`focus:outline-none border ${
+          props.error ? "border-red-500" : "border-divide"
+        } bg-card text-black dark:text-white rounded-md w-full p-1`}
         placeholder={props.placeholder}
         value={props.value}
         onChange={props.onChange}
