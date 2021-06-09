@@ -9,6 +9,8 @@ export interface EphLocation {
 export class EphHistory {
   loc = { pathname: "/", params: {} };
   paths = ["/"];
+  // animation lasts 150 ms
+  animationTimeout = 150;
   // the only instance of EphHistory
   static inst = new EphHistory();
   private constructor() {
@@ -18,23 +20,36 @@ export class EphHistory {
     // broadcast title update message
     broadcast("hist", inst.loc.pathname);
   }
+  private invokeAnimationListeners() {
+    // broadcast animation start message to let App component add 'fade-enter' to div main
+    broadcast("anm");
+  }
   pathname(): string {
     return inst.loc.pathname;
   }
   push(pathname: string, params: StringMap = {}): void {
-    inst.paths.push(inst.pathname());
-    inst.loc.pathname = pathname;
-    inst.loc.params = params;
-    inst.invokeListeners();
+    inst.invokeAnimationListeners();
+    setTimeout(() => {
+      inst.paths.push(inst.pathname());
+      inst.loc.pathname = pathname;
+      inst.loc.params = params;
+      inst.invokeListeners();
+    }, inst.animationTimeout);
   }
   replace(pathname: string, params: StringMap = {}): void {
-    inst.loc.pathname = pathname;
-    inst.loc.params = params;
-    inst.invokeListeners();
+    inst.invokeAnimationListeners();
+    setTimeout(() => {
+      inst.loc.pathname = pathname;
+      inst.loc.params = params;
+      inst.invokeListeners();
+    }, inst.animationTimeout);
   }
   goBack(): void {
-    inst.loc.pathname = inst.paths.pop() ?? "/";
-    inst.invokeListeners();
+    inst.invokeAnimationListeners();
+    setTimeout(() => {
+      inst.loc.pathname = inst.paths.pop() ?? "/";
+      inst.invokeListeners();
+    }, inst.animationTimeout);
   }
 }
 
