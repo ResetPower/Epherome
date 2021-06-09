@@ -20,18 +20,26 @@ import { ephConfigs } from "../renderer/config";
 
 export interface AppState {
   title: string;
+  mainClassName: string;
 }
 
 export default class App extends Component<EmptyProps, AppState> {
   state: AppState = {
     title: resolveTitle(hist.pathname()),
+    mainClassName: "",
   };
   constructor(props: EmptyProps) {
     super(props);
     applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+    // subscribe animation start
+    subscribe("anm", () => {
+      this.setState({
+        mainClassName: "fade-enter",
+      });
+    });
     // subscribe title change
     subscribe("hist", (pathname) => {
-      this.setState({ title: resolveTitle(pathname) });
+      this.setState({ title: resolveTitle(pathname), mainClassName: "fade-exit" });
     });
     // subscribe theme change
     subscribe("theme", () => {
@@ -49,17 +57,19 @@ export default class App extends Component<EmptyProps, AppState> {
           </IconButton>
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
-        <Router animateClassNames="fade">
-          <Route component={() => <HomePage />} path="/" />
-          <Route component={() => <AccountsPage />} path="/accounts" />
-          <Route component={() => <ProfilesPage />} path="/profiles" />
-          <Route component={() => <SettingsPage />} path="/settings" />
-          <Route component={() => <DownloadsPage />} path="/downloads" />
-          <Route
-            component={(params) => <ProfileManagementPage params={params} />}
-            path="/profile"
-          />
-        </Router>
+        <div className={this.state.mainClassName}>
+          <Router>
+            <Route component={() => <HomePage />} path="/" />
+            <Route component={() => <AccountsPage />} path="/accounts" />
+            <Route component={() => <ProfilesPage />} path="/profiles" />
+            <Route component={() => <SettingsPage />} path="/settings" />
+            <Route component={() => <DownloadsPage />} path="/downloads" />
+            <Route
+              component={(params) => <ProfileManagementPage params={params} />}
+              path="/profile"
+            />
+          </Router>
+        </div>
       </>
     );
   }
