@@ -9,7 +9,7 @@ import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "../renderer/titles";
 import ProfileManagementPage from "../pages/ProfileManagementPage";
 import { subscribe } from "../renderer/session";
-import { EmptyProps, EphResponse } from "../tools/types";
+import { EmptyProps } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "./GlobalOverlay";
 import Router from "../router/Router";
@@ -30,7 +30,9 @@ export default class App extends Component<EmptyProps, AppState> {
     super(props);
     applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
     // subscribe title change
-    subscribe("hist", (pathname) => this.setState({ title: resolveTitle(pathname) }));
+    subscribe("hist", (pathname) => {
+      this.setState({ title: resolveTitle(pathname) });
+    });
     // subscribe theme change
     subscribe("theme", () => {
       applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
@@ -47,13 +49,16 @@ export default class App extends Component<EmptyProps, AppState> {
           </IconButton>
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
-        <Router>
-          <Route component={HomePage} path="/" />
-          <Route component={AccountsPage} path="/accounts" />
-          <Route component={ProfilesPage} path="/profiles" />
-          <Route component={SettingsPage} path="/settings" />
-          <Route component={DownloadsPage} path="/downloads" />
-          <Route component={ProfileManagementPage} path="/profile" />
+        <Router animateClassNames="fade">
+          <Route component={() => <HomePage />} path="/" />
+          <Route component={() => <AccountsPage />} path="/accounts" />
+          <Route component={() => <ProfilesPage />} path="/profiles" />
+          <Route component={() => <SettingsPage />} path="/settings" />
+          <Route component={() => <DownloadsPage />} path="/downloads" />
+          <Route
+            component={(params) => <ProfileManagementPage params={params} />}
+            path="/profile"
+          />
         </Router>
       </>
     );

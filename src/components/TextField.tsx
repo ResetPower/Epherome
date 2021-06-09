@@ -1,8 +1,10 @@
+import unwrapFunction from "../tools/objects";
+
 export default function TextField(props: {
   label?: string;
   placeholder?: string;
   value?: string;
-  onChange?: any;
+  onChange?: (text: string) => void;
   variant?: string;
   type?: string;
   helperText?: string;
@@ -22,7 +24,7 @@ export default function TextField(props: {
         } bg-card text-black dark:text-white rounded-md w-full p-1`}
         placeholder={props.placeholder}
         value={props.value}
-        onChange={props.onChange}
+        onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
       />
     </div>
   );

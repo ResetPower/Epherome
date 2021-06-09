@@ -10,6 +10,13 @@ import { authenticate, refresh, validate } from "../tools/auth";
 import { removeSuffix } from "../tools/strings";
 import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
 import { constraints } from "../renderer/config";
+import { t } from "../renderer/global";
+
+export function createDirByPath(path: string): void {
+  const arr = path.split("/");
+  arr.pop();
+  fs.mkdirSync(arr.join("/"), { recursive: true });
+}
 
 // must use any at this condition
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,6 +45,7 @@ export interface MinecraftLaunchOptions {
 }
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
+  const defaultHelper = t("progress.launching");
   loggerCore.info("Launching Minecraft... ...");
   const account = options.account;
   const profile = options.profile;
@@ -71,7 +79,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     };
   }
 
-  setHelper("Launching Minecraft");
+  setHelper(defaultHelper);
 
   const doneAuthenticating = useMinecraftLaunchDetail("progress.auth");
   if (account.mode === "mojang") {
@@ -179,27 +187,62 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   } else {
     obj = analyzeLibrary(dir, parsedVanilla.libraries);
   }
+  const assetIndex = parsedVanilla.assetIndex;
   doneAnalyzeJson();
 
   const doneDownload = useMinecraftLaunchDetail("progress.downloading");
+  const missingCount = Object.keys(obj.missing).length;
+  let mCount = 0;
   for (const item of obj.missing) {
-    setHelper("Downloading: " + item.name);
+    setHelper(`${t("helper.downloadingLib")}: ${item.name} (${mCount}/${missingCount})`);
     try {
       fs.accessSync(item.path);
     } catch (e) {
-      const arr = item.path.split("/");
-      arr.pop();
-      fs.mkdirSync(arr.join("/"), { recursive: true });
+      createDirByPath(item.path);
     }
     const req = request(item.url, { method: "GET" });
     const stream = fs.createWriteStream(item.path);
     req.pipe(stream);
     const wait = new Promise((resolve) => stream.on("finish", resolve));
     await wait;
+    mCount++;
+  }
+  setHelper(defaultHelper);
+  const assetIndexPath = `${dir}/assets/indexes/${assetIndex.id}.json`;
+  try {
+    fs.accessSync(assetIndexPath);
+  } catch (e) {
+    const req = request(assetIndex.url, { method: "GET" });
+    const stream = fs.createWriteStream(assetIndexPath);
+    req.pipe(stream);
+    await new Promise((resolve) => stream.on("finish", resolve));
+  }
+  const parsedAssetIndex = JSON.parse(fs.readFileSync(assetIndexPath).toString());
+  const objs = parsedAssetIndex.objects;
+  const objsCount = Object.keys(objs).length;
+  let oCount = 0;
+  for (const i in parsedAssetIndex.objects) {
+    const obj = objs[i];
+    const hash = obj.hash;
+    const startHash = hash.slice(0, 2);
+    const path = `${dir}/assets/objects/${startHash}/${hash}`;
+    try {
+      fs.accessSync(path);
+    } catch (e) {
+      setHelper(`${t("helper.downloadingAsset")}: ${startHash}... (${oCount}/${objsCount})`);
+      createDirByPath(path);
+      const req = request(`https://resources.download.minecraft.net/${startHash}/${hash}`, {
+        method: "GET",
+      });
+      const stream = fs.createWriteStream(path);
+      req.pipe(stream);
+      await new Promise((resolve) => stream.on("finish", resolve));
+    }
+    oCount++;
   }
   doneDownload();
 
-  setHelper("Launching Minecraft");
+  setHelper(defaultHelper);
 
   const doneUnzip = useMinecraftLaunchDetail("progress.unzipping");
   const nativeLibs: Parsed = obj.nativeLibs;
@@ -257,7 +300,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     "--assetsDir",
     `${dir}/assets`,
     "--assetIndex",
-    parsedVanilla.assetIndex.id,
+    assetIndex.id,
     "--uuid",
     account.uuid,
     "--accessToken",

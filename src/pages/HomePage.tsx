@@ -16,10 +16,13 @@ import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
+import { ephFetch } from "../tools/http";
+import { isSuccess } from "../tools/auth";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
-  helperText: string;
+  hitokotoContent: string;
+  hitokotoFrom: string;
   value: number | string;
   againRequestPassword: boolean;
 }
@@ -27,10 +30,12 @@ export interface HomePageState {
 export default class HomePage extends Component<EmptyProps, HomePageState> {
   state: HomePageState = {
     details: [],
-    helperText: "...",
     value: "",
+    hitokotoContent: "...",
+    hitokotoFrom: "...",
     againRequestPassword: false,
   };
+  enableHitokoto = ephConfigs.hitokoto;
   account: MinecraftAccount | null;
   constructor(props: EmptyProps) {
     super(props);
@@ -39,12 +44,37 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     this.state.value = profile === null ? "" : tId;
     this.account = getAccount(ephConfigs.selectedAccount);
   }
+  componentDidMount(): void {
+    this.reloadHitokoto();
+  }
+  reloadHitokoto = (): void => {
+    if (this.enableHitokoto) {
+      this.setState({
+        hitokotoContent: "...",
+        hitokotoFrom: "...",
+      });
+      ephFetch("https://api.epherome.com/hitokoto").then((resp) => {
+        if (isSuccess(resp.status) && !resp.err) {
+          const parsed = JSON.parse(resp.text);
+          this.setState({
+            hitokotoContent: parsed.content,
+            hitokotoFrom: `——${parsed.from}`,
+          });
+        } else {
+          this.setState({
+            hitokotoContent: t("cannotConnectToHitokoto"),
+            hitokotoFrom: "",
+          });
+        }
+      });
+    }
+  };
   // handle minecraft profile select
-  handleChange = (ev: ChangeEvent<HTMLSelectElement>) => {
+  handleChange = (ev: ChangeEvent<HTMLSelectElement>): void => {
     setConfig(() => (ephConfigs.selectedProfile = parseInt(ev.target.value)));
     this.setState({ value: parseInt(ev.target.value) });
   };
-  handleLaunch = () => {
+  handleLaunch = (): void => {
     // value will be "" if not selected
     if (this.state.value !== "") {
       const val = Number(this.state.value);
@@ -68,7 +98,14 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             <Typography className="text-2xl">
               {username === undefined ? "Tourist" : username}
             </Typography>
-            <Typography>{t("hitokoto")}</Typography>
+            {this.enableHitokoto && (
+              <div>
+                <Typography className="text-sm">{this.state.hitokotoContent}</Typography>
+                <Typography className="text-sm text-shallow" textInherit>
+                  {this.state.hitokotoFrom}
+                </Typography>
+              </div>
+            )}
           </div>
           <div className="flex">
             <Button onClick={() => hist.push("/accounts")}>
@@ -78,6 +115,9 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
               <Icon>gamepad</Icon> {t("profiles")}
             </Button>
             <div className="flex-grow" />
+            <IconButton onClick={this.reloadHitokoto}>
+              <Icon>refresh</Icon>
+            </IconButton>
             <IconButton onClick={() => hist.push("/settings")}>
               <Icon>settings</Icon>
             </IconButton>

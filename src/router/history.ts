@@ -1,8 +1,9 @@
 import { broadcast } from "../renderer/session";
+import { StringMap } from "../tools/i18n";
 
 export interface EphLocation {
   pathname: string;
-  params: { [key: string]: string };
+  params: StringMap;
 }
 
 export class EphHistory {
@@ -20,13 +21,13 @@ export class EphHistory {
   pathname(): string {
     return inst.loc.pathname;
   }
-  push(pathname: string, params: { [key: string]: string } = {}): void {
+  push(pathname: string, params: StringMap = {}): void {
     inst.paths.push(inst.pathname());
     inst.loc.pathname = pathname;
     inst.loc.params = params;
     inst.invokeListeners();
   }
-  replace(pathname: string, params: { [key: string]: string } = {}): void {
+  replace(pathname: string, params: StringMap = {}): void {
     inst.loc.pathname = pathname;
     inst.loc.params = params;
     inst.invokeListeners();

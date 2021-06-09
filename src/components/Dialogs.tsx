@@ -122,13 +122,10 @@ export class CreateAccountDialog extends Component<
           <br />
           <br />
           <div hidden={this.state.value !== "mojang"}>
-            <TextField
-              label={t("email")}
-              onChange={(ev: any) => this.setState({ username: ev.target.value })}
-            />
+            <TextField label={t("email")} onChange={(ev) => this.setState({ username: ev })} />
             <TextField
               label={t("password")}
-              onChange={(ev: any) => this.setState({ password: ev.target.value })}
+              onChange={(ev) => this.setState({ password: ev })}
               type="password"
             />
           </div>
@@ -136,23 +133,17 @@ export class CreateAccountDialog extends Component<
           <div hidden={this.state.value !== "authlib"}>
             <TextField
               label={t("authserver")}
-              onChange={(ev: any) => this.setState({ authserver: ev.target.value })}
+              onChange={(ev) => this.setState({ authserver: ev })}
             />
-            <TextField
-              label={t("email")}
-              onChange={(ev: any) => this.setState({ username: ev.target.value })}
-            />
+            <TextField label={t("email")} onChange={(ev) => this.setState({ username: ev })} />
             <TextField
               label={t("password")}
-              onChange={(ev: any) => this.setState({ password: ev.target.value })}
+              onChange={(ev) => this.setState({ password: ev })}
               type="password"
             />
           </div>
           <div hidden={this.state.value !== "offline"}>
-            <TextField
-              label={t("username")}
-              onChange={(ev: any) => this.setState({ username: ev.target.value })}
-            />
+            <TextField label={t("username")} onChange={(ev) => this.setState({ username: ev })} />
           </div>
         </div>
         <div className="flex justify-end">
@@ -226,18 +217,18 @@ export class CreateProfileDialog extends Component<
           <TextField
             label={t("name")}
             value={this.state.name}
-            onChange={(ev: any) => this.setState({ name: ev.target.value })}
+            onChange={(ev) => this.setState({ name: ev })}
           />
           <TextField
             label={t("directory")}
             value={this.state.dir}
-            onChange={(ev: any) => this.setState({ dir: ev.target.value })}
+            onChange={(ev) => this.setState({ dir: ev })}
             helperText={t("usuallyDotMinecraftEtc")}
           />
           <TextField
             label={t("version")}
             value={this.state.ver}
-            onChange={(ev: any) => this.setState({ ver: ev.target.value })}
+            onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
         <div className="flex justify-end">
@@ -291,18 +282,18 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
           <TextField
             label={t("name")}
             value={this.state.name}
-            onChange={(e: any) => this.setState({ name: e.target.value })}
+            onChange={(ev) => this.setState({ name: ev })}
           />
           <TextField
             label={t("directory")}
             value={this.state.dir}
-            onChange={(e: any) => this.setState({ dir: e.target.value })}
+            onChange={(ev) => this.setState({ dir: ev })}
             helperText={t("usuallyDotMinecraftEtc")}
           />
           <TextField
             label={t("version")}
             value={this.state.ver}
-            onChange={(e: any) => this.setState({ ver: e.target.value })}
+            onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
         <div className="flex justify-end">
@@ -360,7 +351,7 @@ export class RequestPasswordDialog extends Component<
         <div>
           <TextField
             value={this.state.password}
-            onChange={(ev: any) => this.setState({ password: ev.target.value })}
+            onChange={(ev) => this.setState({ password: ev })}
             label={t("password")}
             type="password"
             helperText={this.props.again ? t("passwordWrong") : ""}

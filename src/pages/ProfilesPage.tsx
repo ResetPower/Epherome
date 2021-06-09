@@ -20,7 +20,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
   render(): JSX.Element {
     const profiles = ephConfigs.profiles;
     return (
-      <Container>
+      <Container className="mb-3">
         <div className="flex space-x-3 my-3">
           <Button
             variant="contained"

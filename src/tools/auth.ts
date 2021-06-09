@@ -16,7 +16,7 @@ interface RefreshResult {
 }
 
 // http status code 2xx means successful
-function isSuccess(code: number): boolean {
+export function isSuccess(code: number): boolean {
   return code >= 200 && code < 300;
 }
 
