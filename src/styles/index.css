@@ -1,10 +1,9 @@
 /* long live the tailwind!!!!!! */
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @import "main.css";
 @import "dialog.css";
 @import "switch.css";
 @import "transition.css";
-
-@tailwind components;
-@tailwind utilities;

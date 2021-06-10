@@ -8,6 +8,8 @@ import { MinecraftAccount } from "./accounts";
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
 
+export type EphDownloadProvider = "official" | "bmclapi" | "mcbbs";
+
 export interface Config {
   accounts: MinecraftAccount[];
   profiles: MinecraftProfile[];
@@ -17,6 +19,7 @@ export interface Config {
   theme: string;
   language: string;
   hitokoto: boolean;
+  downloadProvider: EphDownloadProvider;
 }
 
 // default values of config
@@ -30,6 +33,7 @@ let initConfig: Config = {
   hitokoto: true,
   // if no language found in config, follow the system
   language: navigator.language.startsWith("zh") ? "zh-cn" : "en-us",
+  downloadProvider: "official",
 };
 
 const ud = constraints.dir;

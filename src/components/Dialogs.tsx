@@ -7,10 +7,11 @@ import TextField from "./TextField";
 import Alert from "./Alert";
 import { Component, ChangeEvent } from "react";
 import { t } from "../renderer/global";
-import { createAccount, removeAccount } from "../renderer/accounts";
+import { createAccount, CreateAccountImplResult, removeAccount } from "../renderer/accounts";
 import { createProfile, editProfile, getProfile, removeProfile } from "../renderer/profiles";
 import { ipcRenderer } from "electron";
 import Typography from "./Typography";
+import Spin from "./Spin";
 
 export interface CustomDialogProps {
   onClose: () => void;
@@ -51,6 +52,7 @@ export interface ErrorDialogProps extends CustomDialogProps {
 export interface CreateAccountDialogState {
   isLoading: boolean;
   errorAlert: boolean;
+  msAccNoMinecraftAlert: boolean;
   value: string;
   username: string;
   password: string;
@@ -64,6 +66,7 @@ export class CreateAccountDialog extends Component<
   state: CreateAccountDialogState = {
     isLoading: false,
     errorAlert: false,
+    msAccNoMinecraftAlert: false,
     value: "mojang",
     username: "",
     password: "",
@@ -82,23 +85,30 @@ export class CreateAccountDialog extends Component<
     this.setState({
       isLoading: true,
       errorAlert: false,
+      msAccNoMinecraftAlert: false,
     });
     createAccount(
       this.state.value,
       this.state.username,
       this.state.password,
       this.state.authserver
-    ).then((value: boolean) => {
+    ).then((value: CreateAccountImplResult) => {
       this.setState({
         isLoading: false,
       });
-      if (value) {
+      if (value.success) {
         this.handleClose();
         this.props.updateAccounts();
       } else {
-        this.setState({
-          errorAlert: false,
-        });
+        if (value.message === "msAccNoMinecraft") {
+          this.setState({
+            msAccNoMinecraftAlert: true,
+          });
+        } else {
+          this.setState({
+            errorAlert: true,
+          });
+        }
       }
     });
   };
@@ -108,9 +118,13 @@ export class CreateAccountDialog extends Component<
         <Typography className="text-xl">{t("newAccount")}</Typography>
         <div>
           {this.state.errorAlert && (
-            <div>
+            <div className="my-3">
               <Alert severity="warn">{t("errCreatingAccount")}</Alert>
-              <br />
+            </div>
+          )}
+          {this.state.msAccNoMinecraftAlert && (
+            <div className="my-3">
+              <Alert severity="warn">{t("msAccNoMinecraft")}</Alert>
             </div>
           )}
           <Select value={this.state.value} onChange={this.handleChange}>
@@ -129,7 +143,9 @@ export class CreateAccountDialog extends Component<
               type="password"
             />
           </div>
-          <div hidden={this.state.value !== "microsoft"}>{t("clickToLogin")}</div>
+          <div hidden={this.state.value !== "microsoft"}>
+            <Typography>{t("clickToLogin")}</Typography>
+          </div>
           <div hidden={this.state.value !== "authlib"}>
             <TextField
               label={t("authserver")}
@@ -146,7 +162,8 @@ export class CreateAccountDialog extends Component<
             <TextField label={t("username")} onChange={(ev) => this.setState({ username: ev })} />
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex">
+          <div className="flex-grow">{this.state.isLoading && <Spin />}</div>
           <Button className="text-shallow" onClick={this.handleClose} textInherit>
             {t("cancel")}
           </Button>

@@ -1,8 +1,9 @@
 /* page transition animations */
 .fade-enter,
 .fade-exit {
-  transition: 200ms ease opacity;
+  transition: 150ms ease opacity;
 }
+
 .fade-enter {
   opacity: 0.1;
 }
