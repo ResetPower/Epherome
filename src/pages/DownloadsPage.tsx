@@ -6,13 +6,18 @@ import List from "../components/List";
 import { ephFetch } from "../tools/http";
 import { isSuccess } from "../tools/auth";
 import { MinecraftVersion, MinecraftVersionType } from "../core/rules";
-import Typography from "../components/Typography";
 import { t } from "../renderer/global";
+import ListItem from "../components/ListItem";
+import ListItemText from "../components/ListItemText";
+import Spin from "../components/Spin";
+import { showDialog } from "../renderer/overlay";
+import { DownloadDialog } from "../components/Dialogs";
 
 interface DownloadsPageState {
   release: boolean;
   snapshot: boolean;
   old: boolean;
+  loading: boolean;
   versions: MinecraftVersion[];
 }
 
@@ -21,6 +26,7 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
     release: true,
     snapshot: false,
     old: false,
+    loading: true,
     versions: [],
   };
   matchType(type: MinecraftVersionType): boolean {
@@ -37,7 +43,7 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
       if (isSuccess(res.status)) {
         const parsed = JSON.parse(res.text);
         if (parsed.hasOwnProperty("versions")) {
-          this.setState({ versions: parsed.versions });
+          this.setState({ versions: parsed.versions, loading: false });
         }
       }
     });
@@ -65,9 +71,23 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
             {t("old")}
           </Checkbox>
         </div>
-        <List>
+        {this.state.loading && <Spin />}
+        <List className="space-y-0">
           {this.state.versions.map((item, index) => {
-            return this.matchType(item.type) && <Typography key={index}>{item.id}</Typography>;
+            return (
+              this.matchType(item.type) && (
+                <ListItem key={index}>
+                  <ListItemText
+                    primary={item.id}
+                    secondary={item.type}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      showDialog((close) => <DownloadDialog onClose={close} />);
+                    }}
+                  />
+                </ListItem>
+              )
+            );
           })}
         </List>
       </Container>

@@ -76,4 +76,7 @@ export default {
   official: "官方",
   downloadProvider: "下载源",
   downloadProviderIsNotAble: "暂不支持更换下载源，请谅解。",
+  downloadNotSupported: "很抱歉，目前暂不支持 Minecraft 客户端的下载。",
+  maps: "地图",
+  resourcePacks: "资源包",
 };
