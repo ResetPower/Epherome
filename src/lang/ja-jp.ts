@@ -72,4 +72,9 @@ export default {
   cannotConnectToHitokoto: "Web はあなたにとって異なる、一言サーバーに接続できません",
   hitokotoDescription: "Epherome が提供するランダムなテキスト行をホームページに表示します。",
   msAccNoMinecraft: "Microsoft アカウントに Minecraft がまだありません",
+  downloading: "ダウンロード",
+  official: "公式ソース",
+  downloadProvider: "ダウンロードソース",
+  downloadProviderIsNotAble:
+    "申し訳ありませんが、現在、ダウンロードソースの変更はサポートされていません。",
 };

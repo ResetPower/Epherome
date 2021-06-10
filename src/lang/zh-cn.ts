@@ -72,4 +72,8 @@ export default {
   cannotConnectToHitokoto: "Web 因你而不同，无法连接到一言服务器。",
   hitokotoDescription: "在您的首页显示一条由 Epherome 提供的随机一行文本。",
   msAccNoMinecraft: "您的微软账户尚未拥有 Minecraft",
+  downloading: "正在下载",
+  official: "官方",
+  downloadProvider: "下载源",
+  downloadProviderIsNotAble: "暂不支持更换下载源，请谅解。",
 };

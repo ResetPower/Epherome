@@ -71,4 +71,8 @@ export default {
   cannotConnectToHitokoto: "The web is different for you, cannot connect to the Hitokoto server.",
   hitokotoDescription: "Display a random line of text provided by Epherome on your homepage.",
   msAccNoMinecraft: "You don’t have Minecraft in your Microsoft account yet",
+  downloading: "Downloading",
+  official: "Official",
+  downloadProvider: "Download Provider",
+  downloadProviderIsNotAble: "Sorry, It's not supported to change download providers now.",
 };

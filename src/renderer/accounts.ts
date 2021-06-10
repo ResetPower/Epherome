@@ -18,6 +18,7 @@ export interface MinecraftAccount extends WithId {
   name: string;
   uuid: string;
   token: string;
+  authserver?: string;
   mode: "mojang" | "microsoft" | "authlib" | "offline";
 }
 
@@ -139,6 +140,7 @@ export async function createAccount(
         name: result.name,
         uuid: result.uuid,
         token: result.token,
+        authserver,
         mode: "authlib",
       });
       return successfulResult;
