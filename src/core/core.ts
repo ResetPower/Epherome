@@ -54,6 +54,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const onDone = options.onDone;
   const setDetails = options.setDetails;
   const setHelper = options.setHelper;
+  const authlibInjectorPath = `${constraints.dir}/authlib-injector-1.1.35.jar`;
 
   function useMinecraftLaunchDetail(text: string): () => void {
     const det = {
@@ -124,6 +125,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   let parsedMod: Parsed = {};
   let withModLoader = false;
   let withHMCLPatch = false;
+  let withAuthlibInjector = false;
 
   if ("inheritsFrom" in parsed) {
     // with mod loader
@@ -246,6 +248,22 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     }
     oCount++;
   }
+  if (account.mode === "authlib") {
+    withAuthlibInjector = true;
+    try {
+      fs.accessSync(authlibInjectorPath);
+    } catch (e) {
+      setHelper(`${t("downloading")}: authlib-injector`);
+      // TODO Need to optimize more here
+      const req = request(
+        "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar",
+        { method: "GET" }
+      );
+      const stream = fs.createWriteStream(authlibInjectorPath);
+      req.pipe(stream);
+      await new Promise((resolve) => stream.on("finish", resolve));
+    }
+  }
   doneDownload();
 
   setHelper(defaultHelper);
@@ -272,6 +290,9 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   useMinecraftLaunchDetail("progress.running");
   const cp = obj.classpath;
   cp.push(clientJar);
+  if (withAuthlibInjector) {
+    buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);
+  }
   buff.push("-cp", OPERATING_SYSTEM === "win32" ? cp.join(";") : cp.join(":"));
   buff.push(parsed["mainClass"]);
   if (withModLoader || withHMCLPatch) {

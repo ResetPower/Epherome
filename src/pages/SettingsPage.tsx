@@ -77,19 +77,27 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
               <SelectItem value="zh-cn">中文简体</SelectItem>
               <SelectItem value="ja-jp">日本語</SelectItem>
             </Select>
-            <Typography>Download Provider</Typography>
+            <br />
+            <br />
+            <Typography>{t("downloadProvider")}</Typography>
             <Select
               value={this.state.downloadProvider}
-              onChange={(ev) =>
+              onChange={
+                () => {
+                  /**/
+                }
+                /*(ev) =>
                 this.setState({
                   downloadProvider: (ev.target.value as EphDownloadProvider) ?? "official",
-                })
+                })*/
               }
             >
-              <SelectItem value="official">Official</SelectItem>
+              <SelectItem value="official">{t("official")}</SelectItem>
               <SelectItem value="bmclapi">BMCLAPI</SelectItem>
               <SelectItem value="mcbbs">MCBBS</SelectItem>
             </Select>
+            <Typography>{t("downloadProviderIsNotAble")}</Typography>
+            <br />
             <TextField
               label={t("javaPath")}
               placeholder={t("javaPath")}
