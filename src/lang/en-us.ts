@@ -74,5 +74,8 @@ export default {
   downloading: "Downloading",
   official: "Official",
   downloadProvider: "Download Provider",
-  downloadProviderIsNotAble: "Sorry, It's not supported to change download providers now.",
+  downloadProviderIsNotAble: "Sorry, it's not supported to change download providers now.",
+  downloadNotSupported: "Sorry, it's not supported to download Minecraft client now.",
+  maps: "Maps",
+  resourcePacks: "Resource Packs",
 };

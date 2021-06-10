@@ -9,8 +9,8 @@ export interface EphLocation {
 export class EphHistory {
   loc = { pathname: "/", params: {} };
   paths = ["/"];
-  // animation lasts 100 ms
-  animationTimeout = 100;
+  // animation lasts 120 ms
+  animationTimeout = 120;
   // the only instance of EphHistory
   static inst = new EphHistory();
   private constructor() {

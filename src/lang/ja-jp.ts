@@ -77,4 +77,8 @@ export default {
   downloadProvider: "ダウンロードソース",
   downloadProviderIsNotAble:
     "申し訳ありませんが、現在、ダウンロードソースの変更はサポートされていません。",
+  downloadNotSupported:
+    "申し訳ありませんが、Minecraft クライアントのダウンロードは現在サポートされていません。",
+  maps: "マップ",
+  resourcePacks: "リソースパック",
 };

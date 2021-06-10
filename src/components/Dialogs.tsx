@@ -399,3 +399,14 @@ export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
     </Dialog>
   );
 }
+
+export function DownloadDialog(props: CustomDialogProps): JSX.Element {
+  return (
+    <Dialog indentBottom>
+      <Typography>{t("downloadNotSupported")}</Typography>
+      <div className="flex justify-end">
+        <Button onClick={props.onClose}>{t("ok")}</Button>
+      </div>
+    </Dialog>
+  );
+}
