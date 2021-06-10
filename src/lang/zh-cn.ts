@@ -71,4 +71,5 @@ export default {
   old: "远古版",
   cannotConnectToHitokoto: "Web 因你而不同，无法连接到一言服务器。",
   hitokotoDescription: "在您的首页显示一条由 Epherome 提供的随机一行文本。",
+  msAccNoMinecraft: "您的微软账户尚未拥有 Minecraft",
 };

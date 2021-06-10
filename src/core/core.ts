@@ -106,6 +106,12 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     } else {
       // network not available, account validating skipped
     }
+  } else if (account.mode === "microsoft") {
+    if (navigator.onLine) {
+      // TODO Validate Microsoft Account Token
+    } else {
+      // network not available, account validating skipped
+    }
   }
   doneAuthenticating();
 

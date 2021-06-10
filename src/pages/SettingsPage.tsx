@@ -4,7 +4,7 @@ import Select from "../components/Select";
 import path from "path";
 import { Component, ChangeEvent, ReactNode } from "react";
 import Link from "../components/Link";
-import { constraints, ephConfigs, setConfig } from "../renderer/config";
+import { constraints, ephConfigs, EphDownloadProvider, setConfig } from "../renderer/config";
 import { t, i18n, hist } from "../renderer/global";
 import { EmptyProps } from "../tools/types";
 import { broadcast } from "../renderer/session";
@@ -16,6 +16,7 @@ export interface SettingsPageState {
   value: number;
   javaPath: string;
   hitokoto: boolean;
+  downloadProvider: EphDownloadProvider;
 }
 
 export default class SettingsPage extends Component<EmptyProps, SettingsPageState> {
@@ -23,6 +24,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     value: 0,
     javaPath: ephConfigs.javaPath,
     hitokoto: ephConfigs.hitokoto,
+    downloadProvider: ephConfigs.downloadProvider,
   };
   cnst = constraints;
   handleChange = (_ev: ChangeEvent<EmptyProps>, value: number): void =>
@@ -43,6 +45,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     setConfig(() => {
       ephConfigs.javaPath = this.state.javaPath;
       ephConfigs.hitokoto = this.state.hitokoto;
+      ephConfigs.downloadProvider = this.state.downloadProvider;
     });
     hist.goBack();
   };
@@ -73,6 +76,19 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
               <SelectItem value="en-us">English</SelectItem>
               <SelectItem value="zh-cn">中文简体</SelectItem>
               <SelectItem value="ja-jp">日本語</SelectItem>
+            </Select>
+            <Typography>Download Provider</Typography>
+            <Select
+              value={this.state.downloadProvider}
+              onChange={(ev) =>
+                this.setState({
+                  downloadProvider: (ev.target.value as EphDownloadProvider) ?? "official",
+                })
+              }
+            >
+              <SelectItem value="official">Official</SelectItem>
+              <SelectItem value="bmclapi">BMCLAPI</SelectItem>
+              <SelectItem value="mcbbs">MCBBS</SelectItem>
             </Select>
             <TextField
               label={t("javaPath")}

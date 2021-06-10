@@ -71,4 +71,5 @@ export default {
   old: "古い",
   cannotConnectToHitokoto: "Web はあなたにとって異なる、一言サーバーに接続できません",
   hitokotoDescription: "Epherome が提供するランダムなテキスト行をホームページに表示します。",
+  msAccNoMinecraft: "Microsoft アカウントに Minecraft がまだありません",
 };

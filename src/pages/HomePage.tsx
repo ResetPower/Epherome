@@ -115,9 +115,11 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
               <Icon>gamepad</Icon> {t("profiles")}
             </Button>
             <div className="flex-grow" />
-            <IconButton onClick={this.reloadHitokoto}>
-              <Icon>refresh</Icon>
-            </IconButton>
+            {this.enableHitokoto && (
+              <IconButton onClick={this.reloadHitokoto}>
+                <Icon>refresh</Icon>
+              </IconButton>
+            )}
             <IconButton onClick={() => hist.push("/settings")}>
               <Icon>settings</Icon>
             </IconButton>
