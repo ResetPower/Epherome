@@ -28,6 +28,9 @@
     },
     "asar": true,
     "compression": "normal",
+    "win": {
+      "target": "portable"
+    },
     "files": [
       "dist/",
       "!node_modules/"
