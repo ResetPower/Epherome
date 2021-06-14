@@ -58,6 +58,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
     mode: dev ? "development" : "production",
     devtool: dev ? "inline-source-map" : "source-map",
     module: {
+      exprContextCritical: false,
       rules: [
         {
           test: /\.(ts|tsx)?$/,

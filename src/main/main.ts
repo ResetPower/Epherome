@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import touchBar from "./touchbar";
 import "./system";
-import "./proxy";
 import "./ms-auth";
 
 const prod = process.env.NODE_ENV === "production";

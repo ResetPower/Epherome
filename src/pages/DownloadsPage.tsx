@@ -3,7 +3,6 @@ import { EmptyProps } from "../tools/types";
 import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
 import List from "../components/List";
-import { ephFetch } from "../tools/http";
 import { isSuccess } from "../tools/auth";
 import { MinecraftVersion, MinecraftVersionType } from "../core/rules";
 import { t } from "../renderer/global";
@@ -12,6 +11,7 @@ import ListItemText from "../components/ListItemText";
 import Spin from "../components/Spin";
 import { showDialog } from "../renderer/overlay";
 import { DownloadDialog } from "../components/Dialogs";
+import got from "got";
 
 interface DownloadsPageState {
   release: boolean;
@@ -39,12 +39,10 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
       : false;
   }
   componentDidMount(): void {
-    ephFetch("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((res) => {
-      if (isSuccess(res.status)) {
-        const parsed = JSON.parse(res.text);
-        if (parsed.hasOwnProperty("versions")) {
-          this.setState({ versions: parsed.versions, loading: false });
-        }
+    got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((resp) => {
+      const parsed = JSON.parse(resp.body);
+      if (parsed.hasOwnProperty("versions")) {
+        this.setState({ versions: parsed.versions, loading: false });
       }
     });
   }

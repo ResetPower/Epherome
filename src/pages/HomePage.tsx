@@ -11,18 +11,16 @@ import { getAccount, MinecraftAccount } from "../renderer/accounts";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import { MinecraftLaunchDetail } from "../core/core";
-import { EmptyProps } from "../tools/types";
+import { EmptyProps, Hitokoto } from "../tools/types";
 import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
-import { ephFetch } from "../tools/http";
-import { isSuccess } from "../tools/auth";
+import got from "got";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
-  hitokotoContent: string;
-  hitokotoFrom: string;
+  hitokoto: Hitokoto;
   value: number | string;
   againRequestPassword: boolean;
 }
@@ -31,10 +29,10 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   state: HomePageState = {
     details: [],
     value: "",
-    hitokotoContent: "...",
-    hitokotoFrom: "...",
+    hitokoto: { content: "...", from: "..." },
     againRequestPassword: false,
   };
+  static hitokoto: Hitokoto | null = null;
   enableHitokoto = ephConfigs.hitokoto;
   account: MinecraftAccount | null;
   constructor(props: EmptyProps) {
@@ -45,28 +43,37 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     this.account = getAccount(ephConfigs.selectedAccount);
   }
   componentDidMount(): void {
-    this.reloadHitokoto();
+    if (!HomePage.hitokoto) {
+      this.reloadHitokoto();
+    } else {
+      this.setState({
+        hitokoto: HomePage.hitokoto,
+      });
+    }
   }
   reloadHitokoto = (): void => {
     if (this.enableHitokoto) {
-      this.setState({
-        hitokotoContent: "...",
-        hitokotoFrom: "...",
-      });
-      ephFetch("https://api.epherome.com/hitokoto").then((resp) => {
-        if (isSuccess(resp.status) && !resp.err) {
-          const parsed = JSON.parse(resp.text);
+      this.setState({ hitokoto: { content: "...", from: "..." } });
+      got("https://api.epherome.com/hitokoto")
+        .then((resp) => {
+          const parsed = JSON.parse(resp.body);
+          const hk = {
+            content: parsed.content,
+            from: `——${parsed.from}`,
+          };
+          HomePage.hitokoto = hk;
           this.setState({
-            hitokotoContent: parsed.content,
-            hitokotoFrom: `——${parsed.from}`,
+            hitokoto: hk,
           });
-        } else {
+        })
+        .catch(() => {
           this.setState({
-            hitokotoContent: t("cannotConnectToHitokoto"),
-            hitokotoFrom: "",
+            hitokoto: {
+              content: t("cannotConnectToHitokoto"),
+              from: "",
+            },
           });
-        }
-      });
+        });
     }
   };
   // handle minecraft profile select
@@ -100,9 +107,9 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             </Typography>
             {this.enableHitokoto && (
               <div>
-                <Typography className="text-sm">{this.state.hitokotoContent}</Typography>
+                <Typography className="text-sm">{this.state.hitokoto.content}</Typography>
                 <Typography className="text-sm text-shallow" textInherit>
-                  {this.state.hitokotoFrom}
+                  {this.state.hitokoto.from}
                 </Typography>
               </div>
             )}
