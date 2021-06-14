@@ -12,8 +12,7 @@ import { subscribe } from "../renderer/session";
 import { EmptyProps } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "./GlobalOverlay";
-import Router from "../router/Router";
-import Route from "../router/Route";
+import { Route, Router } from "../tools/router";
 import { darkTheme, hist, lightTheme } from "../renderer/global";
 import { applyTheme } from "../renderer/theme";
 import { ephConfigs } from "../renderer/config";
@@ -58,12 +57,12 @@ export default class App extends Component<EmptyProps, AppState> {
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
         <div className={this.state.mainClassName}>
-          <Router>
-            <Route component={() => <HomePage />} path="/" />
-            <Route component={() => <AccountsPage />} path="/accounts" />
-            <Route component={() => <ProfilesPage />} path="/profiles" />
-            <Route component={() => <SettingsPage />} path="/settings" />
-            <Route component={() => <DownloadsPage />} path="/downloads" />
+          <Router history={hist}>
+            <Route component={<HomePage />} path="/" />
+            <Route component={<AccountsPage />} path="/accounts" />
+            <Route component={<ProfilesPage />} path="/profiles" />
+            <Route component={<SettingsPage />} path="/settings" />
+            <Route component={<DownloadsPage />} path="/downloads" />
             <Route
               component={(params) => <ProfileManagementPage params={params} />}
               path="/profile"

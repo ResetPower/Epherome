@@ -1,8 +1,8 @@
-// official authentication server url
-import { ephFetch } from "./http";
 import { StringMap } from "./i18n";
 import { obj2form } from "./objects";
+import got from "got";
 
+// official authentication server url
 export const MOJANG_AUTHSERVER_URL = "https://authserver.mojang.com";
 
 interface AuthenticateResult {
@@ -27,7 +27,7 @@ export async function authenticate(
   password: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<AuthenticateResult> {
-  const response = await ephFetch(url + "/authenticate", {
+  const response = await got(url + "/authenticate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -41,8 +41,8 @@ export async function authenticate(
       password: password,
     }),
   });
-  if (isSuccess(response.status)) {
-    const param = JSON.parse(response.text);
+  if (isSuccess(response.statusCode)) {
+    const param = JSON.parse(response.body);
     const prof = param["selectedProfile"];
     return {
       err: false,
@@ -59,17 +59,17 @@ export async function refresh(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<RefreshResult> {
-  const response = await ephFetch(url + "/refresh", {
+  const response = await got(url + "/refresh", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ accessToken: token }),
   });
-  if (isSuccess(response.status)) {
+  if (isSuccess(response.statusCode)) {
     return {
       err: false,
-      token: JSON.parse(response.text)["accessToken"],
+      token: JSON.parse(response.body)["accessToken"],
     };
   } else {
     return {
@@ -83,14 +83,14 @@ export async function validate(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<boolean> {
-  const response = await ephFetch(url + "/validate", {
+  const response = await got(url + "/validate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ accessToken: token }),
   });
-  return isSuccess(response.status);
+  return isSuccess(response.statusCode);
 }
 
 // the meta part of a minecraft jwt
@@ -169,7 +169,7 @@ export interface MicrosoftMinecraftProfileResult {
 }
 
 export async function authCode2AuthToken(code: string): Promise<StringMap> {
-  const result = await ephFetch("https://login.live.com/oauth20_token.srf", {
+  const result = await got("https://login.live.com/oauth20_token.srf", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -182,16 +182,16 @@ export async function authCode2AuthToken(code: string): Promise<StringMap> {
       scope: "service::user.auth.xboxlive.com::MBI_SSL",
     }),
   });
-  if (result.err || !isSuccess(result.status)) {
+  if (!isSuccess(result.statusCode)) {
     // unable to get auth token
     return { err: "err" };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }
 
 export async function authToken2XBLToken(token: string): Promise<XBLTokenResult> {
-  const result = await ephFetch("https://user.auth.xboxlive.com/user/authenticate", {
+  const result = await got("https://user.auth.xboxlive.com/user/authenticate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -207,16 +207,16 @@ export async function authToken2XBLToken(token: string): Promise<XBLTokenResult>
       TokenType: "JWT",
     }),
   });
-  if (result.err || !isSuccess(result.status)) {
+  if (!isSuccess(result.statusCode)) {
     // unable to get xbl token
     return { err: true };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }
 
 export async function XBLToken2XSTSToken(token: string): Promise<XSTSTokenResult> {
-  const result = await ephFetch("https://xsts.auth.xboxlive.com/xsts/authorize", {
+  const result = await got("https://xsts.auth.xboxlive.com/xsts/authorize", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -231,11 +231,11 @@ export async function XBLToken2XSTSToken(token: string): Promise<XSTSTokenResult
       TokenType: "JWT",
     }),
   });
-  if (result.err || !isSuccess(result.status)) {
+  if (!isSuccess(result.statusCode)) {
     // unable to get xsts token
     return { err: true };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }
 
@@ -243,53 +243,50 @@ export async function XSTSToken2MinecraftToken(
   token: string,
   uhs: string
 ): Promise<MicrosoftMinecraftTokenResult> {
-  const result = await ephFetch(
-    "https://api.minecraftservices.com/authentication/login_with_xbox",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        identityToken: `XBL3.0 x=${uhs};${token}`,
-      }),
-    }
-  );
-  if (result.err || !isSuccess(result.status)) {
+  const result = await got("https://api.minecraftservices.com/authentication/login_with_xbox", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      identityToken: `XBL3.0 x=${uhs};${token}`,
+    }),
+  });
+  if (!isSuccess(result.statusCode)) {
     return { err: true };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }
 
 export async function checkMinecraftOwnership(token: string): Promise<MinecraftOwnershipResult> {
-  const result = await ephFetch("https://api.minecraftservices.com/entitlements/mcstore", {
+  const result = await got("https://api.minecraftservices.com/entitlements/mcstore", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
-  if (result.err || !isSuccess(result.status)) {
+  if (!isSuccess(result.statusCode)) {
     return { err: true };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }
 
 export async function getMicrosoftMinecraftProfile(
   token: string
 ): Promise<MicrosoftMinecraftProfileResult> {
-  const result = await ephFetch("https://api.minecraftservices.com/minecraft/profile", {
+  const result = await got("https://api.minecraftservices.com/minecraft/profile", {
     method: "GET",
     headers: {
       "Content-Type": "application.json",
       Authorization: `Bearer ${token}`,
     },
   });
-  if (result.err || !isSuccess(result.status)) {
+  if (!isSuccess(result.statusCode)) {
     return { err: true };
   } else {
-    return JSON.parse(result.text);
+    return JSON.parse(result.body);
   }
 }

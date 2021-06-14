@@ -6,7 +6,6 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "./out",
-    "resolveJsonModule": true,
     "rootDir": "./src",
     "skipLibCheck": true,
     "sourceMap": true,

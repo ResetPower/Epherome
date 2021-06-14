@@ -1,7 +1,6 @@
 import { spawn } from "child_process";
 import StreamZip from "node-stream-zip";
 import os from "os";
-import request from "request";
 import fs from "fs";
 import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
@@ -11,6 +10,11 @@ import { removeSuffix } from "../tools/strings";
 import { AnalyzedLibraries, analyzeLibrary } from "./libraries";
 import { constraints } from "../renderer/config";
 import { t } from "../renderer/global";
+import got from "got";
+import { promisify } from "util";
+import { pipeline } from "stream";
+
+const pipelineAsync = promisify(pipeline);
 
 export function createDirByPath(path: string): void {
   const arr = path.split("/");
@@ -208,11 +212,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     } catch (e) {
       createDirByPath(item.path);
     }
-    const req = request(item.url, { method: "GET" });
-    const stream = fs.createWriteStream(item.path);
-    req.pipe(stream);
-    const wait = new Promise((resolve) => stream.on("finish", resolve));
-    await wait;
+    await pipelineAsync(got.stream(item.url), fs.createWriteStream(item.path));
     mCount++;
   }
   setHelper(defaultHelper);
@@ -220,10 +220,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   try {
     fs.accessSync(assetIndexPath);
   } catch (e) {
-    const req = request(assetIndex.url, { method: "GET" });
-    const stream = fs.createWriteStream(assetIndexPath);
-    req.pipe(stream);
-    await new Promise((resolve) => stream.on("finish", resolve));
+    await pipelineAsync(got.stream(assetIndex.url), fs.createWriteStream(assetIndexPath));
   }
   const parsedAssetIndex = JSON.parse(fs.readFileSync(assetIndexPath).toString());
   const objs = parsedAssetIndex.objects;
@@ -239,12 +236,10 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     } catch (e) {
       setHelper(`${t("helper.downloadingAsset")}: ${startHash}... (${oCount}/${objsCount})`);
       createDirByPath(path);
-      const req = request(`https://resources.download.minecraft.net/${startHash}/${hash}`, {
-        method: "GET",
-      });
-      const stream = fs.createWriteStream(path);
-      req.pipe(stream);
-      await new Promise((resolve) => stream.on("finish", resolve));
+      await pipelineAsync(
+        got.stream(`https://resources.download.minecraft.net/${startHash}/${hash}`),
+        fs.createWriteStream(path)
+      );
     }
     oCount++;
   }
@@ -255,13 +250,10 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     } catch (e) {
       setHelper(`${t("downloading")}: authlib-injector`);
       // TODO Need to optimize more here
-      const req = request(
-        "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar",
-        { method: "GET" }
+      await pipelineAsync(
+        got.stream("https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar"),
+        fs.createWriteStream(authlibInjectorPath)
       );
-      const stream = fs.createWriteStream(authlibInjectorPath);
-      req.pipe(stream);
-      await new Promise((resolve) => stream.on("finish", resolve));
     }
   }
   doneDownload();

@@ -6,8 +6,8 @@ import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
-import { getEphHistory } from "../router/history";
 import { defineTheme } from "./theme";
+import { EphHistory } from "../tools/history";
 
 const lang = ephConfigs.language;
 
@@ -58,7 +58,7 @@ export const darkTheme = defineTheme({
 export const logger = log.scope("renderer");
 
 // global history
-export const hist = getEphHistory();
+export const hist = new EphHistory();
 
 // response main-process calls
 ipcRenderer.on("nav-back", hist.goBack);
