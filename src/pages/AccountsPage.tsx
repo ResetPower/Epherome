@@ -30,10 +30,10 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
               ))
             }
           >
-            <Icon>create</Icon> {t("create")}
+            <Icon>create</Icon> {t.create}
           </Button>
         </div>
-        {accounts.length === 0 && <Alert severity="info">{t("noAccountsYet")}</Alert>}
+        {accounts.length === 0 && <Alert severity="info">{t.noAccountsYet}</Alert>}
         <List className="pl-3">
           {accounts.map((i: MinecraftAccount) => (
             <ListItem key={i.id}>
@@ -49,8 +49,8 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
                     : null
                 }
               />
-              <ListItemText primary={i.name} secondary={t(i.mode)} className="flex-grow" />
-              <Tooltip title={t("remove")}>
+              <ListItemText primary={i.name} secondary={t[i.mode]} className="flex-grow" />
+              <Tooltip title={t.remove}>
                 <IconButton
                   onClick={() =>
                     showDialog((close) => (

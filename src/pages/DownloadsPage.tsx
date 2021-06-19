@@ -3,7 +3,6 @@ import { EmptyProps } from "../tools/types";
 import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
 import List from "../components/List";
-import { isSuccess } from "../tools/auth";
 import { MinecraftVersion, MinecraftVersionType } from "../core/rules";
 import { t } from "../renderer/global";
 import ListItem from "../components/ListItem";
@@ -54,19 +53,19 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
             checked={this.state.release}
             onChange={(checked) => this.setState({ release: checked })}
           >
-            {t("release")}
+            {t.release}
           </Checkbox>
           <Checkbox
             checked={this.state.snapshot}
             onChange={(checked) => this.setState({ snapshot: checked })}
           >
-            {t("snapshot")}
+            {t.snapshot}
           </Checkbox>
           <Checkbox
             checked={this.state.old}
             onChange={(checked) => this.setState({ old: checked })}
           >
-            {t("old")}
+            {t.old}
           </Checkbox>
         </div>
         {this.state.loading && <Spin />}

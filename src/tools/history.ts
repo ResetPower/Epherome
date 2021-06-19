@@ -1,11 +1,13 @@
 import { broadcast } from "../renderer/session";
-import { StringMap } from "./i18n";
+import { StringMap } from "./types";
 
 export class EphHistory {
   loc = { pathname: "/", params: {} };
   paths = ["/"];
-  // animation lasts 120 ms
-  animationTimeout = 120;
+  animationTimeout: number;
+  constructor(timeout = 120) {
+    this.animationTimeout = timeout;
+  }
   // broadcast title update message
   private invokeListeners = (): void => broadcast("hist", this.loc.pathname);
   // broadcast animation start message
@@ -13,6 +15,7 @@ export class EphHistory {
   pathname = (): string => {
     return this.loc.pathname;
   };
+  // do an action with animation needed
   act = (block: () => void): void => {
     this.invokeAnimationListeners();
     setTimeout(() => {

@@ -1,5 +1,4 @@
 import Select from "../components/Select";
-import SelectItem from "../components/SelectItem";
 import Container from "../components/Container";
 import Icon from "../components/Icon";
 import Button from "../components/Button";
@@ -11,7 +10,8 @@ import { getAccount, MinecraftAccount } from "../renderer/accounts";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import { MinecraftLaunchDetail } from "../core/core";
-import { EmptyProps, Hitokoto } from "../tools/types";
+import { EmptyProps } from "../tools/types";
+import { Hitokoto } from "../renderer/hitokoto";
 import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
@@ -69,7 +69,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
         .catch(() => {
           this.setState({
             hitokoto: {
-              content: t("cannotConnectToHitokoto"),
+              content: t.cannotConnectToHitokoto,
               from: "",
             },
           });
@@ -101,7 +101,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
       <Container>
         <Card className="mb-3 p-6 shadow-sm">
           <div className="p-3">
-            <p className="text-shallow mt-0">{t("hello")}</p>
+            <p className="text-shallow mt-0">{t.hello}</p>
             <Typography className="text-2xl">
               {username === undefined ? "Tourist" : username}
             </Typography>
@@ -116,10 +116,10 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
           </div>
           <div className="flex">
             <Button onClick={() => hist.push("/accounts")}>
-              <Icon>account_circle</Icon> {t("accounts")}
+              <Icon>account_circle</Icon> {t.accounts}
             </Button>
             <Button onClick={() => hist.push("/profiles")}>
-              <Icon>gamepad</Icon> {t("profiles")}
+              <Icon>gamepad</Icon> {t.profiles}
             </Button>
             <div className="flex-grow" />
             {this.enableHitokoto && (
@@ -136,19 +136,19 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
           <Card className="flex-grow">
             <Select value={this.state.value} onChange={this.handleChange}>
               {profiles.map((i: MinecraftProfile) => (
-                <SelectItem key={i.id} value={i.id}>
+                <option key={i.id} value={i.id}>
                   {i.name}
-                </SelectItem>
+                </option>
               ))}
             </Select>
             <Button onClick={this.handleLaunch}>
               <Icon>play_arrow</Icon>
-              {t("launch")}
+              {t.launch}
             </Button>
           </Card>
           <Card className="flex-grow">
-            <Typography className="text-xl">{t("warning")}</Typography>
-            <Typography>{t("alphaWarning")}</Typography>
+            <Typography className="text-xl">{t.warning}</Typography>
+            <Typography>{t.alphaWarning}</Typography>
           </Card>
         </div>
       </Container>

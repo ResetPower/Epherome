@@ -1,6 +1,5 @@
 import Dialog from "./Dialog";
 import Select from "./Select";
-import SelectItem from "./SelectItem";
 import Button from "./Button";
 import Icon from "./Icon";
 import TextField from "./TextField";
@@ -115,60 +114,57 @@ export class CreateAccountDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t("newAccount")}</Typography>
+        <Typography className="text-xl">{t.newAccount}</Typography>
         <div>
           {this.state.errorAlert && (
             <div className="my-3">
-              <Alert severity="warn">{t("errCreatingAccount")}</Alert>
+              <Alert severity="warn">{t.errCreatingAccount}</Alert>
             </div>
           )}
           {this.state.msAccNoMinecraftAlert && (
             <div className="my-3">
-              <Alert severity="warn">{t("msAccNoMinecraft")}</Alert>
+              <Alert severity="warn">{t.msAccNoMinecraft}</Alert>
             </div>
           )}
           <Select value={this.state.value} onChange={this.handleChange}>
-            <SelectItem value={"mojang"}>{t("mojang")}</SelectItem>
-            <SelectItem value={"microsoft"}>{t("microsoft")}</SelectItem>
-            <SelectItem value={"authlib"}>{t("authlib")}</SelectItem>
-            <SelectItem value={"offline"}>{t("offline")}</SelectItem>
+            <option value={"mojang"}>{t.mojang}</option>
+            <option value={"microsoft"}>{t.microsoft}</option>
+            <option value={"authlib"}>{t.authlib}</option>
+            <option value={"offline"}>{t.offline}</option>
           </Select>
           <br />
           <br />
           <div hidden={this.state.value !== "mojang"}>
-            <TextField label={t("email")} onChange={(ev) => this.setState({ username: ev })} />
+            <TextField label={t.email} onChange={(ev) => this.setState({ username: ev })} />
             <TextField
-              label={t("password")}
+              label={t.password}
               onChange={(ev) => this.setState({ password: ev })}
               type="password"
             />
           </div>
           <div hidden={this.state.value !== "microsoft"}>
-            <Typography>{t("clickToLogin")}</Typography>
+            <Typography>{t.clickToLogin}</Typography>
           </div>
           <div hidden={this.state.value !== "authlib"}>
+            <TextField label={t.authserver} onChange={(ev) => this.setState({ authserver: ev })} />
+            <TextField label={t.email} onChange={(ev) => this.setState({ username: ev })} />
             <TextField
-              label={t("authserver")}
-              onChange={(ev) => this.setState({ authserver: ev })}
-            />
-            <TextField label={t("email")} onChange={(ev) => this.setState({ username: ev })} />
-            <TextField
-              label={t("password")}
+              label={t.password}
               onChange={(ev) => this.setState({ password: ev })}
               type="password"
             />
           </div>
           <div hidden={this.state.value !== "offline"}>
-            <TextField label={t("username")} onChange={(ev) => this.setState({ username: ev })} />
+            <TextField label={t.username} onChange={(ev) => this.setState({ username: ev })} />
           </div>
         </div>
         <div className="flex">
           <div className="flex-grow">{this.state.isLoading && <Spin />}</div>
           <Button className="text-shallow" onClick={this.handleClose} textInherit>
-            {t("cancel")}
+            {t.cancel}
           </Button>
           <Button disabled={this.state.isLoading} onClick={this.handleCreate}>
-            {t("create")}
+            {t.create}
           </Button>
         </div>
       </Dialog>
@@ -184,14 +180,14 @@ export function RemoveAccountDialog(props: RemoveAccountDialogProps): JSX.Elemen
   };
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl">{t("removeAccount")}</Typography>
-      <Typography>{t("confirmRemoving")}</Typography>
+      <Typography className="text-xl">{t.removeAccount}</Typography>
+      <Typography>{t.confirmRemoving}</Typography>
       <div className="flex justify-end">
         <Button className="text-shallow" onClick={props.onClose} textInherit>
-          {t("cancel")}
+          {t.cancel}
         </Button>
         <Button className="text-red-500" onClick={handleRemove} textInherit>
-          {t("remove")}
+          {t.remove}
         </Button>
       </div>
     </Dialog>
@@ -229,34 +225,34 @@ export class CreateProfileDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t("newProfile")}</Typography>
+        <Typography className="text-xl">{t.newProfile}</Typography>
         <div>
           <TextField
-            label={t("name")}
+            label={t.name}
             value={this.state.name}
             onChange={(ev) => this.setState({ name: ev })}
           />
           <TextField
-            label={t("directory")}
+            label={t.directory}
             value={this.state.dir}
             onChange={(ev) => this.setState({ dir: ev })}
-            helperText={t("usuallyDotMinecraftEtc")}
+            helperText={t.usuallyDotMinecraftEtc}
           />
           <TextField
-            label={t("version")}
+            label={t.version}
             value={this.state.ver}
             onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
         <div className="flex justify-end">
           <Button onClick={this.handleOpenDirectory}>
-            <Icon>folder</Icon> {t("openDirectory")}
+            <Icon>folder</Icon> {t.openDirectory}
           </Button>
           <div className="flex-grow"></div>
           <Button className="text-shallow" onClick={this.props.onClose}>
-            {t("cancel")}
+            {t.cancel}
           </Button>
-          <Button onClick={this.handleCreate}>{t("create")}</Button>
+          <Button onClick={this.handleCreate}>{t.create}</Button>
         </div>
       </Dialog>
     );
@@ -294,30 +290,30 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t("editProfile")}</Typography>
+        <Typography className="text-xl">{t.editProfile}</Typography>
         <div>
           <TextField
-            label={t("name")}
+            label={t.name}
             value={this.state.name}
             onChange={(ev) => this.setState({ name: ev })}
           />
           <TextField
-            label={t("directory")}
+            label={t.directory}
             value={this.state.dir}
             onChange={(ev) => this.setState({ dir: ev })}
-            helperText={t("usuallyDotMinecraftEtc")}
+            helperText={t.usuallyDotMinecraftEtc}
           />
           <TextField
-            label={t("version")}
+            label={t.version}
             value={this.state.ver}
             onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
         <div className="flex justify-end">
           <Button className="text-shallow" onClick={this.props.onClose} textInherit>
-            {t("cancel")}
+            {t.cancel}
           </Button>
-          <Button onClick={this.handleEdit}>{t("edit")}</Button>
+          <Button onClick={this.handleEdit}>{t.edit}</Button>
         </div>
       </Dialog>
     );
@@ -332,14 +328,14 @@ export function RemoveProfileDialog(props: RemoveProfileDialogProps): JSX.Elemen
   };
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl">{t("removeProfile")}</Typography>
-      <Typography>{t("confirmRemoving")}</Typography>
+      <Typography className="text-xl">{t.removeProfile}</Typography>
+      <Typography>{t.confirmRemoving}</Typography>
       <div className="flex justify-end">
         <Button className="text-shallow" onClick={props.onClose} textInherit>
-          {t("cancel")}
+          {t.cancel}
         </Button>
         <Button className="text-red-500" onClick={handleRemove} textInherit>
-          {t("remove")}
+          {t.remove}
         </Button>
       </div>
     </Dialog>
@@ -364,22 +360,22 @@ export class RequestPasswordDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t("pleaseInputPassword")}</Typography>
+        <Typography className="text-xl">{t.pleaseInputPassword}</Typography>
         <div>
           <TextField
             value={this.state.password}
             onChange={(ev) => this.setState({ password: ev })}
-            label={t("password")}
+            label={t.password}
             type="password"
-            helperText={this.props.again ? t("passwordWrong") : ""}
+            helperText={this.props.again ? t.passwordWrong : ""}
             error={this.props.again}
           />
         </div>
         <div className="flex justify-end">
           <Button className="text-shallow" onClick={this.props.onClose} textInherit>
-            {t("cancel")}
+            {t.cancel}
           </Button>
-          <Button onClick={this.handler}>{t("ok")}</Button>
+          <Button onClick={this.handler}>{t.ok}</Button>
         </div>
       </Dialog>
     );
@@ -389,12 +385,12 @@ export class RequestPasswordDialog extends Component<
 export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl">{t("errorOccurred")}</Typography>
+      <Typography className="text-xl">{t.errorOccurred}</Typography>
       <div>
         <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
       </div>
       <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t("ok")}</Button>
+        <Button onClick={props.onClose}>{t.ok}</Button>
       </div>
     </Dialog>
   );
@@ -403,9 +399,9 @@ export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
 export function DownloadDialog(props: CustomDialogProps): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography>{t("downloadNotSupported")}</Typography>
+      <Typography>{t.downloadNotSupported}</Typography>
       <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t("ok")}</Button>
+        <Button onClick={props.onClose}>{t.ok}</Button>
       </div>
     </Dialog>
   );

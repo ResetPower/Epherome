@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Icon from "./Icon";
 import Typography from "./Typography";
 
 export default function Alert(props: {
@@ -7,15 +8,20 @@ export default function Alert(props: {
 }): JSX.Element {
   return (
     <div
-      className={`bg-opacity-60 text-white rounded-md text-base p-3 ${
+      className={`flex bg-opacity-60 text-white shadow-md rounded-md text-base p-3 ${
         props.severity === "warn"
-          ? "bg-yellow-400"
+          ? "bg-yellow-600"
           : props.severity === "error"
-          ? "bg-red-400"
-          : "bg-blue-400"
+          ? "bg-red-600"
+          : "bg-blue-600"
       }`}
     >
-      <Typography>{props.children}</Typography>
+      <Icon>
+        {props.severity === "warn" ? "warning" : props.severity === "error" ? "error" : "info"}
+      </Icon>
+      <Typography className="pl-3" textInherit>
+        {props.children}
+      </Typography>
     </div>
   );
 }

@@ -81,18 +81,18 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
   render(): JSX.Element {
     return (
       <Dialog>
-        <Typography className="text-lg px-3">{t("launching")}</Typography>
+        <Typography className="text-lg px-3">{t.launching}</Typography>
         <div className="p-6 h-60">
           {this.state.details.map((detail, index) => (
             <div className="flex" key={index}>
               <Icon>{detail.stat ? "done" : "arrow_forward"}</Icon>
-              <Typography>{t(detail.text)}</Typography>
+              <Typography>{detail.text}</Typography>
             </div>
           ))}
         </div>
         <div className="flex justify-end">
           <Typography className="flex-grow text-sm">{this.state.helperText}</Typography>
-          <Button>{t("cancel")}</Button>
+          <Button>{t.cancel}</Button>
         </div>
       </Dialog>
     );

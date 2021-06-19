@@ -56,8 +56,8 @@ export default class ProfileManagementPage extends Component<
         ) : (
           <div className="flex">
             <div className="p-6 border-r border-divide">
-              <this.TabItem value={0}>{t("maps")}</this.TabItem>
-              <this.TabItem value={1}>{t("resourcePacks")}</this.TabItem>
+              <this.TabItem value={0}>{t.maps}</this.TabItem>
+              <this.TabItem value={1}>{t.resourcePacks}</this.TabItem>
             </div>
             <div className="p-3 flex-grow">
               <div hidden={this.state.value !== 0}>

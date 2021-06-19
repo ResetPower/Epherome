@@ -49,7 +49,7 @@ export interface MinecraftLaunchOptions {
 }
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
-  const defaultHelper = t("progress.launching");
+  const defaultHelper = t.launching;
   loggerCore.info("Launching Minecraft... ...");
   const account = options.account;
   const profile = options.profile;
@@ -86,7 +86,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   setHelper(defaultHelper);
 
-  const doneAuthenticating = useMinecraftLaunchDetail("progress.auth");
+  const doneAuthenticating = useMinecraftLaunchDetail(t.progress.auth);
   if (account.mode === "mojang") {
     if (navigator.onLine) {
       const valid = await validate(account.token);
@@ -120,7 +120,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
   doneAuthenticating();
 
-  const doneAnalyzeJson = useMinecraftLaunchDetail("progress.analyze");
+  const doneAnalyzeJson = useMinecraftLaunchDetail(t.progress.analyze);
   const dir = removeSuffix(profile.dir, "/");
   const data = fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`);
   const parsed: Parsed = JSON.parse(data.toString());
@@ -202,11 +202,11 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const assetIndex = parsedVanilla.assetIndex;
   doneAnalyzeJson();
 
-  const doneDownload = useMinecraftLaunchDetail("progress.downloading");
+  const doneDownload = useMinecraftLaunchDetail(t.progress.downloading);
   const missingCount = Object.keys(obj.missing).length;
   let mCount = 0;
   for (const item of obj.missing) {
-    setHelper(`${t("helper.downloadingLib")}: ${item.name} (${mCount}/${missingCount})`);
+    setHelper(`${t.helper.downloadingLib}: ${item.name} (${mCount}/${missingCount})`);
     try {
       fs.accessSync(item.path);
     } catch (e) {
@@ -234,7 +234,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     try {
       fs.accessSync(path);
     } catch (e) {
-      setHelper(`${t("helper.downloadingAsset")}: ${startHash}... (${oCount}/${objsCount})`);
+      setHelper(`${t.helper.downloadingAsset}: ${startHash}... (${oCount}/${objsCount})`);
       createDirByPath(path);
       await pipelineAsync(
         got.stream(`https://resources.download.minecraft.net/${startHash}/${hash}`),
@@ -248,7 +248,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     try {
       fs.accessSync(authlibInjectorPath);
     } catch (e) {
-      setHelper(`${t("downloading")}: authlib-injector`);
+      setHelper(`${t.downloading}: authlib-injector`);
       // TODO Need to optimize more here
       await pipelineAsync(
         got.stream("https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar"),
@@ -260,7 +260,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   setHelper(defaultHelper);
 
-  const doneUnzip = useMinecraftLaunchDetail("progress.unzipping");
+  const doneUnzip = useMinecraftLaunchDetail(t.progress.unzipping);
   const nativeLibs: Parsed = obj.nativeLibs;
   for (const i in nativeLibs) {
     const file = nativeLibs[i];
@@ -279,7 +279,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
   doneUnzip();
 
-  useMinecraftLaunchDetail("progress.running");
+  useMinecraftLaunchDetail(t.progress.running);
   const cp = obj.classpath;
   cp.push(clientJar);
   if (withAuthlibInjector) {

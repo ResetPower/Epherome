@@ -30,13 +30,13 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
               ))
             }
           >
-            <Icon>create</Icon> {t("create")}
+            <Icon>create</Icon> {t.create}
           </Button>
           <Button variant="contained" onClick={() => hist.push("/downloads")}>
-            <Icon>file_download</Icon> {t("download")}
+            <Icon>file_download</Icon> {t.download}
           </Button>
         </div>
-        {profiles.length === 0 && <Alert severity="info">{t("noProfilesYet")}</Alert>}
+        {profiles.length === 0 && <Alert severity="info">{t.noProfilesYet}</Alert>}
         <List className="pl-3">
           {profiles.map((i: MinecraftProfile) => (
             <ListItem key={i.id}>
@@ -53,7 +53,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                 }
               />
               <ListItemText primary={i.name} secondary={i.dir} className="flex-grow" />
-              <Tooltip title={t("edit")}>
+              <Tooltip title={t.edit}>
                 <IconButton
                   onClick={() =>
                     showDialog((close) => (
@@ -68,7 +68,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                   <Icon>edit</Icon>
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t("manage")}>
+              <Tooltip title={t.manage}>
                 <IconButton
                   onClick={() => {
                     hist.push("/profile", { id: i.id.toString() });
@@ -77,7 +77,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                   <Icon>settings</Icon>
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t("remove")}>
+              <Tooltip title={t.remove}>
                 <IconButton
                   onClick={() =>
                     showDialog((close) => (
