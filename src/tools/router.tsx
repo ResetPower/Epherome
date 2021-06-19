@@ -1,5 +1,5 @@
-import { Component, ReactNode } from "react";
-import { StringMap } from "./i18n";
+import { Component } from "react";
+import { StringMap } from "./types";
 import { EphHistory } from "./history";
 
 export interface RouteProps {
@@ -16,20 +16,22 @@ export function Route(_props: RouteProps): null {
 
 // simple router toolkit
 export class Router extends Component<{
-  children: ReactNode[];
+  children: {
+    props: RouteProps;
+  }[];
   history: EphHistory;
 }> {
   render(): JSX.Element | undefined {
     if (this.props.children) {
       for (const i of this.props.children) {
-        const obj = i as {
-          props: RouteProps;
-        };
-        if (this.props.history.pathname() === obj.props.path) {
-          const comp = obj.props.component;
+        if (this.props.history.pathname() === i.props.path) {
+          // route matched
+          const comp = i.props.component;
           if (typeof comp === "object") {
+            // component without params
             return comp;
           } else if (typeof comp === "function") {
+            // component with params
             return comp(this.props.history.loc.params);
           }
         }

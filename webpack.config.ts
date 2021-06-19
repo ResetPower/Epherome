@@ -100,7 +100,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
     plugins: makeArray(
       new HtmlPlugin({
         title: "Epherome",
-        template: "./assets/template.html",
+        template: "./assets/template.txt",
         inject: "body",
       }),
       new MiniCssExtractPlugin(),

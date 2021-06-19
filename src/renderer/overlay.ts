@@ -2,6 +2,7 @@ import { broadcast } from "./session";
 
 export const overlayStack: JSX.Element[] = [];
 
+// to see if the overlay should be shown
 export function shouldOverlayHide(index: number): boolean {
   return index !== overlayStack.length - 1;
 }
@@ -10,7 +11,7 @@ export function clearOverlayStack(): void {
   overlayStack.length !== 0 && overlayStack.slice(0, 0);
 }
 
-// returns ( closeDialog )
+// returns `closeDialog`
 export function showDialog(render: (close: () => void) => JSX.Element): () => void {
   const index = overlayStack.length;
   const onClose = () => {

@@ -6,16 +6,16 @@ import HomePage from "../pages/HomePage";
 import AccountsPage from "../pages/AccountsPage";
 import ProfilesPage from "../pages/ProfilesPage";
 import SettingsPage from "../pages/SettingsPage";
-import { resolveTitle } from "../renderer/titles";
+import { resolveTitle } from "./titles";
 import ProfileManagementPage from "../pages/ProfileManagementPage";
-import { subscribe } from "../renderer/session";
+import { subscribe } from "./session";
 import { EmptyProps } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
-import GlobalOverlay from "./GlobalOverlay";
+import GlobalOverlay from "../components/GlobalOverlay";
 import { Route, Router } from "../tools/router";
-import { darkTheme, hist, lightTheme } from "../renderer/global";
-import { applyTheme } from "../renderer/theme";
-import { ephConfigs } from "../renderer/config";
+import { darkTheme, hist, lightTheme } from "./global";
+import { applyTheme } from "./theme";
+import { ephConfigs } from "./config";
 
 export interface AppState {
   title: string;
@@ -30,17 +30,14 @@ export default class App extends Component<EmptyProps, AppState> {
   constructor(props: EmptyProps) {
     super(props);
     applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
-    // subscribe animation start
     subscribe("anm", () => {
       this.setState({
         mainClassName: "fade-enter",
       });
     });
-    // subscribe title change
     subscribe("hist", (pathname) => {
       this.setState({ title: resolveTitle(pathname), mainClassName: "fade-exit" });
     });
-    // subscribe theme change
     subscribe("theme", () => {
       applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
       this.setState({});

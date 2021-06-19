@@ -8,17 +8,15 @@ import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
 import { defineTheme } from "./theme";
 import { EphHistory } from "../tools/history";
+import { subscribe } from "./session";
 
 const lang = ephConfigs.language;
 
 // global i18n toolkit class
 export const i18n = new I18n({
   language: lang,
-  messages: {
-    "en-us": enUs,
-    "zh-cn": zhCn,
-    "ja-jp": jaJp,
-  },
+  fallback: enUs,
+  languages: [enUs, zhCn, jaJp],
 });
 
 const java = ephConfigs.javaPath;
@@ -26,8 +24,12 @@ if (java === undefined) {
   setConfig(() => (ephConfigs.javaPath = constraints.javaHome));
 }
 
-// global i18n translator shortcut
-export const t = i18n.shortcut();
+// global i18n translator
+export let t = i18n.currentTranslator();
+
+subscribe("lang", () => {
+  t = i18n.currentTranslator();
+});
 
 // global material-ui theme
 export const lightTheme = defineTheme({
@@ -58,7 +60,7 @@ export const darkTheme = defineTheme({
 export const logger = log.scope("renderer");
 
 // global history
-export const hist = new EphHistory();
+export const hist = new EphHistory(/* animation timeout */ 120);
 
 // response main-process calls
 ipcRenderer.on("nav-back", hist.goBack);

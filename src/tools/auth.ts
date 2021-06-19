@@ -1,4 +1,4 @@
-import { StringMap } from "./i18n";
+import { StringMap } from "./types";
 import { obj2form } from "./objects";
 import got from "got";
 

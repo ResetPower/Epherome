@@ -1,13 +1,13 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
     "serve": "webpack serve --env dev --env process='renderer'",
-    "electron": "electron .",
-    "dev": "webpack build --env dev --env process='main' && node scripts/dev.js",
+    "electron": "webpack build --env dev --env process='main' && electron .",
+    "dev": "concurrently -n wdm,ele 'npm:serve' 'npm:electron'",
     "prod": "webpack build --env prod --env process='all'"
   },
   "repository": {
@@ -20,64 +20,43 @@
     "url": "https://github.com/ResetPower/epherome/issues"
   },
   "homepage": "https://github.com/ResetPower/epherome#readme",
-  "build": {
-    "productName": "Epherome",
-    "appId": "com.epherome",
-    "copyright": "Copyright (c) 2021 ResetPower. All rights reserved.",
-    "directories": {
-      "output": "package"
-    },
-    "asar": true,
-    "compression": "normal",
-    "win": {
-      "target": "portable"
-    },
-    "files": [
-      "dist/",
-      "!node_modules/"
-    ]
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testRegex": "(/test/.*\\.(test|spec))\\.ts?$"
-  },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
-    "@types/concurrently": "^6.2.0",
     "@types/css-minimizer-webpack-plugin": "^1.3.0",
     "@types/mini-css-extract-plugin": "^1.4.3",
     "@types/node": "^14.17.3",
-    "@types/react": "^17.0.9",
-    "@types/react-dom": "^17.0.6",
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
     "@types/webpack": "^5.28.0",
-    "@types/webpack-dev-server": "^3.11.4",
-    "@typescript-eslint/eslint-plugin": "^4.26.1",
-    "@typescript-eslint/parser": "^4.26.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "concurrently": "^6.2.0",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.0.1",
-    "electron": "^13.1.1",
-    "electron-builder": "^22.10.5",
-    "eslint": "^7.28.0",
+    "electron": "^13.1.2",
+    "electron-builder": "^22.11.7",
+    "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.6.0",
-    "postcss": "^8.3.0",
+    "postcss": "^8.3.5",
     "postcss-loader": "^5.3.0",
     "prettier": "^2.3.1",
     "react-refresh": "^0.9.0",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
-    "tailwindcss": "^2.1.4",
+    "tailwindcss": "^2.2.2",
     "ts-loader": "^9.2.3",
     "ts-node": "^9.1.1",
-    "typescript": "^4.3.2",
-    "webpack": "^5.38.1",
+    "typescript": "^4.3.4",
+    "webpack": "^5.39.1",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@types/webpack-dev-server": "^3.11.4",
     "electron-log": "^4.3.5",
     "got": "^11.8.2",
     "json5": "^2.2.0",

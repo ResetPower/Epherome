@@ -146,6 +146,7 @@ export async function createAccount(
       return successfulResult;
     }
   } else {
+    // offline account
     if (username === "") return unsuccessfulResult;
     appendAccount({
       id: getNextId(array),

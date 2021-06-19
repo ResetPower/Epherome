@@ -15,6 +15,7 @@ export function unsubscribe(index: number): void {
   delete subscriptions[index];
 }
 
+// wait until the event invoked
 export function subscribeAsync(key: string): Promise<string> {
   return new Promise((resolve) => {
     const index = subscribe(key, (v) => {

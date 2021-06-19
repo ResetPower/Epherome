@@ -1,0 +1,13 @@
+productName: Epherome
+appId: com.epherome
+copyright: Copyright (c) ResetPower 2021. All rights reserved.
+directories:
+  output: package
+asar: true
+compression: normal
+icon: assets/Epherome.png
+win:
+  target: portable
+files:
+  - dist/
+  - "!node_modules"

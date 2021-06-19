@@ -1,16 +1,21 @@
 import { t } from "./global";
 
-// map of common titles
-const titleMap: { [key: string]: string } = {
-  "/": "epherome",
-  "/accounts": "accounts",
-  "/profiles": "profiles",
-  "/settings": "settings",
-  "/profile": "profileManagement",
-  "/downloads": "downloads",
-};
-
 // get title text from a uri
 export function resolveTitle(path: string): string {
-  return t(titleMap[path]);
+  switch (path) {
+    case "/":
+      return t.epherome;
+    case "/accounts":
+      return t.accounts;
+    case "/profiles":
+      return t.profiles;
+    case "/settings":
+      return t.settings;
+    case "/profile":
+      return t.profileManagement;
+    case "/downloads":
+      return t.downloads;
+    default:
+      return "";
+  }
 }

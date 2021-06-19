@@ -10,7 +10,7 @@ export const constraints = ipcRenderer.sendSync("initialize");
 
 export type EphDownloadProvider = "official" | "bmclapi" | "mcbbs";
 
-export interface Config {
+export interface EphConfig {
   accounts: MinecraftAccount[];
   profiles: MinecraftProfile[];
   selectedAccount: number;
@@ -23,7 +23,7 @@ export interface Config {
 }
 
 // default values of config
-let initConfig: Config = {
+let initConfig: EphConfig = {
   accounts: <MinecraftAccount[]>[],
   profiles: <MinecraftProfile[]>[],
   selectedAccount: 0,
@@ -36,8 +36,8 @@ let initConfig: Config = {
   downloadProvider: "official",
 };
 
-const ud = constraints.dir;
-const cfg = ud + path.sep + "config.json5";
+// prepare config
+const cfg = constraints.dir + path.sep + "config.json5";
 
 try {
   fs.accessSync(cfg);
@@ -50,14 +50,14 @@ try {
   fs.writeFileSync(cfg, "{}");
 }
 
-export const ephConfigs: Config = initConfig;
+export const ephConfigs: EphConfig = initConfig;
 
 // write config to disk
 export function saveConfig(): void {
   fs.writeFileSync(cfg, json5.stringify(ephConfigs));
 }
 
-// change config
+// change config and save
 export function setConfig(cb: () => void, save = true): void {
   cb();
   save && saveConfig();

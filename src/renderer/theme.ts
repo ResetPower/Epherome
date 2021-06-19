@@ -1,3 +1,5 @@
+import { StringMap } from "../tools/types";
+
 const ss = document.documentElement.style;
 const html = document.querySelector("html");
 
@@ -17,18 +19,27 @@ export function isDark(): boolean {
   return html?.classList.contains("dark") ?? false;
 }
 
-export function applyTheme(theme: EphTheme): void {
-  if (theme.type === "dark") {
-    html && !html.classList.contains("dark") && html.classList.add("dark");
-  } else if (theme.type === "light") {
-    html && html.classList.contains("dark") && html.classList.remove("dark");
+export function setProperties(obj: StringMap): void {
+  for (const i in obj) {
+    ss.setProperty(i, obj[i]);
   }
-  ss.setProperty("--eph-background-color", theme.palette.background);
-  ss.setProperty("--eph-primary-color", theme.palette.primary);
-  ss.setProperty("--eph-secondary-color", theme.palette.secondary);
-  ss.setProperty("--eph-shallow-color", theme.palette.shallow);
-  ss.setProperty("--eph-divide-color", theme.palette.divide);
-  ss.setProperty("--eph-card-color", theme.palette.card);
+}
+
+export function applyTheme(theme: EphTheme): void {
+  theme.type === "dark"
+    ? // add class "dark" if theme type is dark
+      html && !html.classList.contains("dark") && html.classList.add("dark")
+    : // remove class "dark" if theme type is not dark (light)
+      html && html.classList.contains("dark") && html.classList.remove("dark");
+  // set values of css variables
+  setProperties({
+    "--eph-background-color": theme.palette.background,
+    "--eph-primary-color": theme.palette.primary,
+    "--eph-secondary-color": theme.palette.secondary,
+    "--eph-shallow-color": theme.palette.shallow,
+    "--eph-divide-color": theme.palette.divide,
+    "--eph-card-color": theme.palette.card,
+  });
 }
 
 export const defineTheme = (theme: EphTheme): EphTheme => theme;
