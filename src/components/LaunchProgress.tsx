@@ -2,7 +2,7 @@ import Button from "./Button";
 import Icon from "./Icon";
 import Dialog from "./Dialog";
 import { Component } from "react";
-import { launchMinecraft, MinecraftLaunchDetail } from "../core/core";
+import { launchMinecraft, MinecraftLaunchDetail } from "../core/launch";
 import { t } from "../renderer/global";
 import { CustomDialogProps, ErrorDialog, RequestPasswordDialog } from "./Dialogs";
 import { showDialog } from "../renderer/overlay";
@@ -25,16 +25,7 @@ export interface LaunchProgressState {
 
 export default class LaunchProgress extends Component<LaunchProgressProps, LaunchProgressState> {
   state: LaunchProgressState = {
-    details: [
-      {
-        stat: true,
-        text: "progress.auth",
-      },
-      {
-        stat: true,
-        text: "progress.downloading",
-      },
-    ],
+    details: [],
     helperText: "Launching...",
     againRequestPassword: false,
   };
@@ -84,10 +75,10 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
         <Typography className="text-lg px-3">{t.launching}</Typography>
         <div className="p-6 h-60">
           {this.state.details.map((detail, index) => (
-            <div className="flex" key={index}>
+            <Typography className="flex" key={index}>
               <Icon>{detail.stat ? "done" : "arrow_forward"}</Icon>
-              <Typography>{detail.text}</Typography>
-            </div>
+              {detail.text}
+            </Typography>
           ))}
         </div>
         <div className="flex justify-end">

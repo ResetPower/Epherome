@@ -11,6 +11,7 @@ function createWindow() {
     height: 600,
     autoHideMenuBar: true,
     resizable: false,
+    title: "Epherome",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

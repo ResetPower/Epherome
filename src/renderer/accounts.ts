@@ -130,7 +130,8 @@ export async function createAccount(
     }
   } else if (mode === "authlib") {
     if (username === "" || password === "" || authserver === "") return unsuccessfulResult;
-    const result = await authenticate(username, password, authserver + "/authserver");
+    const server = authserver + "/authserver";
+    const result = await authenticate(username, password, server);
     if (result.err) {
       return unsuccessfulResult;
     } else {
@@ -140,7 +141,7 @@ export async function createAccount(
         name: result.name,
         uuid: result.uuid,
         token: result.token,
-        authserver,
+        authserver: server,
         mode: "authlib",
       });
       return successfulResult;
