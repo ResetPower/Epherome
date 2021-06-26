@@ -3,7 +3,7 @@ import { EmptyProps } from "../tools/types";
 import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
 import List from "../components/List";
-import { MinecraftVersion, MinecraftVersionType } from "../core/rules";
+import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { t } from "../renderer/global";
 import ListItem from "../components/ListItem";
 import ListItemText from "../components/ListItemText";

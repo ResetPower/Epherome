@@ -1,79 +1,38 @@
 import os from "os";
+import { ClientJsonRules, ClientJsonOSRule } from "./struct";
 
-export const OPERATING_SYSTEM = os.platform();
-export const OPERATING_VERSION = os.version();
+export const osName = os.platform();
+export const osVer = os.version();
 
-export type MinecraftVersionType = "release" | "snapshot" | "old_beta" | "old_alpha";
-
-export interface MinecraftVersion {
-  id: string;
-  type: MinecraftVersionType;
-  url: string;
+export function equalOS(name: string): boolean {
+  // darwin: `osx` or `macos`
+  if (osName === "darwin") return name === "osx" || name === "macos";
+  // win32: `windows`
+  if (osName === "win32") return name === "windows";
+  // linux: `linux`
+  return osName === name;
 }
 
-export interface MinecraftCommonRule {
-  action: "allow" | "disallow";
-  os: MinecraftOSRule;
-}
-
-export interface MinecraftOSRule {
-  name?: string;
-  version?: string;
-  arch?: string;
-}
-
-export function equalOS(anotherOS: string): boolean {
-  // linux: linux
-  if (OPERATING_SYSTEM === anotherOS) {
-    return true;
-  }
-  // win32: windows
-  if (OPERATING_SYSTEM === "win32") return anotherOS === "windows";
-  // darwin: osx or macos
-  if (OPERATING_SYSTEM === "darwin") return anotherOS === "osx" || anotherOS === "macos";
-  return false;
-}
-
-export function isOSCompliant(rule: MinecraftOSRule): boolean {
+export function isOSCompliant(rule: ClientJsonOSRule): boolean {
   if (rule.name) {
-    if (rule.version) {
-      if (equalOS(rule.name) || OPERATING_VERSION.startsWith(rule.version)) {
-        return true;
-      }
-    } else {
-      if (equalOS(rule.name)) {
-        return true;
-      }
-    }
+    return rule.version
+      ? // with version, compare both os name and version
+        equalOS(rule.name) && osVer.startsWith(rule.version)
+      : // only compare os name
+        equalOS(rule.name);
   }
-  if (rule.arch === "x86") {
-    return true;
-  }
-  return false;
+  return rule.arch === "x86";
 }
 
-export function isCompliant(rules: MinecraftCommonRule[]): boolean {
+export function isCompliant(rules: ClientJsonRules): boolean {
   let ret = false;
-  for (const i of rules) {
-    const a = i.action;
-    if (i.os) {
-      const o = i.os;
-      if (a === "disallow") {
-        if (isOSCompliant(o)) {
-          ret = false;
-        }
-      } else if (a === "allow") {
-        if (isOSCompliant(o)) {
-          ret = true;
-        }
-      }
-    } else {
-      if (a === "allow") {
-        ret = true;
-      } else if (a === "disallow") {
-        ret = false;
-      }
-    }
-  }
+  rules.forEach((rule) => {
+    const allowed = rule.action === "allow";
+    rule.os
+      ? // with os, compare os
+        allowed === isOSCompliant(rule.os) && (ret = allowed)
+      : // without os
+        (ret = allowed);
+  });
   return ret;
 }

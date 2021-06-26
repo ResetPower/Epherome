@@ -16,7 +16,7 @@ export class EphHistory {
     return this.loc.pathname;
   };
   // do an action with animation needed
-  act = (block: () => void): void => {
+  private act = (block: () => void): void => {
     this.invokeAnimationListeners();
     setTimeout(() => {
       block();

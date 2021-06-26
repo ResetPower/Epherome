@@ -17,31 +17,26 @@ interface RefreshResult {
   token: string;
 }
 
-// http status code 2xx means successful
-export function isSuccess(code: number): boolean {
-  return code >= 200 && code < 300;
-}
-
 export async function authenticate(
   username: string,
   password: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<AuthenticateResult> {
-  const response = await got(url + "/authenticate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      agent: {
-        name: "Minecraft",
-        version: 1,
+  try {
+    const response = await got(url + "/authenticate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      username: username,
-      password: password,
-    }),
-  });
-  if (isSuccess(response.statusCode)) {
+      body: JSON.stringify({
+        agent: {
+          name: "Minecraft",
+          version: 1,
+        },
+        username: username,
+        password: password,
+      }),
+    });
     const param = JSON.parse(response.body);
     const prof = param["selectedProfile"];
     return {
@@ -50,7 +45,7 @@ export async function authenticate(
       uuid: prof["id"],
       name: prof["name"],
     };
-  } else {
+  } catch (e) {
     return { err: true, token: "", uuid: "", name: "" };
   }
 }
@@ -59,19 +54,19 @@ export async function refresh(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<RefreshResult> {
-  const response = await got(url + "/refresh", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ accessToken: token }),
-  });
-  if (isSuccess(response.statusCode)) {
+  try {
+    const response = await got(url + "/refresh", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accessToken: token }),
+    });
     return {
       err: false,
       token: JSON.parse(response.body)["accessToken"],
     };
-  } else {
+  } catch (e) {
     return {
       err: true,
       token: "",
@@ -83,14 +78,18 @@ export async function validate(
   token: string,
   url: string = MOJANG_AUTHSERVER_URL
 ): Promise<boolean> {
-  const response = await got(url + "/validate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ accessToken: token }),
-  });
-  return isSuccess(response.statusCode);
+  try {
+    await got(url + "/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ accessToken: token }),
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 // the meta part of a minecraft jwt
@@ -169,73 +168,73 @@ export interface MicrosoftMinecraftProfileResult {
 }
 
 export async function authCode2AuthToken(code: string): Promise<StringMap> {
-  const result = await got("https://login.live.com/oauth20_token.srf", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: obj2form({
-      client_id: "00000000402b5328",
-      code: code,
-      grant_type: "authorization_code",
-      redirect_uri: "https://login.live.com/oauth20_desktop.srf",
-      scope: "service::user.auth.xboxlive.com::MBI_SSL",
-    }),
-  });
-  if (!isSuccess(result.statusCode)) {
+  try {
+    const result = await got("https://login.live.com/oauth20_token.srf", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: obj2form({
+        client_id: "00000000402b5328",
+        code: code,
+        grant_type: "authorization_code",
+        redirect_uri: "https://login.live.com/oauth20_desktop.srf",
+        scope: "service::user.auth.xboxlive.com::MBI_SSL",
+      }),
+    });
+    return JSON.parse(result.body);
+  } catch (e) {
     // unable to get auth token
     return { err: "err" };
-  } else {
-    return JSON.parse(result.body);
   }
 }
 
 export async function authToken2XBLToken(token: string): Promise<XBLTokenResult> {
-  const result = await got("https://user.auth.xboxlive.com/user/authenticate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      Properties: {
-        AuthMethod: "RPS",
-        SiteName: "user.auth.xboxlive.com",
-        RpsTicket: token,
+  try {
+    const result = await got("https://user.auth.xboxlive.com/user/authenticate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      RelyingParty: "http://auth.xboxlive.com",
-      TokenType: "JWT",
-    }),
-  });
-  if (!isSuccess(result.statusCode)) {
+      body: JSON.stringify({
+        Properties: {
+          AuthMethod: "RPS",
+          SiteName: "user.auth.xboxlive.com",
+          RpsTicket: token,
+        },
+        RelyingParty: "http://auth.xboxlive.com",
+        TokenType: "JWT",
+      }),
+    });
+    return JSON.parse(result.body);
+  } catch {
     // unable to get xbl token
     return { err: true };
-  } else {
-    return JSON.parse(result.body);
   }
 }
 
 export async function XBLToken2XSTSToken(token: string): Promise<XSTSTokenResult> {
-  const result = await got("https://xsts.auth.xboxlive.com/xsts/authorize", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      Properties: {
-        SandboxId: "RETAIL",
-        UserTokens: [token],
+  try {
+    const result = await got("https://xsts.auth.xboxlive.com/xsts/authorize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      RelyingParty: "rp://api.minecraftservices.com/",
-      TokenType: "JWT",
-    }),
-  });
-  if (!isSuccess(result.statusCode)) {
+      body: JSON.stringify({
+        Properties: {
+          SandboxId: "RETAIL",
+          UserTokens: [token],
+        },
+        RelyingParty: "rp://api.minecraftservices.com/",
+        TokenType: "JWT",
+      }),
+    });
+    return JSON.parse(result.body);
+  } catch (e) {
     // unable to get xsts token
     return { err: true };
-  } else {
-    return JSON.parse(result.body);
   }
 }
 
@@ -243,50 +242,50 @@ export async function XSTSToken2MinecraftToken(
   token: string,
   uhs: string
 ): Promise<MicrosoftMinecraftTokenResult> {
-  const result = await got("https://api.minecraftservices.com/authentication/login_with_xbox", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      identityToken: `XBL3.0 x=${uhs};${token}`,
-    }),
-  });
-  if (!isSuccess(result.statusCode)) {
-    return { err: true };
-  } else {
+  try {
+    const result = await got("https://api.minecraftservices.com/authentication/login_with_xbox", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        identityToken: `XBL3.0 x=${uhs};${token}`,
+      }),
+    });
     return JSON.parse(result.body);
+  } catch (e) {
+    return { err: true };
   }
 }
 
 export async function checkMinecraftOwnership(token: string): Promise<MinecraftOwnershipResult> {
-  const result = await got("https://api.minecraftservices.com/entitlements/mcstore", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!isSuccess(result.statusCode)) {
-    return { err: true };
-  } else {
+  try {
+    const result = await got("https://api.minecraftservices.com/entitlements/mcstore", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return JSON.parse(result.body);
+  } catch (e) {
+    return { err: true };
   }
 }
 
 export async function getMicrosoftMinecraftProfile(
   token: string
 ): Promise<MicrosoftMinecraftProfileResult> {
-  const result = await got("https://api.minecraftservices.com/minecraft/profile", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application.json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!isSuccess(result.statusCode)) {
-    return { err: true };
-  } else {
+  try {
+    const result = await got("https://api.minecraftservices.com/minecraft/profile", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application.json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return JSON.parse(result.body);
+  } catch (e) {
+    return { err: true };
   }
 }
