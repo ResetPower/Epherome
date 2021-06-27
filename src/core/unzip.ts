@@ -1,5 +1,5 @@
 import StreamZip from "node-stream-zip";
-import { loggerCore } from "./launch";
+import { loggerCore } from ".";
 
 export function unzipNatives(dir: string, natives: string[]): void {
   for (const file of natives) {

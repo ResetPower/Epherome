@@ -1,13 +1,13 @@
 import fs from "fs";
+import path from "path";
 import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
-import { removeSuffix } from "../tools/strings";
 import { analyzeLibrary } from "./libraries";
 import { constraints } from "../renderer/config";
 import { t } from "../renderer/global";
-import { ClientLibraryResult, ClientJson, mergeClientJson } from "./struct";
+import { ClientJson, mergeClientJson } from "./struct";
 import { osName, osVer } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
@@ -32,36 +32,6 @@ export interface MinecraftLaunchOptions {
   onErr: (error: Error) => void;
 }
 
-async function authCheck(
-  account: MinecraftAccount,
-  req: (again: boolean) => Promise<string>
-): Promise<void> {
-  if (account.mode === "mojang" || account.mode === "authlib") {
-    const server = account.mode === "mojang" ? undefined : account.authserver;
-    const valid = await validate(account.token, server);
-    if (!valid) {
-      const refreshed = await refresh(account.token, server);
-      if (refreshed.err) {
-        const act = async (again: boolean) => {
-          const password = await req(again);
-          const result = await authenticate(account.email, password, server);
-          if (result.err) {
-            await act(true);
-          } else {
-            updateAccountToken(account.id, result.token);
-          }
-        };
-        await act(false);
-        loggerCore.warn("Failed to refresh token");
-      } else {
-        updateAccountToken(account.id, refreshed.token);
-      }
-    }
-  } else if (account.mode === "microsoft") {
-    // TODO Validate Microsoft Account Token
-  }
-}
-
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
   const defaultHelper = t.launching;
   loggerCore.info("Launching Minecraft... ...");
@@ -70,9 +40,10 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const java = options.java;
   const details: MinecraftLaunchDetail[] = [];
   const setHelper = options.setHelper;
-  const authlibInjectorPath = `${constraints.dir}/authlib-injector-1.1.35.jar`;
+  const authlibInjectorPath = path.join(constraints.dir, "authlib-injector-1.1.35.jar");
 
   const buff = [];
+  const dir = profile.dir;
   let withModLoader = false;
   let withHMCLPatch = false;
   let withAuthlibInjector = false;
@@ -92,15 +63,37 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   nextDetail(t.progress.auth);
 
   if (navigator.onLine) {
-    authCheck(account, options.requestPassword);
+    if (account.mode === "mojang" || account.mode === "authlib") {
+      const server = account.mode === "mojang" ? undefined : account.authserver;
+      const valid = await validate(account.token, server);
+      if (!valid) {
+        const refreshed = await refresh(account.token, server);
+        if (refreshed.err) {
+          const act = async (again: boolean) => {
+            const password = await options.requestPassword(again);
+            const result = await authenticate(account.email, password, server);
+            if (result.err) {
+              await act(true);
+            } else {
+              updateAccountToken(account.id, result.token);
+            }
+          };
+          await act(false);
+          loggerCore.warn("Failed to refresh token");
+        } else {
+          updateAccountToken(account.id, refreshed.token);
+        }
+      }
+    } else if (account.mode === "microsoft") {
+      // TODO Validate Microsoft Account Token
+    }
   } else {
     loggerCore.info("Network not available, account validating skipped");
   }
   nextDetail(t.progress.analyze);
 
-  const dir = removeSuffix(removeSuffix(profile.dir, "/"), "\\"); // remove both *nix sep `/` and windows sep `\`
   let parsed: ClientJson = JSON.parse(
-    fs.readFileSync(`${dir}/versions/${profile.ver}/${profile.ver}.json`).toString()
+    fs.readFileSync(path.join(dir, "versions", profile.ver, `${profile.ver}.json`)).toString()
   );
 
   if (parsed.inheritsFrom) {
@@ -108,19 +101,20 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     withModLoader = true;
     const inheritsFrom = parsed.inheritsFrom;
     const inherit: ClientJson = JSON.parse(
-      fs.readFileSync(`${dir}/versions/${inheritsFrom}/${inheritsFrom}.json`).toString()
+      fs.readFileSync(path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.json`)).toString()
     );
-    parsed = mergeClientJson(inherit, parsed);
+    const newParsed = mergeClientJson(parsed, inherit);
+    newParsed && (parsed = newParsed);
   } else if (parsed.patches) {
     // with hmcl patch
     // Note that HMCL will combine both vanilla and mod loader to the same JSON file, so we need a special way to analyze it
     withHMCLPatch = true;
   }
 
-  const clientJar = parsed.jar
-    ? `${dir}/versions/${parsed.jar}/${parsed.jar}.jar`
-    : `${dir}/versions/${profile.ver}/${profile.ver}.jar`;
-  const nativeDir = `${dir}/versions/${profile.ver}/${profile.ver}-natives`;
+  const clientJar = parsed.jar // use jar file in json if it has
+    ? path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)
+    : path.join(dir, "versions", profile.ver, `${profile.ver}.jar`);
+  const nativeDir = path.join(dir, "versions", profile.ver, `${profile.ver}-natives`);
 
   if (parsed.arguments) {
     // 1.13, 1.13+
@@ -152,18 +146,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     `-Dminecraft.launcher.brand=Epherome`,
     `-Dminecraft.launcher.version=${constraints.version}`
   );
-  let obj: ClientLibraryResult;
-  if (withModLoader) {
-    const pureLibrary = analyzeLibrary(dir, parsed.libraries);
-    const modLibrary = analyzeLibrary(dir, parsed.libraries);
-    obj = {
-      classpath: modLibrary.classpath.concat(pureLibrary.classpath),
-      missing: modLibrary.missing.concat(pureLibrary.missing),
-      natives: modLibrary.natives.concat(pureLibrary.natives),
-    };
-  } else {
-    obj = analyzeLibrary(dir, parsed.libraries);
-  }
+  const obj = analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
   nextDetail(t.progress.downloading);
 
@@ -174,7 +157,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     await downloadFile(item.url, item.path, true);
     mCount++;
   }
-  const assetIndexPath = `${dir}/assets/indexes/${assetIndex.id}.json`;
+  const assetIndexPath = path.join(dir, "assets/indexes", `${assetIndex.id}.json`);
   try {
     fs.accessSync(assetIndexPath);
   } catch (e) {
@@ -184,20 +167,16 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const objs = parsedAssetIndex.objects;
   const objsCount = Object.keys(objs).length;
   let oCount = 0;
-  for (const i in parsedAssetIndex.objects) {
+  for (const i in objs) {
     const obj = objs[i];
     const hash = obj.hash;
     const startHash = hash.slice(0, 2);
-    const path = `${dir}/assets/objects/${startHash}/${hash}`;
+    const p = path.join(dir, "assets/objects", startHash, hash);
     try {
-      fs.accessSync(path);
+      fs.accessSync(p);
     } catch (e) {
       setHelper(`${t.helper.downloadingAsset}: ${startHash}... (${oCount}/${objsCount})`);
-      await downloadFile(
-        `https://resources.download.minecraft.net/${startHash}/${hash}`,
-        path,
-        true
-      );
+      await downloadFile(`https://resources.download.minecraft.net/${startHash}/${hash}`, p, true);
     }
     oCount++;
   }
@@ -225,7 +204,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   if (withAuthlibInjector) {
     buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);
   }
-  buff.push("-cp", osName === "win32" ? cp.join(";") : cp.join(":"));
+  buff.push("-cp", cp.join(path.delimiter));
   buff.push(parsed["mainClass"]);
   if (withModLoader || withHMCLPatch) {
     if (parsed.arguments) {
@@ -259,7 +238,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     "--gameDir",
     dir,
     "--assetsDir",
-    `${dir}/assets`,
+    path.join(dir, "assets"),
     "--assetIndex",
     assetIndex.id,
     "--uuid",
