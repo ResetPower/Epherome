@@ -1,7 +1,9 @@
 import fs from "fs";
+import path from "path";
 import { isCompliant, equalOS } from "./rules";
-import { loggerCore } from "./launch";
+import { loggerCore } from ".";
 import { ClientAnalyzedLibrary, ClientJsonLibraries, ClientLibraryResult } from "./struct";
+import { removeSuffix, replaceAll } from "../tools/strings";
 
 export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): ClientLibraryResult {
   const classpath: string[] = [];
@@ -9,9 +11,9 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
   const natives: string[] = [];
 
   for (const lib of libraries) {
-    if (lib.rules && !isCompliant(lib.rules)) {
+    if (lib.rules) {
       // skip if rule not compliant
-      continue;
+      if (!isCompliant(lib.rules)) continue;
     }
 
     if (lib.downloads) {
@@ -57,22 +59,35 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
         }
         classpath.push(file);
       }
-    } else if (lib.name && lib.url) {
+    } else if (lib.name) {
       // with only `name` and `url` key (It seems to be LiteLoader or Fabric)
       const name = lib.name.split(":");
       const url = lib.url;
-      const path = `${dir}/libraries/${name[0].split(".").join("/")}/${name[1]}/${name[2]}/${
-        name[1]
-      }-${name[2]}.jar`;
+      const p = path.join(
+        dir,
+        "libraries",
+        name[0].split(".").join("/"),
+        name[1],
+        name[2],
+        `${name[1]}-${name[2]}.jar`
+      );
 
       try {
-        fs.accessSync(path);
+        fs.accessSync(p);
       } catch (e) {
         // file not exists, add to missing
-        loggerCore.warn(`Library file ${path} not exists`);
-        missing.push({ name: `${name[1]}-${name[2]}`, url: `${dir}/libraries/${url}`, path });
+        loggerCore.warn(`Library file ${p} not exists`);
+        if (url) {
+          missing.push({
+            name: `${name[1]}-${name[2]}.jar`,
+            url: `${replaceAll(removeSuffix(url, "/"), "/", ":")}/${name[0]}/${name[1]}/${
+              name[2]
+            }/${name[1]}-${name[2]}.jar`,
+            path: p,
+          });
+        }
       }
-      classpath.push(path);
+      classpath.push(p);
     }
   }
   return {

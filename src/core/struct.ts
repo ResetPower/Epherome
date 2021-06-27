@@ -53,8 +53,8 @@ export interface ClientJsonCommonArtifact {
 }
 
 export function mergeClientJson(parsed: ClientJson, inherit: ClientJson): ClientJson {
-  const ret = { ...parsed, ...inherit };
-  ret.libraries.push(...parsed.libraries);
+  const ret = { ...inherit, ...parsed };
+  ret.libraries.push(...inherit.libraries);
   return ret;
 }
 

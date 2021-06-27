@@ -9,7 +9,7 @@ import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../renderer/accounts";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
-import { MinecraftLaunchDetail } from "../core/launch";
+import { MinecraftLaunchDetail } from "../core";
 import { EmptyProps } from "../tools/types";
 import { Hitokoto } from "../renderer/hitokoto";
 import { showDialog } from "../renderer/overlay";

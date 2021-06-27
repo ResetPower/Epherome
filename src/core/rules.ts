@@ -25,14 +25,16 @@ export function isOSCompliant(rule: ClientJsonOSRule): boolean {
 }
 
 export function isCompliant(rules: ClientJsonRules): boolean {
-  let ret = false;
-  rules.forEach((rule) => {
+  let ret = true;
+  for (const rule of rules) {
     const allowed = rule.action === "allow";
-    rule.os
-      ? // with os, compare os
-        allowed === isOSCompliant(rule.os) && (ret = allowed)
-      : // without os
-        (ret = allowed);
-  });
+    if (rule.os) {
+      // with os, compare os
+      isOSCompliant(rule.os) && (ret = allowed);
+    } else {
+      // without os
+      ret = allowed;
+    }
+  }
   return ret;
 }

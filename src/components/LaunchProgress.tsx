@@ -2,7 +2,7 @@ import Button from "./Button";
 import Icon from "./Icon";
 import Dialog from "./Dialog";
 import { Component } from "react";
-import { launchMinecraft, MinecraftLaunchDetail } from "../core/launch";
+import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { t } from "../renderer/global";
 import { CustomDialogProps, ErrorDialog, RequestPasswordDialog } from "./Dialogs";
 import { showDialog } from "../renderer/overlay";
