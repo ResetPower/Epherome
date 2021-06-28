@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import touchBar from "./touchbar";
-import "./system";
+import { mainLogger, platform } from "./system";
 import "./ms-auth";
 
 const prod = process.env.NODE_ENV === "production";
@@ -17,7 +17,11 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-  win.setTouchBar(touchBar(win));
+  if (platform === "darwin") {
+    // is macos, set touch bar
+    win.setTouchBar(touchBar(win));
+    mainLogger.info("macOS Detected, set touch bar");
+  }
 
   prod ? win.loadFile("dist/index.html") : win.loadURL("http://localhost:3000");
 }

@@ -6,7 +6,7 @@ import Container from "../components/Container";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import { MinecraftAccount } from "../renderer/accounts";
-import { t } from "../renderer/global";
+import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyProps, EmptyState } from "../tools/types";
 import List from "../components/List";
@@ -43,6 +43,7 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
                 onChange={(checked: boolean) =>
                   checked
                     ? (() => {
+                        logger.info(`Account selection changed to id ${i.id}`);
                         setConfig(() => (ephConfigs.selectedAccount = i.id));
                         this.setState({});
                       })()

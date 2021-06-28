@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import { coreLogger } from ".";
 
 export function runMinecraft(
   java: string,
@@ -12,5 +13,20 @@ export function runMinecraft(
     cwd: dir,
   });
   proc.on("error", onErr);
-  proc.stdout.on("data", () => !done && (done = true) && onDone());
+  proc.stdout.on(
+    "data",
+    () =>
+      !done &&
+      (done = true) &&
+      (() => {
+        onDone();
+        coreLogger.info("Minecraft is running");
+      })()
+  );
+  if (process.env.NODE_ENV === "development") {
+    // output process message to help developing
+    // TODO Note that need to optimize more here
+    proc.stdout.on("data", (d) => console.log(d.toString()));
+    proc.stderr.on("data", (d) => console.log(d.toString()));
+  }
 }

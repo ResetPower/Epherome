@@ -7,7 +7,7 @@ import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Tooltip from "../components/Tooltip";
 import { MinecraftProfile } from "../renderer/profiles";
-import { hist, t } from "../renderer/global";
+import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyProps, EmptyState } from "../tools/types";
 import ListItem from "../components/ListItem";
@@ -46,6 +46,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                 onChange={(checked: boolean) =>
                   checked
                     ? (() => {
+                        logger.info(`Profile selection changed to id ${i.id}`);
                         setConfig(() => (ephConfigs.selectedProfile = i.id));
                         this.setState({});
                       })()

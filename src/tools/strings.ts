@@ -9,3 +9,10 @@ export function removeSuffix(src: string, suf: string): string {
 export function replaceAll(src: string, a: string, b: string): string {
   return src.split(a).join(b);
 }
+
+export function appendZero(src: number): string {
+  if (0 <= src && src < 10) {
+    return `0${src}`;
+  }
+  return src.toString();
+}

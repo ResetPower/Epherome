@@ -1,10 +1,10 @@
 import { ipcMain, dialog, app } from "electron";
 import os from "os";
-import log from "electron-log";
+import { Logger } from "../tools/logging";
 
 // epherome application constraints
 const version = "0.0.4"; // major.minor.patch
-const platform = os.platform(); // operating system name
+export const platform = os.platform(); // operating system name
 const arch = os.arch(); // operating system arch
 const release = os.release(); // operating system release version
 const dir = app.getPath("userData"); // config file and application data directory
@@ -36,13 +36,9 @@ ipcMain.on("openDirectory", (ev) => {
 });
 
 // global main-process logger
-export const main = log.scope("main");
+export const mainLogger = new Logger("Main");
 
-main.info(`*** Epherome ${version} ***`);
-main.info(`Operating System: ${platform} ${arch} ${release}`);
-main.info(`Node.js Version: ${process.versions.node}`);
-main.info(`Electron Version: ${process.versions.electron}`);
-main.info(`Chrome Version: ${process.versions.chrome}`);
-main.info(`V8 Version: ${process.versions.v8}`);
-main.info(`Epherome directory: ${dir}`);
-main.info(`"JAVA_HOME": ${javaHome}`);
+mainLogger.info(`*** Epherome ${version} ***`);
+mainLogger.info(`Epherome is running on ${process.env.NODE_ENV} mode`);
+mainLogger.info(`Operating System: ${platform} ${arch} ${release}`);
+mainLogger.info(`Epherome directory: '${dir}'`);

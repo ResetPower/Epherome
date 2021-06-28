@@ -1,4 +1,3 @@
-import log from "electron-log";
 import colors from "./colors";
 import { I18n } from "../tools/i18n";
 import { constraints, ephConfigs, setConfig } from "./config";
@@ -9,6 +8,7 @@ import { ipcRenderer } from "electron";
 import { defineTheme } from "./theme";
 import { EphHistory } from "../tools/history";
 import { subscribe } from "./session";
+import { Logger } from "../tools/logging";
 
 const lang = ephConfigs.language;
 
@@ -57,7 +57,7 @@ export const darkTheme = defineTheme({
 });
 
 // renderer process logger
-export const logger = log.scope("renderer");
+export const logger = new Logger("Renderer");
 
 // global history
 export const hist = new EphHistory(/* animation timeout */ 120);

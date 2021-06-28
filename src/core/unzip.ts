@@ -1,5 +1,5 @@
 import StreamZip from "node-stream-zip";
-import { loggerCore } from ".";
+import { coreLogger } from ".";
 
 export function unzipNatives(dir: string, natives: string[]): void {
   for (const file of natives) {
@@ -11,7 +11,7 @@ export function unzipNatives(dir: string, natives: string[]): void {
       zip.extract(null, dir, (err, count) => {
         zip.close();
         if (err) {
-          loggerCore.error(`Error Occurred in Unzipping File "${file}". Unzipped ${count} Files.`);
+          coreLogger.error(`Error occurred in unzipping File "${file}", unzipped ${count} files`);
         }
       });
     });
