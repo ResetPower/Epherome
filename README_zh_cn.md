@@ -1,5 +1,7 @@
 # Epherome
 
+[![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml)
+
 简单的 Minecraft 启动器
 
 [English](README.md)
