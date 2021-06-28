@@ -4,3 +4,4 @@ dist/
 package/
 .idea/
 .vscode/
+.nyc_output/

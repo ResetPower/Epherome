@@ -1,4 +1,4 @@
-import unwrapFunction from "../tools/objects";
+import { unwrapFunction } from "../tools/objects";
 
 export default function TextField(props: {
   label?: string;
