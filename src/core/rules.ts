@@ -5,12 +5,10 @@ export const osName = os.platform();
 export const osVer = os.version();
 
 export function equalOS(name: string): boolean {
-  // darwin: `osx` or `macos`
+  if (osName === name) return true;
   if (osName === "darwin") return name === "osx" || name === "macos";
-  // win32: `windows`
   if (osName === "win32") return name === "windows";
-  // linux: `linux`
-  return osName === name;
+  return false;
 }
 
 export function isOSCompliant(rule: ClientJsonOSRule): boolean {
