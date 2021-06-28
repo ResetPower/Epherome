@@ -1,5 +1,5 @@
 import { Logger } from "../tools/logging";
-import unwrapFunction from "../tools/objects";
+import { unwrapFunction } from "../tools/objects";
 
 const sessionLogger = new Logger("Session");
 

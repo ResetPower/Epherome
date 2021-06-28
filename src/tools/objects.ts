@@ -1,7 +1,7 @@
 import { StringMap } from "./types";
 
 // return an empty function if function is undefined
-export default function unwrapFunction<P>(
+export function unwrapFunction<P>(
   func: ((...args: P[]) => void) | undefined
 ): (...args: P[]) => void {
   return (

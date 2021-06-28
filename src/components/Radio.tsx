@@ -1,4 +1,4 @@
-import unwrapFunction from "../tools/objects";
+import { unwrapFunction } from "../tools/objects";
 
 export default function Radio(props: {
   checked: boolean;
