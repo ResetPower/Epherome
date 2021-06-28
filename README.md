@@ -1,5 +1,7 @@
 # Epherome
 
+[![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml)
+
 Simple Minecraft launcher
 
 [简体中文](README_zh_cn.md)
