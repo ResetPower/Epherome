@@ -12,6 +12,7 @@ import {
   XSTSToken2MinecraftToken,
 } from "../tools/auth";
 import { ephConfigs, setConfig } from "./config";
+import { logger } from "./global";
 
 export interface MinecraftAccount extends WithId {
   email: string;
@@ -27,6 +28,11 @@ export interface CreateAccountImplResult {
   message?: "msAccNoMinecraft" | "";
 }
 
+function appendAccount(account: MinecraftAccount) {
+  setConfig(() => ephConfigs.accounts.push(account));
+  logger.info(`Created ${account.mode} account, id: ${account.id}`);
+}
+
 export async function createAccount(
   mode: string,
   username: string,
@@ -36,9 +42,6 @@ export async function createAccount(
   const array = ephConfigs.accounts;
   const unsuccessfulResult: CreateAccountImplResult = { success: false };
   const successfulResult: CreateAccountImplResult = { success: true };
-  const appendAccount = (account: MinecraftAccount) => {
-    setConfig(() => ephConfigs.accounts.push(account));
-  };
   if (mode === "mojang") {
     if (username === "" || password === "") return unsuccessfulResult;
     const result = await authenticate(username, password);
@@ -163,6 +166,7 @@ export async function createAccount(
 
 export function removeAccount(id: number): void {
   setConfig(() => (ephConfigs.accounts = ephConfigs.accounts.filter((value) => value.id !== id)));
+  logger.info(`Removed account, id: ${id}`);
 }
 
 export function getAccount(id: number): MinecraftAccount | null {
@@ -181,4 +185,5 @@ export function updateAccountToken(id: number, newToken: string): void {
         }
       }))
   );
+  logger.info(`Updated account access token, id: ${id}`);
 }

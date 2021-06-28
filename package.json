@@ -28,6 +28,7 @@
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
     "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^3.11.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
     "concurrently": "^6.2.0",
@@ -56,8 +57,6 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@types/webpack-dev-server": "^3.11.4",
-    "electron-log": "^4.3.5",
     "got": "^11.8.2",
     "json5": "^2.2.0",
     "material-design-icons": "^3.0.1",

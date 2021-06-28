@@ -5,7 +5,7 @@ import path from "path";
 import { Component, ChangeEvent, ReactNode } from "react";
 import Link from "../components/Link";
 import { constraints, ephConfigs, EphDownloadProvider, setConfig } from "../renderer/config";
-import { t, i18n, hist } from "../renderer/global";
+import { t, i18n, hist, logger } from "../renderer/global";
 import { EmptyProps } from "../tools/types";
 import { broadcast } from "../renderer/session";
 import Typography from "../components/Typography";
@@ -34,18 +34,26 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     setConfig(() => (ephConfigs.language = newLanguage));
     this.setState({});
     broadcast("hist", hist.pathname());
+    logger.info(`Language changed to '${newLanguage}'`);
   };
   changeTheme = (ev: ChangeEvent<{ value: unknown }>): void => {
-    setConfig(() => (ephConfigs.theme = ev.target.value as string));
+    const newTheme = ev.target.value as string;
+    setConfig(() => (ephConfigs.theme = newTheme));
     broadcast("theme");
     this.setState({});
+    logger.info(`Theme changed to '${newTheme}'`);
   };
   save = (): void => {
+    const jp = this.state.javaPath;
+    const hk = this.state.hitokoto;
+    const dp = this.state.downloadProvider;
     setConfig(() => {
-      ephConfigs.javaPath = this.state.javaPath;
-      ephConfigs.hitokoto = this.state.hitokoto;
-      ephConfigs.downloadProvider = this.state.downloadProvider;
+      ephConfigs.javaPath = jp;
+      ephConfigs.hitokoto = hk;
+      ephConfigs.downloadProvider = dp;
     });
+    logger.info(`Settings saved`);
+    logger.debug([`Java Path: '${jp}'`, `Hitokoto: ${hk}`, `Download Provider: '${dp}'`]);
     hist.goBack();
   };
   TabItem = (props: { children: ReactNode; value: number }): JSX.Element => {

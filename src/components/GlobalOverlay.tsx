@@ -11,10 +11,9 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
   state: GlobalOverlayState = {
     show: false,
   };
-  subscribeIndex = 0;
   constructor(props: EmptyProps) {
     super(props);
-    this.subscribeIndex = subscribe("global-overlay", (arg) => {
+    subscribe("global-overlay", (arg) => {
       arg === "updated" && this.setState({ show: overlayStack.length !== 0 });
     });
   }
@@ -22,7 +21,7 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
     !this.state.show && clearOverlayStack();
   }
   componentWillUnmount(): void {
-    unsubscribe(this.subscribeIndex);
+    unsubscribe("global-overlay");
   }
   render(): JSX.Element {
     return (

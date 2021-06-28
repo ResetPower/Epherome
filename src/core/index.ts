@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import log from "electron-log";
 import { MinecraftProfile } from "../renderer/profiles";
 import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
@@ -12,9 +11,10 @@ import { osName, osVer } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { downloadFile } from "./download";
+import { Logger } from "../tools/logging";
 
 // logger for minecraft launch core
-export const loggerCore = log.scope("core");
+export const coreLogger = new Logger("Core");
 
 export interface MinecraftLaunchDetail {
   text: string;
@@ -34,7 +34,7 @@ export interface MinecraftLaunchOptions {
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
   const defaultHelper = t.launching;
-  loggerCore.info("Launching Minecraft... ...");
+  coreLogger.info("Launching Minecraft ...");
   const account = options.account;
   const profile = options.profile;
   const java = options.java;
@@ -65,21 +65,24 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   if (navigator.onLine) {
     if (account.mode === "mojang" || account.mode === "authlib") {
       const server = account.mode === "mojang" ? undefined : account.authserver;
+      coreLogger.info("Validating account token");
       const valid = await validate(account.token, server);
       if (!valid) {
+        coreLogger.info("Account token is not valid, refreshing");
         const refreshed = await refresh(account.token, server);
         if (refreshed.err) {
           const act = async (again: boolean) => {
             const password = await options.requestPassword(again);
             const result = await authenticate(account.email, password, server);
             if (result.err) {
+              coreLogger.warn("Password wrong, requesting for password again");
               await act(true);
             } else {
               updateAccountToken(account.id, result.token);
             }
           };
+          coreLogger.warn("Failed to refresh token, requesting for password");
           await act(false);
-          loggerCore.warn("Failed to refresh token");
         } else {
           updateAccountToken(account.id, refreshed.token);
         }
@@ -88,7 +91,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
       // TODO Validate Microsoft Account Token
     }
   } else {
-    loggerCore.info("Network not available, account validating skipped");
+    coreLogger.info("Network not available, account validating skipped");
   }
   nextDetail(t.progress.analyze);
 

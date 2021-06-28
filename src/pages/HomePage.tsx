@@ -4,7 +4,7 @@ import Icon from "../components/Icon";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
 import { ChangeEvent, Component } from "react";
-import { hist } from "../renderer/global";
+import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../renderer/accounts";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
@@ -53,6 +53,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   }
   reloadHitokoto = (): void => {
     if (this.enableHitokoto) {
+      logger.info("Fetching hitokoto ...");
       this.setState({ hitokoto: { content: "...", from: "..." } });
       got("https://api.epherome.com/hitokoto")
         .then((resp) => {
@@ -65,6 +66,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
           this.setState({
             hitokoto: hk,
           });
+          logger.info("Fetched hitokoto");
         })
         .catch(() => {
           this.setState({
@@ -78,8 +80,10 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   };
   // handle minecraft profile select
   handleChange = (ev: ChangeEvent<HTMLSelectElement>): void => {
-    setConfig(() => (ephConfigs.selectedProfile = parseInt(ev.target.value)));
-    this.setState({ value: parseInt(ev.target.value) });
+    const newValue = parseInt(ev.target.value);
+    setConfig(() => (ephConfigs.selectedProfile = newValue));
+    logger.info(`Profile selection changed to id ${newValue}`);
+    this.setState({ value: newValue });
   };
   handleLaunch = (): void => {
     // value will be "" if not selected

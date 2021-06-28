@@ -4,7 +4,7 @@ import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
 import List from "../components/List";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
-import { t } from "../renderer/global";
+import { logger, t } from "../renderer/global";
 import ListItem from "../components/ListItem";
 import ListItemText from "../components/ListItemText";
 import Spin from "../components/Spin";
@@ -38,10 +38,12 @@ export default class DownloadsPage extends Component<EmptyProps, DownloadsPageSt
       : false;
   }
   componentDidMount(): void {
+    logger.info("Fetching Minecraft launcher meta...");
     got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((resp) => {
       const parsed = JSON.parse(resp.body);
       if (parsed.hasOwnProperty("versions")) {
         this.setState({ versions: parsed.versions, loading: false });
+        logger.info("Fetched Minecraft launcher meta");
       }
     });
   }

@@ -3,7 +3,7 @@ import "material-design-icons/iconfont/material-icons.css";
 import { render } from "react-dom";
 import App from "./App";
 
-console.log("Welcome to Epherome!");
+console.log("Hello, World!");
 
 // mount application
 render(<App />, document.getElementById("root"));

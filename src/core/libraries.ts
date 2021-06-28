@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { isCompliant, equalOS } from "./rules";
-import { loggerCore } from ".";
+import { coreLogger } from ".";
 import { ClientAnalyzedLibrary, ClientJsonLibraries, ClientLibraryResult } from "./struct";
 import { removeSuffix, replaceAll } from "../tools/strings";
 
@@ -29,7 +29,7 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
               try {
                 fs.accessSync(file);
               } catch (e) {
-                loggerCore.warn(`Native library file ${file} not exists`);
+                coreLogger.warn(`Native library file ${file} not exists`);
                 const nativeObj = classifiers[native];
                 missing.push({
                   name: nativeObj.path.split("/").pop() ?? "",
@@ -49,7 +49,7 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
         try {
           fs.accessSync(file);
         } catch (e) {
-          loggerCore.warn(`Library file ${file} not exists`);
+          coreLogger.warn(`Library file ${file} not exists`);
           missing.push({
             name: ar.path.split("/").pop() ?? "",
             path: `${dir}/libraries/${ar.path}`,
@@ -76,7 +76,7 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
         fs.accessSync(p);
       } catch (e) {
         // file not exists, add to missing
-        loggerCore.warn(`Library file ${p} not exists`);
+        coreLogger.warn(`Library file ${p} not exists`);
         if (url) {
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
