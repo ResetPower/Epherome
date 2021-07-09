@@ -4,13 +4,13 @@ import Button from "./Button";
 import Icon from "./Icon";
 import TextField from "./TextField";
 import Alert from "./Alert";
-import { Component, ChangeEvent } from "react";
 import { t } from "../renderer/global";
 import { createAccount, CreateAccountImplResult, removeAccount } from "../renderer/accounts";
 import { createProfile, editProfile, getProfile, removeProfile } from "../renderer/profiles";
 import { ipcRenderer } from "electron";
 import Typography from "./Typography";
 import Spin from "./Spin";
+import { Component } from "react";
 
 export interface CustomDialogProps {
   onClose: () => void;
@@ -71,8 +71,8 @@ export class CreateAccountDialog extends Component<
     password: "",
     authserver: "",
   };
-  handleChange = (ev: ChangeEvent<{ value: unknown }>): void => {
-    this.setState({ value: ev.target.value as string });
+  handleChange = (ev: string): void => {
+    this.setState({ value: ev });
   };
   handleClose = (): void => {
     this.setState({

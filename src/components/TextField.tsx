@@ -24,7 +24,7 @@ export default function TextField(props: {
         } bg-card text-black dark:text-white rounded-md w-full p-1`}
         placeholder={props.placeholder}
         value={props.value}
-        onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
+        onChange={(ev) => unwrapFunction(props.onChange)(ev.currentTarget.value)}
       />
     </div>
   );

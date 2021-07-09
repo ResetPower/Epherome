@@ -1,7 +1,6 @@
 import Button from "./Button";
 import Icon from "./Icon";
 import Dialog from "./Dialog";
-import { Component } from "react";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { t } from "../renderer/global";
 import { CustomDialogProps, ErrorDialog, RequestPasswordDialog } from "./Dialogs";
@@ -11,6 +10,7 @@ import { broadcast, subscribeAsync } from "../renderer/session";
 import { MinecraftAccount } from "../renderer/accounts";
 import { MinecraftProfile } from "../renderer/profiles";
 import Typography from "./Typography";
+import { Component } from "react";
 
 export interface LaunchProgressProps extends CustomDialogProps {
   account: MinecraftAccount;

@@ -9,6 +9,7 @@ import Typography from "../components/Typography";
 export interface ProfileManagementPageProps {
   params: { [key: string]: string };
 }
+
 export interface ProfileManagementPageState {
   value: number;
   mapsList: string[];
@@ -39,7 +40,7 @@ export default class ProfileManagementPage extends Component<
   profile: MinecraftProfile | null;
   constructor(props: ProfileManagementPageProps) {
     super(props);
-    this.profile = getProfile(Number(this.props.params.id));
+    this.profile = getProfile(parseInt(this.props.params.id));
   }
   async componentDidMount(): Promise<void> {
     if (this.profile !== null) {

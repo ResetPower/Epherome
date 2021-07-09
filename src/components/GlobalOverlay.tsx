@@ -1,7 +1,7 @@
-import { Component } from "react";
-import { EmptyProps } from "../tools/types";
 import { subscribe, unsubscribe } from "../renderer/session";
 import { clearOverlayStack, overlayStack, shouldOverlayHide } from "../renderer/overlay";
+import { Component } from "react";
+import { EmptyProps } from "../tools/types";
 
 export interface GlobalOverlayState {
   show: boolean;
@@ -13,12 +13,12 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
   };
   constructor(props: EmptyProps) {
     super(props);
+    !this.state.show && clearOverlayStack();
+  }
+  componentDidMount(): void {
     subscribe("global-overlay", (arg) => {
       arg === "updated" && this.setState({ show: overlayStack.length !== 0 });
     });
-  }
-  componentDidMount(): void {
-    !this.state.show && clearOverlayStack();
   }
   componentWillUnmount(): void {
     unsubscribe("global-overlay");
@@ -30,17 +30,15 @@ export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlaySt
           !this.state.show ? "hidden" : ""
         }`}
       >
-        {overlayStack.map((comp, index) => {
-          return (
-            <div
-              className="justify-center mx-auto my-auto"
-              hidden={shouldOverlayHide(index)}
-              key={index}
-            >
-              {comp}
-            </div>
-          );
-        })}
+        {overlayStack.map((comp, index) => (
+          <div
+            className="justify-center mx-auto my-auto"
+            hidden={shouldOverlayHide(index)}
+            key={index}
+          >
+            {comp}
+          </div>
+        ))}
       </div>
     );
   }
