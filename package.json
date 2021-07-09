@@ -75,6 +75,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "got": "^11.8.2",
     "material-design-icons": "^3.0.1",
     "node-stream-zip": "^1.13.6",

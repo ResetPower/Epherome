@@ -1,5 +1,6 @@
 import "../styles/index.css";
 import "material-design-icons/iconfont/material-icons.css";
+import "animate.css/animate.css";
 import { render } from "react-dom";
 import App from "./App";
 

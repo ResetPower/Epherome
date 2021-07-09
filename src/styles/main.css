@@ -2,6 +2,10 @@ body {
   background: var(--eph-background-color);
 }
 
+:root {
+  --animate-duration: 0.3s;
+}
+
 /* hide scrollbar */
 ::-webkit-scrollbar {
   width: 0 !important;
