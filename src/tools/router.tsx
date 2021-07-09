@@ -5,7 +5,7 @@ import { EphHistory } from "./history";
 export interface RouteProps {
   component: ((params: StringMap) => JSX.Element) | JSX.Element;
   path: string;
-  className?: string;
+  class?: string;
   params?: string | number[];
 }
 

@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import json5 from "json5";
 import { ipcRenderer } from "electron";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
@@ -37,24 +36,24 @@ let initConfig: EphConfig = {
 };
 
 // prepare config
-const cfg = constraints.dir + path.sep + "config.json5";
+export const cfgPath = constraints.dir + path.sep + "settings.json";
 
 try {
-  fs.accessSync(cfg);
+  fs.accessSync(cfgPath);
   // file does exist
-  const str = fs.readFileSync(cfg).toString();
-  const obj = json5.parse(str);
+  const str = fs.readFileSync(cfgPath).toString();
+  const obj = JSON.parse(str);
   initConfig = Object.assign(initConfig, obj);
 } catch {
   // file does not exist
-  fs.writeFileSync(cfg, "{}");
+  fs.writeFileSync(cfgPath, "{}");
 }
 
 export const ephConfigs: EphConfig = initConfig;
 
 // write config to disk
 export function saveConfig(): void {
-  fs.writeFileSync(cfg, json5.stringify(ephConfigs));
+  fs.writeFileSync(cfgPath, JSON.stringify(ephConfigs));
 }
 
 // change config and save

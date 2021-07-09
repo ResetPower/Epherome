@@ -4,7 +4,6 @@ import path from "path";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import HtmlPlugin from "html-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-import ReactRefreshPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 
 interface Config extends Configuration {
   devServer?: WebpackDevServerConfiguration;
@@ -61,7 +60,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
       exprContextCritical: false,
       rules: [
         {
-          test: /\.(ts|tsx)?$/,
+          test: /\.(js|ts|tsx)?$/,
           exclude: /node_modules/,
           loader: "ts-loader",
         },
@@ -105,8 +104,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
       }),
       new MiniCssExtractPlugin(),
       // minimize css in production
-      dev ? undefined : new CssMinimizerPlugin(),
-      dev ? new ReactRefreshPlugin() : undefined
+      dev ? undefined : new CssMinimizerPlugin()
     ),
   };
 

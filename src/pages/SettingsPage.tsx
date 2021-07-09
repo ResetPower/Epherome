@@ -1,10 +1,15 @@
 import TextField from "../components/TextField";
 import Button from "../components/Button";
 import Select from "../components/Select";
-import path from "path";
-import { Component, ChangeEvent, ReactNode } from "react";
+import { Component, ReactNode } from "react";
 import Link from "../components/Link";
-import { constraints, ephConfigs, EphDownloadProvider, setConfig } from "../renderer/config";
+import {
+  cfgPath,
+  constraints,
+  ephConfigs,
+  EphDownloadProvider,
+  setConfig,
+} from "../renderer/config";
 import { t, i18n, hist, logger } from "../renderer/global";
 import { EmptyProps } from "../tools/types";
 import { broadcast } from "../renderer/session";
@@ -26,22 +31,18 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
     downloadProvider: ephConfigs.downloadProvider,
   };
   cnst = constraints;
-  handleChange = (_ev: ChangeEvent<EmptyProps>, value: number): void =>
-    this.setState({ value: value });
-  changeLanguage = (ev: ChangeEvent<{ value: unknown }>): void => {
-    const newLanguage = ev.target.value as string;
-    i18n.changeLanguage(newLanguage);
-    setConfig(() => (ephConfigs.language = newLanguage));
+  changeLanguage = (ev: string): void => {
+    i18n.changeLanguage(ev);
+    setConfig(() => (ephConfigs.language = ev));
     this.setState({});
     broadcast("hist", hist.pathname());
-    logger.info(`Language changed to '${newLanguage}'`);
+    logger.info(`Language changed to '${ev}'`);
   };
-  changeTheme = (ev: ChangeEvent<{ value: unknown }>): void => {
-    const newTheme = ev.target.value as string;
-    setConfig(() => (ephConfigs.theme = newTheme));
+  changeTheme = (ev: string): void => {
+    setConfig(() => (ephConfigs.theme = ev));
     broadcast("theme");
     this.setState({});
-    logger.info(`Theme changed to '${newTheme}'`);
+    logger.info(`Theme changed to '${ev}'`);
   };
   save = (): void => {
     const jp = this.state.javaPath;
@@ -155,10 +156,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
             </div>
             <div>
               <Typography>{t.cfgFilePath}:</Typography>
-              <p className="text-gray-400">
-                {this.cnst.dir}
-                {path.sep}config.json5
-              </p>
+              <p className="text-gray-400">{cfgPath}</p>
             </div>
             <div>
               <Typography>

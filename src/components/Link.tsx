@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import { Component } from "react";
 import { shell } from "electron";
 
 export interface LinkProps {
@@ -6,7 +6,7 @@ export interface LinkProps {
   children: string;
 }
 
-export default class Link extends PureComponent<LinkProps> {
+export default class Link extends Component<LinkProps> {
   handleClick = (): void => {
     shell.openExternal(this.props.href).then();
   };

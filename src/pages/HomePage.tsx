@@ -3,7 +3,7 @@ import Container from "../components/Container";
 import Icon from "../components/Icon";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
-import { ChangeEvent, Component } from "react";
+import { Component } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../renderer/accounts";
@@ -79,8 +79,8 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     }
   };
   // handle minecraft profile select
-  handleChange = (ev: ChangeEvent<HTMLSelectElement>): void => {
-    const newValue = parseInt(ev.target.value);
+  handleChange = (val: string): void => {
+    const newValue = parseInt(val);
     setConfig(() => (ephConfigs.selectedProfile = newValue));
     logger.info(`Profile selection changed to id ${newValue}`);
     this.setState({ value: newValue });

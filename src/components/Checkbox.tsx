@@ -18,7 +18,7 @@ export default function Checkbox(props: {
               (() => {
                 /**/
               })
-            )(ev.target.checked)
+            )(ev.currentTarget.checked)
           }
         />
         <svg

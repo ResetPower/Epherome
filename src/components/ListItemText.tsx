@@ -8,8 +8,8 @@ export default function ListItemText(props: {
 }): JSX.Element {
   return (
     <div className={props.className} onClick={props.onClick}>
-      <Typography>{props.primary}</Typography>
-      <p className="text-shallow">{props.secondary}</p>
+      <Typography>{props.primary ?? ""}</Typography>
+      <p className="text-shallow">{props.secondary ?? ""}</p>
     </div>
   );
 }
