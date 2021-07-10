@@ -16,6 +16,7 @@ export interface EphConfig {
   selectedProfile: number;
   javaPath: string;
   theme: string;
+  themeFollowOs: boolean;
   language: string;
   hitokoto: boolean;
   downloadProvider: EphDownloadProvider;
@@ -29,6 +30,7 @@ let initConfig: EphConfig = {
   selectedProfile: 0,
   javaPath: "java",
   theme: "light",
+  themeFollowOs: false,
   hitokoto: true,
   // if no language found in config, follow the system
   language: navigator.language.startsWith("zh") ? "zh-cn" : "en-us",

@@ -26,7 +26,7 @@ export default function Button(props: {
                   : "transition-colors duration-200 transform hover:bg-opacity-5 active:bg-opacity-10"
               } ${props.textInherit ? "" : "text-black dark:text-white"}` // eph-btn-text
         }
-        ${props.disabled ? "cursor-not-allowed text-gray-500 dark:text-gray-400" : ""}
+        ${props.disabled ? "cursor-not-allowed text-gray-500 dark:text-gray-500" : ""}
         ${props.className}`}
       onClick={props.onClick}
     >
