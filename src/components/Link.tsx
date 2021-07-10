@@ -12,7 +12,10 @@ export default class Link extends Component<LinkProps> {
   };
   render(): JSX.Element {
     return (
-      <span className="text-blue-500 cursor-pointer select-none" onClick={this.handleClick}>
+      <span
+        className="text-blue-500 hover:text-blue-600 cursor-pointer select-none"
+        onClick={this.handleClick}
+      >
         {this.props.children}
       </span>
     );

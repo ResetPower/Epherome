@@ -3,7 +3,33 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "main.css";
-@import "dialog.css";
-@import "switch.css";
-@import "transition.css";
+body {
+  background: var(--eph-background-color);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+:root {
+  --animate-duration: 0.3s;
+}
+
+.eph-dialog {
+  min-width: 500px;
+}
+
+/* Checkbox Component */
+input:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: #48bb78;
+}
+
+/* page transition animations */
+.fade-enter,
+.fade-exit {
+  transition: 150ms ease opacity;
+}
+.fade-enter {
+  opacity: 0.1;
+}

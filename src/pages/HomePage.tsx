@@ -11,12 +11,13 @@ import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import { MinecraftLaunchDetail } from "../core";
 import { EmptyProps } from "../tools/types";
-import { Hitokoto } from "../renderer/hitokoto";
+import { fetchHitokoto, Hitokoto } from "../renderer/hitokoto";
 import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
-import got from "got";
+import Dialog from "../components/Dialog";
+import Tooltip from "../components/Tooltip";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
@@ -53,29 +54,22 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   }
   reloadHitokoto = (): void => {
     if (this.enableHitokoto) {
-      logger.info("Fetching hitokoto ...");
       this.setState({ hitokoto: { content: "...", from: "..." } });
-      got("https://api.epherome.com/hitokoto")
-        .then((resp) => {
-          const parsed = JSON.parse(resp.body);
-          const hk = {
-            content: parsed.content,
-            from: `——${parsed.from}`,
-          };
-          HomePage.hitokoto = hk;
-          this.setState({
-            hitokoto: hk,
-          });
-          logger.info("Fetched hitokoto");
-        })
-        .catch(() => {
+      fetchHitokoto().then((hk) => {
+        if (hk === null) {
           this.setState({
             hitokoto: {
               content: t.cannotConnectToHitokoto,
               from: "",
             },
           });
-        });
+        } else {
+          HomePage.hitokoto = hk;
+          this.setState({
+            hitokoto: hk,
+          });
+        }
+      });
     }
   };
   // handle minecraft profile select
@@ -87,15 +81,21 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   };
   handleLaunch = (): void => {
     // value will be "" if not selected
-    if (this.state.value !== "") {
-      const val = Number(this.state.value);
-      const account = this.account;
-      const profile = getProfile(val);
-      if (account !== null && profile !== null) {
-        showDialog((close) => (
-          <LaunchProgress onClose={close} account={account} profile={profile} />
-        ));
-      }
+    const val = Number(this.state.value);
+    const account = this.account;
+    const profile = getProfile(val);
+    if (account !== null && profile !== null) {
+      showDialog((close) => <LaunchProgress onClose={close} account={account} profile={profile} />);
+    } else {
+      showDialog((close) => (
+        <Dialog indentBottom>
+          <Typography className="text-lg px-3">{t.warning}</Typography>
+          <div className="p-6">{t.noAccOrProSelected}</div>
+          <div className="flex justify-end">
+            <Button onClick={close}>{t.ok}</Button>
+          </div>
+        </Dialog>
+      ));
     }
   };
   render(): JSX.Element {
@@ -104,19 +104,33 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
     return (
       <Container>
         <Card className="mb-3 p-6 shadow-sm">
-          <div className="p-3">
-            <p className="text-shallow mt-0">{t.hello}</p>
-            <Typography className="text-2xl">
-              {username === undefined ? "Tourist" : username}
-            </Typography>
-            {this.enableHitokoto && (
-              <div>
-                <Typography className="text-sm">{this.state.hitokoto.content}</Typography>
-                <Typography className="text-sm text-shallow" textInherit>
-                  {this.state.hitokoto.from}
-                </Typography>
-              </div>
-            )}
+          <div className="flex">
+            <div className="p-3 flex-grow">
+              <p className="text-shallow mt-0">{t.hello}</p>
+              <Typography className="text-2xl">
+                {username === undefined ? "Tourist" : username}
+              </Typography>
+              {this.enableHitokoto && (
+                <div>
+                  <Typography className="text-sm">{this.state.hitokoto.content}</Typography>
+                  <Typography className="text-sm text-shallow" textInherit>
+                    {this.state.hitokoto.from}
+                  </Typography>
+                </div>
+              )}
+            </div>
+            <div>
+              <Tooltip title="Process" direction="left">
+                <IconButton>
+                  <Icon>layers</Icon>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Extensions" direction="left">
+                <IconButton>
+                  <Icon>apps</Icon>
+                </IconButton>
+              </Tooltip>
+            </div>
           </div>
           <div className="flex">
             <Button onClick={() => hist.push("/accounts")}>
@@ -127,9 +141,11 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             </Button>
             <div className="flex-grow" />
             {this.enableHitokoto && (
-              <IconButton onClick={this.reloadHitokoto}>
-                <Icon>refresh</Icon>
-              </IconButton>
+              <Tooltip title="Refresh">
+                <IconButton onClick={this.reloadHitokoto}>
+                  <Icon>refresh</Icon>
+                </IconButton>
+              </Tooltip>
             )}
             <IconButton onClick={() => hist.push("/settings")}>
               <Icon>settings</Icon>

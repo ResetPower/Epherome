@@ -8,14 +8,14 @@ import ProfilesPage from "../pages/ProfilesPage";
 import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "./titles";
 import ProfileManagementPage from "../pages/ProfileManagementPage";
-import { subscribe } from "./session";
+import { broadcast, subscribe } from "./session";
 import { EmptyProps } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "../components/GlobalOverlay";
 import { Route, Router } from "../tools/router";
 import { darkTheme, hist, lightTheme } from "./global";
 import { applyTheme } from "./theme";
-import { ephConfigs } from "./config";
+import { ephConfigs, setConfig } from "./config";
 
 export interface AppState {
   title: string;
@@ -27,9 +27,26 @@ export default class App extends Component<EmptyProps, AppState> {
     title: resolveTitle(hist.pathname()),
     mainClassName: "",
   };
+  media = window.matchMedia("(prefers-color-scheme: dark)");
+  detectSystemTheme(): void {
+    const prefersDarkMode = this.media.matches;
+    setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
+  }
+  updateTheme(): void {
+    if (ephConfigs.themeFollowOs) {
+      this.detectSystemTheme();
+      this.media.addEventListener("change", () => {
+        if (ephConfigs.themeFollowOs) {
+          this.detectSystemTheme();
+          broadcast("theme");
+        }
+      });
+    }
+    applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+  }
   constructor(props: EmptyProps) {
     super(props);
-    applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+    this.updateTheme();
     subscribe("anm", () => {
       this.setState({
         mainClassName: "fade-enter",
@@ -39,17 +56,27 @@ export default class App extends Component<EmptyProps, AppState> {
       this.setState({ title: resolveTitle(pathname), mainClassName: "fade-exit" });
     });
     subscribe("theme", () => {
-      applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+      this.updateTheme();
       this.setState({});
     });
   }
   render(): JSX.Element {
+    const isAtHome = this.state.title === "Epherome";
     return (
       <>
         <GlobalOverlay />
         <AppBar className="px-3 mb-2">
-          <IconButton className="text-white" onClick={hist.goBack}>
-            <Icon>{this.state.title === "Epherome" ? "menu" : "arrow_back"}</Icon>
+          <IconButton
+            className="text-white"
+            onClick={
+              isAtHome
+                ? () => {
+                    // do sth
+                  }
+                : hist.goBack
+            }
+          >
+            <Icon>{isAtHome ? "menu" : "arrow_back"}</Icon>
           </IconButton>
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>

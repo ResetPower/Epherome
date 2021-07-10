@@ -10,7 +10,7 @@ export default function IconButton(props: {
     <button
       className={`rounded-full select-none ${
         props.textInherit ? "" : "text-black dark:text-white"
-      } focus:outline-none h-12 w-12 flex items-center justify-center transition-colors duration-200 transform hover:bg-black hover:bg-opacity-5 active:bg-opacity-10 ${
+      } focus:outline-none h-12 w-12 flex items-center justify-center transition-colors duration-200 transform hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 ${
         props.className
       }`}
       onClick={props.onClick}

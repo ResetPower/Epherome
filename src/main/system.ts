@@ -3,7 +3,7 @@ import os from "os";
 import { Logger } from "../tools/logging";
 
 // epherome application constraints
-const version = "0.0.4"; // major.minor.patch
+const version = "0.0.5"; // major.minor.patch
 export const platform = os.platform(); // operating system name
 const arch = os.arch(); // operating system arch
 const release = os.release(); // operating system release version

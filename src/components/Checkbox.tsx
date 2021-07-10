@@ -7,7 +7,7 @@ export default function Checkbox(props: {
 }): JSX.Element {
   return (
     <div className="flex items-center">
-      <div className="bg-white border-2 rounded border-gray-400 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+      <div className="bg-card border rounded border-divide w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
         <input
           type="checkbox"
           className="opacity-0 absolute"

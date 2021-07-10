@@ -132,8 +132,6 @@ export class CreateAccountDialog extends Component<
             <option value={"authlib"}>{t.authlib}</option>
             <option value={"offline"}>{t.offline}</option>
           </Select>
-          <br />
-          <br />
           <div hidden={this.state.value !== "mojang"}>
             <TextField label={t.email} onChange={(ev) => this.setState({ username: ev })} />
             <TextField

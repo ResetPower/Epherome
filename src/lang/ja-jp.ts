@@ -91,5 +91,7 @@ export default defineLanguage({
       "申し訳ありませんが、Minecraft クライアントのダウンロードは現在サポートされていません。",
     maps: "マップ",
     resourcePacks: "リソースパック",
+    noAccOrProSelected: "アカウントまたはプロフィルが選択されていません",
+    followOs: "システムをフォロー",
   },
 });

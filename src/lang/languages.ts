@@ -70,6 +70,8 @@ export interface LanguageTranslator {
   downloadNotSupported: string;
   maps: string;
   resourcePacks: string;
+  noAccOrProSelected: string;
+  followOs: string;
   progress: {
     auth: string;
     analyze: string;
