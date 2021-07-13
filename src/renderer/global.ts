@@ -1,5 +1,5 @@
 import colors from "./colors";
-import { I18n } from "../tools/i18n";
+import { I18n } from "../lang/i18n";
 import { constraints, ephConfigs, setConfig } from "./config";
 import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";

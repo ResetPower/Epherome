@@ -1,5 +1,5 @@
 import { broadcast } from "../renderer/session";
-import { StringMap } from "./types";
+import { DefaultFunction, StringMap } from "./types";
 
 export class EphHistory {
   loc = { pathname: "/", params: {} };
@@ -16,7 +16,7 @@ export class EphHistory {
     return this.loc.pathname;
   };
   // do an action with animation needed
-  private act = (block: () => void): void => {
+  private act = (block: DefaultFunction): void => {
     this.invokeAnimationListeners();
     setTimeout(() => {
       block();

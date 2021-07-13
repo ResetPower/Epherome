@@ -1,4 +1,4 @@
-import { unwrapFunction } from "../tools/objects";
+import { unwrapFunction } from "../tools";
 
 export default function TextField(props: {
   label?: string;
@@ -32,7 +32,9 @@ export default function TextField(props: {
           className={`${
             props.icon ? "rounded-r-lg" : "rounded-lg"
           } flex-1 appearance-none border border-divide w-full py-2 px-4 bg-card text-gray-700 dark:text-gray-50 placeholder-gray-400 shadow-sm text-base focus:outline-none ${
-            props.error ? "ring ring-red-500" : "focus:ring-2 focus:ring-purple-600"
+            props.error
+              ? "ring ring-red-500"
+              : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
           }`}
         ></input>
       </div>

@@ -12,6 +12,7 @@ import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { downloadFile } from "./download";
 import { Logger } from "../tools/logging";
+import { DefaultFunction } from "../tools/types";
 
 // logger for minecraft launch core
 export const coreLogger = new Logger("Core");
@@ -28,7 +29,7 @@ export interface MinecraftLaunchOptions {
   setHelper: (value: string) => void;
   setDetails: (value: MinecraftLaunchDetail[]) => void;
   requestPassword: (again: boolean) => Promise<string>;
-  onDone: () => void;
+  onDone: DefaultFunction;
   onErr: (error: Error) => void;
 }
 

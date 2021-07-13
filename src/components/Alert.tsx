@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Icon from "./Icon";
+import { MdWarning, MdError, MdInfo } from "react-icons/md";
 import Typography from "./Typography";
 
 export default function Alert(props: {
@@ -16,9 +16,13 @@ export default function Alert(props: {
           : "bg-blue-600"
       }`}
     >
-      <Icon>
-        {props.severity === "warn" ? "warning" : props.severity === "error" ? "error" : "info"}
-      </Icon>
+      {props.severity === "warn" ? (
+        <MdWarning />
+      ) : props.severity === "error" ? (
+        <MdError />
+      ) : (
+        <MdInfo />
+      )}
       <Typography className="pl-3" textInherit>
         {props.children}
       </Typography>

@@ -1,4 +1,4 @@
-import { getById, getNextId, WithId } from "../tools/arrays";
+import { getById, getNextId, WithId } from "../tools";
 import { ephConfigs, setConfig } from "./config";
 import { logger } from "./global";
 

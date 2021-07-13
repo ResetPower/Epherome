@@ -1,4 +1,4 @@
-import { Language, LanguageTranslator } from "../lang/languages";
+import { Language, LanguageTranslator } from "./languages";
 import { broadcast } from "../renderer/session";
 
 export interface I18nOptions {

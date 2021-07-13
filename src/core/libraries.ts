@@ -3,7 +3,7 @@ import path from "path";
 import { isCompliant, equalOS } from "./rules";
 import { coreLogger } from ".";
 import { ClientAnalyzedLibrary, ClientJsonLibraries, ClientLibraryResult } from "./struct";
-import { removeSuffix, replaceAll } from "../tools/strings";
+import { removeSuffix, replaceAll } from "../tools";
 
 export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): ClientLibraryResult {
   const classpath: string[] = [];

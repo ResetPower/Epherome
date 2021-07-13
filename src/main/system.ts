@@ -35,6 +35,10 @@ ipcMain.on("openDirectory", (ev) => {
     });
 });
 
+ipcMain.on("quit", () => {
+  app.quit();
+});
+
 // global main-process logger
 export const mainLogger = new Logger("Main");
 

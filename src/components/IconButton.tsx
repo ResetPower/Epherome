@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
+import { DefaultFunction } from "../tools/types";
 
 export default function IconButton(props: {
   children: ReactNode;
   className?: string;
-  onClick?: () => void;
+  onClick?: DefaultFunction;
   textInherit?: boolean;
 }): JSX.Element {
   return (

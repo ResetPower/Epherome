@@ -1,3 +1,4 @@
+import { DefaultFunction } from "../tools/types";
 import { broadcast } from "./session";
 
 export const overlayStack: JSX.Element[] = [];
@@ -12,7 +13,7 @@ export function clearOverlayStack(): void {
 }
 
 // returns `closeDialog`
-export function showDialog(render: (close: () => void) => JSX.Element): () => void {
+export function showDialog(render: (close: DefaultFunction) => JSX.Element): DefaultFunction {
   const index = overlayStack.length;
   const onClose = () => {
     overlayStack.splice(index, 1);

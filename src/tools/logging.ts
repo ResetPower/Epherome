@@ -1,4 +1,4 @@
-import { appendZero } from "./strings";
+import { appendZero } from ".";
 
 export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 

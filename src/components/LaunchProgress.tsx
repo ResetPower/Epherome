@@ -1,9 +1,8 @@
 import Button from "./Button";
-import Icon from "./Icon";
 import Dialog from "./Dialog";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { t } from "../renderer/global";
-import { CustomDialogProps, ErrorDialog, RequestPasswordDialog } from "./Dialogs";
+import { ErrorDialog, RequestPasswordDialog } from "./Dialogs";
 import { showDialog } from "../renderer/overlay";
 import { ephConfigs } from "../renderer/config";
 import { broadcast, subscribeAsync } from "../renderer/session";
@@ -11,10 +10,13 @@ import { MinecraftAccount } from "../renderer/accounts";
 import { MinecraftProfile } from "../renderer/profiles";
 import Typography from "./Typography";
 import { Component } from "react";
+import { DefaultFunction } from "../tools/types";
+import { MdArrowForward, MdDone } from "react-icons/md";
 
-export interface LaunchProgressProps extends CustomDialogProps {
+export interface LaunchProgressProps {
   account: MinecraftAccount;
   profile: MinecraftProfile;
+  onClose: DefaultFunction;
 }
 
 export interface LaunchProgressState {
@@ -76,7 +78,7 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
         <div className="p-6 h-60">
           {this.state.details.map((detail, index) => (
             <Typography className="flex" key={index}>
-              <Icon>{detail.stat ? "done" : "arrow_forward"}</Icon>
+              {detail.stat ? <MdDone /> : <MdArrowForward />}
               {detail.text}
             </Typography>
           ))}

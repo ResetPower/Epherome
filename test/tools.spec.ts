@@ -1,7 +1,15 @@
 import assert from "assert";
-import { getById, getNextId, WithId } from "../src/tools/arrays";
-import { obj2form, unwrapFunction } from "../src/tools/objects";
-import { appendZero, removePrefix, removeSuffix, replaceAll } from "../src/tools/strings";
+import {
+  getById,
+  getNextId,
+  WithId,
+  obj2form,
+  unwrapFunction,
+  appendZero,
+  removePrefix,
+  removeSuffix,
+  replaceAll,
+} from "../src/tools";
 
 interface MyStructWithId extends WithId {
   name: string;

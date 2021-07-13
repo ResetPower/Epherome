@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { EmptyProps } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
 import List from "../components/List";
@@ -20,7 +20,7 @@ interface DownloadsPageState {
   versions: MinecraftVersion[];
 }
 
-export default class DownloadsPage extends Component<EmptyProps, DownloadsPageState> {
+export default class DownloadsPage extends Component<EmptyObject, DownloadsPageState> {
   state: DownloadsPageState = {
     release: true,
     snapshot: false,

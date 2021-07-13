@@ -1,10 +1,11 @@
 import { ReactNode } from "react";
+import { DefaultFunction } from "../tools/types";
 
 export default function Button(props: {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: DefaultFunction;
   textInherit?: boolean;
   variant?: "contained" | "default";
 }): JSX.Element {
