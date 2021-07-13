@@ -1,6 +1,5 @@
 import { Component } from "react";
 import AppBar from "../components/AppBar";
-import Icon from "../components/Icon";
 import IconButton from "../components/IconButton";
 import HomePage from "../pages/HomePage";
 import AccountsPage from "../pages/AccountsPage";
@@ -9,29 +8,55 @@ import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "./titles";
 import ProfileManagementPage from "../pages/ProfileManagementPage";
 import { broadcast, subscribe } from "./session";
-import { EmptyProps } from "../tools/types";
+import { EmptyObject, StringMap } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "../components/GlobalOverlay";
-import { Route, Router } from "../tools/router";
+import { Router } from "../router";
 import { darkTheme, hist, lightTheme } from "./global";
 import { applyTheme } from "./theme";
 import { ephConfigs, setConfig } from "./config";
+import { MdArrowBack } from "react-icons/md";
+import { FaLayerGroup } from "react-icons/fa";
+import { IconContext } from "react-icons/lib";
+import { ipcRenderer } from "electron";
 
 export interface AppState {
   title: string;
   mainClassName: string;
 }
 
-export default class App extends Component<EmptyProps, AppState> {
+export default class App extends Component<EmptyObject, AppState> {
   state: AppState = {
     title: resolveTitle(hist.pathname()),
     mainClassName: "",
   };
+
+  routes = [
+    {
+      path: "/",
+      component: <HomePage />,
+    },
+    {
+      path: "/accounts",
+      component: <AccountsPage />,
+    },
+    { path: "/profiles", component: <ProfilesPage /> },
+    { path: "/settings", component: <SettingsPage /> },
+    { path: "/downloads", component: <DownloadsPage /> },
+    {
+      path: "/profile",
+      component: (params: StringMap): JSX.Element => <ProfileManagementPage params={params} />,
+    },
+  ];
+
   media = window.matchMedia("(prefers-color-scheme: dark)");
+
+  // set config according to system
   detectSystemTheme(): void {
     const prefersDarkMode = this.media.matches;
     setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
   }
+
   updateTheme(): void {
     if (ephConfigs.themeFollowOs) {
       this.detectSystemTheme();
@@ -44,7 +69,12 @@ export default class App extends Component<EmptyProps, AppState> {
     }
     applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
   }
-  constructor(props: EmptyProps) {
+
+  quitApp(): void {
+    ipcRenderer.send("quit");
+  }
+
+  constructor(props: EmptyObject) {
     super(props);
     this.updateTheme();
     subscribe("anm", () => {
@@ -60,40 +90,31 @@ export default class App extends Component<EmptyProps, AppState> {
       this.setState({});
     });
   }
+
   render(): JSX.Element {
     const isAtHome = this.state.title === "Epherome";
     return (
-      <>
+      <IconContext.Provider value={{ size: "1.5em" }}>
         <GlobalOverlay />
-        <AppBar className="px-3 mb-2">
+        <AppBar className="mb-2 eph-dragging-area">
           <IconButton
-            className="text-white"
+            className="text-white eph-non-dragging-area"
             onClick={
               isAtHome
                 ? () => {
-                    // do sth
+                    // do sth on click
                   }
                 : hist.goBack
             }
           >
-            <Icon>{isAtHome ? "menu" : "arrow_back"}</Icon>
+            {isAtHome ? <FaLayerGroup size="1.2rem" /> : <MdArrowBack />}
           </IconButton>
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </AppBar>
         <div className={this.state.mainClassName}>
-          <Router history={hist}>
-            <Route component={<HomePage />} path="/" />
-            <Route component={<AccountsPage />} path="/accounts" />
-            <Route component={<ProfilesPage />} path="/profiles" />
-            <Route component={<SettingsPage />} path="/settings" />
-            <Route component={<DownloadsPage />} path="/downloads" />
-            <Route
-              component={(params) => <ProfileManagementPage params={params} />}
-              path="/profile"
-            />
-          </Router>
+          <Router history={hist} routes={this.routes} />
         </div>
-      </>
+      </IconContext.Provider>
     );
   }
 }

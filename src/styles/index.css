@@ -33,3 +33,12 @@ input:checked ~ .dot {
 .fade-enter {
   opacity: 0.1;
 }
+
+/* dragging area just like a title bar */
+.eph-dragging-area {
+  -webkit-app-region: drag;
+}
+
+.eph-non-dragging-area {
+  -webkit-app-region: no-drag;
+}

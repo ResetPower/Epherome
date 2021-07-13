@@ -72,6 +72,11 @@ export interface LanguageTranslator {
   resourcePacks: string;
   noAccOrProSelected: string;
   followOs: string;
+  noAccSelected: string;
+  noProSelected: string;
+  refreshHitokoto: string;
+  processes: string;
+  extensions: string;
   progress: {
     auth: string;
     analyze: string;

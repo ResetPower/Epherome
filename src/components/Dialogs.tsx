@@ -1,7 +1,6 @@
-import Dialog from "./Dialog";
+import Dialog, { AlertDialog, ConfirmDialog } from "./Dialog";
 import Select from "./Select";
 import Button from "./Button";
-import Icon from "./Icon";
 import TextField from "./TextField";
 import Alert from "./Alert";
 import { t } from "../renderer/global";
@@ -11,41 +10,29 @@ import { ipcRenderer } from "electron";
 import Typography from "./Typography";
 import Spin from "./Spin";
 import { Component } from "react";
+import { DefaultFunction } from "../tools/types";
+import { MdFolder } from "react-icons/md";
 
-export interface CustomDialogProps {
-  onClose: () => void;
+export interface CreateAccountDialogProps {
+  updateAccounts: DefaultFunction;
+  onClose: DefaultFunction;
 }
 
-export interface CreateAccountDialogProps extends CustomDialogProps {
-  updateAccounts: () => void;
+export interface CreateProfileDialogProps {
+  updateProfiles: DefaultFunction;
+  onClose: DefaultFunction;
 }
 
-export interface RemoveAccountDialogProps extends CustomDialogProps {
-  updateAccounts: () => void;
+export interface EditProfileDialogProps {
+  updateProfiles: DefaultFunction;
   id: number;
+  onClose: DefaultFunction;
 }
 
-export interface CreateProfileDialogProps extends CustomDialogProps {
-  updateProfiles: () => void;
-}
-
-export interface RemoveProfileDialogProps extends CustomDialogProps {
-  updateProfiles: () => void;
-  id: number;
-}
-
-export interface EditProfileDialogProps extends CustomDialogProps {
-  updateProfiles: () => void;
-  id: number;
-}
-
-export interface RequestPasswordDialogProps extends CustomDialogProps {
+export interface RequestPasswordDialogProps {
   again: boolean;
   callback: (password: string) => void;
-}
-
-export interface ErrorDialogProps extends CustomDialogProps {
-  stacktrace: string;
+  onClose: DefaultFunction;
 }
 
 export interface CreateAccountDialogState {
@@ -170,25 +157,23 @@ export class CreateAccountDialog extends Component<
   }
 }
 
-export function RemoveAccountDialog(props: RemoveAccountDialogProps): JSX.Element {
-  const handleRemove = () => {
-    removeAccount(props.id);
-    props.onClose();
-    props.updateAccounts();
-  };
+export function RemoveAccountDialog(props: {
+  id: number;
+  updateAccounts: DefaultFunction;
+  onClose: DefaultFunction;
+}): JSX.Element {
   return (
-    <Dialog indentBottom>
-      <Typography className="text-xl">{t.removeAccount}</Typography>
-      <Typography>{t.confirmRemoving}</Typography>
-      <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.onClose} textInherit>
-          {t.cancel}
-        </Button>
-        <Button className="text-red-500" onClick={handleRemove} textInherit>
-          {t.remove}
-        </Button>
-      </div>
-    </Dialog>
+    <ConfirmDialog
+      title={t.removeAccount}
+      message={t.confirmRemoving}
+      action={() => {
+        removeAccount(props.id);
+        props.updateAccounts();
+      }}
+      close={props.onClose}
+      positiveClassName="text-red-500"
+      positiveText={t.remove}
+    />
   );
 }
 
@@ -244,7 +229,7 @@ export class CreateProfileDialog extends Component<
         </div>
         <div className="flex justify-end">
           <Button onClick={this.handleOpenDirectory}>
-            <Icon>folder</Icon> {t.openDirectory}
+            <MdFolder /> {t.openDirectory}
           </Button>
           <div className="flex-grow"></div>
           <Button className="text-shallow" onClick={this.props.onClose}>
@@ -318,25 +303,23 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
   }
 }
 
-export function RemoveProfileDialog(props: RemoveProfileDialogProps): JSX.Element {
-  const handleRemove = () => {
-    removeProfile(props.id);
-    props.onClose();
-    props.updateProfiles();
-  };
+export function RemoveProfileDialog(props: {
+  updateProfiles: DefaultFunction;
+  onClose: DefaultFunction;
+  id: number;
+}): JSX.Element {
   return (
-    <Dialog indentBottom>
-      <Typography className="text-xl">{t.removeProfile}</Typography>
-      <Typography>{t.confirmRemoving}</Typography>
-      <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.onClose} textInherit>
-          {t.cancel}
-        </Button>
-        <Button className="text-red-500" onClick={handleRemove} textInherit>
-          {t.remove}
-        </Button>
-      </div>
-    </Dialog>
+    <ConfirmDialog
+      title={t.removeProfile}
+      message={t.confirmRemoving}
+      action={() => {
+        removeProfile(props.id);
+        props.updateProfiles();
+      }}
+      close={props.onClose}
+      positiveClassName="text-red-500"
+      positiveText={t.remove}
+    />
   );
 }
 
@@ -380,27 +363,12 @@ export class RequestPasswordDialog extends Component<
   }
 }
 
-export function ErrorDialog(props: ErrorDialogProps): JSX.Element {
+export function ErrorDialog(props: { stacktrace: string; onClose: DefaultFunction }): JSX.Element {
   return (
-    <Dialog indentBottom>
-      <Typography className="text-xl">{t.errorOccurred}</Typography>
-      <div>
-        <pre style={{ whiteSpace: "pre-wrap" }}>{props.stacktrace}</pre>
-      </div>
-      <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t.ok}</Button>
-      </div>
-    </Dialog>
+    <AlertDialog title={t.errorOccurred} message={props.stacktrace} close={props.onClose} pre />
   );
 }
 
-export function DownloadDialog(props: CustomDialogProps): JSX.Element {
-  return (
-    <Dialog indentBottom>
-      <Typography>{t.downloadNotSupported}</Typography>
-      <div className="flex justify-end">
-        <Button onClick={props.onClose}>{t.ok}</Button>
-      </div>
-    </Dialog>
-  );
+export function DownloadDialog(props: { onClose: DefaultFunction }): JSX.Element {
+  return <AlertDialog title={t.warning} message={t.downloadNotSupported} close={props.onClose} />;
 }

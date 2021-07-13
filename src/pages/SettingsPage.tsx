@@ -11,13 +11,15 @@ import {
   setConfig,
 } from "../renderer/config";
 import { t, i18n, hist, logger } from "../renderer/global";
-import { EmptyProps } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import { broadcast } from "../renderer/session";
 import Typography from "../components/Typography";
 import Checkbox from "../components/Checkbox";
-import Icon from "../components/Icon";
 import Card from "../components/Card";
 import EpheromeLogo from "../../assets/Epherome.png";
+import { MdInfo, MdPalette, MdTune } from "react-icons/md";
+import colors from "../renderer/colors";
+import { FaJava } from "react-icons/fa";
 
 export interface SettingsPageState {
   value: number;
@@ -26,7 +28,7 @@ export interface SettingsPageState {
   downloadProvider: EphDownloadProvider;
 }
 
-export default class SettingsPage extends Component<EmptyProps, SettingsPageState> {
+export default class SettingsPage extends Component<EmptyObject, SettingsPageState> {
   state: SettingsPageState = {
     value: 0,
     javaPath: ephConfigs.javaPath,
@@ -79,15 +81,15 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
       <div className="flex">
         <div className="p-3 border-r border-divide space-y-1">
           <this.TabItem value={0}>
-            <Icon>tune</Icon>
+            <MdTune />
             {t.general}
           </this.TabItem>
           <this.TabItem value={1}>
-            <Icon>palette</Icon>
+            <MdPalette />
             {t.appearance}
           </this.TabItem>
           <this.TabItem value={2}>
-            <Icon>info</Icon>
+            <MdInfo />
             {t.about}
           </this.TabItem>
         </div>
@@ -132,7 +134,7 @@ export default class SettingsPage extends Component<EmptyProps, SettingsPageStat
                 label={t.javaPath}
                 placeholder={t.javaPath}
                 value={this.state.javaPath}
-                icon={<Icon>local_cafe</Icon>}
+                icon={<FaJava color={colors.yellow[900]} />}
                 onChange={(ev): void => {
                   this.setState({ javaPath: ev });
                 }}

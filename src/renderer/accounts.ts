@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { getById, getNextId, WithId } from "../tools/arrays";
+import { getById, getNextId, WithId } from "../tools";
 import {
   authCode2AuthToken,
   authenticate,

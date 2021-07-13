@@ -4,19 +4,19 @@ import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Container from "../components/Container";
 import Button from "../components/Button";
-import Icon from "../components/Icon";
 import { MinecraftAccount } from "../renderer/accounts";
 import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
-import { EmptyProps, EmptyState } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import List from "../components/List";
 import ListItem from "../components/ListItem";
 import ListItemText from "../components/ListItemText";
 import Alert from "../components/Alert";
 import { showDialog } from "../renderer/overlay";
 import { CreateAccountDialog, RemoveAccountDialog } from "../components/Dialogs";
+import { MdCreate, MdDelete } from "react-icons/md";
 
-export default class AccountsPage extends Component<EmptyProps, EmptyState> {
+export default class AccountsPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {
     const accounts = ephConfigs.accounts;
     return (
@@ -30,7 +30,7 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
               ))
             }
           >
-            <Icon>create</Icon> {t.create}
+            <MdCreate /> {t.create}
           </Button>
         </div>
         {accounts.length === 0 && <Alert severity="info">{t.noAccountsYet}</Alert>}
@@ -63,7 +63,7 @@ export default class AccountsPage extends Component<EmptyProps, EmptyState> {
                     ))
                   }
                 >
-                  <Icon>delete</Icon>
+                  <MdDelete />
                 </IconButton>
               </Tooltip>
             </ListItem>

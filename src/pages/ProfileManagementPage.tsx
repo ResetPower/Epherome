@@ -5,9 +5,10 @@ import { t } from "../renderer/global";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import fs from "fs";
 import Typography from "../components/Typography";
+import { StringMap } from "../tools/types";
 
 export interface ProfileManagementPageProps {
-  params: { [key: string]: string };
+  params: StringMap;
 }
 
 export interface ProfileManagementPageState {

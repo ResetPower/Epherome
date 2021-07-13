@@ -1,7 +1,9 @@
-// empty props type for web component
-export type EmptyProps = Record<string, unknown>;
+export interface EmptyObject {
+  [key: string]: unknown;
+}
 
-// empty state type for web component
-export type EmptyState = Record<string, unknown>;
+export interface StringMap {
+  [key: string]: string;
+}
 
-export type StringMap = { [key: string]: string };
+export type DefaultFunction = () => void;

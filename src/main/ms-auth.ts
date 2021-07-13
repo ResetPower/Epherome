@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from "electron";
-import { removePrefix } from "../tools/strings";
+import { removePrefix } from "../tools";
 
 ipcMain.handle(
   "ms-auth",

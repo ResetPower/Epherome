@@ -88,7 +88,12 @@ export default defineLanguage({
     downloadNotSupported: "很抱歉，目前暂不支持 Minecraft 客户端的下载。",
     maps: "地图",
     resourcePacks: "资源包",
-    noAccOrProSelected: "未选择账户或档案",
+    noAccOrProSelected: "未选择账户或档案。请创建一个。",
     followOs: "跟随操作系统",
+    noAccSelected: "未选择账户",
+    noProSelected: "未选择档案",
+    refreshHitokoto: "刷新",
+    processes: "进程",
+    extensions: "扩展",
   },
 });

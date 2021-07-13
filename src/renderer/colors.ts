@@ -1,5 +1,5 @@
 // Colors' Definition File (Duplicate from tailwindcss/colors)
-export default {
+const colors = {
   black: "#000",
   white: "#fff",
   rose: {
@@ -267,3 +267,5 @@ export default {
     900: "#0f172a",
   },
 };
+
+export default colors;

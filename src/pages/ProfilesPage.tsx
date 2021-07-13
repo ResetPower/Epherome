@@ -2,21 +2,21 @@ import { Component } from "react";
 import ListItemText from "../components/ListItemText";
 import Button from "../components/Button";
 import Container from "../components/Container";
-import Icon from "../components/Icon";
 import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Tooltip from "../components/Tooltip";
 import { MinecraftProfile } from "../renderer/profiles";
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
-import { EmptyProps, EmptyState } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import ListItem from "../components/ListItem";
 import List from "../components/List";
 import Alert from "../components/Alert";
 import { showDialog } from "../renderer/overlay";
 import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
+import { MdCreate, MdDelete, MdEdit, MdFileDownload, MdSettings } from "react-icons/md";
 
-export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
+export default class ProfilesPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {
     const profiles = ephConfigs.profiles;
     return (
@@ -30,10 +30,10 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
               ))
             }
           >
-            <Icon>create</Icon> {t.create}
+            <MdCreate /> {t.create}
           </Button>
           <Button variant="contained" onClick={() => hist.push("/downloads")}>
-            <Icon>file_download</Icon> {t.download}
+            <MdFileDownload /> {t.download}
           </Button>
         </div>
         {profiles.length === 0 && <Alert severity="info">{t.noProfilesYet}</Alert>}
@@ -66,7 +66,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                     ))
                   }
                 >
-                  <Icon>edit</Icon>
+                  <MdEdit />
                 </IconButton>
               </Tooltip>
               <Tooltip title={t.manage}>
@@ -75,7 +75,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                     hist.push("/profile", { id: i.id.toString() });
                   }}
                 >
-                  <Icon>settings</Icon>
+                  <MdSettings />
                 </IconButton>
               </Tooltip>
               <Tooltip title={t.remove}>
@@ -90,7 +90,7 @@ export default class ProfilesPage extends Component<EmptyProps, EmptyState> {
                     ))
                   }
                 >
-                  <Icon>delete</Icon>
+                  <MdDelete />
                 </IconButton>
               </Tooltip>
             </ListItem>

@@ -1,17 +1,17 @@
 import { subscribe, unsubscribe } from "../renderer/session";
 import { clearOverlayStack, overlayStack, shouldOverlayHide } from "../renderer/overlay";
 import { Component } from "react";
-import { EmptyProps } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 
 export interface GlobalOverlayState {
   show: boolean;
 }
 
-export default class GlobalOverlay extends Component<EmptyProps, GlobalOverlayState> {
+export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayState> {
   state: GlobalOverlayState = {
     show: false,
   };
-  constructor(props: EmptyProps) {
+  constructor(props: EmptyObject) {
     super(props);
     !this.state.show && clearOverlayStack();
   }

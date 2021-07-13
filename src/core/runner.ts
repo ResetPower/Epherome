@@ -1,12 +1,13 @@
 import { spawn } from "child_process";
 import { coreLogger } from ".";
+import { DefaultFunction } from "../tools/types";
 
 export function runMinecraft(
   java: string,
   buff: string[],
   dir: string,
   onErr: (error: Error) => void,
-  onDone: () => void
+  onDone: DefaultFunction
 ): void {
   let done = false;
   const proc = spawn(java, buff, {

@@ -1,6 +1,5 @@
 import Select from "../components/Select";
 import Container from "../components/Container";
-import Icon from "../components/Icon";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
 import { Component } from "react";
@@ -10,14 +9,23 @@ import { getAccount, MinecraftAccount } from "../renderer/accounts";
 import { getProfile, MinecraftProfile } from "../renderer/profiles";
 import { t } from "../renderer/global";
 import { MinecraftLaunchDetail } from "../core";
-import { EmptyProps } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import { fetchHitokoto, Hitokoto } from "../renderer/hitokoto";
 import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
-import Dialog from "../components/Dialog";
+import { AlertDialog } from "../components/Dialog";
 import Tooltip from "../components/Tooltip";
+import {
+  MdAccountCircle,
+  MdApps,
+  MdGamepad,
+  MdPlayArrow,
+  MdRefresh,
+  MdSettings,
+  MdViewCarousel,
+} from "react-icons/md";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
@@ -26,7 +34,7 @@ export interface HomePageState {
   againRequestPassword: boolean;
 }
 
-export default class HomePage extends Component<EmptyProps, HomePageState> {
+export default class HomePage extends Component<EmptyObject, HomePageState> {
   state: HomePageState = {
     details: [],
     value: "",
@@ -36,7 +44,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
   static hitokoto: Hitokoto | null = null;
   enableHitokoto = ephConfigs.hitokoto;
   account: MinecraftAccount | null;
-  constructor(props: EmptyProps) {
+  constructor(props: EmptyObject) {
     super(props);
     const tId = ephConfigs.selectedProfile;
     const profile = getProfile(tId);
@@ -88,13 +96,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
       showDialog((close) => <LaunchProgress onClose={close} account={account} profile={profile} />);
     } else {
       showDialog((close) => (
-        <Dialog indentBottom>
-          <Typography className="text-lg px-3">{t.warning}</Typography>
-          <div className="p-6">{t.noAccOrProSelected}</div>
-          <div className="flex justify-end">
-            <Button onClick={close}>{t.ok}</Button>
-          </div>
-        </Dialog>
+        <AlertDialog title={t.warning} message={t.noAccOrProSelected} close={close} />
       ));
     }
   };
@@ -108,7 +110,7 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
             <div className="p-3 flex-grow">
               <p className="text-shallow mt-0">{t.hello}</p>
               <Typography className="text-2xl">
-                {username === undefined ? "Tourist" : username}
+                {username === undefined ? t.noAccSelected : username}
               </Typography>
               {this.enableHitokoto && (
                 <div>
@@ -120,49 +122,53 @@ export default class HomePage extends Component<EmptyProps, HomePageState> {
               )}
             </div>
             <div>
-              <Tooltip title="Process" direction="left">
+              <Tooltip title={t.processes} direction="left">
                 <IconButton>
-                  <Icon>layers</Icon>
+                  <MdViewCarousel />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Extensions" direction="left">
+              <Tooltip title={t.extensions} direction="left">
                 <IconButton>
-                  <Icon>apps</Icon>
+                  <MdApps />
                 </IconButton>
               </Tooltip>
             </div>
           </div>
           <div className="flex">
             <Button onClick={() => hist.push("/accounts")}>
-              <Icon>account_circle</Icon> {t.accounts}
+              <MdAccountCircle /> {t.accounts}
             </Button>
             <Button onClick={() => hist.push("/profiles")}>
-              <Icon>gamepad</Icon> {t.profiles}
+              <MdGamepad /> {t.profiles}
             </Button>
             <div className="flex-grow" />
             {this.enableHitokoto && (
-              <Tooltip title="Refresh">
+              <Tooltip title={t.refreshHitokoto}>
                 <IconButton onClick={this.reloadHitokoto}>
-                  <Icon>refresh</Icon>
+                  <MdRefresh />
                 </IconButton>
               </Tooltip>
             )}
             <IconButton onClick={() => hist.push("/settings")}>
-              <Icon>settings</Icon>
+              <MdSettings />
             </IconButton>
           </div>
         </Card>
         <div className="flex space-x-6">
           <Card className="flex-grow">
-            <Select value={this.state.value} onChange={this.handleChange}>
-              {profiles.map((i: MinecraftProfile) => (
-                <option key={i.id} value={i.id}>
-                  {i.name}
-                </option>
-              ))}
-            </Select>
+            {profiles.length === 0 ? (
+              <Typography className="p-3">{t.noProSelected}</Typography>
+            ) : (
+              <Select value={this.state.value} onChange={this.handleChange}>
+                {profiles.map((i: MinecraftProfile) => (
+                  <option key={i.id} value={i.id}>
+                    {i.name}
+                  </option>
+                ))}
+              </Select>
+            )}
             <Button onClick={this.handleLaunch}>
-              <Icon>play_arrow</Icon>
+              <MdPlayArrow />
               {t.launch}
             </Button>
           </Card>

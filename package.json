@@ -23,7 +23,6 @@
   },
   "build": {
     "productName": "Epherome",
-    "appId": "com.epherome",
     "copyright": "Copyright (c) ResetPower 2021. All rights reserved.",
     "directories": {
       "output": "package"
@@ -33,6 +32,12 @@
     "icon": "assets/Epherome.png",
     "win": {
       "target": "portable"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "tar.gz"
     },
     "files": [
       "dist/",
@@ -79,9 +84,9 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "got": "^11.8.2",
-    "material-design-icons": "^3.0.1",
     "node-stream-zip": "^1.13.6",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0"
   }
 }

@@ -3,6 +3,7 @@ import path from "path";
 import { ipcRenderer } from "electron";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
+import { DefaultFunction } from "../tools/types";
 
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
@@ -59,7 +60,7 @@ export function saveConfig(): void {
 }
 
 // change config and save
-export function setConfig(cb: () => void, save = true): void {
+export function setConfig(cb: DefaultFunction, save = true): void {
   cb();
   save && saveConfig();
 }

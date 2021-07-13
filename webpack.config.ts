@@ -63,15 +63,15 @@ export default (env: { [key: string]: string }): Config | Config[] => {
         {
           test: /\.(js|ts|tsx)?$/,
           exclude: /node_modules/,
-          loader: "ts-loader",
+          use: "ts-loader",
         },
         {
           test: /\.css$/,
           use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         },
         {
-          test: /\.(eot|woff|woff2|ttf|png)?$/,
-          loader: "file-loader",
+          test: /\.(png|jpe?g|gif)$/i,
+          use: "file-loader",
         },
       ],
     },
