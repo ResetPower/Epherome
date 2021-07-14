@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { MinecraftProfile } from "../renderer/profiles";
-import { MinecraftAccount, updateAccountToken } from "../renderer/accounts";
+import { MinecraftProfile } from "../struct/profiles";
+import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
 import { analyzeLibrary } from "./libraries";
 import { constraints } from "../renderer/config";

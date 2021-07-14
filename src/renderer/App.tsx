@@ -30,7 +30,43 @@ export default class App extends Component<EmptyObject, AppState> {
     title: resolveTitle(hist.pathname()),
     mainClassName: "",
   };
-
+  media = window.matchMedia("(prefers-color-scheme: dark)");
+  // set config according to system
+  detectSystemTheme(): void {
+    const prefersDarkMode = this.media.matches;
+    setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
+  }
+  updateTheme(): void {
+    if (ephConfigs.themeFollowOs) {
+      this.detectSystemTheme();
+      this.media.addEventListener("change", () => {
+        if (ephConfigs.themeFollowOs) {
+          this.detectSystemTheme();
+          broadcast("theme");
+        }
+      });
+    }
+    applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+  }
+  quitApp(): void {
+    ipcRenderer.send("quit");
+  }
+  constructor(props: EmptyObject) {
+    super(props);
+    this.updateTheme();
+    subscribe("anm", () => {
+      this.setState({
+        mainClassName: "fade-enter",
+      });
+    });
+    subscribe("hist", (pathname) => {
+      this.setState({ title: resolveTitle(pathname), mainClassName: "fade-exit" });
+    });
+    subscribe("theme", () => {
+      this.updateTheme();
+      this.setState({});
+    });
+  }
   routes = [
     {
       path: "/",
@@ -48,49 +84,6 @@ export default class App extends Component<EmptyObject, AppState> {
       component: (params: StringMap): JSX.Element => <ProfileManagementPage params={params} />,
     },
   ];
-
-  media = window.matchMedia("(prefers-color-scheme: dark)");
-
-  // set config according to system
-  detectSystemTheme(): void {
-    const prefersDarkMode = this.media.matches;
-    setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
-  }
-
-  updateTheme(): void {
-    if (ephConfigs.themeFollowOs) {
-      this.detectSystemTheme();
-      this.media.addEventListener("change", () => {
-        if (ephConfigs.themeFollowOs) {
-          this.detectSystemTheme();
-          broadcast("theme");
-        }
-      });
-    }
-    applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
-  }
-
-  quitApp(): void {
-    ipcRenderer.send("quit");
-  }
-
-  constructor(props: EmptyObject) {
-    super(props);
-    this.updateTheme();
-    subscribe("anm", () => {
-      this.setState({
-        mainClassName: "fade-enter",
-      });
-    });
-    subscribe("hist", (pathname) => {
-      this.setState({ title: resolveTitle(pathname), mainClassName: "fade-exit" });
-    });
-    subscribe("theme", () => {
-      this.updateTheme();
-      this.setState({});
-    });
-  }
-
   render(): JSX.Element {
     const isAtHome = this.state.title === "Epherome";
     return (
