@@ -5,12 +5,12 @@ import IconButton from "../components/IconButton";
 import { Component } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
-import { getAccount, MinecraftAccount } from "../renderer/accounts";
-import { getProfile, MinecraftProfile } from "../renderer/profiles";
+import { getAccount, MinecraftAccount } from "../struct/accounts";
+import { getProfile, MinecraftProfile } from "../struct/profiles";
 import { t } from "../renderer/global";
 import { MinecraftLaunchDetail } from "../core";
 import { EmptyObject } from "../tools/types";
-import { fetchHitokoto, Hitokoto } from "../renderer/hitokoto";
+import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
 import { showDialog } from "../renderer/overlay";
 import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
@@ -122,16 +122,12 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               )}
             </div>
             <div>
-              <Tooltip title={t.processes} direction="left">
-                <IconButton>
-                  <MdViewCarousel />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t.extensions} direction="left">
-                <IconButton>
-                  <MdApps />
-                </IconButton>
-              </Tooltip>
+              <IconButton>
+                <MdViewCarousel />
+              </IconButton>
+              <IconButton>
+                <MdApps />
+              </IconButton>
             </div>
           </div>
           <div className="flex">

@@ -2,7 +2,7 @@ import Container from "../components/Container";
 import Alert from "../components/Alert";
 import { Component, ReactNode } from "react";
 import { t } from "../renderer/global";
-import { getProfile, MinecraftProfile } from "../renderer/profiles";
+import { getProfile, MinecraftProfile } from "../struct/profiles";
 import fs from "fs";
 import Typography from "../components/Typography";
 import { StringMap } from "../tools/types";

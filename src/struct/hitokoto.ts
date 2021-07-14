@@ -1,5 +1,5 @@
 import got from "got";
-import { logger } from "./global";
+import { logger } from "../renderer/global";
 
 export interface Hitokoto {
   content: string;

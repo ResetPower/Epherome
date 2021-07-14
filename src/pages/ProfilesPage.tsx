@@ -5,7 +5,7 @@ import Container from "../components/Container";
 import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Tooltip from "../components/Tooltip";
-import { MinecraftProfile } from "../renderer/profiles";
+import { MinecraftProfile } from "../struct/profiles";
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyObject } from "../tools/types";

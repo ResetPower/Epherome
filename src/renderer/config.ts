@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { ipcRenderer } from "electron";
-import { MinecraftProfile } from "./profiles";
-import { MinecraftAccount } from "./accounts";
+import { MinecraftProfile } from "../struct/profiles";
+import { MinecraftAccount } from "../struct/accounts";
 import { DefaultFunction } from "../tools/types";
 
 // crucial information from main process

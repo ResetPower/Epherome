@@ -95,8 +95,8 @@ export default defineLanguage({
     followOs: "システムをフォロー",
     noAccSelected: "アカウントがありません",
     noProSelected: "プロフィルがありません",
-    refreshHitokoto: "Refresh",
-    processes: "Processes",
-    extensions: "Extensions",
+    refreshHitokoto: "リフレッシュ",
+    processes: "プロセス",
+    extensions: "拡張",
   },
 });

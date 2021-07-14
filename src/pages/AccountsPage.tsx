@@ -4,7 +4,7 @@ import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Container from "../components/Container";
 import Button from "../components/Button";
-import { MinecraftAccount } from "../renderer/accounts";
+import { MinecraftAccount } from "../struct/accounts";
 import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyObject } from "../tools/types";
