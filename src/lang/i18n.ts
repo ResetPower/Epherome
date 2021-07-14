@@ -1,5 +1,6 @@
 import { Language, LanguageTranslator } from "./languages";
-import { broadcast } from "../renderer/session";
+import { DefaultFunction } from "../tools/types";
+import { unwrapFunction } from "../tools";
 
 export interface I18nOptions {
   language: string;
@@ -16,13 +17,19 @@ export class I18n {
     this.languages = options.languages;
     this.changeLanguage(options.language);
   }
-  currentTranslator = (): LanguageTranslator => this.language.translator;
+  private languageListener = unwrapFunction();
+  listen(listener: DefaultFunction): void {
+    this.languageListener = listener;
+  }
+  get currentTranslator(): LanguageTranslator {
+    return this.language.translator;
+  }
   changeLanguage = (name: string): void => {
     for (const i of this.languages) {
       if (i.name === name) {
         this.language = i;
       }
     }
-    broadcast("lang");
+    this.languageListener();
   };
 }

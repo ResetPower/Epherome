@@ -1,4 +1,7 @@
 import { StringMap } from "../tools/types";
+import { AppSpace } from "./App";
+import { ephConfigs, setConfig } from "./config";
+import { darkTheme, lightTheme } from "./global";
 
 const ss = document.documentElement.style;
 const html = document.querySelector("html");
@@ -13,10 +16,6 @@ export interface EphTheme {
     divide: string;
     card: string;
   };
-}
-
-export function isDark(): boolean {
-  return html?.classList.contains("dark") ?? false;
 }
 
 export function setProperties(obj: StringMap): void {
@@ -43,3 +42,22 @@ export function applyTheme(theme: EphTheme): void {
 }
 
 export const defineTheme = (theme: EphTheme): EphTheme => theme;
+
+const isDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+// set config according to system
+function detectSystemTheme(): void {
+  const prefersDarkMode = isDark.matches;
+  setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
+}
+
+export function updateTheme(): void {
+  if (ephConfigs.themeFollowOs) {
+    detectSystemTheme();
+  }
+  applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
+  AppSpace.updateUI();
+}
+
+// listen to system theme changes
+isDark.addEventListener("change", updateTheme);

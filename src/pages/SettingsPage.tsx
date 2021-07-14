@@ -12,14 +12,14 @@ import {
 } from "../renderer/config";
 import { t, i18n, hist, logger } from "../renderer/global";
 import { EmptyObject } from "../tools/types";
-import { broadcast } from "../renderer/session";
 import Typography from "../components/Typography";
 import Checkbox from "../components/Checkbox";
 import Card from "../components/Card";
 import EpheromeLogo from "../../assets/Epherome.png";
 import { MdInfo, MdPalette, MdTune } from "react-icons/md";
-import colors from "../renderer/colors";
 import { FaJava } from "react-icons/fa";
+import { updateTheme } from "../renderer/theme";
+import { AppSpace } from "../renderer/App";
 
 export interface SettingsPageState {
   value: number;
@@ -40,14 +40,21 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
     i18n.changeLanguage(ev);
     setConfig(() => (ephConfigs.language = ev));
     this.setState({});
-    broadcast("hist", hist.pathname());
+    AppSpace.updateTitle();
     logger.info(`Language changed to '${ev}'`);
   };
   changeTheme = (ev: string): void => {
     setConfig(() => (ephConfigs.theme = ev));
-    broadcast("theme");
+    updateTheme();
     this.setState({});
     logger.info(`Theme changed to '${ev}'`);
+  };
+  handleThemeFollowOs = (checked: boolean): void => {
+    setConfig(() => {
+      ephConfigs.themeFollowOs = checked;
+      updateTheme();
+    });
+    this.setState({});
   };
   save = (): void => {
     const jp = this.state.javaPath;
@@ -134,7 +141,7 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
                 label={t.javaPath}
                 placeholder={t.javaPath}
                 value={this.state.javaPath}
-                icon={<FaJava color={colors.yellow[900]} />}
+                icon={<FaJava />}
                 onChange={(ev): void => {
                   this.setState({ javaPath: ev });
                 }}
@@ -167,16 +174,7 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
               </Select>
-              <Checkbox
-                checked={ephConfigs.themeFollowOs}
-                onChange={(checked) =>
-                  setConfig(() => {
-                    ephConfigs.themeFollowOs = checked;
-                    broadcast("theme");
-                    this.setState({});
-                  })
-                }
-              >
+              <Checkbox checked={ephConfigs.themeFollowOs} onChange={this.handleThemeFollowOs}>
                 {t.followOs}
               </Checkbox>
             </div>

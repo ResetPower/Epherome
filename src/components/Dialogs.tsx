@@ -101,7 +101,7 @@ export class CreateAccountDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t.newAccount}</Typography>
+        <Typography className="text-xl font-semibold">{t.newAccount}</Typography>
         <div>
           {this.state.errorAlert && (
             <div className="my-3">
@@ -208,7 +208,7 @@ export class CreateProfileDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t.newProfile}</Typography>
+        <Typography className="text-xl font-semibold">{t.newProfile}</Typography>
         <div>
           <TextField
             label={t.name}
@@ -227,7 +227,7 @@ export class CreateProfileDialog extends Component<
             onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
-        <div className="flex justify-end">
+        <div className="flex">
           <Button onClick={this.handleOpenDirectory}>
             <MdFolder /> {t.openDirectory}
           </Button>
@@ -265,6 +265,12 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
       };
     }
   }
+  handleOpenDirectory = (): void => {
+    ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
+      this.setState({ dir: arg });
+    });
+    ipcRenderer.send("openDirectory");
+  };
   handleEdit = (): void => {
     editProfile(this.props.id, this.state.name, this.state.dir, this.state.ver);
     this.props.updateProfiles();
@@ -273,7 +279,7 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t.editProfile}</Typography>
+        <Typography className="text-xl font-semibold">{t.editProfile}</Typography>
         <div>
           <TextField
             label={t.name}
@@ -292,7 +298,11 @@ export class EditProfileDialog extends Component<EditProfileDialogProps, EditPro
             onChange={(ev) => this.setState({ ver: ev })}
           />
         </div>
-        <div className="flex justify-end">
+        <div className="flex">
+          <Button onClick={this.handleOpenDirectory}>
+            <MdFolder /> {t.openDirectory}
+          </Button>
+          <div className="flex-grow"></div>
           <Button className="text-shallow" onClick={this.props.onClose} textInherit>
             {t.cancel}
           </Button>
@@ -341,7 +351,7 @@ export class RequestPasswordDialog extends Component<
   render(): JSX.Element {
     return (
       <Dialog indentBottom>
-        <Typography className="text-xl">{t.pleaseInputPassword}</Typography>
+        <Typography className="text-xl font-semibold">{t.pleaseInputPassword}</Typography>
         <div>
           <TextField
             value={this.state.password}

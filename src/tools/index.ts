@@ -40,13 +40,12 @@ export function appendZero(src: number): string {
 }
 
 // return an empty function if function is undefined
+const emptyFunction = () => {
+  /**/
+};
+
 export function unwrapFunction<P>(fn?: (...args: P[]) => void): (...args: P[]) => void {
-  return (
-    fn ??
-    (() => {
-      /**/
-    })
-  );
+  return fn ?? emptyFunction;
 }
 
 // simple toolkit to transfer object to form

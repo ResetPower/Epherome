@@ -1,37 +1,32 @@
-import colors from "./colors";
 import { I18n } from "../lang/i18n";
 import { constraints, ephConfigs, setConfig } from "./config";
 import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
-import { defineTheme } from "./theme";
-import { EphHistory } from "../tools/history";
-import { subscribe } from "./session";
+import { EphHistory } from "../router/history";
 import { Logger } from "../tools/logging";
-
-const lang = ephConfigs.language;
-
-// global i18n toolkit class
-export const i18n = new I18n({
-  language: lang,
-  fallback: enUs,
-  languages: [enUs, zhCn, jaJp],
-});
+import { defineTheme } from "./theme";
+import colors from "./colors";
 
 const java = ephConfigs.javaPath;
 if (java === undefined) {
   setConfig(() => (ephConfigs.javaPath = constraints.javaHome));
 }
 
-// global i18n translator
-export let t = i18n.currentTranslator();
-
-subscribe("lang", () => {
-  t = i18n.currentTranslator();
+// global i18n toolkit
+const lang = ephConfigs.language;
+export const i18n = new I18n({
+  language: lang,
+  fallback: enUs,
+  languages: [enUs, zhCn, jaJp],
 });
 
-// global material-ui theme
+export let t = i18n.currentTranslator;
+i18n.listen(() => (t = i18n.currentTranslator));
+
+// global themes
+
 export const lightTheme = defineTheme({
   type: "light",
   palette: {
