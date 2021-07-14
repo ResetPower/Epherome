@@ -11,7 +11,15 @@ export default function Select(props: {
 }): JSX.Element {
   return (
     <div className={props.marginBottom ? "mb-3" : ""}>
-      {props.label && <label className="text-shallow font-bold">{props.label}</label>}
+      {props.label && (
+        <label
+          className={`${
+            props.disabled ? "text-shallow" : "text-gray-600 dark:text-gray-400"
+          } font-bold`}
+        >
+          {props.label}
+        </label>
+      )}
       <select
         value={props.value}
         onChange={(ev) => {

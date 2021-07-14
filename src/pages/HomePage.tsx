@@ -16,7 +16,6 @@ import LaunchProgress from "../components/LaunchProgress";
 import Card from "../components/Card";
 import Typography from "../components/Typography";
 import { AlertDialog } from "../components/Dialog";
-import Tooltip from "../components/Tooltip";
 import {
   MdAccountCircle,
   MdApps,
@@ -139,11 +138,9 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             </Button>
             <div className="flex-grow" />
             {this.enableHitokoto && (
-              <Tooltip title={t.refreshHitokoto}>
-                <IconButton onClick={this.reloadHitokoto}>
-                  <MdRefresh />
-                </IconButton>
-              </Tooltip>
+              <IconButton onClick={this.reloadHitokoto}>
+                <MdRefresh />
+              </IconButton>
             )}
             <IconButton onClick={() => hist.push("/settings")}>
               <MdSettings />

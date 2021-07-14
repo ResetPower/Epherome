@@ -5,7 +5,6 @@ import { t } from "../renderer/global";
 import { ErrorDialog, RequestPasswordDialog } from "./Dialogs";
 import { showDialog } from "../renderer/overlay";
 import { ephConfigs } from "../renderer/config";
-import { broadcast, subscribeAsync } from "../renderer/session";
 import { MinecraftAccount } from "../struct/accounts";
 import { MinecraftProfile } from "../struct/profiles";
 import Typography from "./Typography";
@@ -32,10 +31,6 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
     againRequestPassword: false,
   };
   initialized = false;
-  // handle password response (from (RequestPasswordDialog))
-  handlePassword = (password: string): void => {
-    broadcast("password", password);
-  };
   componentDidMount(): void {
     // prevent mount too much
     if (this.initialized) {
@@ -53,21 +48,23 @@ export default class LaunchProgress extends Component<LaunchProgressProps, Launc
       setHelper: (hel) => this.setState({ helperText: hel }),
       java: ephConfigs.javaPath,
       onDone: this.props.onClose,
-      requestPassword: async (again: boolean) => {
-        if (again !== this.state.againRequestPassword) {
-          this.setState({
-            againRequestPassword: again,
-          });
-        }
-        showDialog((close) => (
-          <RequestPasswordDialog
-            onClose={close}
-            again={this.state.againRequestPassword}
-            callback={this.handlePassword}
-          />
-        ));
-        return await subscribeAsync("password");
-      },
+      requestPassword: (again: boolean) =>
+        new Promise((resolve) => {
+          if (again !== this.state.againRequestPassword) {
+            this.setState({
+              againRequestPassword: again,
+            });
+          }
+          showDialog((close) => (
+            <RequestPasswordDialog
+              onClose={close}
+              again={this.state.againRequestPassword}
+              callback={(password: string) => {
+                resolve(password);
+              }}
+            />
+          ));
+        }),
       onErr,
     }).catch(onErr);
   }

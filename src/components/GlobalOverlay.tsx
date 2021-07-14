@@ -1,11 +1,15 @@
-import { subscribe, unsubscribe } from "../renderer/session";
 import { clearOverlayStack, overlayStack, shouldOverlayHide } from "../renderer/overlay";
 import { Component } from "react";
 import { EmptyObject } from "../tools/types";
+import { unwrapFunction } from "../tools";
 
 export interface GlobalOverlayState {
   show: boolean;
 }
+
+export const GlobalOverlaySpace = {
+  updateOverlay: unwrapFunction(),
+};
 
 export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayState> {
   state: GlobalOverlayState = {
@@ -14,14 +18,8 @@ export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayS
   constructor(props: EmptyObject) {
     super(props);
     !this.state.show && clearOverlayStack();
-  }
-  componentDidMount(): void {
-    subscribe("global-overlay", (arg) => {
-      arg === "updated" && this.setState({ show: overlayStack.length !== 0 });
-    });
-  }
-  componentWillUnmount(): void {
-    unsubscribe("global-overlay");
+    // init space
+    GlobalOverlaySpace.updateOverlay = () => this.setState({ show: overlayStack.length !== 0 });
   }
   render(): JSX.Element {
     return (
