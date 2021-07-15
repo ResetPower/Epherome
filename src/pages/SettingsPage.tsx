@@ -1,7 +1,5 @@
-import TextField from "../components/TextField";
-import Button from "../components/Button";
-import Select from "../components/Select";
-import { Component, ReactNode } from "react";
+import { TextField, Button, Select, Checkbox } from "../components/inputs";
+import { Component } from "react";
 import Link from "../components/Link";
 import {
   cfgPath,
@@ -13,7 +11,6 @@ import {
 import { t, i18n, hist, logger } from "../renderer/global";
 import { EmptyObject } from "../tools/types";
 import Typography from "../components/Typography";
-import Checkbox from "../components/Checkbox";
 import Card from "../components/Card";
 import EpheromeLogo from "../../assets/Epherome.png";
 import { MdInfo, MdPalette, MdTune } from "react-icons/md";
@@ -21,6 +18,7 @@ import { FaJava } from "react-icons/fa";
 import { updateTheme } from "../renderer/theme";
 import App from "../renderer/App";
 import { mcDownloadPath } from "../renderer/download";
+import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 
 export interface SettingsPageState {
   value: number;
@@ -70,168 +68,150 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
     logger.debug([`Java Path: '${jp}'`, `Hitokoto: ${hk}`, `Download Provider: '${dp}'`]);
     hist.goBack();
   };
-  TabItem = (props: { children: ReactNode; value: number }): JSX.Element => {
-    return (
-      <button
-        className={`flex px-3 py-2 transition-colors duration-200 transform hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600 rounded-md focus:outline-none ${
-          this.state.value === props.value
-            ? "font-bold text-blue-500 dark:text-indigo-400 bg-gray-200 dark:bg-gray-700"
-            : "text-black dark:text-white"
-        }`}
-        onClick={() => this.setState({ value: props.value })}
-      >
-        {props.children}
-      </button>
-    );
-  };
   render(): JSX.Element {
     return (
-      <div className="flex">
-        <div className="p-3 border-r border-divide space-y-1">
-          <this.TabItem value={0}>
+      <TabController>
+        <TabBar>
+          <TabBarItem value={0}>
             <MdTune />
             {t.general}
-          </this.TabItem>
-          <this.TabItem value={1}>
+          </TabBarItem>
+          <TabBarItem value={1}>
             <MdPalette />
             {t.appearance}
-          </this.TabItem>
-          <this.TabItem value={2}>
+          </TabBarItem>
+          <TabBarItem value={2}>
             <MdInfo />
             {t.about}
-          </this.TabItem>
-        </div>
-        <div className="p-3 flex-grow">
-          {this.state.value === 0 ? (
-            <div>
+          </TabBarItem>
+        </TabBar>
+        <TabBody>
+          <div>
+            <Select
+              value={i18n.language?.name ?? ""}
+              label={t.language}
+              onChange={this.changeLanguage}
+              className="w-32"
+              marginBottom
+            >
+              {i18n.languages.map((lang, index) => (
+                <option value={lang.name} key={index}>
+                  {lang.nativeName}
+                </option>
+              ))}
+            </Select>
+            <div className="mb-3">
               <Select
-                value={i18n.language?.name ?? ""}
-                label={t.language}
-                onChange={this.changeLanguage}
-                className="w-32"
-                marginBottom
-              >
-                {i18n.languages.map((lang, index) => (
-                  <option value={lang.name} key={index}>
-                    {lang.nativeName}
-                  </option>
-                ))}
-              </Select>
-              <div className="mb-3">
-                <Select
-                  value={this.state.downloadProvider}
-                  label={t.downloadProvider}
-                  onChange={
-                    () => {
-                      /**/
-                    }
-                    /*(ev) =>
+                value={this.state.downloadProvider}
+                label={t.downloadProvider}
+                onChange={
+                  () => {
+                    /**/
+                  }
+                  /*(ev) =>
                 this.setState({
                   downloadProvider: (ev.target.value as EphDownloadProvider) ?? "official",
                 })*/
-                  }
-                  className="w-32"
-                >
-                  <option value="official">{t.official}</option>
-                  <option value="bmclapi">BMCLAPI</option>
-                  <option value="mcbbs">MCBBS</option>
-                </Select>
-                <p className="text-shallow">{t.downloadProviderIsNotAble}</p>
-              </div>
-              <TextField
-                label={t.javaPath}
-                placeholder={t.javaPath}
-                value={this.state.javaPath}
-                icon={<FaJava />}
-                onChange={(ev): void => {
-                  this.setState({ javaPath: ev });
-                }}
-                marginBottom
-              />
-              <Checkbox
-                checked={this.state.hitokoto}
-                onChange={(checked) => this.setState({ hitokoto: checked })}
+                }
+                className="w-32"
               >
-                {t.hitokoto}
-              </Checkbox>
-              <p className="text-shallow">{t.hitokotoDescription}</p>
-              <div className="flex">
-                <Button className="text-shallow" onClick={hist.goBack} textInherit>
-                  {t.cancel}
-                </Button>
-                <Button className="text-primary" onClick={this.save} textInherit>
-                  {t.save}
-                </Button>
-              </div>
-            </div>
-          ) : this.state.value === 1 ? (
-            <div>
-              <Select
-                value={ephConfigs.theme}
-                label={t.theme}
-                onChange={this.changeTheme}
-                disabled={ephConfigs.themeFollowOs}
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
+                <option value="official">{t.official}</option>
+                <option value="bmclapi">BMCLAPI</option>
+                <option value="mcbbs">MCBBS</option>
               </Select>
-              <Checkbox checked={ephConfigs.themeFollowOs} onChange={this.handleThemeFollowOs}>
-                {t.followOs}
-              </Checkbox>
+              <p className="text-shallow">{t.downloadProviderIsNotAble}</p>
             </div>
-          ) : this.state.value === 2 ? (
-            <div className="space-y-3">
-              <Card variant="contained" className="flex items-center space-x-3">
-                <img src={EpheromeLogo} className="w-16 h-16" />
-                <div>
-                  <Typography className="font-semibold text-xl">Epherome</Typography>
-                  <Typography>
-                    {t.version} {this.cnst.version} (Alpha)
-                  </Typography>
-                </div>
-              </Card>
-              <Card variant="contained">
-                <div>
-                  <Typography>
-                    {t.os}: {this.cnst.platform} {this.cnst.arch} {this.cnst.release}
-                  </Typography>
-                </div>
-                <div>
-                  <Typography>Electron: {process.versions.electron}</Typography>
-                  <Typography>Chrome: {process.versions.chrome}</Typography>
-                  <Typography>Node.js: {process.versions.node}</Typography>
-                  <Typography>V8: {process.versions.v8}</Typography>
-                </div>
-                <div>
-                  <Typography>{t.cfgFilePath}:</Typography>
-                  <Link href={cfgPath} type="file">
-                    {cfgPath}
-                  </Link>
-                  <Typography>{t.minecraftDirPath}:</Typography>
-                  <Link href={mcDownloadPath} type="file">
-                    {mcDownloadPath}
-                  </Link>
-                </div>
-              </Card>
-              <Card variant="contained">
-                <Typography>
-                  {t.officialSite}: <Link href="https://epherome.com">https://epherome.com</Link>
-                </Typography>
-                <Typography>
-                  GitHub:{" "}
-                  <Link href="https://github.com/ResetPower/Epherome">
-                    https://github.com/ResetPower/Epherome
-                  </Link>
-                </Typography>
-                <Typography>Copyright © 2021 ResetPower. All rights reserved.</Typography>
-                <Typography>{t.oss} | GNU General Public License 3.0</Typography>
-              </Card>
+            <TextField
+              label={t.javaPath}
+              placeholder={t.javaPath}
+              value={this.state.javaPath}
+              icon={<FaJava />}
+              onChange={(ev): void => {
+                this.setState({ javaPath: ev });
+              }}
+              marginBottom
+            />
+            <Checkbox
+              checked={this.state.hitokoto}
+              onChange={(checked) => this.setState({ hitokoto: checked })}
+            >
+              {t.hitokoto}
+            </Checkbox>
+            <p className="text-shallow">{t.hitokotoDescription}</p>
+            <div className="flex">
+              <Button className="text-shallow" onClick={hist.goBack} textInherit>
+                {t.cancel}
+              </Button>
+              <Button className="text-primary" onClick={this.save} textInherit>
+                {t.save}
+              </Button>
             </div>
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
+          </div>
+
+          <div>
+            <Select
+              value={ephConfigs.theme}
+              label={t.theme}
+              onChange={this.changeTheme}
+              disabled={ephConfigs.themeFollowOs}
+            >
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </Select>
+            <Checkbox checked={ephConfigs.themeFollowOs} onChange={this.handleThemeFollowOs}>
+              {t.followOs}
+            </Checkbox>
+          </div>
+
+          <div className="space-y-3">
+            <Card variant="contained" className="flex items-center space-x-3">
+              <img src={EpheromeLogo} className="w-16 h-16" />
+              <div>
+                <Typography className="font-semibold text-xl">Epherome</Typography>
+                <Typography>
+                  {t.version} {this.cnst.version} (Alpha)
+                </Typography>
+              </div>
+            </Card>
+            <Card variant="contained">
+              <div>
+                <Typography>
+                  {t.os}: {this.cnst.platform} {this.cnst.arch} {this.cnst.release}
+                </Typography>
+              </div>
+              <div>
+                <Typography>Electron: {process.versions.electron}</Typography>
+                <Typography>Chrome: {process.versions.chrome}</Typography>
+                <Typography>Node.js: {process.versions.node}</Typography>
+                <Typography>V8: {process.versions.v8}</Typography>
+              </div>
+              <div>
+                <Typography>{t.cfgFilePath}:</Typography>
+                <Link href={cfgPath} type="file">
+                  {cfgPath}
+                </Link>
+                <Typography>{t.minecraftDirPath}:</Typography>
+                <Link href={mcDownloadPath} type="file">
+                  {mcDownloadPath}
+                </Link>
+              </div>
+            </Card>
+            <Card variant="contained">
+              <Typography>
+                {t.officialSite}: <Link href="https://epherome.com">https://epherome.com</Link>
+              </Typography>
+              <Typography>
+                GitHub:{" "}
+                <Link href="https://github.com/ResetPower/Epherome">
+                  https://github.com/ResetPower/Epherome
+                </Link>
+              </Typography>
+              <Typography>Copyright © 2021 ResetPower. All rights reserved.</Typography>
+              <Typography>{t.oss} | GNU General Public License 3.0</Typography>
+            </Card>
+          </div>
+        </TabBody>
+      </TabController>
     );
   }
 }

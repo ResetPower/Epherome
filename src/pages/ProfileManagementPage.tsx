@@ -1,11 +1,13 @@
 import Alert from "../components/Alert";
-import { Component, ReactNode } from "react";
+import { Component } from "react";
 import { t } from "../renderer/global";
 import { getProfile, MinecraftProfile } from "../struct/profiles";
 import fs from "fs";
 import Typography from "../components/Typography";
 import { StringMap } from "../tools/types";
 import Container from "../components/Container";
+import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
+import { MdMap, MdWrapText } from "react-icons/md";
 
 export interface ProfileManagementPageProps {
   params: StringMap;
@@ -26,18 +28,6 @@ export default class ProfileManagementPage extends Component<
     mapsList: [],
     resourcePacksList: [],
   };
-  TabItem = (props: { children: ReactNode; value: number }): JSX.Element => {
-    return (
-      <button
-        className={`block focus:outline-none ${
-          this.state.value === props.value ? "text-pink-500" : "text-black dark:text-white"
-        }`}
-        onClick={() => this.setState({ value: props.value })}
-      >
-        {props.children}
-      </button>
-    );
-  };
   profile: MinecraftProfile | null;
   constructor(props: ProfileManagementPageProps) {
     super(props);
@@ -51,41 +41,43 @@ export default class ProfileManagementPage extends Component<
     }
   }
   render(): JSX.Element {
-    return (
+    return this.profile === null ? (
       <Container>
-        {this.profile === null ? (
-          <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
-        ) : (
-          <div className="flex">
-            <div className="p-6 border-r border-divide">
-              <this.TabItem value={0}>{t.maps}</this.TabItem>
-              <this.TabItem value={1}>{t.resourcePacks}</this.TabItem>
-            </div>
-            <div className="p-3 flex-grow">
-              <div hidden={this.state.value !== 0}>
-                {this.state.mapsList.map(
-                  (m, index) =>
-                    m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
-                        {m}
-                      </Typography>
-                    )
-                )}
-              </div>
-              <div hidden={this.state.value !== 1}>
-                {this.state.resourcePacksList.map(
-                  (m, index) =>
-                    m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
-                        {m}
-                      </Typography>
-                    )
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
       </Container>
+    ) : (
+      <TabController>
+        <TabBar>
+          <TabBarItem value={0}>
+            <MdMap /> {t.maps}
+          </TabBarItem>
+          <TabBarItem value={1}>
+            <MdWrapText /> {t.resourcePacks}
+          </TabBarItem>
+        </TabBar>
+        <TabBody>
+          <div hidden={this.state.value !== 0}>
+            {this.state.mapsList.map(
+              (m, index) =>
+                m !== ".DS_Store" && (
+                  /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                    {m}
+                  </Typography>
+                )
+            )}
+          </div>
+          <div hidden={this.state.value !== 1}>
+            {this.state.resourcePacksList.map(
+              (m, index) =>
+                m !== ".DS_Store" && (
+                  /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                    {m}
+                  </Typography>
+                )
+            )}
+          </div>
+        </TabBody>
+      </TabController>
     );
   }
 }

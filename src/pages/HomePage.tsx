@@ -1,6 +1,4 @@
-import Select from "../components/Select";
-import Button from "../components/Button";
-import IconButton from "../components/IconButton";
+import { Select, Button, IconButton } from "../components/inputs";
 import { Component } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
