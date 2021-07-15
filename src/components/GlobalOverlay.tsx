@@ -7,19 +7,16 @@ export interface GlobalOverlayState {
   show: boolean;
 }
 
-export const GlobalOverlaySpace = {
-  updateOverlay: unwrapFunction(),
-};
-
 export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayState> {
   state: GlobalOverlayState = {
     show: false,
   };
+  static updateOverlay = unwrapFunction();
   constructor(props: EmptyObject) {
     super(props);
     !this.state.show && clearOverlayStack();
-    // init space
-    GlobalOverlaySpace.updateOverlay = () => this.setState({ show: overlayStack.length !== 0 });
+    // init static
+    GlobalOverlay.updateOverlay = () => this.setState({ show: overlayStack.length !== 0 });
   }
   render(): JSX.Element {
     return (

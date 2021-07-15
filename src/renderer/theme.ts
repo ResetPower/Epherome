@@ -1,5 +1,5 @@
 import { StringMap } from "../tools/types";
-import { AppSpace } from "./App";
+import App from "./App";
 import { ephConfigs, setConfig } from "./config";
 import { darkTheme, lightTheme } from "./global";
 
@@ -56,7 +56,7 @@ export function updateTheme(): void {
     detectSystemTheme();
   }
   applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
-  AppSpace.updateUI();
+  App.updateUI();
 }
 
 // listen to system theme changes

@@ -39,7 +39,7 @@ let initConfig: EphConfig = {
 };
 
 // prepare config
-export const cfgPath = constraints.dir + path.sep + "settings.json";
+export const cfgPath = path.join(constraints.dir, "settings.json");
 
 try {
   fs.accessSync(cfgPath);

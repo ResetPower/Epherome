@@ -2,25 +2,25 @@ import { Component } from "react";
 import Tooltip from "../components/Tooltip";
 import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
-import Container from "../components/Container";
 import Button from "../components/Button";
 import { MinecraftAccount } from "../struct/accounts";
 import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyObject } from "../tools/types";
-import List from "../components/List";
-import ListItem from "../components/ListItem";
 import ListItemText from "../components/ListItemText";
 import Alert from "../components/Alert";
 import { showDialog } from "../renderer/overlay";
 import { CreateAccountDialog, RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
+import Container from "../components/Container";
+import List from "../components/List";
+import ListItem from "../components/ListItem";
 
 export default class AccountsPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {
     const accounts = ephConfigs.accounts;
     return (
-      <Container className="mb-3">
+      <Container>
         <div className="my-3">
           <Button
             variant="contained"
@@ -34,7 +34,7 @@ export default class AccountsPage extends Component<EmptyObject, EmptyObject> {
           </Button>
         </div>
         {accounts.length === 0 && <Alert severity="info">{t.noAccountsYet}</Alert>}
-        <List className="pl-3">
+        <List>
           {accounts.map((i: MinecraftAccount) => (
             <ListItem key={i.id}>
               <Radio

@@ -15,6 +15,10 @@ export function resolveTitle(path: string): string {
       return t.profileManagement;
     case "/downloads":
       return t.downloads;
+    case "/processes":
+      return t.processes;
+    case "/extensions":
+      return t.extensions;
     default:
       return "";
   }

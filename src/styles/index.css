@@ -25,15 +25,6 @@ input:checked ~ .dot {
   background-color: #48bb78;
 }
 
-/* page transition animations */
-.fade-enter,
-.fade-exit {
-  transition: 150ms ease opacity;
-}
-.fade-enter {
-  opacity: 0.1;
-}
-
 /* dragging area just like a title bar */
 .eph-dragging-area {
   -webkit-app-region: drag;

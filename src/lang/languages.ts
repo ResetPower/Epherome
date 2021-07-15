@@ -33,6 +33,7 @@ export interface LanguageTranslator {
   about: string;
   os: string;
   cfgFilePath: string;
+  minecraftDirPath: string;
   officialSite: string;
   oss: string;
   language: string;
