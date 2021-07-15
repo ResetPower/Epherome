@@ -12,7 +12,7 @@ Epherome 是一个使用 Electron 与 React 开发的简单的 Minecraft 启动�
 
 ## 截图
 
-![alt](assets/HomePage_zh_cn.jpg)
+![alt](../assets/HomePage_zh_cn.jpg)
 
 ## 协议
 
