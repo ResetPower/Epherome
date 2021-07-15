@@ -9,7 +9,7 @@ export default function Card(props: {
     <div
       className={`${
         props.variant === "contained" ? "shadow-md" : "border border-divide"
-      } p-3 bg-card rounded-md ${props.className}`}
+      } p-3 bg-card rounded-lg ${props.className}`}
     >
       {props.children}
     </div>

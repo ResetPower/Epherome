@@ -1,5 +1,4 @@
 import Select from "../components/Select";
-import Container from "../components/Container";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
 import { Component } from "react";
@@ -25,6 +24,7 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
+import Container from "../components/Container";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
@@ -121,10 +121,10 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               )}
             </div>
             <div>
-              <IconButton>
+              <IconButton onClick={() => hist.push("/processes")}>
                 <MdViewCarousel />
               </IconButton>
-              <IconButton>
+              <IconButton onClick={() => hist.push("/extensions")}>
                 <MdApps />
               </IconButton>
             </div>
@@ -150,7 +150,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
         <div className="flex space-x-6">
           <Card className="flex-grow">
             {profiles.length === 0 ? (
-              <Typography className="p-3">{t.noProSelected}</Typography>
+              <Typography className="text-sm p-1 m-1">{t.noProSelected}</Typography>
             ) : (
               <Select value={this.state.value} onChange={this.handleChange}>
                 {profiles.map((i: MinecraftProfile) => (
@@ -166,7 +166,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             </Button>
           </Card>
           <Card className="flex-grow">
-            <Typography className="text-xl">{t.warning}</Typography>
+            <Typography className="text-xl font-semibold">{t.warning}</Typography>
             <Typography>{t.alphaWarning}</Typography>
           </Card>
         </div>

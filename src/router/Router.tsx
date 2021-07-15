@@ -31,10 +31,10 @@ export class Router extends Component<RouterProps, RouterState> {
       mainClassName: "",
     };
     hist.listen(() => {
-      this.setState({ location: hist.location, mainClassName: "fade-exit" });
+      this.setState({ location: hist.location, mainClassName: "animate__fadeIn" });
       unwrapFunction(this.props.onChange)();
     });
-    hist.listenAnime(() => this.setState({ mainClassName: "fade-enter" }));
+    hist.listenAnime(() => this.setState({ mainClassName: "animate__fadeOut" }));
   }
   render(): JSX.Element | null {
     const loc = this.state.location;
@@ -51,6 +51,6 @@ export class Router extends Component<RouterProps, RouterState> {
         child = comp(loc.params);
       }
     }
-    return <div className={this.state.mainClassName}>{child}</div>;
+    return <div className={`animate__animated ${this.state.mainClassName}`}>{child}</div>;
   }
 }

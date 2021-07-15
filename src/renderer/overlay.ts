@@ -1,4 +1,4 @@
-import { GlobalOverlaySpace } from "../components/GlobalOverlay";
+import GlobalOverlay from "../components/GlobalOverlay";
 import { DefaultFunction } from "../tools/types";
 
 export const overlayStack: JSX.Element[] = [];
@@ -17,10 +17,10 @@ export function showDialog(render: (close: DefaultFunction) => JSX.Element): Def
   const index = overlayStack.length;
   const onClose = () => {
     overlayStack.splice(index, 1);
-    GlobalOverlaySpace.updateOverlay();
+    GlobalOverlay.updateOverlay();
   };
   const component = render(onClose);
   overlayStack[index] = component;
-  GlobalOverlaySpace.updateOverlay();
+  GlobalOverlay.updateOverlay();
   return onClose;
 }

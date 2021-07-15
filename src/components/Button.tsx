@@ -13,7 +13,7 @@ export default function Button(props: {
     <button
       disabled={props.disabled ?? false}
       type="button"
-      className={`flex select-none items-center px-4 py-2 rounded-md text-sm font-medium m-1 focus:outline-none
+      className={`flex select-none items-center px-4 py-2 rounded-lg text-sm font-medium m-1 focus:outline-none
         ${
           props.variant === "contained"
             ? `text-white ${

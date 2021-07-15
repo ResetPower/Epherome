@@ -1,7 +1,6 @@
 import { Component } from "react";
 import ListItemText from "../components/ListItemText";
 import Button from "../components/Button";
-import Container from "../components/Container";
 import IconButton from "../components/IconButton";
 import Radio from "../components/Radio";
 import Tooltip from "../components/Tooltip";
@@ -9,18 +8,19 @@ import { MinecraftProfile } from "../struct/profiles";
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyObject } from "../tools/types";
-import ListItem from "../components/ListItem";
-import List from "../components/List";
 import Alert from "../components/Alert";
 import { showDialog } from "../renderer/overlay";
 import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete, MdEdit, MdFileDownload, MdSettings } from "react-icons/md";
+import Container from "../components/Container";
+import List from "../components/List";
+import ListItem from "../components/ListItem";
 
 export default class ProfilesPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {
     const profiles = ephConfigs.profiles;
     return (
-      <Container className="mb-3">
+      <Container>
         <div className="flex space-x-3 my-3">
           <Button
             variant="contained"
@@ -37,7 +37,7 @@ export default class ProfilesPage extends Component<EmptyObject, EmptyObject> {
           </Button>
         </div>
         {profiles.length === 0 && <Alert severity="info">{t.noProfilesYet}</Alert>}
-        <List className="pl-3">
+        <List>
           {profiles.map((i: MinecraftProfile) => (
             <ListItem key={i.id}>
               <Radio

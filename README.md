@@ -4,7 +4,7 @@
 
 Simple Minecraft launcher
 
-[简体中文](README_zh_cn.md)
+[简体中文](docs/README_zh_cn.md)
 
 ## Introduction
 

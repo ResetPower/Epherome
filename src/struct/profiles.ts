@@ -6,6 +6,7 @@ export interface MinecraftProfile extends WithId {
   name: string;
   dir: string;
   ver: string;
+  from?: "create" | "download";
 }
 
 export function createProfile(name: string, dir: string, ver: string): boolean {

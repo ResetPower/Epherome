@@ -96,7 +96,8 @@ export default defineLanguage({
     noAccSelected: "アカウントがありません",
     noProSelected: "プロフィルがありません",
     refreshHitokoto: "リフレッシュ",
-    processes: "プロセス",
+    processes: "プロセス管理",
     extensions: "拡張",
+    minecraftDirPath: "Minecraft Download Folder",
   },
 });

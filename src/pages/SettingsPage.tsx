@@ -19,7 +19,8 @@ import EpheromeLogo from "../../assets/Epherome.png";
 import { MdInfo, MdPalette, MdTune } from "react-icons/md";
 import { FaJava } from "react-icons/fa";
 import { updateTheme } from "../renderer/theme";
-import { AppSpace } from "../renderer/App";
+import App from "../renderer/App";
+import { mcDownloadPath } from "../renderer/download";
 
 export interface SettingsPageState {
   value: number;
@@ -40,7 +41,7 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
     i18n.changeLanguage(ev);
     setConfig(() => (ephConfigs.language = ev));
     this.setState({});
-    AppSpace.updateTitle();
+    App.updateTitle();
     logger.info(`Language changed to '${ev}'`);
   };
   changeTheme = (ev: string): void => {
@@ -155,10 +156,10 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
               </Checkbox>
               <p className="text-shallow">{t.hitokotoDescription}</p>
               <div className="flex">
-                <Button className="text-gray-500" onClick={hist.goBack}>
+                <Button className="text-shallow" onClick={hist.goBack} textInherit>
                   {t.cancel}
                 </Button>
-                <Button className="text-blue-500" onClick={this.save}>
+                <Button className="text-primary" onClick={this.save} textInherit>
                   {t.save}
                 </Button>
               </div>
@@ -203,7 +204,13 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
                 </div>
                 <div>
                   <Typography>{t.cfgFilePath}:</Typography>
-                  <p className="text-gray-400">{cfgPath}</p>
+                  <Link href={cfgPath} type="file">
+                    {cfgPath}
+                  </Link>
+                  <Typography>{t.minecraftDirPath}:</Typography>
+                  <Link href={mcDownloadPath} type="file">
+                    {mcDownloadPath}
+                  </Link>
                 </div>
               </Card>
               <Card variant="contained">

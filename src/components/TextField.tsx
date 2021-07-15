@@ -20,7 +20,7 @@ export default function TextField(props: {
       )}
       <div className="flex">
         {props.icon && (
-          <div className="rounded-l-md inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-l border-b border-divide text-shallow shadow-sm">
+          <div className="rounded-l-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-l border-b border-divide text-shallow shadow-sm">
             {props.icon}
           </div>
         )}

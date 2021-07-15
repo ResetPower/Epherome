@@ -25,7 +25,7 @@ export default function Select(props: {
         onChange={(ev) => {
           props.onChange(ev.currentTarget.value);
         }}
-        className={`block py-2 px-3 bg-card text-black dark:text-white border border-divide rounded-md shadow-sm focus:outline-none ${props.className}`}
+        className={`block py-2 px-3 bg-card text-black dark:text-white border border-divide rounded-lg shadow-sm focus:outline-none ${props.className}`}
         disabled={props.disabled}
       >
         {props.children}

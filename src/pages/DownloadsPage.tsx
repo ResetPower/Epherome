@@ -1,16 +1,16 @@
 import { Component } from "react";
 import { EmptyObject } from "../tools/types";
-import Container from "../components/Container";
 import Checkbox from "../components/Checkbox";
-import List from "../components/List";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { logger, t } from "../renderer/global";
-import ListItem from "../components/ListItem";
 import ListItemText from "../components/ListItemText";
 import Spin from "../components/Spin";
 import { showDialog } from "../renderer/overlay";
 import { DownloadDialog } from "../components/Dialogs";
 import got from "got";
+import Container from "../components/Container";
+import ListItem from "../components/ListItem";
+import List from "../components/List";
 
 interface DownloadsPageState {
   release: boolean;
@@ -71,7 +71,7 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
           </Checkbox>
         </div>
         {this.state.loading && <Spin />}
-        <List className="space-y-0">
+        <List>
           {this.state.versions.map((item, index) => {
             return (
               this.matchType(item.type) && (
