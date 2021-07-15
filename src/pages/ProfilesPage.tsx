@@ -1,8 +1,5 @@
 import { Component } from "react";
-import ListItemText from "../components/ListItemText";
-import Button from "../components/Button";
-import IconButton from "../components/IconButton";
-import Radio from "../components/Radio";
+import { Button, IconButton, Radio } from "../components/inputs";
 import Tooltip from "../components/Tooltip";
 import { MinecraftProfile } from "../struct/profiles";
 import { hist, logger, t } from "../renderer/global";
@@ -13,8 +10,7 @@ import { showDialog } from "../renderer/overlay";
 import { CreateProfileDialog, EditProfileDialog, RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete, MdEdit, MdFileDownload, MdSettings } from "react-icons/md";
 import Container from "../components/Container";
-import List from "../components/List";
-import ListItem from "../components/ListItem";
+import { List, ListItem, ListItemText } from "../components/lists";
 
 export default class ProfilesPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {

@@ -1,7 +1,5 @@
 import Dialog, { AlertDialog, ConfirmDialog } from "./Dialog";
-import Select from "./Select";
-import Button from "./Button";
-import TextField from "./TextField";
+import { Select, Button, TextField } from "./inputs";
 import Alert from "./Alert";
 import { t } from "../renderer/global";
 import { createAccount, CreateAccountImplResult, removeAccount } from "../struct/accounts";

@@ -1,5 +1,4 @@
 import { Component } from "react";
-import IconButton from "../components/IconButton";
 import HomePage from "../pages/HomePage";
 import AccountsPage from "../pages/AccountsPage";
 import ProfilesPage from "../pages/ProfilesPage";
@@ -18,6 +17,7 @@ import { ipcRenderer } from "electron";
 import { unwrapFunction } from "../tools";
 import ProcessesPage from "../pages/ProcessesPage";
 import ExtensionsPage from "../pages/ExtensionsPage";
+import { IconButton } from "../components/inputs";
 
 export interface AppState {
   title: string;

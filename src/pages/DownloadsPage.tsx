@@ -1,16 +1,14 @@
 import { Component } from "react";
 import { EmptyObject } from "../tools/types";
-import Checkbox from "../components/Checkbox";
+import { Checkbox } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { logger, t } from "../renderer/global";
-import ListItemText from "../components/ListItemText";
 import Spin from "../components/Spin";
 import { showDialog } from "../renderer/overlay";
 import { DownloadDialog } from "../components/Dialogs";
 import got from "got";
 import Container from "../components/Container";
-import ListItem from "../components/ListItem";
-import List from "../components/List";
+import { List, ListItem, ListItemText } from "../components/lists";
 
 interface DownloadsPageState {
   release: boolean;

@@ -1,4 +1,4 @@
-import Button from "./Button";
+import { Button } from "./inputs";
 import Dialog from "./Dialog";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { t } from "../renderer/global";

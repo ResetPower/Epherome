@@ -1,20 +1,16 @@
 import { Component } from "react";
 import Tooltip from "../components/Tooltip";
-import IconButton from "../components/IconButton";
-import Radio from "../components/Radio";
-import Button from "../components/Button";
+import { IconButton, Radio, Button } from "../components/inputs";
 import { MinecraftAccount } from "../struct/accounts";
 import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { EmptyObject } from "../tools/types";
-import ListItemText from "../components/ListItemText";
 import Alert from "../components/Alert";
 import { showDialog } from "../renderer/overlay";
 import { CreateAccountDialog, RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import Container from "../components/Container";
-import List from "../components/List";
-import ListItem from "../components/ListItem";
+import { List, ListItem, ListItemText } from "../components/lists";
 
 export default class AccountsPage extends Component<EmptyObject, EmptyObject> {
   render(): JSX.Element {
