@@ -98,6 +98,6 @@ export default defineLanguage({
     refreshHitokoto: "リフレッシュ",
     processes: "プロセス管理",
     extensions: "拡張",
-    minecraftDirPath: "Minecraft Download Folder",
+    minecraftDirPath: "Minecraft ダウンロードフォルダー",
   },
 });
