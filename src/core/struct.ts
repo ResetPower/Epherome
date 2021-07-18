@@ -34,13 +34,15 @@ export interface ClientJsonOSRule {
   arch?: string;
 }
 
+export interface ClientJsonFeaturesRule {
+  is_demo_user?: boolean;
+  has_custom_resolution?: boolean;
+}
+
 export interface ClientJsonRule {
   action: "allow" | "disallow";
   os?: ClientJsonOSRule;
-  features?: {
-    is_demo_user?: boolean;
-    has_custom_resolution?: boolean;
-  };
+  features?: ClientJsonFeaturesRule;
 }
 
 export type ClientJsonRules = ClientJsonRule[];
@@ -54,6 +56,11 @@ export interface ClientJsonCommonArtifact {
 
 export function mergeClientJson(parsed: ClientJson, inherit: ClientJson): ClientJson {
   const ret = { ...inherit, ...parsed };
+  if (inherit.arguments) {
+    ret.arguments?.game.push(...inherit.arguments.game);
+  } else if (inherit.minecraftArguments) {
+    ret.minecraftArguments = [ret.minecraftArguments, inherit.minecraftArguments].join(" ");
+  }
   ret.libraries.push(...inherit.libraries);
   return ret;
 }
@@ -85,7 +92,7 @@ export interface ClientJson {
   time: string;
   type: MinecraftVersionType;
   jar?: string;
-  patches?: ClientJson[]; // appears in minecraft json file of HMCL
+  patches?: Omit<ClientJson, "patches">[]; // appears in minecraft json file of HMCL
 }
 
 export interface ClientAnalyzedLibrary {

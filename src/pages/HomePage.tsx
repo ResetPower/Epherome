@@ -91,11 +91,6 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     const profile = getProfile(val);
     if (account !== null && profile !== null) {
       this.setState((prev) => ({ isLaunching: !prev.isLaunching }));
-      const onErr = (err: Error) => {
-        GlobalOverlay.showDialog((close) => (
-          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
-        ));
-      };
       launchMinecraft({
         account,
         profile,
@@ -121,8 +116,11 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               />
             ));
           }),
-        onErr,
-      }).catch(onErr);
+      }).catch((err: Error) => {
+        GlobalOverlay.showDialog((close) => (
+          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
+        ));
+      });
     } else {
       GlobalOverlay.showDialog((close) => (
         <AlertDialog title={t.warning} message={t.noAccOrProSelected} close={close} />
@@ -196,7 +194,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             )}
             <Button onClick={this.handleLaunch} disabled={this.state.isLaunching}>
               <MdPlayArrow />
-              {this.state.isLaunching ? t.launching : t.launch}
+              {t.launch}
             </Button>
             {this.state.isLaunching && (
               <>

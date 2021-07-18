@@ -6,11 +6,19 @@ import { promisify } from "util";
 
 const pipelineAsync = promisify(pipeline);
 
+export function createDirIfNotExist(p: string): void {
+  try {
+    fs.accessSync(p);
+  } catch {
+    fs.mkdirSync(p);
+  }
+}
+
 export function createDirByPath(p: string): void {
   const dir = path.dirname(p);
   try {
     fs.accessSync(dir);
-  } catch (e) {
+  } catch {
     fs.mkdirSync(dir, { recursive: true });
   }
 }

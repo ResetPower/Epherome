@@ -6,13 +6,16 @@ import { authenticate, refresh, validate } from "../tools/auth";
 import { analyzeLibrary } from "./libraries";
 import { constraints } from "../renderer/config";
 import { t } from "../renderer/global";
-import { ClientJson, mergeClientJson } from "./struct";
-import { osName, osVer } from "./rules";
+import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
+import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
-import { downloadFile } from "./download";
+import { createDirIfNotExist, downloadFile } from "./download";
 import { Logger } from "../tools/logging";
 import { DefaultFunction } from "../tools/types";
+import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
+import { checkJava } from "./java";
+import { showJava16RequiredDialog } from "./alerts";
 
 // logger for minecraft launch core
 export const coreLogger = new Logger("Core");
@@ -29,7 +32,6 @@ export interface MinecraftLaunchOptions {
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: DefaultFunction;
-  onErr: (error: Error) => void;
 }
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
@@ -42,13 +44,11 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const authlibInjectorPath = path.join(constraints.dir, "authlib-injector-1.1.35.jar");
 
   const buff = [];
-  const dir = profile.dir;
-  let withModLoader = false;
-  let withHMCLPatch = false;
-  let withAuthlibInjector = false;
+  const dir = path.resolve(profile.dir);
 
   setHelper(defaultHelper);
 
+  // === authenticating ===
   if (navigator.onLine) {
     if (account.mode === "mojang" || account.mode === "authlib") {
       const server = account.mode === "mojang" ? undefined : account.authserver;
@@ -81,70 +81,39 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     coreLogger.info("Network not available, account validating skipped");
   }
 
-  let parsed: ClientJson = JSON.parse(
-    fs.readFileSync(path.join(dir, "versions", profile.ver, `${profile.ver}.json`)).toString()
-  );
-
+  // === parsing json file ===
+  const jsonFile = path.join(dir, "versions", profile.ver, `${profile.ver}.json`);
+  let parsed: ClientJson = JSON.parse(fs.readFileSync(jsonFile).toString());
   if (parsed.inheritsFrom) {
-    // with mod loader
-    withModLoader = true;
     const inheritsFrom = parsed.inheritsFrom;
     const inherit: ClientJson = JSON.parse(
       fs.readFileSync(path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.json`)).toString()
     );
-    const newParsed = mergeClientJson(parsed, inherit);
-    newParsed && (parsed = newParsed);
-  } else if (parsed.patches) {
-    // with hmcl patch
-    // Note that HMCL will combine both vanilla and mod loader to the same JSON file, so we need a special way to analyze it
-    withHMCLPatch = true;
+    parsed = mergeClientJson(parsed, inherit);
   }
 
   const clientJar = parsed.jar // use jar file in json if it has
     ? path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)
     : path.join(dir, "versions", profile.ver, `${profile.ver}.jar`);
   const nativeDir = path.join(dir, "versions", profile.ver, `${profile.ver}-natives`);
+  createDirIfNotExist(nativeDir);
 
-  if (parsed.arguments) {
-    // 1.13, 1.13+
-    if (osName === "darwin") {
-      buff.push("-XstartOnFirstThread", "-Xdock:name=Minecraft");
-    } else if (osName === "win32") {
-      buff.push(
-        "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump"
-      );
-      if (osVer.startsWith("10")) {
-        buff.push("-Dos.name=Windows 10", "-Dos.version=10.0");
-      }
-    }
-    buff.push("-Xss1M");
-  } else {
-    buff.push(`-Dminecraft.client.jar=${clientJar}`);
-    if (osName === "darwin") {
-      buff.push("-Xdock:name=Minecraft");
-    }
-  }
-
-  try {
-    fs.accessSync(nativeDir);
-  } catch (e) {
-    fs.mkdirSync(nativeDir);
-  }
-  buff.push(
-    `-Djava.library.path=${nativeDir}`,
-    `-Dminecraft.launcher.brand=Epherome`,
-    `-Dminecraft.launcher.version=${constraints.version}`
-  );
+  // === analyzing library ===
   const obj = analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
-
   const missingCount = Object.keys(obj.missing).length;
   let mCount = 0;
+  const cp = obj.classpath;
+  cp.push(clientJar);
+
+  // download missing libraries
   for (const item of obj.missing) {
     setHelper(`${t.helper.downloadingLib}: ${item.name} (${mCount}/${missingCount})`);
     await downloadFile(item.url, item.path, true);
     mCount++;
   }
+
+  // download missing assets
   const assetIndexPath = path.join(dir, "assets/indexes", `${assetIndex.id}.json`);
   try {
     fs.accessSync(assetIndexPath);
@@ -168,8 +137,9 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     }
     oCount++;
   }
+
+  // inject authlib injector
   if (account.mode === "authlib") {
-    withAuthlibInjector = true;
     try {
       fs.accessSync(authlibInjectorPath);
     } catch (e) {
@@ -181,62 +151,89 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
         true
       );
     }
-  }
-
-  unzipNatives(nativeDir, obj.natives);
-
-  const cp = obj.classpath;
-  cp.push(clientJar);
-  if (withAuthlibInjector) {
     buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);
   }
-  buff.push("-cp", cp.join(path.delimiter));
-  buff.push(parsed["mainClass"]);
-  if (withModLoader || withHMCLPatch) {
-    if (parsed.arguments) {
-      const arr = parsed.arguments.game;
-      for (const i in arr) {
-        const arg = arr[i];
-        if (typeof arg === "string" && arg.startsWith("--")) {
-          const nextArg = arr[parseInt(i) + 1];
-          if (typeof nextArg === "string") {
-            nextArg.indexOf("$") === -1 && buff.push(arg, nextArg);
-          }
+
+  // unzip native libraries
+  unzipNatives(nativeDir, obj.natives);
+
+  // === resolve arguments ===
+  const argumentsMap = {
+    // game args
+    auth_player_name: account.name,
+    version_name: profile.ver,
+    auth_session: `token:${account.token}`,
+    game_directory: dir,
+    game_assets: path.join(dir, "assets"),
+    assets_root: path.join(dir, "assets"),
+    assets_index_name: assetIndex.id,
+    auth_uuid: account.uuid,
+    auth_access_token: account.token,
+    user_type: "mojang",
+    user_properties: `{}`,
+    version_type: parsed.type,
+    // jvm args
+    natives_directory: nativeDir,
+    launcher_name: "Epherome",
+    launcher_version: constraints.version,
+    classpath: cp.join(":"),
+  };
+
+  const reg = /\$\{([\w]*)\}/g;
+  const resolveMinecraftArgs = (arr: ClientJsonArguments) => {
+    const act = (i: string) => {
+      i = i.replace(reg, (_str, key) => {
+        const item = argumentsMap[key as keyof typeof argumentsMap];
+        if (item) {
+          return item;
+        } else {
+          coreLogger.warn(`key "${key}" not exist on arguments' map`);
+          return "undefined";
         }
-      }
-    } else if (parsed.minecraftArguments) {
-      const arr = parsed.minecraftArguments.split(" ");
-      for (const i in arr) {
-        const arg = arr[i];
-        if (arg.startsWith("--")) {
-          const nextArg = arr[parseInt(i) + 1];
-          nextArg.indexOf("$") === -1 && buff.push(arg, nextArg);
-        }
+      });
+      buff.push(i);
+    };
+    for (const i of arr) {
+      if (typeof i === "string") act(i);
+      else if (isCompliant(i.rules)) {
+        if (typeof i.value === "string") act(i.value);
+        else i.value.forEach((i) => act(i));
       }
     }
+  };
+
+  // jvm arguments
+  if (parsed.arguments) {
+    resolveMinecraftArgs(parsed.arguments.jvm);
+  } else {
+    if (osName === "darwin") {
+      buff.push("-Xdock:name=Minecraft");
+    }
+    buff.push(
+      `-Dminecraft.client.jar=${clientJar}`,
+      `-Djava.library.path=${argumentsMap.natives_directory}`,
+      `-Dminecraft.launcher.brand=${argumentsMap.launcher_name}`,
+      `-Dminecraft.launcher.version=${argumentsMap.launcher_version}`,
+      `-cp`,
+      argumentsMap.classpath
+    );
+  }
+  buff.push(parsed["mainClass"]);
+
+  // game arguments
+  if (parsed.arguments) {
+    resolveMinecraftArgs(parsed.arguments.game);
+  } else if (parsed.minecraftArguments) {
+    resolveMinecraftArgs(parsed.minecraftArguments.split(" "));
   }
 
-  buff.push(
-    "--username",
-    account.name,
-    "--version",
-    profile.ver,
-    "--gameDir",
-    dir,
-    "--assetsDir",
-    path.join(dir, "assets"),
-    "--assetIndex",
-    assetIndex.id,
-    "--uuid",
-    account.uuid,
-    "--accessToken",
-    account.token,
-    "--userType",
-    "mojang",
-    "--versionType",
-    parsed["type"]
-  );
-
-  // start minecraft process
-  runMinecraft(java, buff, dir, options.onErr, options.onDone);
+  const versionDetail = parseMinecraftVersionDetail(parsed.id);
+  const javaVersion = await checkJava(java);
+  if (isJava16Required(versionDetail) && javaVersion.major && javaVersion.major < 16) {
+    coreLogger.warn(`Minecraft version is higher than 1.17 but is using a java version under 16`);
+    showJava16RequiredDialog();
+  } else {
+    // start minecraft process
+    runMinecraft(java, buff, dir, options.onDone);
+  }
 }
