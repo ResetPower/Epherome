@@ -6,14 +6,12 @@ export function runMinecraft(
   java: string,
   buff: string[],
   dir: string,
-  onErr: (error: Error) => void,
   onDone: DefaultFunction
 ): void {
   let done = false;
   const proc = spawn(java, buff, {
     cwd: dir,
   });
-  proc.on("error", onErr);
   proc.stdout.on(
     "data",
     () =>
@@ -24,6 +22,7 @@ export function runMinecraft(
         coreLogger.info("Minecraft is running");
       })()
   );
+  // TODO Add To ProcessManagementService
   if (process.env.NODE_ENV === "development") {
     // output process message to help developing
     // TODO Note that need to optimize more here

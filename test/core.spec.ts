@@ -20,6 +20,27 @@ describe("core", function () {
           !isCompliant([{ action: "allow" }, { action: "disallow", os: { name: os.platform() } }])
         );
       });
+      it("deals with 'features' key", function () {
+        assert(
+          isCompliant([{ action: "allow", features: { is_demo_user: true } }], {
+            is_demo_user: true,
+            has_custom_resolution: true,
+          })
+        );
+        assert(
+          isCompliant([{ action: "allow", features: { has_custom_resolution: true } }], {
+            is_demo_user: false,
+            has_custom_resolution: true,
+          })
+        );
+        assert(!isCompliant([{ action: "allow", features: { is_demo_user: true } }], {}));
+        assert(
+          !isCompliant([{ action: "disallow", features: { is_demo_user: true } }], {
+            is_demo_user: true,
+            has_custom_resolution: true,
+          })
+        );
+      });
     });
   });
 });

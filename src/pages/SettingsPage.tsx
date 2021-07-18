@@ -165,9 +165,9 @@ export default class SettingsPage extends Component<EmptyObject, SettingsPageSta
             <Card variant="contained" className="flex items-center space-x-3">
               <img src={EpheromeLogo} className="w-16 h-16" />
               <div>
-                <Typography className="font-semibold text-xl">Epherome</Typography>
+                <Typography className="font-semibold text-xl">Epherome Beta</Typography>
                 <Typography>
-                  {t.version} {this.cnst.version} (Alpha)
+                  {t.version} {this.cnst.version}
                 </Typography>
               </div>
             </Card>
