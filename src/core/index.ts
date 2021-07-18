@@ -27,7 +27,6 @@ export interface MinecraftLaunchOptions {
   profile: MinecraftProfile;
   java: string;
   setHelper: (value: string) => void;
-  setDetails: (value: MinecraftLaunchDetail[]) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: DefaultFunction;
   onErr: (error: Error) => void;
@@ -39,7 +38,6 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const account = options.account;
   const profile = options.profile;
   const java = options.java;
-  const details: MinecraftLaunchDetail[] = [];
   const setHelper = options.setHelper;
   const authlibInjectorPath = path.join(constraints.dir, "authlib-injector-1.1.35.jar");
 
@@ -49,19 +47,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   let withHMCLPatch = false;
   let withAuthlibInjector = false;
 
-  const nextDetail = (text: string) => {
-    const count = details.length - 1;
-    if (count >= 0) {
-      details[count].stat = true;
-    }
-    details.push({
-      stat: false,
-      text,
-    });
-    options.setDetails(details);
-    setHelper(defaultHelper);
-  };
-  nextDetail(t.progress.auth);
+  setHelper(defaultHelper);
 
   if (navigator.onLine) {
     if (account.mode === "mojang" || account.mode === "authlib") {
@@ -94,7 +80,6 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   } else {
     coreLogger.info("Network not available, account validating skipped");
   }
-  nextDetail(t.progress.analyze);
 
   let parsed: ClientJson = JSON.parse(
     fs.readFileSync(path.join(dir, "versions", profile.ver, `${profile.ver}.json`)).toString()
@@ -152,7 +137,6 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   );
   const obj = analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
-  nextDetail(t.progress.downloading);
 
   const missingCount = Object.keys(obj.missing).length;
   let mCount = 0;
@@ -198,10 +182,8 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
       );
     }
   }
-  nextDetail(t.progress.unzipping);
 
   unzipNatives(nativeDir, obj.natives);
-  nextDetail(t.progress.running);
 
   const cp = obj.classpath;
   cp.push(clientJar);

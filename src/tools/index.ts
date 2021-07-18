@@ -48,6 +48,16 @@ export function unwrapFunction<P>(fn?: (...args: P[]) => void): (...args: P[]) =
   return fn ?? emptyFunction;
 }
 
+export function initRequiredFunction(): () => void {
+  return () => {
+    throw new Error("This function is not initialized");
+  };
+}
+
+export function throwNotInitError(): never {
+  throw new Error("This function is not initialized");
+}
+
 // simple toolkit to transfer object to form
 // for example:
 // { a: 'a', b: 'b' }

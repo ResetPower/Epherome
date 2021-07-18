@@ -4,7 +4,7 @@ import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
-import { EphHistory } from "../router/history";
+import { EphHistory } from "../tools/router";
 import { Logger } from "../tools/logging";
 import { defineTheme } from "./theme";
 import colors from "./colors";

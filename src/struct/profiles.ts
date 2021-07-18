@@ -10,6 +10,7 @@ export interface MinecraftProfile extends WithId {
 }
 
 export function createProfile(name: string, dir: string, ver: string): boolean {
+  if (name === "" || dir === "" || ver === "") return false;
   const theId = getNextId(ephConfigs.profiles);
   setConfig(() =>
     ephConfigs.profiles.push({

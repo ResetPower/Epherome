@@ -1,6 +1,10 @@
-import Container from "../components/Container";
+import { Container, Typography } from "../components/layouts";
 import { t } from "../renderer/global";
 
 export default function ProcessesPage(): JSX.Element {
-  return <Container>{t.notSupportedYet}</Container>;
+  return (
+    <Container>
+      <Typography>{t.notSupportedYet}</Typography>
+    </Container>
+  );
 }
