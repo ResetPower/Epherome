@@ -51,13 +51,13 @@ function detectSystemTheme(): void {
   setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
 }
 
-export function updateTheme(): void {
+export function updateTheme(updateUI = true): void {
   if (ephConfigs.themeFollowOs) {
     detectSystemTheme();
   }
   applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
-  App.updateUI();
+  updateUI && App.updateUI();
 }
 
 // listen to system theme changes
-isDark.addEventListener("change", updateTheme);
+isDark.addEventListener("change", () => updateTheme());

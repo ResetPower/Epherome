@@ -4,11 +4,11 @@ import { Checkbox } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { logger, t } from "../renderer/global";
 import Spin from "../components/Spin";
-import { showDialog } from "../renderer/overlay";
 import { DownloadDialog } from "../components/Dialogs";
 import got from "got";
-import Container from "../components/Container";
+import { Container } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
+import GlobalOverlay from "../components/GlobalOverlay";
 
 interface DownloadsPageState {
   release: boolean;
@@ -79,7 +79,7 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
                     secondary={item.type}
                     className="cursor-pointer"
                     onClick={() => {
-                      showDialog((close) => <DownloadDialog onClose={close} />);
+                      GlobalOverlay.showDialog((close) => <DownloadDialog onClose={close} />);
                     }}
                   />
                 </ListItem>

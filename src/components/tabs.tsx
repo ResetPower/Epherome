@@ -1,8 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { unwrapFunction } from "../tools";
 
-// Note that the file used react hooks
-
 export interface TabContext {
   value: number;
   setValue: (value: number) => void;

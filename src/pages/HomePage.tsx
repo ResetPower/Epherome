@@ -5,13 +5,10 @@ import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../struct/accounts";
 import { getProfile, MinecraftProfile } from "../struct/profiles";
 import { t } from "../renderer/global";
-import { MinecraftLaunchDetail } from "../core";
+import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { EmptyObject } from "../tools/types";
 import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
-import { showDialog } from "../renderer/overlay";
-import LaunchProgress from "../components/LaunchProgress";
-import Card from "../components/Card";
-import Typography from "../components/Typography";
+import { Card, Typography, Container } from "../components/layouts";
 import { AlertDialog } from "../components/Dialog";
 import {
   MdAccountCircle,
@@ -22,13 +19,16 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
-import Container from "../components/Container";
+import GlobalOverlay from "../components/GlobalOverlay";
+import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
   hitokoto: Hitokoto;
   value: number | string;
   againRequestPassword: boolean;
+  isLaunching: boolean;
+  launchingHelper: string;
 }
 
 export default class HomePage extends Component<EmptyObject, HomePageState> {
@@ -37,6 +37,8 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     value: "",
     hitokoto: { content: "...", from: "..." },
     againRequestPassword: false,
+    isLaunching: false,
+    launchingHelper: "",
   };
   static hitokoto: Hitokoto | null = null;
   enableHitokoto = ephConfigs.hitokoto;
@@ -62,17 +64,15 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
       this.setState({ hitokoto: { content: "...", from: "..." } });
       fetchHitokoto().then((hk) => {
         if (hk === null) {
-          this.setState({
-            hitokoto: {
-              content: t.cannotConnectToHitokoto,
-              from: "",
-            },
-          });
+          const hk: Hitokoto = {
+            content: t.cannotConnectToHitokoto,
+            from: "",
+          };
+          HomePage.hitokoto = hk;
+          this.setState({ hitokoto: hk });
         } else {
           HomePage.hitokoto = hk;
-          this.setState({
-            hitokoto: hk,
-          });
+          this.setState({ hitokoto: hk });
         }
       });
     }
@@ -90,9 +90,41 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     const account = this.account;
     const profile = getProfile(val);
     if (account !== null && profile !== null) {
-      showDialog((close) => <LaunchProgress onClose={close} account={account} profile={profile} />);
+      this.setState((prev) => ({ isLaunching: !prev.isLaunching }));
+      const onErr = (err: Error) => {
+        GlobalOverlay.showDialog((close) => (
+          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
+        ));
+      };
+      launchMinecraft({
+        account,
+        profile,
+        setHelper: (helper) => this.setState({ launchingHelper: helper }),
+        java: ephConfigs.javaPath,
+        onDone: () => {
+          this.setState({ isLaunching: false });
+        },
+        requestPassword: (again: boolean) =>
+          new Promise((resolve) => {
+            if (again !== this.state.againRequestPassword) {
+              this.setState({
+                againRequestPassword: again,
+              });
+            }
+            GlobalOverlay.showDialog((close) => (
+              <RequestPasswordDialog
+                onClose={close}
+                again={this.state.againRequestPassword}
+                callback={(password: string) => {
+                  resolve(password);
+                }}
+              />
+            ));
+          }),
+        onErr,
+      }).catch(onErr);
     } else {
-      showDialog((close) => (
+      GlobalOverlay.showDialog((close) => (
         <AlertDialog title={t.warning} message={t.noAccOrProSelected} close={close} />
       ));
     }
@@ -150,7 +182,11 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             {profiles.length === 0 ? (
               <Typography className="text-sm p-1 m-1">{t.noProSelected}</Typography>
             ) : (
-              <Select value={this.state.value} onChange={this.handleChange}>
+              <Select
+                value={this.state.value}
+                onChange={this.handleChange}
+                disabled={this.state.isLaunching}
+              >
                 {profiles.map((i: MinecraftProfile) => (
                   <option key={i.id} value={i.id}>
                     {i.name}
@@ -158,10 +194,16 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
                 ))}
               </Select>
             )}
-            <Button onClick={this.handleLaunch}>
+            <Button onClick={this.handleLaunch} disabled={this.state.isLaunching}>
               <MdPlayArrow />
-              {t.launch}
+              {this.state.isLaunching ? t.launching : t.launch}
             </Button>
+            {this.state.isLaunching && (
+              <>
+                <Typography className="text-sm">{this.state.launchingHelper}</Typography>
+                <div className="bg-blue-500 rounded-full h-1 animate-pulse"></div>
+              </>
+            )}
           </Card>
           <Card className="flex-grow">
             <Typography className="text-xl font-semibold">{t.warning}</Typography>

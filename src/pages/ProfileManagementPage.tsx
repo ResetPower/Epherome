@@ -1,11 +1,9 @@
-import Alert from "../components/Alert";
+import { Alert, Typography, Container } from "../components/layouts";
 import { Component } from "react";
 import { t } from "../renderer/global";
 import { getProfile, MinecraftProfile } from "../struct/profiles";
 import fs from "fs";
-import Typography from "../components/Typography";
 import { StringMap } from "../tools/types";
-import Container from "../components/Container";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { MdMap, MdWrapText } from "react-icons/md";
 

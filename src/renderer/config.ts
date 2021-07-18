@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { ipcRenderer } from "electron";
 import { MinecraftProfile } from "../struct/profiles";
@@ -53,6 +54,20 @@ try {
 }
 
 export const ephConfigs: EphConfig = initConfig;
+
+// create minecraft download path
+
+export const mcDownloadPath = path.join(
+  constraints.dir,
+  os.platform() === "win32" ? ".minecraft" : "minecraft"
+);
+
+try {
+  fs.accessSync(mcDownloadPath);
+} catch {
+  // file does not exist
+  fs.mkdirSync(mcDownloadPath);
+}
 
 // write config to disk
 export function saveConfig(): void {

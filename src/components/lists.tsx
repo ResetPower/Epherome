@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { DefaultFunction } from "../tools/types";
-import Typography from "./Typography";
+import { Typography } from "./layouts";
 
 export function List(props: { children: ReactNode; className?: string }): JSX.Element {
   return <div className={`space-y-3 ${props.className}`}>{props.children}</div>;

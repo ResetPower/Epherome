@@ -1,8 +1,9 @@
+import { shell } from "electron";
 import { ReactNode } from "react";
 import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
 import { unwrapFunction } from "../tools";
 import { DefaultFunction } from "../tools/types";
-import Typography from "./Typography";
+import { Typography } from "./layouts";
 
 export function Button(props: {
   children: ReactNode;
@@ -186,5 +187,28 @@ export function Checkbox(props: {
       </div>
       <Typography>{props.children}</Typography>
     </div>
+  );
+}
+
+export function Link(props: {
+  href: string;
+  className?: string;
+  type?: "url" | "file";
+  children: string;
+}): JSX.Element {
+  const handleClick = () => {
+    if (props.type === "file") {
+      shell.showItemInFolder(props.href);
+    } else {
+      shell.openExternal(props.href);
+    }
+  };
+  return (
+    <span
+      className={`text-blue-500 hover:text-blue-600 cursor-pointer select-none ${props.className}`}
+      onClick={handleClick}
+    >
+      {props.children}
+    </span>
   );
 }

@@ -1,11 +1,10 @@
 import Dialog, { AlertDialog, ConfirmDialog } from "./Dialog";
 import { Select, Button, TextField } from "./inputs";
-import Alert from "./Alert";
+import { Alert, Typography } from "./layouts";
 import { t } from "../renderer/global";
 import { createAccount, CreateAccountImplResult, removeAccount } from "../struct/accounts";
 import { createProfile, editProfile, getProfile, removeProfile } from "../struct/profiles";
 import { ipcRenderer } from "electron";
-import Typography from "./Typography";
 import Spin from "./Spin";
 import { Component } from "react";
 import { DefaultFunction } from "../tools/types";
@@ -191,8 +190,7 @@ export class CreateProfileDialog extends Component<
     ver: "",
   };
   handleCreate = (): void => {
-    const rs = createProfile(this.state.name, this.state.dir, this.state.ver);
-    if (rs) {
+    if (createProfile(this.state.name, this.state.dir, this.state.ver)) {
       this.props.onClose();
       this.props.updateProfiles();
     }

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { t } from "../renderer/global";
 import { DefaultFunction } from "../tools/types";
 import { Button } from "./inputs";
-import Typography from "./Typography";
+import { Typography } from "./layouts";
 
 export default function Dialog(props: {
   children: ReactNode;

@@ -1,23 +1,21 @@
-import { TextField, Button, Select, Checkbox } from "../components/inputs";
+import { TextField, Button, Select, Checkbox, Link } from "../components/inputs";
 import { Component } from "react";
-import Link from "../components/Link";
 import {
   cfgPath,
   constraints,
   ephConfigs,
   EphDownloadProvider,
+  mcDownloadPath,
   setConfig,
 } from "../renderer/config";
 import { t, i18n, hist, logger } from "../renderer/global";
 import { EmptyObject } from "../tools/types";
-import Typography from "../components/Typography";
-import Card from "../components/Card";
+import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
 import { MdInfo, MdPalette, MdTune } from "react-icons/md";
 import { FaJava } from "react-icons/fa";
 import { updateTheme } from "../renderer/theme";
 import App from "../renderer/App";
-import { mcDownloadPath } from "../renderer/download";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 
 export interface SettingsPageState {

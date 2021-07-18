@@ -8,13 +8,13 @@ import ProfileManagementPage from "../pages/ProfileManagementPage";
 import { EmptyObject, StringMap } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "../components/GlobalOverlay";
-import { Router } from "../router/Router";
+import { Router } from "../tools/router";
 import { hist } from "./global";
 import { updateTheme } from "./theme";
 import { MdArrowBack, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import { ipcRenderer } from "electron";
-import { unwrapFunction } from "../tools";
+import { initRequiredFunction, unwrapFunction } from "../tools";
 import ProcessesPage from "../pages/ProcessesPage";
 import ExtensionsPage from "../pages/ExtensionsPage";
 import { IconButton } from "../components/inputs";
@@ -24,6 +24,9 @@ export interface AppState {
 }
 
 export default class App extends Component<EmptyObject, AppState> {
+  static updateTitle = initRequiredFunction();
+  static updateUI = initRequiredFunction();
+
   state: AppState = {
     title: resolveTitle(hist.pathname()),
   };
@@ -35,11 +38,13 @@ export default class App extends Component<EmptyObject, AppState> {
   quitApp = (): void => {
     ipcRenderer.send("quit");
   };
-  static updateTitle = unwrapFunction();
-  static updateUI = unwrapFunction();
+
   constructor(props: EmptyObject) {
     super(props);
-    updateTheme();
+    // update theme without invoking updateUI
+    // because it's the first time to load theme
+    // and the updateUI is not yet initialized
+    updateTheme(false);
     // init static
     App.updateTitle = this.updateTitle;
     App.updateUI = () => this.setState({});
