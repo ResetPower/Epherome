@@ -132,7 +132,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     const username = this.account?.name;
     return (
       <Container>
-        <Card className="mb-3 p-6 shadow-sm">
+        <Card className="my-3 p-6 shadow-sm">
           <div className="flex">
             <div className="p-3 flex-grow">
               <p className="text-shallow mt-0">{t.hello}</p>

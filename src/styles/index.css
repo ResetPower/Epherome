@@ -8,15 +8,29 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 0 !important;
 }
 
 :root {
   --animate-duration: 0.3s;
 }
 
+#root {
+  height: calc(100vh);
+}
+
 .eph-dialog {
   min-width: 500px;
+}
+
+.eph-h-full {
+  height: calc(100vh - 4rem);
+}
+.eph-min-h-full {
+  min-height: calc(100vh - 4rem);
+}
+.eph-max-h-full {
+  max-height: calc(100vh - 4rem);
 }
 
 /* Checkbox Component */

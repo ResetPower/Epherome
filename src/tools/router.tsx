@@ -12,6 +12,7 @@ export interface Route {
 export interface RouterProps {
   routes: Route[];
   history: EphHistory;
+  className?: string;
   onChange?: DefaultFunction;
 }
 
@@ -50,7 +51,13 @@ export class Router extends Component<RouterProps, RouterState> {
         child = comp(loc.params);
       }
     }
-    return <div className={`animate__animated ${this.state.mainClassName}`}>{child}</div>;
+    return (
+      <div
+        className={`animate__animated ${this.state.mainClassName} ${this.props.className ?? ""}`}
+      >
+        {child}
+      </div>
+    );
   }
 }
 

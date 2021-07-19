@@ -55,19 +55,17 @@ try {
 
 export const ephConfigs: EphConfig = initConfig;
 
-// create minecraft download path
+// create directories
 
 export const mcDownloadPath = path.join(
   constraints.dir,
   os.platform() === "win32" ? ".minecraft" : "minecraft"
 );
 
-try {
-  fs.accessSync(mcDownloadPath);
-} catch {
-  // file does not exist
-  fs.mkdirSync(mcDownloadPath);
-}
+export const ephExtensionsPath = path.join(constraints.dir, "extensions");
+
+!fs.existsSync(mcDownloadPath) && fs.mkdirSync(mcDownloadPath);
+!fs.existsSync(ephExtensionsPath) && fs.mkdirSync(ephExtensionsPath);
 
 // write config to disk
 export function saveConfig(): void {

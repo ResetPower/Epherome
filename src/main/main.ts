@@ -9,8 +9,8 @@ const prod = process.env.NODE_ENV === "production";
 function createWindow() {
   if (!prod) {
     installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name) => console.log(`Added Extension:  ${name}`))
-      .catch((err) => console.log("An error occurred: ", err));
+      .then((name) => mainLogger.info(`Added Extension: ${name}`))
+      .catch((err) => mainLogger.error(`An error occurred: ${err}`));
   }
 
   const win = new BrowserWindow({
