@@ -4,8 +4,7 @@ import AccountsPage from "../pages/AccountsPage";
 import ProfilesPage from "../pages/ProfilesPage";
 import SettingsPage from "../pages/SettingsPage";
 import { resolveTitle } from "./titles";
-import ProfileManagementPage from "../pages/ProfileManagementPage";
-import { EmptyObject, StringMap } from "../tools/types";
+import { EmptyObject } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "../components/GlobalOverlay";
 import { Router } from "../tools/router";
@@ -54,7 +53,7 @@ export default class App extends Component<EmptyObject, AppState> {
     return (
       <IconContext.Provider value={{ size: "1.5em" }}>
         <GlobalOverlay />
-        <div className="bg-primary shadow-lg flex py-2 px-3 items-center sticky z-30 top-0 mb-2 eph-dragging-area">
+        <div className="bg-primary shadow-lg flex py-2 px-3 items-center z-30 top-0 h-16 eph-dragging-area">
           <IconButton
             className="text-white eph-non-dragging-area"
             onClick={isAtHome ? unwrapFunction() : hist.goBack}
@@ -77,15 +76,10 @@ export default class App extends Component<EmptyObject, AppState> {
             { path: "/profiles", component: <ProfilesPage /> },
             { path: "/settings", component: <SettingsPage /> },
             { path: "/downloads", component: <DownloadsPage /> },
-            {
-              path: "/profile",
-              component: (params: StringMap): JSX.Element => (
-                <ProfileManagementPage params={params} />
-              ),
-            },
             { path: "/processes", component: <ProcessesPage /> },
             { path: "/extensions", component: <ExtensionsPage /> },
           ]}
+          className="eph-max-h-full"
           onChange={this.updateTitle}
         />
       </IconContext.Provider>

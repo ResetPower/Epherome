@@ -88,7 +88,7 @@ export default defineLanguage({
     downloadNotSupported: "Sorry, it's not supported to download Minecraft client now.",
     maps: "Maps",
     resourcePacks: "Resourcepacks",
-    noAccOrProSelected: "No account or profile selected. Please create one.",
+    noAccOrProSelected: "No account or profile selected.",
     followOs: "Follow OS",
     noAccSelected: "No Account",
     noProSelected: "No Profile",

@@ -11,8 +11,6 @@ export function resolveTitle(path: string): string {
       return t.profiles;
     case "/settings":
       return t.settings;
-    case "/profile":
-      return t.profileManagement;
     case "/downloads":
       return t.downloads;
     case "/processes":

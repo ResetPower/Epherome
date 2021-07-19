@@ -26,7 +26,7 @@
       "name": "Epherome"
     },
     "productName": "Epherome",
-    "copyright": "Copyright (c) ResetPower 2021. All rights reserved.",
+    "copyright": "Copyright (C) 2021 ResetPower.",
     "artifactName": "Epherome-${version}.${ext}",
     "directories": {
       "output": "package"

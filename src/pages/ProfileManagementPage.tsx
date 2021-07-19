@@ -44,7 +44,7 @@ export default class ProfileManagementPage extends Component<
         <Alert severity="error">Sorry. Profile Id Not Found.</Alert>
       </Container>
     ) : (
-      <TabController>
+      <TabController orientation="vertical">
         <TabBar>
           <TabBarItem value={0}>
             <MdMap /> {t.maps}

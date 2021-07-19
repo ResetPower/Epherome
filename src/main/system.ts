@@ -43,6 +43,7 @@ ipcMain.on("quit", () => {
 export const mainLogger = new Logger("Main");
 
 mainLogger.info(`*** Epherome ${version} ***`);
+mainLogger.info(`Epherome  Copyright (C) 2021  ResetPower`);
 mainLogger.info(`Epherome is running on ${process.env.NODE_ENV} mode`);
 mainLogger.info(`Operating System: ${platform} ${arch} ${release}`);
 mainLogger.info(`Epherome directory: '${dir}'`);
