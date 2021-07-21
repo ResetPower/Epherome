@@ -144,7 +144,7 @@ export default function AccountsPage(): JSX.Element {
           {accounts.map((i: MinecraftAccount) => (
             <ListItem
               className="px-6 m-1 rounded-lg"
-              checked={selected === i.id}
+              checked={!creating && selected === i.id}
               onClick={() => {
                 logger.info(`Account selection changed to id ${i.id}`);
                 setConfig(() => (ephConfigs.selectedAccount = i.id));

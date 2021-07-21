@@ -3,6 +3,7 @@ import os from "os";
 import { Logger } from "../tools/logging";
 
 // epherome application constraints
+const versionId = 5;
 const version = "0.1.0"; // major.minor.patch
 export const platform = os.platform(); // operating system name
 const arch = os.arch(); // operating system arch
@@ -11,8 +12,9 @@ const dir = app.getPath("userData"); // config file and application data directo
 const javaHome = process.env["JAVA_HOME"] ?? "java"; // environment variable JAVA_HOME
 
 ipcMain.on("initialize", (ev) => {
-  // Epherome Version, OS Platform, OS Arch, OS Release, Epherome Directory, JAVA_HOME
+  // Epherome Version ID, Epherome Version, OS Platform, OS Arch, OS Release, Epherome Directory, JAVA_HOME
   ev.returnValue = {
+    versionId,
     version,
     platform,
     arch,

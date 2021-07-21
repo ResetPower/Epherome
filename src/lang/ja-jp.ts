@@ -79,7 +79,7 @@ export default defineLanguage({
     release: "リリース",
     snapshot: "スナップショット",
     old: "古い",
-    cannotConnectToHitokoto: "Web はあなたにとって異なる、一言サーバーに接続できません",
+    cannotConnectToInternet: "Web はあなたにとって異なる、インターネットに接続できません",
     hitokotoDescription: "Epherome が提供するランダムなテキスト行をホームページに表示します。",
     msAccNoMinecraft: "Microsoft アカウントに Minecraft がまだありません",
     downloading: "ダウンロード",
@@ -99,5 +99,8 @@ export default defineLanguage({
     processes: "プロセス管理",
     extensions: "拡張",
     minecraftDirPath: "Minecraft ダウンロードフォルダー",
+    checkUpdate: "更新を確認する",
+    youAreUsingTheLatestVersion: "Epheromeは最新バージョンです。",
+    updateAvailable: "新しいバージョン {} が利用可能です。",
   },
 });

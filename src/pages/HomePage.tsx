@@ -65,7 +65,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
       fetchHitokoto().then((hk) => {
         if (hk === null) {
           const hk: Hitokoto = {
-            content: t.cannotConnectToHitokoto,
+            content: t.cannotConnectToInternet,
             from: "",
           };
           HomePage.hitokoto = hk;

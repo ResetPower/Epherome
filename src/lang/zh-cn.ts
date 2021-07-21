@@ -78,7 +78,7 @@ export default defineLanguage({
     release: "正式版",
     snapshot: "快照版",
     old: "远古版",
-    cannotConnectToHitokoto: "Web 因你而不同，无法连接到一言服务器。",
+    cannotConnectToInternet: "Web 因你而不同，无法连接到互联网。",
     hitokotoDescription: "在您的首页显示一条由 Epherome 提供的随机一行文本。",
     msAccNoMinecraft: "您的微软账户尚未拥有 Minecraft",
     downloading: "正在下载",
@@ -96,5 +96,8 @@ export default defineLanguage({
     processes: "进程管理",
     extensions: "扩展",
     minecraftDirPath: "Minecraft 下载文件夹",
+    checkUpdate: "检查更新",
+    youAreUsingTheLatestVersion: "Epherome 已是最新版本。",
+    updateAvailable: "新版本 {} 现在可用。",
   },
 });
