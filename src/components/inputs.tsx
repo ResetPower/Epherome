@@ -111,14 +111,14 @@ export function Radio(props: {
 export function TextField(props: {
   label?: string;
   placeholder?: string;
-  value?: string;
-  onChange?: (text: string) => void;
   icon?: JSX.Element;
   type?: string;
   helperText?: string;
   error?: boolean;
   marginBottom?: boolean;
   trailing?: JSX.Element;
+  value?: string;
+  onChange?: (ev: string) => void;
 }): JSX.Element {
   return (
     <div className={props.marginBottom ? "mb-3" : ""}>
@@ -137,7 +137,7 @@ export function TextField(props: {
           type={props.type}
           value={props.value}
           placeholder={props.placeholder}
-          onChange={(ev) => unwrapFunction(props.onChange)(ev.currentTarget.value)}
+          onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
           className={`${
             props.icon && props.trailing
               ? "rounded-none z-10"

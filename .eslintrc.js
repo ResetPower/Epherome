@@ -5,6 +5,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars-experimental": 1,
+    "@typescript-eslint/no-empty-function": "warn",
     eqeqeq: ["error", "always"],
   },
 };
