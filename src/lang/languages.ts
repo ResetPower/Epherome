@@ -61,7 +61,7 @@ export interface LanguageTranslator {
   release: string;
   snapshot: string;
   old: string;
-  cannotConnectToHitokoto: string;
+  cannotConnectToInternet: string;
   hitokotoDescription: string;
   msAccNoMinecraft: string;
   downloading: string;
@@ -78,6 +78,9 @@ export interface LanguageTranslator {
   refreshHitokoto: string;
   processes: string;
   extensions: string;
+  checkUpdate: string;
+  youAreUsingTheLatestVersion: string;
+  updateAvailable: string;
   progress: {
     auth: string;
     analyze: string;

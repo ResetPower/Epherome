@@ -127,7 +127,7 @@ export default function ProfilesPage(): JSX.Element {
         <List>
           {profiles.map((i: MinecraftProfile) => (
             <ListItem
-              checked={selected === i.id}
+              checked={!creating && selected === i.id}
               onClick={() => {
                 logger.info(`Profile selection changed to id ${i.id}`);
                 setConfig(() => (ephConfigs.selectedProfile = i.id));

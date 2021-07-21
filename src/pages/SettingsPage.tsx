@@ -1,4 +1,4 @@
-import { TextField, Select, Checkbox, Link } from "../components/inputs";
+import { TextField, Select, Checkbox, Link, Button } from "../components/inputs";
 import { cfgPath, constraints, ephConfigs, mcDownloadPath, setConfig } from "../renderer/config";
 import { t, i18n, logger } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
@@ -10,21 +10,36 @@ import App from "../renderer/App";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useState, useCallback } from "react";
 import { useForceUpdater } from "../tools/hooks";
+import { checkEphUpdate } from "../renderer/updater";
+import Spin from "../components/Spin";
 
 export default function SettingsPage(): JSX.Element {
   const forceUpdate = useForceUpdater();
+  const [updateCheckResult, setUpdateCheckResult] = useState("");
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
   const [javaPath, setJavaPath] = useState(ephConfigs.javaPath);
   const cnst = constraints;
-  const changeLanguage = useCallback(
-    (ev: string) => {
-      i18n.changeLanguage(ev);
-      setConfig(() => (ephConfigs.language = ev));
-      forceUpdate();
-      App.updateTitle();
-      logger.info(`Language changed to '${ev}'`);
-    },
-    [forceUpdate]
-  );
+  const loadUpdateCheckResult = useCallback(() => {
+    setCheckingUpdate(true);
+    setUpdateCheckResult("");
+    checkEphUpdate().then((result) => {
+      setCheckingUpdate(false);
+      if (result) {
+        setUpdateCheckResult(
+          result.need ? t.updateAvailable.replace("{}", result.name) : t.youAreUsingTheLatestVersion
+        );
+      } else {
+        setUpdateCheckResult(t.cannotConnectToInternet);
+      }
+    });
+  }, []);
+  const changeLanguage = useCallback((ev: string) => {
+    i18n.changeLanguage(ev);
+    setConfig(() => (ephConfigs.language = ev));
+    setUpdateCheckResult("");
+    App.updateTitle();
+    logger.info(`Language changed to '${ev}'`);
+  }, []);
   const changeTheme = useCallback(
     (ev: string) => {
       setConfig(() => (ephConfigs.theme = ev));
@@ -105,6 +120,7 @@ export default function SettingsPage(): JSX.Element {
             placeholder={t.javaPath}
             value={javaPath}
             icon={<FaJava />}
+            className="w-11/12"
             onChange={(ev) => setJavaPath(ev)}
             trailing={
               <Link type="clickable" onClick={saveJavaPath}>
@@ -123,6 +139,12 @@ export default function SettingsPage(): JSX.Element {
             {t.hitokoto}
           </Checkbox>
           <p className="text-shallow">{t.hitokotoDescription}</p>
+          <div className="flex my-6 items-center space-x-3">
+            <Button variant="contained" onClick={loadUpdateCheckResult} disabled={checkingUpdate}>
+              {t.checkUpdate}
+            </Button>
+            <Typography>{checkingUpdate ? <Spin /> : updateCheckResult}</Typography>
+          </div>
         </div>
 
         <div>
@@ -183,7 +205,7 @@ export default function SettingsPage(): JSX.Element {
                 https://github.com/ResetPower/Epherome
               </Link>
             </Typography>
-            <Typography>Copyright © 2021 ResetPower. All rights reserved.</Typography>
+            <Typography>Copyright © 2021 ResetPower.</Typography>
             <Typography>{t.oss} | GNU General Public License 3.0</Typography>
           </Card>
         </div>

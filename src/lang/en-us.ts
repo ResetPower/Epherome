@@ -78,7 +78,7 @@ export default defineLanguage({
     release: "Release",
     snapshot: "Snapshot",
     old: "Old",
-    cannotConnectToHitokoto: "The web is different for you, cannot connect to the Hitokoto server.",
+    cannotConnectToInternet: "The web is different for you, cannot connect to the Internet.",
     hitokotoDescription: "Display a random line of text provided by Epherome on your homepage.",
     msAccNoMinecraft: "You don’t have Minecraft in your Microsoft account yet",
     downloading: "Downloading",
@@ -96,5 +96,8 @@ export default defineLanguage({
     processes: "Processes",
     extensions: "Extensions",
     minecraftDirPath: "Minecraft Download Folder",
+    checkUpdate: "Check for updates",
+    youAreUsingTheLatestVersion: "Epherome is the latest version.",
+    updateAvailable: "New version {} is available",
   },
 });

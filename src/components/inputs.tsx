@@ -118,10 +118,11 @@ export function TextField(props: {
   marginBottom?: boolean;
   trailing?: JSX.Element;
   value?: string;
+  className?: string;
   onChange?: (ev: string) => void;
 }): JSX.Element {
   return (
-    <div className={props.marginBottom ? "mb-3" : ""}>
+    <div className={`${props.marginBottom ? "mb-3" : ""} ${props.className ?? ""}`}>
       {props.label && (
         <label className="text-gray-600 dark:text-gray-400 leading-7 text-sm font-bold">
           {props.label}
