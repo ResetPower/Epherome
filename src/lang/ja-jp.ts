@@ -102,5 +102,8 @@ export default defineLanguage({
     checkUpdate: "更新を確認する",
     youAreUsingTheLatestVersion: "Epheromeは最新バージョンです。",
     updateAvailable: "新しいバージョン {} が利用可能です。",
+    epheromeUpdate: "Epherome アップデート",
+    pleaseGoToSiteToDownloadLatestVersion:
+      "Epheromeの公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください",
   },
 });

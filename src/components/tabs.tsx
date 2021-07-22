@@ -23,7 +23,7 @@ export function TabController(props: {
   return (
     <TabContext.Provider value={{ value, setValue, orientation: props.orientation }}>
       <div
-        className={`flex eph-min-h-full ${
+        className={`flex ${
           props.orientation === "vertical" ? "flex-row" : "border-l border-divide flex-col"
         } ${props.className ?? ""}`}
       >

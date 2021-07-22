@@ -3,12 +3,11 @@ import HomePage from "../pages/HomePage";
 import AccountsPage from "../pages/AccountsPage";
 import ProfilesPage from "../pages/ProfilesPage";
 import SettingsPage from "../pages/SettingsPage";
-import { resolveTitle } from "./titles";
 import { EmptyObject } from "../tools/types";
 import DownloadsPage from "../pages/DownloadsPage";
 import GlobalOverlay from "../components/GlobalOverlay";
 import { Router } from "../tools/router";
-import { hist } from "./global";
+import { hist, t } from "./global";
 import { updateTheme } from "./theme";
 import { MdArrowBack, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
@@ -23,16 +22,10 @@ export interface AppState {
 }
 
 export default class App extends Component<EmptyObject, AppState> {
-  static updateTitle = initRequiredFunction();
   static updateUI = initRequiredFunction();
 
   state: AppState = {
-    title: resolveTitle(hist.pathname()),
-  };
-  updateTitle = (): void => {
-    this.setState({
-      title: resolveTitle(hist.location.pathname),
-    });
+    title: "",
   };
   quitApp = (): void => {
     ipcRenderer.send("quit");
@@ -45,7 +38,6 @@ export default class App extends Component<EmptyObject, AppState> {
     // and the updateUI is not yet initialized
     updateTheme(false);
     // init static
-    App.updateTitle = this.updateTitle;
     App.updateUI = () => this.setState({});
   }
   render(): JSX.Element {
@@ -63,24 +55,18 @@ export default class App extends Component<EmptyObject, AppState> {
           <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
         </div>
         <Router
+          initial="home"
           history={hist}
           routes={[
-            {
-              path: "/",
-              component: <HomePage />,
-            },
-            {
-              path: "/accounts",
-              component: <AccountsPage />,
-            },
-            { path: "/profiles", component: <ProfilesPage /> },
-            { path: "/settings", component: <SettingsPage /> },
-            { path: "/downloads", component: <DownloadsPage /> },
-            { path: "/processes", component: <ProcessesPage /> },
-            { path: "/extensions", component: <ExtensionsPage /> },
+            { pathname: "home", component: <HomePage />, title: () => t.epherome },
+            { pathname: "accounts", component: <AccountsPage />, title: () => t.accounts },
+            { pathname: "profiles", component: <ProfilesPage />, title: () => t.profiles },
+            { pathname: "settings", component: <SettingsPage />, title: () => t.settings },
+            { pathname: "downloads", component: <DownloadsPage />, title: () => t.downloads },
+            { pathname: "processes", component: <ProcessesPage />, title: () => t.processes },
+            { pathname: "extensions", component: <ExtensionsPage />, title: () => t.extensions },
           ]}
-          className="eph-max-h-full"
-          onChange={this.updateTitle}
+          onChange={(title) => this.setState({ title })}
         />
       </IconContext.Provider>
     );

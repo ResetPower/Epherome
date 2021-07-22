@@ -81,6 +81,8 @@ export interface LanguageTranslator {
   checkUpdate: string;
   youAreUsingTheLatestVersion: string;
   updateAvailable: string;
+  epheromeUpdate: string;
+  pleaseGoToSiteToDownloadLatestVersion: string;
   progress: {
     auth: string;
     analyze: string;

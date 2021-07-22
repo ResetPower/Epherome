@@ -4,7 +4,7 @@ import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
-import { EphHistory } from "../tools/router";
+import { EphHistory } from "../tools/history";
 import { Logger } from "../tools/logging";
 import { defineTheme } from "./theme";
 import colors from "./colors";
@@ -59,4 +59,4 @@ export const hist = new EphHistory(/* animation timeout */ 120);
 
 // response main-process calls
 ipcRenderer.on("nav-back", hist.goBack);
-ipcRenderer.on("nav-home", () => hist.push("/"));
+ipcRenderer.on("nav-home", () => hist.push("home"));

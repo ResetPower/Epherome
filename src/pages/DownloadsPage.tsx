@@ -14,8 +14,7 @@ interface DownloadsPageState {
   release: boolean;
   snapshot: boolean;
   old: boolean;
-  loading: boolean;
-  versions: MinecraftVersion[];
+  versions?: MinecraftVersion[];
 }
 
 export default class DownloadsPage extends Component<EmptyObject, DownloadsPageState> {
@@ -23,8 +22,6 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
     release: true,
     snapshot: false,
     old: false,
-    loading: true,
-    versions: [],
   };
   matchType(type: MinecraftVersionType): boolean {
     return type === "release"
@@ -40,14 +37,14 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
     got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((resp) => {
       const parsed = JSON.parse(resp.body);
       if (parsed.hasOwnProperty("versions")) {
-        this.setState({ versions: parsed.versions, loading: false });
+        this.setState({ versions: parsed.versions });
         logger.info("Fetched Minecraft launcher meta");
       }
     });
   }
   render(): JSX.Element {
     return (
-      <Container>
+      <Container className="p-3">
         <div className="flex space-x-3">
           <Checkbox
             checked={this.state.release}
@@ -68,25 +65,32 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
             {t.old}
           </Checkbox>
         </div>
-        {this.state.loading && <Spin />}
-        <List>
-          {this.state.versions.map((item, index) => {
-            return (
-              this.matchType(item.type) && (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={item.id}
-                    secondary={item.type}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      GlobalOverlay.showDialog((close) => <DownloadDialog onClose={close} />);
-                    }}
-                  />
-                </ListItem>
-              )
-            );
-          })}
-        </List>
+        {this.state.versions ? (
+          <List>
+            {this.state.versions.map(
+              (item, index) =>
+                this.matchType(item.type) && (
+                  <ListItem
+                    className="rounded-lg p-2"
+                    onClick={() =>
+                      GlobalOverlay.showDialog((close) => <DownloadDialog onClose={close} />)
+                    }
+                    key={index}
+                  >
+                    <ListItemText
+                      primary={item.id}
+                      secondary={item.type}
+                      className="cursor-pointer"
+                    />
+                  </ListItem>
+                )
+            )}
+          </List>
+        ) : (
+          <div className="flex justify-center">
+            <Spin />
+          </div>
+        )}
       </Container>
     );
   }

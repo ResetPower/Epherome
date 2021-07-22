@@ -10,14 +10,15 @@ import { logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
-import { List, ListItem, ListItemText } from "../components/lists";
-import { useController, useForceUpdater } from "../tools/hooks";
+import { List, ListItem } from "../components/lists";
+import { useController } from "../tools/hooks";
 import GlobalOverlay from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useCallback } from "react";
 import { useState } from "react";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFunction, EmptyObject } from "../tools/types";
 import Spin from "../components/Spin";
+import { FlexibleComponent } from "../tools/component";
 
 export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.Element {
   const [errAlert, setErrAlert] = useState(false);
@@ -106,93 +107,96 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
   );
 }
 
-export default function AccountsPage(): JSX.Element {
-  const forceUpdate = useForceUpdater();
-  const accounts = ephConfigs.accounts;
-  const selected = ephConfigs.selectedAccount;
-  const [creating, setCreating] = useState(false);
-  const createAccount = useCallback(() => setCreating(true), []);
-  const removeAccount = useCallback(
-    () =>
-      GlobalOverlay.showDialog((close) => (
-        <RemoveAccountDialog updateAccounts={forceUpdate} onClose={close} id={selected} />
-      )),
-    [forceUpdate, selected]
-  );
-  const current = getAccount(selected);
+export interface AccountsPageState {
+  creating: boolean;
+}
 
-  return accounts.length === 0 ? (
-    <div className="flex flex-col eph-h-full justify-center items-center">
-      <Typography className="text-shallow" textInherit>
-        {t.noAccountsYet}
-      </Typography>
-      <Button variant="contained" onClick={createAccount}>
-        <MdCreate />
-        {t.create}
-      </Button>
-    </div>
-  ) : (
-    <div className="flex eph-h-full">
-      <div className="overflow-y-scroll py-3">
-        <div>
-          <Button variant="contained" onClick={createAccount}>
-            <MdCreate />
-            {t.create}
-          </Button>
+export default class AccountsPage extends FlexibleComponent<EmptyObject, AccountsPageState> {
+  state = {
+    creating: false,
+  };
+  handleCreate = (): void => this.setState({ creating: true });
+  handleRemove = (selected: number): void =>
+    GlobalOverlay.showDialog((close) => (
+      <RemoveAccountDialog updateAccounts={this.updateUI} onClose={close} id={selected} />
+    ));
+  render(): JSX.Element {
+    const accounts = ephConfigs.accounts;
+    const selected = ephConfigs.selectedAccount;
+    const current = getAccount(selected);
+
+    /**<div className="flex flex-col eph-h-full justify-center items-center">
+        <Typography className="text-shallow" textInherit>
+          {t.noAccountsYet}
+        </Typography>
+        <Button variant="contained" onClick={this.handleCreate}>
+          <MdCreate />
+          {t.create}
+        </Button>
+      </div> */
+
+    return (
+      <div className="flex eph-h-full">
+        <div className="overflow-y-scroll py-3 w-1/4">
+          <div className="flex p-3">
+            <Button variant="contained" onClick={this.handleCreate}>
+              <MdCreate />
+              {t.create}
+            </Button>
+          </div>
+          <List className="space-y-3">
+            {accounts.map((i: MinecraftAccount) => (
+              <ListItem
+                className="p-3 mx-2 rounded-lg"
+                checked={!this.state.creating && selected === i.id}
+                onClick={() => {
+                  logger.info(`Account selection changed to id ${i.id}`);
+                  setConfig({ selectedAccount: i.id });
+                  this.updateUI();
+                }}
+                key={i.id}
+              >
+                <Typography className="flex space-x-1">{i.name}</Typography>
+              </ListItem>
+            ))}
+          </List>
         </div>
-        <List>
-          {accounts.map((i: MinecraftAccount) => (
-            <ListItem
-              className="px-6 m-1 rounded-lg"
-              checked={!creating && selected === i.id}
-              onClick={() => {
-                logger.info(`Account selection changed to id ${i.id}`);
-                setConfig(() => (ephConfigs.selectedAccount = i.id));
-                forceUpdate();
-              }}
-              key={i.id}
-            >
-              <ListItemText primary={i.name} secondary={t[i.mode]} className="flex-grow" />
-            </ListItem>
-          ))}
-        </List>
+        {this.state.creating ? (
+          <div className="border-l border-divide p-3 w-3/4">
+            <CreateAccountFragment onDone={() => this.setState({ creating: false })} />
+          </div>
+        ) : (
+          <TabController className="flex-grow p-3 w-3/4" orientation="horizontal">
+            <TabBar>
+              <TabBarItem value={0}>{t.general}</TabBarItem>
+              <TabBarItem value={1}>{t.edit}</TabBarItem>
+            </TabBar>
+            <TabBody>
+              <div className="flex flex-col">
+                <div className="flex-grow">
+                  <Typography className="text-shallow" textInherit>
+                    ID: {current?.id}
+                  </Typography>
+                  <Typography>{current?.name}</Typography>
+                  <Typography>{current && t[current.mode]}</Typography>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    className="text-red-500"
+                    onClick={() => this.handleRemove(selected)}
+                    textInherit
+                  >
+                    <MdDelete /> {t.remove}
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Typography>{t.notSupportedYet}</Typography>
+              </div>
+            </TabBody>
+          </TabController>
+        )}
       </div>
-      {creating ? (
-        <div className="border-l border-divide p-3">
-          <CreateAccountFragment
-            onDone={() => {
-              setCreating(false);
-              forceUpdate();
-            }}
-          />
-        </div>
-      ) : (
-        <TabController className="flex-grow p-3" orientation="horizontal">
-          <TabBar>
-            <TabBarItem value={0}>{t.general}</TabBarItem>
-            <TabBarItem value={1}>{t.edit}</TabBarItem>
-          </TabBar>
-          <TabBody>
-            <div className="flex flex-col">
-              <div className="flex-grow">
-                <Typography className="text-shallow" textInherit>
-                  ID: {current?.id}
-                </Typography>
-                <Typography>{current?.name}</Typography>
-                <Typography>{current && t[current.mode]}</Typography>
-              </div>
-              <div className="flex justify-end">
-                <Button className="text-red-500" onClick={removeAccount} textInherit>
-                  <MdDelete /> {t.remove}
-                </Button>
-              </div>
-            </div>
-            <div>
-              <Typography>{t.notSupportedYet}</Typography>
-            </div>
-          </TabBody>
-        </TabController>
-      )}
-    </div>
-  );
+    );
+  }
 }

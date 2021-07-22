@@ -1,15 +1,15 @@
-import { Select, Button, IconButton } from "../components/inputs";
-import { Component } from "react";
+import { Select, Button, IconButton, TextField } from "../components/inputs";
+import { Component, useCallback } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../struct/accounts";
 import { getProfile, MinecraftProfile } from "../struct/profiles";
 import { t } from "../renderer/global";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
-import { EmptyObject } from "../tools/types";
+import { DefaultFunction, EmptyObject } from "../tools/types";
 import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
 import { Card, Typography, Container } from "../components/layouts";
-import { AlertDialog } from "../components/Dialog";
+import Dialog, { AlertDialog } from "../components/Dialog";
 import {
   MdAccountCircle,
   MdApps,
@@ -20,7 +20,41 @@ import {
   MdViewCarousel,
 } from "react-icons/md";
 import GlobalOverlay from "../components/GlobalOverlay";
-import { ErrorDialog, RequestPasswordDialog } from "../components/Dialogs";
+import { ErrorDialog } from "../components/Dialogs";
+import { useController } from "../tools/hooks";
+
+export function RequestPasswordDialog(props: {
+  again: boolean;
+  onClose: DefaultFunction;
+  callback: (password: string) => void;
+}): JSX.Element {
+  const passwordController = useController("");
+  const handler = useCallback(() => {
+    props.onClose();
+    props.callback(passwordController.value);
+  }, [passwordController, props]);
+
+  return (
+    <Dialog indentBottom>
+      <Typography className="text-xl font-semibold">{t.pleaseInputPassword}</Typography>
+      <div>
+        <TextField
+          {...passwordController}
+          label={t.password}
+          type="password"
+          helperText={props.again ? t.passwordWrong : ""}
+          error={props.again}
+        />
+      </div>
+      <div className="flex justify-end">
+        <Button className="text-shallow" onClick={props.onClose} textInherit>
+          {t.cancel}
+        </Button>
+        <Button onClick={handler}>{t.ok}</Button>
+      </div>
+    </Dialog>
+  );
+}
 
 export interface HomePageState {
   details: MinecraftLaunchDetail[];
@@ -149,19 +183,19 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               )}
             </div>
             <div>
-              <IconButton onClick={() => hist.push("/processes")}>
+              <IconButton onClick={() => hist.push("processes")}>
                 <MdViewCarousel />
               </IconButton>
-              <IconButton onClick={() => hist.push("/extensions")}>
+              <IconButton onClick={() => hist.push("extensions")}>
                 <MdApps />
               </IconButton>
             </div>
           </div>
           <div className="flex">
-            <Button onClick={() => hist.push("/accounts")}>
+            <Button onClick={() => hist.push("accounts")}>
               <MdAccountCircle /> {t.accounts}
             </Button>
-            <Button onClick={() => hist.push("/profiles")}>
+            <Button onClick={() => hist.push("profiles")}>
               <MdGamepad /> {t.profiles}
             </Button>
             <div className="flex-grow" />
@@ -170,7 +204,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
                 <MdRefresh />
               </IconButton>
             )}
-            <IconButton onClick={() => hist.push("/settings")}>
+            <IconButton onClick={() => hist.push("settings")}>
               <MdSettings />
             </IconButton>
           </div>

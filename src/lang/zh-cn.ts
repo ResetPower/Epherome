@@ -99,5 +99,7 @@ export default defineLanguage({
     checkUpdate: "检查更新",
     youAreUsingTheLatestVersion: "Epherome 已是最新版本。",
     updateAvailable: "新版本 {} 现在可用。",
+    epheromeUpdate: "Epherome 更新",
+    pleaseGoToSiteToDownloadLatestVersion: "请前往 Epherome 官方网站下载最新版本",
   },
 });

@@ -1,6 +1,5 @@
 import { shell } from "electron";
 import { ReactNode } from "react";
-import { MdRadioButtonChecked, MdRadioButtonUnchecked } from "react-icons/md";
 import { unwrapFunction } from "../tools";
 import { DefaultFunction } from "../tools/types";
 import { Typography } from "./layouts";
@@ -22,7 +21,7 @@ export function Button(props: {
           props.variant === "contained"
             ? `text-white ${
                 props.disabled
-                  ? "bg-gray-700 text-gray-200"
+                  ? "bg-blue-800 dark:bg-gray-700 text-gray-200"
                   : "transition-colors duration-200 transform bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
               }` // eph-btn-contained
             : `bg-gray-500 bg-opacity-0 ${
@@ -31,7 +30,7 @@ export function Button(props: {
                   : "transition-colors duration-200 transform hover:bg-opacity-5 active:bg-opacity-10"
               } ${props.textInherit ? "" : "text-black dark:text-white"}` // eph-btn-text
         }
-        ${props.disabled ? "cursor-not-allowed text-gray-500 dark:text-gray-500" : ""}
+        ${props.disabled ? "cursor-not-allowed text-shallow" : ""}
         ${props.className}`}
       onClick={props.onClick}
     >
@@ -85,26 +84,12 @@ export function Select(props: {
         onChange={(ev) => {
           props.onChange(ev.currentTarget.value);
         }}
-        className={`block py-2 px-3 bg-card text-black dark:text-white border border-divide rounded-lg shadow-sm focus:outline-none ${props.className}`}
+        className={`block py-2 px-3 bg-card text-black dark:text-white rounded-lg border border-divide shadow-sm focus:outline-none ${props.className}`}
         disabled={props.disabled}
       >
         {props.children}
       </select>
     </div>
-  );
-}
-
-export function Radio(props: {
-  checked: boolean;
-  className?: string;
-  onChange?: (value: boolean) => void;
-}): JSX.Element {
-  const className = `select-none text-secondary cursor-pointer bg-opacity-20 transition-colors duration-200 transform hover:bg-yellow-100 dark:hover:bg-yellow-900 active:bg-yellow-200 dark:active:bg-yellow-800 rounded-full p-1 ${props.className}`;
-  const onClick = () => unwrapFunction(props.onChange)(!props.checked);
-  return props.checked ? (
-    <MdRadioButtonChecked className={className} onClick={onClick} size="2rem" />
-  ) : (
-    <MdRadioButtonUnchecked className={className} onClick={onClick} size="2rem" />
   );
 }
 
@@ -175,19 +160,12 @@ export function Checkbox(props: {
 }): JSX.Element {
   return (
     <div className="flex items-center">
-      <div className="bg-card border rounded border-divide w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+      <div className="bg-card border rounded-md border-divide w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
         <input
           type="checkbox"
           className="opacity-0 absolute"
           checked={props.checked}
-          onChange={(ev) =>
-            (
-              props.onChange ??
-              (() => {
-                /**/
-              })
-            )(ev.currentTarget.checked)
-          }
+          onChange={(ev) => unwrapFunction(props.onChange)(ev.currentTarget.checked)}
         />
         <svg
           className={`fill-current w-3 h-3 text-blue-500 pointer-events-none ${

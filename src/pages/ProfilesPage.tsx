@@ -5,14 +5,13 @@ import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdFileDownload, MdFolder } from "react-icons/md";
-import { List, ListItem, ListItemText } from "../components/lists";
-import { useController, useForceUpdater } from "../tools/hooks";
+import { List, ListItem } from "../components/lists";
+import { useController } from "../tools/hooks";
 import GlobalOverlay from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
-import { useCallback, useState } from "react";
 import { ipcRenderer } from "electron";
-import { DefaultFunction } from "../tools/types";
-import { useEffect } from "react";
+import { DefaultFunction, EmptyObject } from "../tools/types";
+import { FlexibleComponent } from "../tools/component";
 import fs from "fs";
 import path from "path";
 
@@ -71,141 +70,141 @@ export function ChangeProfileFragment(props: {
   );
 }
 
-export default function ProfilesPage(): JSX.Element {
-  const forceUpdate = useForceUpdater();
-  const profiles = ephConfigs.profiles;
-  const selected = ephConfigs.selectedProfile;
-  const [mapsList, setMapsList] = useState<string[]>([]);
-  const [resourcePacksList, setResourcePacksList] = useState<string[]>([]);
-  const [creating, setCreating] = useState(false);
-  const createProfile = () => setCreating(true);
-  const removeProfile = useCallback(
-    () =>
-      GlobalOverlay.showDialog((close) => (
-        <RemoveProfileDialog onClose={close} updateProfiles={forceUpdate} id={selected} />
-      )),
-    [forceUpdate, selected]
-  );
-  const current = getProfile(selected);
+export interface ProfilesPageState {
+  creating: boolean;
+}
 
-  useEffect(() => {
+export default class ProfilesPage extends FlexibleComponent<EmptyObject, ProfilesPageState> {
+  state = {
+    creating: false,
+  };
+  handleCreate = (): void => this.setState({ creating: true });
+  handleRemove = (selected: number): void =>
+    GlobalOverlay.showDialog((close) => (
+      <RemoveProfileDialog onClose={close} updateProfiles={this.updateUI} id={selected} />
+    ));
+  render(): JSX.Element {
+    const profiles = ephConfigs.profiles;
+    const selected = ephConfigs.selectedProfile;
+    const current = getProfile(selected);
+    let mapsList: string[] = [];
+    let resourcePacksList: string[] = [];
+
     if (current) {
-      fs.readdir(path.join(current.dir, "saves"), (err, files) => {
-        if (!err) {
-          setMapsList(files);
-        }
-      });
-      fs.readdir(path.join(current.dir, "resourcepacks"), (err, files) => {
-        if (!err) {
-          setResourcePacksList(files);
-        }
-      });
+      try {
+        mapsList = fs.readdirSync(path.join(current.dir, "saves"));
+        resourcePacksList = fs.readdirSync(path.join(current.dir, "resourcepacks"));
+      } catch {}
     }
-  }, [current]);
 
-  return profiles.length === 0 ? (
-    <div className="flex flex-col eph-h-full justify-center items-center">
-      <Typography className="text-shallow" textInherit>
-        {t.noAccountsYet}
-      </Typography>
-      <Button variant="contained" onClick={createProfile}>
-        <MdCreate />
-        {t.create}
-      </Button>
-    </div>
-  ) : (
-    <div className="flex eph-h-full">
-      <div className="overflow-y-scroll py-3">
-        <div className="flex space-x-3 my-3">
-          <Button variant="contained" onClick={createProfile}>
-            <MdCreate /> {t.create}
-          </Button>
-          <Button variant="contained" onClick={() => hist.push("/downloads")}>
-            <MdFileDownload /> {t.download}
-          </Button>
-        </div>
-        <List>
-          {profiles.map((i: MinecraftProfile) => (
-            <ListItem
-              checked={!creating && selected === i.id}
-              onClick={() => {
-                logger.info(`Profile selection changed to id ${i.id}`);
-                setConfig(() => (ephConfigs.selectedProfile = i.id));
-                forceUpdate();
-              }}
-              key={i.id}
-            >
-              <ListItemText primary={i.name} secondary={i.dir} className="flex-grow" />
-            </ListItem>
-          ))}
-        </List>
+    return profiles.length === 0 ? (
+      <div className="flex flex-col eph-h-full justify-center items-center">
+        <Typography className="text-shallow" textInherit>
+          {t.noAccountsYet}
+        </Typography>
+        <Button variant="contained" onClick={this.handleCreate}>
+          <MdCreate />
+          {t.create}
+        </Button>
       </div>
-      {creating ? (
-        <div className="border-l border-divide p-3">
-          <ChangeProfileFragment
-            action="create"
-            onDone={() => {
-              setCreating(false);
-              forceUpdate();
-            }}
-          />
+    ) : (
+      <div className="flex eph-h-full">
+        <div className="overflow-y-scroll py-3 w-1/4">
+          <div className="flex space-x-3 my-3">
+            <Button variant="contained" onClick={this.handleCreate}>
+              <MdCreate /> {t.create}
+            </Button>
+            <Button variant="contained" onClick={() => hist.push("downloads")}>
+              <MdFileDownload /> {t.download}
+            </Button>
+          </div>
+          <List className="space-y-1">
+            {profiles.map((i: MinecraftProfile) => (
+              <ListItem
+                className="p-3 mx-2 rounded-lg"
+                checked={!this.state.creating && selected === i.id}
+                onClick={() => {
+                  logger.info(`Profile selection changed to id ${i.id}`);
+                  setConfig({ selectedProfile: i.id });
+                  this.updateUI();
+                }}
+                key={i.id}
+              >
+                <Typography>{i.name}</Typography>
+              </ListItem>
+            ))}
+          </List>
         </div>
-      ) : (
-        <TabController className="flex-grow p-3" orientation="horizontal">
-          <TabBar>
-            <TabBarItem value={0}>{t.general}</TabBarItem>
-            <TabBarItem value={1}>{t.edit}</TabBarItem>
-            <TabBarItem value={2}>{t.maps}</TabBarItem>
-            <TabBarItem value={3}>{t.resourcePacks}</TabBarItem>
-          </TabBar>
-          <TabBody>
-            <div className="flex flex-col">
-              <div className="flex-grow">
-                <Typography>ID: {current?.id}</Typography>
-                <Typography>
-                  {t.name}: {current?.name}
-                </Typography>
-                <Typography>
-                  {t.directory}: {current?.dir}
-                </Typography>
-                <Typography>
-                  {t.version}: {current?.ver}
-                </Typography>
+        {this.state.creating ? (
+          <div className="border-l border-divide p-3 w-3/4">
+            <ChangeProfileFragment
+              action="create"
+              onDone={() => {
+                this.setState({ creating: false });
+              }}
+            />
+          </div>
+        ) : (
+          <TabController className="flex-grow p-3 w-3/4" orientation="horizontal">
+            <TabBar>
+              <TabBarItem value={0}>{t.general}</TabBarItem>
+              <TabBarItem value={1}>{t.edit}</TabBarItem>
+              <TabBarItem value={2}>{t.maps}</TabBarItem>
+              <TabBarItem value={3}>{t.resourcePacks}</TabBarItem>
+            </TabBar>
+            <TabBody>
+              <div className="flex flex-col">
+                <div className="flex-grow">
+                  <Typography>ID: {current?.id}</Typography>
+                  <Typography>
+                    {t.name}: {current?.name}
+                  </Typography>
+                  <Typography>
+                    {t.directory}: {current?.dir}
+                  </Typography>
+                  <Typography>
+                    {t.version}: {current?.ver}
+                  </Typography>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    className="text-red-500"
+                    onClick={() => this.handleRemove(selected)}
+                    textInherit
+                  >
+                    {t.remove}
+                  </Button>
+                </div>
               </div>
-              <div className="flex justify-end">
-                <Button className="text-red-500" onClick={removeProfile} textInherit>
-                  {t.remove}
-                </Button>
+              <div>
+                {current && (
+                  <ChangeProfileFragment action="edit" onDone={this.updateUI} current={current} />
+                )}
               </div>
-            </div>
-            <div>
-              {current && (
-                <ChangeProfileFragment action="edit" onDone={forceUpdate} current={current} />
-              )}
-            </div>
-            <div>
-              {mapsList.map(
-                (m, index) =>
-                  m !== ".DS_Store" && (
-                    /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
-                      {m}
-                    </Typography>
-                  )
-              )}
-            </div>
-            <div>
-              {resourcePacksList.map(
-                (m, index) =>
-                  m !== ".DS_Store" && (
-                    /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
-                      {m}
-                    </Typography>
-                  )
-              )}
-            </div>
-          </TabBody>
-        </TabController>
-      )}
-    </div>
-  );
+              <div>
+                {mapsList.map(
+                  (m, index) =>
+                    m !== ".DS_Store" && (
+                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                        {m}
+                      </Typography>
+                    )
+                )}
+              </div>
+              <div>
+                {resourcePacksList.map(
+                  (m, index) =>
+                    m !== ".DS_Store" && (
+                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                        {m}
+                      </Typography>
+                    )
+                )}
+              </div>
+            </TabBody>
+          </TabController>
+        )}
+      </div>
+    );
+  }
 }

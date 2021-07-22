@@ -1,4 +1,4 @@
-import { StringMap } from "./types";
+import { Accessible, StringMap } from "./types";
 
 // get element in array by id
 export function getById<T extends WithId>(arr: T[], id: number): T | null {
@@ -44,7 +44,9 @@ const emptyFunction = () => {
   /**/
 };
 
-export function unwrapFunction<P>(fn?: (...args: P[]) => void): (...args: P[]) => void {
+export function unwrapFunction<P extends unknown[] = []>(
+  fn?: (...args: P) => void
+): (...args: P) => void {
   return fn ?? emptyFunction;
 }
 
@@ -70,4 +72,15 @@ export function obj2form(data: StringMap): string {
   }
   const urlEncodedData = urlEncodedDataPairs.join("&").replace(/%20/g, "+");
   return urlEncodedData;
+}
+
+export function unwrapAccessible<T, P extends unknown[] = []>(
+  accessible: Accessible<T, P>,
+  ...args: P
+): T {
+  if (accessible instanceof Function) {
+    return accessible(...args);
+  } else {
+    return accessible;
+  }
 }

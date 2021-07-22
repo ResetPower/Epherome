@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("anime.css");
+
 body {
   background: var(--eph-background-color);
 }
@@ -20,7 +22,7 @@ body {
 }
 
 .eph-dialog {
-  min-width: 500px;
+  width: 500px;
 }
 
 .eph-h-full {
