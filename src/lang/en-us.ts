@@ -99,5 +99,8 @@ export default defineLanguage({
     checkUpdate: "Check for updates",
     youAreUsingTheLatestVersion: "Epherome is the latest version.",
     updateAvailable: "New version {} is available",
+    epheromeUpdate: "Epherome Update",
+    pleaseGoToSiteToDownloadLatestVersion:
+      "Please go to Epherome official website to download the latest version",
   },
 });

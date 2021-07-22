@@ -10,9 +10,7 @@ export default function Dialog(props: {
 }): JSX.Element {
   return (
     <div
-      className={`p-6 w-full shadow-xl rounded-lg bg-card animate__animated animate__zoomIn eph-dialog ${
-        props.indentBottom ? "pb-4" : ""
-      }`}
+      className={`shadow-xl rounded-xl bg-card eph-dialog p-6 ${props.indentBottom ? "pb-4" : ""}`}
     >
       {props.children}
     </div>

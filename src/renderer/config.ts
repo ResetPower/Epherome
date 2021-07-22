@@ -73,7 +73,11 @@ export function saveConfig(): void {
 }
 
 // change config and save
-export function setConfig(cb: DefaultFunction, save = true): void {
-  cb();
+export function setConfig(cb: DefaultFunction | Partial<EphConfig>, save = true): void {
+  if (cb instanceof Function) {
+    cb();
+  } else {
+    Object.assign(ephConfigs, cb);
+  }
   save && saveConfig();
 }

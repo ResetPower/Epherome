@@ -4,12 +4,20 @@ export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 export type LogMessage = string | string[];
 
+export class LoggerService {
+  static logs: string[] = [];
+  static append(log: string): void {
+    this.logs.push(log);
+  }
+}
+
 export class Logger {
   scope: string;
   constructor(scope: string) {
     this.scope = scope;
   }
   private outputText = (chunk: string): void => {
+    LoggerService.append(chunk);
     process.stdout.write(`${chunk}\n`);
   };
   private makeTime = (): string => {

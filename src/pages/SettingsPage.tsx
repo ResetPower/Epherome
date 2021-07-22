@@ -1,17 +1,18 @@
 import { TextField, Select, Checkbox, Link, Button } from "../components/inputs";
 import { cfgPath, constraints, ephConfigs, mcDownloadPath, setConfig } from "../renderer/config";
-import { t, i18n, logger } from "../renderer/global";
+import { t, i18n, logger, hist } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
 import { MdInfo, MdPalette, MdTune } from "react-icons/md";
 import { FaJava } from "react-icons/fa";
 import { updateTheme } from "../renderer/theme";
-import App from "../renderer/App";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useState, useCallback } from "react";
 import { useForceUpdater } from "../tools/hooks";
 import { checkEphUpdate } from "../renderer/updater";
 import Spin from "../components/Spin";
+import GlobalOverlay from "../components/GlobalOverlay";
+import { UpdateAvailableDialog } from "../components/Dialogs";
 
 export default function SettingsPage(): JSX.Element {
   const forceUpdate = useForceUpdater();
@@ -25,21 +26,30 @@ export default function SettingsPage(): JSX.Element {
     checkEphUpdate().then((result) => {
       setCheckingUpdate(false);
       if (result) {
-        setUpdateCheckResult(
-          result.need ? t.updateAvailable.replace("{}", result.name) : t.youAreUsingTheLatestVersion
-        );
+        if (result.need) {
+          setUpdateCheckResult(t.updateAvailable.replace("{}", result.name));
+          GlobalOverlay.showDialog((close) => (
+            <UpdateAvailableDialog version={result.name} onClose={close} />
+          ));
+        } else {
+          setUpdateCheckResult(t.youAreUsingTheLatestVersion);
+        }
       } else {
         setUpdateCheckResult(t.cannotConnectToInternet);
       }
     });
   }, []);
-  const changeLanguage = useCallback((ev: string) => {
-    i18n.changeLanguage(ev);
-    setConfig(() => (ephConfigs.language = ev));
-    setUpdateCheckResult("");
-    App.updateTitle();
-    logger.info(`Language changed to '${ev}'`);
-  }, []);
+  const changeLanguage = useCallback(
+    (ev: string) => {
+      i18n.changeLanguage(ev);
+      setConfig(() => (ephConfigs.language = ev));
+      hist.dispatch();
+      setUpdateCheckResult("");
+      forceUpdate();
+      logger.info(`Language changed to '${ev}'`);
+    },
+    [forceUpdate]
+  );
   const changeTheme = useCallback(
     (ev: string) => {
       setConfig(() => (ephConfigs.theme = ev));

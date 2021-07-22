@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { DefaultFunction, EmptyObject } from "../tools/types";
 import { throwNotInitError } from "../tools";
+import { createRef } from "react";
 
 export interface GlobalOverlayState {
   show: boolean;
@@ -10,6 +11,7 @@ export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayS
   state: GlobalOverlayState = {
     show: false,
   };
+  dialog = createRef<HTMLDivElement>();
   stack: JSX.Element[] = [];
   static showDialog: (render: (close: DefaultFunction) => JSX.Element) => void = (): void =>
     throwNotInitError();
@@ -34,8 +36,18 @@ export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayS
     ): DefaultFunction => {
       const index = this.stack.length;
       const onClose = () => {
-        this.stack.splice(index, 1);
-        this.updateOverlay();
+        const act = () => {
+          this.stack.splice(index, 1);
+          this.updateOverlay();
+        };
+        if (this.dialog.current) {
+          const current = this.dialog.current;
+          current.classList.remove("anime-zoom-in");
+          current.classList.add("anime-zoom-out");
+          setTimeout(act, 200);
+        } else {
+          act();
+        }
       };
       const component = render(onClose);
       this.stack[index] = component;
@@ -51,15 +63,13 @@ export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayS
           this.state.show ? "" : "hidden"
         }`}
       >
-        {this.stack.map((comp, index) => (
-          <div
-            className="justify-center mx-auto my-auto"
-            hidden={this.shouldOverlayHide(index)}
-            key={index}
-          >
-            {comp}
-          </div>
-        ))}
+        {this.stack.map((comp, index) => {
+          return !this.shouldOverlayHide(index) ? (
+            <div ref={this.dialog} className="anime-zoom-in mx-auto my-auto" key={index}>
+              {comp}
+            </div>
+          ) : null;
+        })}
       </div>
     );
   }

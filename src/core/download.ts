@@ -3,6 +3,7 @@ import got from "got";
 import path from "path";
 import { pipeline } from "stream";
 import { promisify } from "util";
+import { coreLogger } from ".";
 
 const pipelineAsync = promisify(pipeline);
 
@@ -30,7 +31,7 @@ export async function downloadFile(url: string, target: string, recursive = fals
   try {
     await pipelineAsync(got.stream(url), fs.createWriteStream(target));
   } catch (e) {
-    console.log("Unable to download: " + url);
+    coreLogger.warn("Unable to download: " + url);
     throw new Error(`Unable to download file at ${url} \n Caused by: ${e.message}`);
   }
 }
