@@ -4,7 +4,7 @@ import { createProfile, editProfile, getProfile, MinecraftProfile } from "../str
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
-import { MdCreate, MdFileDownload, MdFolder } from "react-icons/md";
+import { MdCreate, MdDelete, MdFileDownload, MdFolder } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { useController } from "../tools/hooks";
 import GlobalOverlay from "../components/GlobalOverlay";
@@ -97,20 +97,10 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
       } catch {}
     }
 
-    return profiles.length === 0 ? (
-      <div className="flex flex-col eph-h-full justify-center items-center">
-        <Typography className="text-shallow" textInherit>
-          {t.noAccountsYet}
-        </Typography>
-        <Button variant="contained" onClick={this.handleCreate}>
-          <MdCreate />
-          {t.create}
-        </Button>
-      </div>
-    ) : (
+    return (
       <div className="flex eph-h-full">
         <div className="overflow-y-scroll py-3 w-1/4">
-          <div className="flex space-x-3 my-3">
+          <div className="flex my-3 justify-center">
             <Button variant="contained" onClick={this.handleCreate}>
               <MdCreate /> {t.create}
             </Button>
@@ -151,11 +141,14 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
               <TabBarItem value={1}>{t.edit}</TabBarItem>
               <TabBarItem value={2}>{t.maps}</TabBarItem>
               <TabBarItem value={3}>{t.resourcePacks}</TabBarItem>
+              <TabBarItem value={4}>Mods</TabBarItem>
             </TabBar>
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
-                  <Typography>ID: {current?.id}</Typography>
+                  <Typography className="text-shallow" textInherit>
+                    ID: {current?.id}
+                  </Typography>
                   <Typography>
                     {t.name}: {current?.name}
                   </Typography>
@@ -172,6 +165,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                     onClick={() => this.handleRemove(selected)}
                     textInherit
                   >
+                    <MdDelete />
                     {t.remove}
                   </Button>
                 </div>
@@ -200,6 +194,9 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                       </Typography>
                     )
                 )}
+              </div>
+              <div>
+                <Typography>{t.notSupportedYet}</Typography>
               </div>
             </TabBody>
           </TabController>

@@ -68,7 +68,7 @@ export function mergeClientJson(parsed: ClientJson, inherit: ClientJson): Client
 export interface ClientJson {
   arguments?: {
     game: ClientJsonArguments;
-    jvm: ClientJsonArguments;
+    jvm?: ClientJsonArguments;
   };
   inheritsFrom?: string;
   minecraftArguments?: string;

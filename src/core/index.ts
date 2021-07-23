@@ -203,7 +203,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   };
 
   // jvm arguments
-  if (parsed.arguments) {
+  if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {
     if (osName === "darwin") {
@@ -234,6 +234,6 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     showJava16RequiredDialog();
   } else {
     // start minecraft process
-    runMinecraft(java, buff, dir, options.onDone);
+    runMinecraft(java, buff, dir, options.onDone, options.profile);
   }
 }

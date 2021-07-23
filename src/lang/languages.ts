@@ -83,6 +83,7 @@ export interface LanguageTranslator {
   updateAvailable: string;
   epheromeUpdate: string;
   pleaseGoToSiteToDownloadLatestVersion: string;
+  noMinecraftProcesses: string;
   progress: {
     auth: string;
     analyze: string;

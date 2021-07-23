@@ -26,7 +26,11 @@ export function AlertDialog(props: {
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">{props.title}</Typography>
-      {props.pre ? <pre>{props.message}</pre> : <Typography>{props.message}</Typography>}
+      {props.pre ? (
+        <pre className="text-black dark:text-white whitespace-pre-line">{props.message}</pre>
+      ) : (
+        <Typography>{props.message}</Typography>
+      )}
       <div className="flex justify-end">
         <Button className="text-secondary" onClick={props.close} textInherit>
           {t.ok}
