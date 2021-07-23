@@ -4,7 +4,7 @@ import { createProfile, editProfile, getProfile, MinecraftProfile } from "../str
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
-import { MdCreate, MdDelete, MdFileDownload, MdFolder } from "react-icons/md";
+import { MdCreate, MdDelete, MdFileDownload, MdFolder, MdGamepad } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { useController } from "../tools/hooks";
 import GlobalOverlay from "../components/GlobalOverlay";
@@ -32,7 +32,7 @@ export function ChangeProfileFragment(props: {
     }
   };
   const handleCreate = () => {
-    if (createProfile(nameController.value, dirController.value, verController.value)) {
+    if (createProfile(nameController.value, dirController.value, verController.value, "create")) {
       props.onDone();
     }
   };
@@ -57,11 +57,13 @@ export function ChangeProfileFragment(props: {
           <MdFolder /> {t.openDirectory}
         </Button>
         <div className="flex-grow"></div>
-        <Button className="text-shallow" onClick={props.onDone}>
-          {t.cancel}
-        </Button>
         {props.action === "create" ? (
-          <Button onClick={handleCreate}>{t.create}</Button>
+          <>
+            <Button className="text-shallow" onClick={props.onDone}>
+              {t.cancel}
+            </Button>
+            <Button onClick={handleCreate}>{t.create}</Button>
+          </>
         ) : (
           <Button onClick={handleEdit}>{t.edit}</Button>
         )}
@@ -120,6 +122,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                 }}
                 key={i.id}
               >
+                {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}
                 <Typography>{i.name}</Typography>
               </ListItem>
             ))}

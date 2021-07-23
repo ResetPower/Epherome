@@ -3,6 +3,7 @@ import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
 import { t } from "../renderer/global";
 import { ProcessesService } from "../struct/processes";
+import { LoggerService } from "../tools/logging";
 
 export default function ProcessesPage(): JSX.Element {
   const minecraftProcesses = ProcessesService.processes;
@@ -30,7 +31,7 @@ export default function ProcessesPage(): JSX.Element {
         ) : (
           minecraftProcesses.map((value, index) => (
             <ListItem
-              className="rounded-lg m-1 p-1"
+              className="rounded-lg m-3 p-3"
               checked={selected === index}
               onClick={() => setSelected(index)}
               key={index}
@@ -40,9 +41,11 @@ export default function ProcessesPage(): JSX.Element {
           ))
         )}
       </div>
-      <div className="w-3/4 border-l border-divide overflow-y-scroll">
-        {current && (
-          <pre className="whitespace-pre-line">{current.outputs.map((value) => value)}</pre>
+      <div className="w-3/4 border-l border-divide overflow-y-scroll p-3">
+        {current ? (
+          <div>{current.outputs.join("")}</div>
+        ) : (
+          <div>{LoggerService.logs.join("\n")}</div>
         )}
       </div>
     </div>
