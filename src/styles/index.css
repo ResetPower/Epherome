@@ -22,7 +22,7 @@ body {
 }
 
 .eph-dialog {
-  width: 500px;
+  min-width: 500px;
 }
 
 .eph-h-full {

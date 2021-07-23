@@ -102,5 +102,6 @@ export default defineLanguage({
     epheromeUpdate: "Epherome Update",
     pleaseGoToSiteToDownloadLatestVersion:
       "Please go to Epherome official website to download the latest version",
+    noMinecraftProcesses: "No Minecraft Processes",
   },
 });
