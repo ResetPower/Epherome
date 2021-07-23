@@ -1,20 +1,78 @@
 import { Component } from "react";
-import { EmptyObject } from "../tools/types";
-import { Checkbox } from "../components/inputs";
+import { DefaultFunction, EmptyObject } from "../tools/types";
+import { Button, Checkbox } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { logger, t } from "../renderer/global";
 import Spin from "../components/Spin";
-import { DownloadDialog } from "../components/Dialogs";
 import got from "got";
-import { Container } from "../components/layouts";
+import { Container, Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
 import GlobalOverlay from "../components/GlobalOverlay";
+import Dialog from "../components/Dialog";
+import { useCallback } from "react";
+import { useState } from "react";
+import { downloadFile } from "../core/download";
+import { mcDownloadPath } from "../renderer/config";
+import path from "path";
+import fs from "fs";
+import { ClientJson } from "../core/struct";
+import { unwrapFunction } from "../tools";
+import { createProfile } from "../struct/profiles";
 
 interface DownloadsPageState {
   release: boolean;
   snapshot: boolean;
   old: boolean;
   versions?: MinecraftVersion[];
+}
+
+export function DownloadDialog(props: {
+  version: MinecraftVersion;
+  onClose: DefaultFunction;
+}): JSX.Element {
+  const [step, setStep] = useState<string | null>(null);
+  const startDownload = useCallback(async () => {
+    setStep("Downloading JSON...");
+    const jsonPath = path.join(
+      mcDownloadPath,
+      "versions",
+      props.version.id,
+      `${props.version.id}.json`
+    );
+    await downloadFile(props.version.url, jsonPath, true);
+
+    setStep("Downloading JAR...");
+    const jarPath = path.join(
+      mcDownloadPath,
+      "versions",
+      props.version.id,
+      `${props.version.id}.jar`
+    );
+    const parsed: ClientJson = JSON.parse(fs.readFileSync(jsonPath).toString());
+    await downloadFile(parsed.downloads.client.url, jarPath, true);
+
+    // props.onClose is sure to be non-null and we don't need to call unwrapFunction here
+    // but eslint-plugin-react-hooks doesn't think so
+    unwrapFunction(props.onClose)();
+
+    createProfile(`Minecraft ${props.version.id}`, mcDownloadPath, props.version.id, "download");
+  }, [props.version, props.onClose]);
+
+  return (
+    <Dialog indentBottom>
+      <Typography className="font-semibold text-xl">
+        {t.download} Minecraft {props.version.id}
+      </Typography>
+      <div>
+        <Typography>{step}</Typography>
+      </div>
+      <div className="flex">
+        {step === null && <Button onClick={startDownload}>{t.download}</Button>}
+        <div className="flex-grow"></div>
+        <Button onClick={props.onClose}>{t.cancel}</Button>
+      </div>
+    </Dialog>
+  );
 }
 
 export default class DownloadsPage extends Component<EmptyObject, DownloadsPageState> {
@@ -44,7 +102,7 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
   }
   render(): JSX.Element {
     return (
-      <Container className="p-3">
+      <Container className="p-3 eph-h-full overflow-y-scroll">
         <div className="flex space-x-3">
           <Checkbox
             checked={this.state.release}
@@ -73,7 +131,9 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
                   <ListItem
                     className="rounded-lg p-2"
                     onClick={() =>
-                      GlobalOverlay.showDialog((close) => <DownloadDialog onClose={close} />)
+                      GlobalOverlay.showDialog((close) => (
+                        <DownloadDialog version={item} onClose={close} />
+                      ))
                     }
                     key={index}
                   >

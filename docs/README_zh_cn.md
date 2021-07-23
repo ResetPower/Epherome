@@ -4,7 +4,7 @@
 
 简单的 Minecraft 启动器
 
-[English](README.md)
+[English](../README.md)
 
 ## 介绍
 

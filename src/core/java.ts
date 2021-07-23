@@ -1,4 +1,5 @@
 import { exec } from "child_process";
+import { constraints } from "../renderer/config";
 
 export interface JavaVersion {
   name?: string;
@@ -7,11 +8,11 @@ export interface JavaVersion {
   is64Bit?: boolean;
 }
 
-export function checkJava(java: string): Promise<JavaVersion> {
+export function checkJavaVersion(java: string): Promise<JavaVersion | null> {
   return new Promise((resolve) =>
     exec(`"${java}" -version`, (error, _stdout, stderr) => {
       if (error) {
-        resolve({});
+        resolve(null);
       } else {
         const name = stderr.match(/"(.*?)"/)?.pop();
         const split = name?.split(".");
@@ -24,4 +25,15 @@ export function checkJava(java: string): Promise<JavaVersion> {
       }
     })
   );
+}
+
+export async function detectJava(): Promise<string[]> {
+  const javaPaths: string[] = [];
+  // first step: call "java" directly
+  const result = await checkJavaVersion("java");
+  result && javaPaths.push("java");
+  // second step: check JAVA_HOME environment variable
+  const javaHome = constraints.javaHome;
+  javaHome && javaPaths.push(javaHome);
+  return javaPaths;
 }

@@ -52,10 +52,6 @@ export function ErrorDialog(props: { stacktrace: string; onClose: DefaultFunctio
   );
 }
 
-export function DownloadDialog(props: { onClose: DefaultFunction }): JSX.Element {
-  return <AlertDialog title={t.warning} message={t.downloadNotSupported} close={props.onClose} />;
-}
-
 export function UpdateAvailableDialog(props: {
   version: string;
   onClose: DefaultFunction;

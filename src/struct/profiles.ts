@@ -9,7 +9,12 @@ export interface MinecraftProfile extends WithId {
   from?: "create" | "download";
 }
 
-export function createProfile(name: string, dir: string, ver: string): boolean {
+export function createProfile(
+  name: string,
+  dir: string,
+  ver: string,
+  from: "create" | "download"
+): boolean {
   if (name === "" || dir === "" || ver === "") return false;
   const theId = getNextId(ephConfigs.profiles);
   setConfig(() =>
@@ -18,6 +23,7 @@ export function createProfile(name: string, dir: string, ver: string): boolean {
       name,
       dir,
       ver,
+      from,
     })
   );
   logger.info(`Created profile named '${name}', id: ${theId}`);
@@ -25,12 +31,11 @@ export function createProfile(name: string, dir: string, ver: string): boolean {
 }
 
 export function editProfile(id: number, name: string, dir: string, ver: string): boolean {
-  setConfig(
-    () =>
-      (ephConfigs.profiles = ephConfigs.profiles.map((value: MinecraftProfile) => {
-        return value.id === id ? { id, name, dir, ver } : value;
-      }))
-  );
+  setConfig({
+    profiles: ephConfigs.profiles.map((value: MinecraftProfile) => {
+      return value.id === id ? { id, name, dir, ver, from: value.from } : value;
+    }),
+  });
   logger.info(`Update profile, id: ${id}`);
   return true;
 }

@@ -81,9 +81,11 @@ export interface ClientJson {
   };
   assets: string;
   downloads: {
-    sha1: string;
-    size: number;
-    url: string;
+    client: {
+      sha1: string;
+      size: number;
+      url: string;
+    };
   };
   id: string;
   libraries: ClientJsonLibraries;

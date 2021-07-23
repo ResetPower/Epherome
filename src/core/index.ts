@@ -14,7 +14,7 @@ import { createDirIfNotExist, downloadFile } from "./download";
 import { Logger } from "../tools/logging";
 import { DefaultFunction } from "../tools/types";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
-import { checkJava } from "./java";
+import { checkJavaVersion } from "./java";
 import { showJava16RequiredDialog } from "./alerts";
 
 // logger for minecraft launch core
@@ -228,10 +228,16 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
 
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
-  const javaVersion = await checkJava(java);
-  if (isJava16Required(versionDetail) && javaVersion.major && javaVersion.major < 16) {
+  const javaVersion = await checkJavaVersion(java);
+  if (
+    isJava16Required(versionDetail) &&
+    javaVersion &&
+    javaVersion.major &&
+    javaVersion.major < 16
+  ) {
     coreLogger.warn(`Minecraft version is higher than 1.17 but is using a java version under 16`);
     showJava16RequiredDialog();
+    options.onDone();
   } else {
     // start minecraft process
     runMinecraft(java, buff, dir, options.onDone, options.profile);
