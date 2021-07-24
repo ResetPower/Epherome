@@ -49,8 +49,7 @@ export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayS
           act();
         }
       };
-      const component = render(onClose);
-      this.stack[index] = component;
+      this.stack[index] = render(onClose);
       this.updateOverlay();
       return onClose;
     };

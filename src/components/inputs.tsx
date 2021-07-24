@@ -137,7 +137,7 @@ export function TextField(props: {
               ? "ring-1 ring-red-500"
               : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
           }`}
-        ></input>
+        />
         {props.trailing && (
           <div className="rounded-r-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-r border-b border-divide text-shallow shadow-sm">
             {props.trailing}
@@ -194,7 +194,7 @@ export function Link(props: {
     } else if (props.type === "clickable") {
       unwrapFunction(props.onClick)();
     } else {
-      shell.openExternal(props.href ?? "");
+      shell.openExternal(props.href ?? "").then();
     }
   };
   return (

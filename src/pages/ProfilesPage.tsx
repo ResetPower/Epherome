@@ -44,9 +44,7 @@ export function ChangeProfileFragment(props: {
   };
   return (
     <>
-      {props.action === "create" && (
-        <Typography className="text-xl font-semibold">{t.newProfile}</Typography>
-      )}
+      {props.action === "create" && <div className="h-12" />}
       <div>
         <TextField label={t.name} {...nameController} />
         <TextField label={t.directory} {...dirController} helperText={t.usuallyDotMinecraftEtc} />
@@ -56,7 +54,7 @@ export function ChangeProfileFragment(props: {
         <Button onClick={handleOpenDirectory}>
           <MdFolder /> {t.openDirectory}
         </Button>
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
         {props.action === "create" ? (
           <>
             <Button className="text-shallow" onClick={props.onDone}>
@@ -65,7 +63,7 @@ export function ChangeProfileFragment(props: {
             <Button onClick={handleCreate}>{t.create}</Button>
           </>
         ) : (
-          <Button onClick={handleEdit}>{t.edit}</Button>
+          <Button onClick={handleEdit}>{t.save}</Button>
         )}
       </div>
     </>
@@ -122,8 +120,9 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                 }}
                 key={i.id}
               >
-                {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}
-                <Typography>{i.name}</Typography>
+                <Typography className="flex">
+                  {i.from === "download" ? <MdFileDownload /> : <MdGamepad />} {i.name}
+                </Typography>
               </ListItem>
             ))}
           </List>

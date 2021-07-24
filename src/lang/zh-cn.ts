@@ -55,8 +55,7 @@ export default defineLanguage({
     passwordWrong: "密码错误",
     pleaseInputPassword: "请输入密码",
     errorOccurred: "发生了错误",
-    manage: "管理",
-    profileManagement: "档案管理",
+    manageXxx: "{} 管理",
     notSupportedYet: "抱歉，此功能尚不可用。",
     warning: "警告",
     alphaWarning: "程序处于内测阶段，请谨慎使用。",
@@ -64,6 +63,14 @@ export default defineLanguage({
     download: "下载",
     clickToLogin: "点击「创建」来登录您的微软账户",
     downloads: "下载",
+    add: "添加",
+    considerUsingJava16: "启动 Minecraft 1.17 需要使用 Java 16 或以上版本。",
+    manageJava: {
+      newJavaPath: "新的 Java 路径",
+      invalidJavaPath: "错误的 Java 路径",
+      duplicateJavaPath: "重复的 Java 路径",
+      detect: "自动检测",
+    },
     progress: {
       auth: "登录",
       analyze: "解析 JSON",
@@ -103,5 +110,6 @@ export default defineLanguage({
     pleaseGoToSiteToDownloadLatestVersion: "请前往 Epherome 官方网站下载最新版本",
     noMinecraftProcesses: "没有 Minecraft 进程",
     xxxBit: "{}位",
+    done: "完成",
   },
 });

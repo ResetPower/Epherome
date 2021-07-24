@@ -55,8 +55,7 @@ export default defineLanguage({
     passwordWrong: "Password Wrong",
     pleaseInputPassword: "Please Input Password",
     errorOccurred: "Error Occurred",
-    manage: "Manage",
-    profileManagement: "Manage Profiles",
+    manageXxx: "Manage {}",
     notSupportedYet: "Sorry, this feature is not yet available.",
     warning: "Warning",
     alphaWarning: "The program is in the alpha stage, please use it with caution.",
@@ -64,6 +63,14 @@ export default defineLanguage({
     download: "Download",
     clickToLogin: 'Click "Create" to log in to your Microsoft account',
     downloads: "Downloads",
+    add: "Add",
+    considerUsingJava16: "Java 16 or later is required to launch Minecraft 1.17.",
+    manageJava: {
+      newJavaPath: "New Java Path",
+      invalidJavaPath: "Invalid Java Path",
+      duplicateJavaPath: "Duplicate Java Path",
+      detect: "Detect",
+    },
     progress: {
       auth: "Authenticating",
       analyze: "Analyzing JSON",
@@ -104,5 +111,6 @@ export default defineLanguage({
       "Please go to Epherome official website to download the latest version",
     noMinecraftProcesses: "No Minecraft Processes",
     xxxBit: "{}-bit",
+    done: "Done",
   },
 });
