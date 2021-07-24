@@ -48,7 +48,7 @@ const isDark = window.matchMedia("(prefers-color-scheme: dark)");
 // set config according to system
 function detectSystemTheme(): void {
   const prefersDarkMode = isDark.matches;
-  setConfig(() => (ephConfigs.theme = prefersDarkMode ? "dark" : "light"));
+  setConfig({ theme: prefersDarkMode ? "dark" : "light" });
 }
 
 export function updateTheme(updateUI = true): void {

@@ -102,5 +102,6 @@ export default defineLanguage({
     epheromeUpdate: "Epherome 更新",
     pleaseGoToSiteToDownloadLatestVersion: "请前往 Epherome 官方网站下载最新版本",
     noMinecraftProcesses: "没有 Minecraft 进程",
+    xxxBit: "{}位",
   },
 });

@@ -84,6 +84,7 @@ export interface LanguageTranslator {
   epheromeUpdate: string;
   pleaseGoToSiteToDownloadLatestVersion: string;
   noMinecraftProcesses: string;
+  xxxBit: string;
   progress: {
     auth: string;
     analyze: string;

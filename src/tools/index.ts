@@ -84,3 +84,7 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
     return accessible;
   }
 }
+
+export function deduplicateArray<T>(arr: T[]): T[] {
+  return Array.from(new Set(arr));
+}

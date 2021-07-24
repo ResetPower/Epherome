@@ -103,5 +103,6 @@ export default defineLanguage({
     pleaseGoToSiteToDownloadLatestVersion:
       "Please go to Epherome official website to download the latest version",
     noMinecraftProcesses: "No Minecraft Processes",
+    xxxBit: "{}-bit",
   },
 });

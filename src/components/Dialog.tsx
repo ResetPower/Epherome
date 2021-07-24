@@ -6,11 +6,14 @@ import { Typography } from "./layouts";
 
 export default function Dialog(props: {
   children: ReactNode;
+  className?: string;
   indentBottom?: boolean;
 }): JSX.Element {
   return (
     <div
-      className={`shadow-xl rounded-xl bg-card eph-dialog p-6 ${props.indentBottom ? "pb-4" : ""}`}
+      className={`shadow-xl rounded-xl bg-card eph-dialog p-6 ${props.indentBottom ? "pb-4" : ""} ${
+        props.className ?? ""
+      }`}
     >
       {props.children}
     </div>

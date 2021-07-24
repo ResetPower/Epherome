@@ -106,5 +106,6 @@ export default defineLanguage({
     pleaseGoToSiteToDownloadLatestVersion:
       "Epheromeの公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください",
     noMinecraftProcesses: "Minecraftプロセスはありません",
+    xxxBit: "{}ビット",
   },
 });
