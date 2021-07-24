@@ -14,8 +14,8 @@ import { createDirIfNotExist, downloadFile } from "./download";
 import { Logger } from "../tools/logging";
 import { DefaultFunction } from "../tools/types";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
-import { checkJavaVersion } from "./java";
 import { showJava16RequiredDialog } from "./alerts";
+import { Java } from "../struct/java";
 
 // logger for minecraft launch core
 export const coreLogger = new Logger("Core");
@@ -28,18 +28,24 @@ export interface MinecraftLaunchDetail {
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   profile: MinecraftProfile;
-  java: string;
+  java: Java | null;
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: DefaultFunction;
 }
 
 export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
+  const java = options.java;
+
+  if (!java) {
+    options.onDone();
+    return;
+  }
+
   const defaultHelper = t.launching;
   coreLogger.info("Launching Minecraft ...");
   const account = options.account;
   const profile = options.profile;
-  const java = options.java;
   const setHelper = options.setHelper;
   const authlibInjectorPath = path.join(constraints.dir, "authlib-injector-1.1.35.jar");
 
@@ -228,18 +234,13 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
 
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
-  const javaVersion = await checkJavaVersion(java);
-  if (
-    isJava16Required(versionDetail) &&
-    javaVersion &&
-    javaVersion.major &&
-    javaVersion.major < 16
-  ) {
+  const javaVersion = java.name;
+  if (isJava16Required(versionDetail) && javaVersion && parseInt(javaVersion.split(".")[0]) < 16) {
     coreLogger.warn(`Minecraft version is higher than 1.17 but is using a java version under 16`);
     showJava16RequiredDialog();
     options.onDone();
   } else {
     // start minecraft process
-    runMinecraft(java, buff, dir, options.onDone, options.profile);
+    runMinecraft(java.dir, buff, dir, options.onDone, options.profile);
   }
 }

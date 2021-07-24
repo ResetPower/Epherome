@@ -5,6 +5,8 @@ import { ipcRenderer } from "electron";
 import { MinecraftProfile } from "../struct/profiles";
 import { MinecraftAccount } from "../struct/accounts";
 import { DefaultFunction } from "../tools/types";
+import { detectJava, Java } from "../struct/java";
+import { getNextId } from "../tools";
 
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
@@ -14,9 +16,10 @@ export type EphDownloadProvider = "official" | "bmclapi" | "mcbbs";
 export interface EphConfig {
   accounts: MinecraftAccount[];
   profiles: MinecraftProfile[];
+  javas: Java[];
   selectedAccount: number;
   selectedProfile: number;
-  javaPath: string;
+  selectedJava: number;
   theme: string;
   themeFollowOs: boolean;
   language: string;
@@ -25,12 +28,13 @@ export interface EphConfig {
 }
 
 // default values of config
-let initConfig: EphConfig = {
-  accounts: <MinecraftAccount[]>[],
-  profiles: <MinecraftProfile[]>[],
+const initConfig: EphConfig = {
+  accounts: [],
+  profiles: [],
+  javas: [],
   selectedAccount: 0,
   selectedProfile: 0,
-  javaPath: "java",
+  selectedJava: 0,
   theme: "light",
   themeFollowOs: false,
   hitokoto: true,
@@ -47,10 +51,17 @@ try {
   // file does exist
   const str = fs.readFileSync(cfgPath).toString();
   const obj = JSON.parse(str);
-  initConfig = Object.assign(initConfig, obj);
+  Object.assign(initConfig, obj);
 } catch {
   // file does not exist
   fs.writeFileSync(cfgPath, "{}");
+}
+
+// initialize java config
+if (initConfig.javas.length === 0) {
+  detectJava().then((java) => {
+    java && initConfig.javas.push({ id: getNextId(ephConfigs.javas), ...java });
+  });
 }
 
 export const ephConfigs: EphConfig = initConfig;

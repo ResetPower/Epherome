@@ -165,7 +165,7 @@ export async function createAccount(
 }
 
 export function removeAccount(id: number): void {
-  setConfig(() => (ephConfigs.accounts = ephConfigs.accounts.filter((value) => value.id !== id)));
+  setConfig({ accounts: ephConfigs.accounts.filter((value) => value.id !== id) });
   logger.info(`Removed account, id: ${id}`);
 }
 

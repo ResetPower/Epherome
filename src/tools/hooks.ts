@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react";
+import { DefaultFunction } from "./types";
 
 export function useForceUpdater(): () => void {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -12,7 +13,15 @@ export interface Controller<T> {
 
 // combines value and onChange
 // usage: <input {...controller} />
-export function useController<T>(initialValue: T): Controller<T> {
+export function useController<T>(initialValue: T, effect?: DefaultFunction): Controller<T> {
   const [value, setValue] = useState(initialValue);
-  return { value, onChange: (newValue) => setValue(newValue) };
+  return {
+    value,
+    onChange: effect
+      ? (ev: T) => {
+          setValue(ev);
+          effect();
+        }
+      : setValue,
+  };
 }

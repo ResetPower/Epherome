@@ -14,9 +14,11 @@ export function ListItem(props: {
 }): JSX.Element {
   return (
     <div
-      className={`flex p-1 select-none cursor-pointer transition-colors duration-200 transform bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 ${
-        props.className
-      } ${props.checked ? "bg-opacity-10" : ""}`}
+      className={`flex p-1 ${
+        props.onClick
+          ? "select-none cursor-pointer transition-colors duration-200 transform bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20"
+          : ""
+      } ${props.className} ${props.checked ? "bg-opacity-10" : ""}`}
       onClick={props.onClick}
     >
       {props.children}
@@ -28,11 +30,17 @@ export function ListItemText(props: {
   primary?: string;
   secondary?: string;
   className?: string;
+  longSecondary?: boolean;
 }): JSX.Element {
   return (
     <div className={props.className}>
       <Typography>{props.primary ?? ""}</Typography>
-      <p className="text-shallow">{props.secondary ?? ""}</p>
+      <p
+        className={`text-shallow ${props.longSecondary ? "overflow-ellipsis" : ""}`}
+        title={props.longSecondary ? props.secondary : undefined}
+      >
+        {props.secondary ?? ""}
+      </p>
     </div>
   );
 }

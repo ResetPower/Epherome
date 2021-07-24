@@ -22,6 +22,7 @@ import {
 import GlobalOverlay from "../components/GlobalOverlay";
 import { ErrorDialog } from "../components/Dialogs";
 import { useController } from "../tools/hooks";
+import { getById } from "../tools";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -114,7 +115,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
   // handle minecraft profile select
   handleChange = (val: string): void => {
     const newValue = parseInt(val);
-    setConfig(() => (ephConfigs.selectedProfile = newValue));
+    setConfig({ selectedProfile: newValue });
     logger.info(`Profile selection changed to id ${newValue}`);
     this.setState({ value: newValue });
   };
@@ -129,7 +130,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
         account,
         profile,
         setHelper: (helper) => this.setState({ launchingHelper: helper }),
-        java: ephConfigs.javaPath,
+        java: getById(ephConfigs.javas, ephConfigs.selectedJava),
         onDone: () => {
           this.setState({ isLaunching: false });
         },

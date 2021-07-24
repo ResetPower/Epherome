@@ -1,5 +1,5 @@
 import { I18n } from "../lang/i18n";
-import { constraints, ephConfigs, setConfig } from "./config";
+import { ephConfigs } from "./config";
 import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";
@@ -8,11 +8,6 @@ import { EphHistory } from "../tools/history";
 import { Logger } from "../tools/logging";
 import { defineTheme } from "./theme";
 import colors from "./colors";
-
-const java = ephConfigs.javaPath;
-if (java === undefined) {
-  setConfig(() => (ephConfigs.javaPath = constraints.javaHome));
-}
 
 // global i18n toolkit
 const lang = ephConfigs.language;

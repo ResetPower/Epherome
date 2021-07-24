@@ -59,8 +59,8 @@ export function IconButton(props: {
   );
 }
 
-export function Select(props: {
-  value: string | number;
+export function Select<T extends string | number>(props: {
+  value: T;
   label?: string;
   onChange: (value: string) => void;
   className?: string;

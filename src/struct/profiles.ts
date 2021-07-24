@@ -41,7 +41,7 @@ export function editProfile(id: number, name: string, dir: string, ver: string):
 }
 
 export function removeProfile(id: number): void {
-  setConfig(() => (ephConfigs.profiles = ephConfigs.profiles.filter((value) => value.id !== id)));
+  setConfig({ profiles: ephConfigs.profiles.filter((value) => value.id !== id) });
   logger.info(`Removed profile, id: ${id}`);
 }
 
