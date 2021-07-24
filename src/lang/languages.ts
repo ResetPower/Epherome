@@ -49,8 +49,7 @@ export interface LanguageTranslator {
   passwordWrong: string;
   pleaseInputPassword: string;
   errorOccurred: string;
-  manage: string;
-  profileManagement: string;
+  manageXxx: string;
   notSupportedYet: string;
   warning: string;
   alphaWarning: string;
@@ -85,6 +84,15 @@ export interface LanguageTranslator {
   pleaseGoToSiteToDownloadLatestVersion: string;
   noMinecraftProcesses: string;
   xxxBit: string;
+  done: string;
+  add: string;
+  considerUsingJava16: string;
+  manageJava: {
+    newJavaPath: string;
+    invalidJavaPath: string;
+    duplicateJavaPath: string;
+    detect: string;
+  };
   progress: {
     auth: string;
     analyze: string;

@@ -42,11 +42,11 @@ export default function ProcessesPage(): JSX.Element {
         )}
       </div>
       <div className="w-3/4 border-l border-divide overflow-y-scroll p-3">
-        {current ? (
-          <div>{current.outputs.join("")}</div>
-        ) : (
-          <div>{LoggerService.logs.join("\n")}</div>
-        )}
+        <div className="text-black dark:text-white">
+          {current
+            ? current.outputs.map((value, index) => <p key={index}>{value}</p>)
+            : LoggerService.logs.map((value, index) => <p key={index}>{value}</p>)}
+        </div>
       </div>
     </div>
   );

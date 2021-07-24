@@ -185,7 +185,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     classpath: cp.join(":"),
   };
 
-  const reg = /\$\{([\w]*)\}/g;
+  const reg = /\${([\w]*)}/g;
   const resolveMinecraftArgs = (arr: ClientJsonArguments) => {
     const act = (i: string) => {
       i = i.replace(reg, (_str, key) => {

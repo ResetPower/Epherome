@@ -26,9 +26,13 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
   const javas = ephConfigs.javas;
   const checkDuplicate = useCallback(
     (dir: string) => {
+      if (dir === "") {
+        setErr(t.manageJava.invalidJavaPath);
+        return false;
+      }
       for (const i of javas) {
         if (i.dir === dir) {
-          setErr("Duplicate Java Path");
+          setErr(t.manageJava.duplicateJavaPath);
           return true;
         }
       }
@@ -39,7 +43,7 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
 
   return (
     <Dialog className="eph-max-h-full flex flex-col overflow-hidden" indentBottom>
-      <Typography className="font-semibold text-xl">Java Management</Typography>
+      <Typography className="font-semibold text-xl">{t.manageXxx.replace("{}", "Java")}</Typography>
       <List className="overflow-y-scroll">
         {javas.map((value, index) => (
           <ListItem key={index}>
@@ -50,7 +54,7 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
               secondary={value.dir}
               longSecondary
             />
-            <div className="flex-grow"></div>
+            <div className="flex-grow" />
             <IconButton
               onClick={() => {
                 removeJava(value.id);
@@ -64,10 +68,10 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
       </List>
       <TextField
         {...newJavaController}
-        error={err ? true : false}
+        error={!!err}
         helperText={err ?? undefined}
         icon={<FaJava />}
-        placeholder="New Java Path..."
+        placeholder={t.manageJava.newJavaPath}
         trailing={
           <Link
             type="clickable"
@@ -78,12 +82,12 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
               checkJavaVersion(val).then((result) => {
                 if (result) {
                   createJava(result);
-                  forceUpdate();
-                } else setErr("Invalid Java Path");
+                  newJavaController.onChange("");
+                } else setErr(t.manageJava.invalidJavaPath);
               });
             }}
           >
-            Add
+            {t.add}
           </Link>
         }
       />
@@ -99,17 +103,17 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
             })
           }
         >
-          Detect
+          {t.manageJava.detect}
         </Button>
-        <div className="flex-grow"></div>
-        <Button onClick={props.onClose}>{t.ok}</Button>
+        <div className="flex-grow" />
+        <Button onClick={props.onClose}>{t.done}</Button>
       </div>
     </Dialog>
   );
 }
 
 export interface SettingsPageState {
-  updateCheckResult?: string;
+  updateCheckResult: string | null;
 }
 
 export default class SettingsPage extends FlexibleComponent<EmptyObject, SettingsPageState> {
@@ -118,7 +122,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
   };
   handleUpdateCheck = (): void => {
     this.setState({
-      updateCheckResult: undefined,
+      updateCheckResult: null,
     });
     checkEphUpdate().then((result) => {
       if (result) {
@@ -139,7 +143,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
     i18n.changeLanguage(ev);
     setConfig({ language: ev });
     hist.dispatch();
-    this.setState({ updateCheckResult: undefined });
+    this.setState({ updateCheckResult: "" });
     logger.info(`Language changed to '${ev}'`);
   };
   handleChangeTheme = (ev: string): void => {
@@ -229,7 +233,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
               ))}
             </Select>
             <Button onClick={this.handleManageJava}>
-              <FaJava /> Java Management
+              <FaJava /> {t.manageXxx.replace("{}", "Java")}
             </Button>
             <Checkbox
               checked={ephConfigs.hitokoto}
@@ -245,18 +249,12 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
               <Button
                 variant="contained"
                 onClick={this.handleUpdateCheck}
-                disabled={(() => {
-                  return this.state.updateCheckResult === undefined;
-                })()}
+                disabled={this.state.updateCheckResult === null}
               >
                 {t.checkUpdate}
               </Button>
               <Typography>
-                {this.state.updateCheckResult !== undefined ? (
-                  this.state.updateCheckResult
-                ) : (
-                  <Spin />
-                )}
+                {this.state.updateCheckResult !== null ? this.state.updateCheckResult : <Spin />}
               </Typography>
             </div>
           </div>
@@ -278,7 +276,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
 
           <div className="space-y-3">
             <Card variant="contained" className="flex items-center space-x-3">
-              <img src={EpheromeLogo} className="w-16 h-16" />
+              <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
               <div>
                 <Typography className="font-semibold text-xl">Epherome Beta</Typography>
                 <Typography>

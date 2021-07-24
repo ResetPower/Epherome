@@ -60,7 +60,7 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
 
   return (
     <>
-      <Typography className="text-xl font-semibold">{t.newAccount}</Typography>
+      <div className="h-12" />
       <div>
         {errAlert && (
           <div className="my-3">

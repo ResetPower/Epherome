@@ -56,8 +56,7 @@ export default defineLanguage({
     passwordWrong: "間違ったパスワード",
     pleaseInputPassword: "パスワードを入力してください",
     errorOccurred: "エラーが発生しました",
-    manage: "管理する",
-    profileManagement: "プロフィル管理",
+    manageXxx: "{} を管理する",
     notSupportedYet: "申し訳ありませんが、この機能はまだご利用いただけません。",
     warning: "警告",
     alphaWarning: "このプログラムは Alpha 段階にあります。注意して使用してください。",
@@ -65,6 +64,14 @@ export default defineLanguage({
     download: "ダウンロード",
     clickToLogin: "「作成」をクリックして Microsoft アカウントにログインします。",
     downloads: "ダウンロード",
+    add: "追加",
+    considerUsingJava16: "Minecraft 1.17 を起動するには、Java 16 以降が必要です。",
+    manageJava: {
+      newJavaPath: "新しい Java パス",
+      invalidJavaPath: "間違った Java パス",
+      duplicateJavaPath: "重複する Java パス",
+      detect: "検出する",
+    },
     progress: {
       auth: "ログイン",
       analyze: "解析 JSON",
@@ -107,5 +114,6 @@ export default defineLanguage({
       "Epheromeの公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください",
     noMinecraftProcesses: "Minecraftプロセスはありません",
     xxxBit: "{}ビット",
+    done: "完了",
   },
 });
