@@ -14,7 +14,7 @@ import { createDirIfNotExist, downloadFile } from "./download";
 import { Logger } from "../tools/logging";
 import { DefaultFunction } from "../tools/types";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
-import { showJava16RequiredDialog } from "./alerts";
+import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";
 import { Java } from "../struct/java";
 
 // logger for minecraft launch core
@@ -38,6 +38,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const java = options.java;
 
   if (!java) {
+    showNoJavaDialog();
     options.onDone();
     return;
   }
@@ -224,6 +225,7 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
       argumentsMap.classpath
     );
   }
+  profile.jvmArgs && buff.push(profile.jvmArgs);
   buff.push(parsed["mainClass"]);
 
   // game arguments

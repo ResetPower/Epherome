@@ -2,17 +2,14 @@ import { spawn } from "child_process";
 import findJavaHome from "find-java-home";
 import path from "path";
 import { ephConfigs, setConfig } from "../renderer/config";
-import { getNextId, WithId } from "../tools";
 
-export interface Java extends WithId {
+export interface Java {
   dir: string;
   name: string;
   is64Bit: boolean;
 }
 
-export type JavaWithoutId = Omit<Java, "id">;
-
-export function checkJavaVersion(dir: string): Promise<JavaWithoutId | null> {
+export function checkJavaVersion(dir: string): Promise<Java | null> {
   return new Promise((resolve) => {
     try {
       const proc = spawn(dir, ["-version"]);
@@ -38,7 +35,7 @@ export function checkJavaVersion(dir: string): Promise<JavaWithoutId | null> {
   });
 }
 
-export function detectJava(): Promise<JavaWithoutId | null> {
+export function detectJava(): Promise<Java | null> {
   return new Promise((resolve) =>
     findJavaHome((err, res) => {
       if (err) {
@@ -50,10 +47,10 @@ export function detectJava(): Promise<JavaWithoutId | null> {
   );
 }
 
-export function createJava(java: JavaWithoutId): void {
-  setConfig(() => ephConfigs.javas.push({ id: getNextId(ephConfigs.javas), ...java }));
+export function createJava(java: Java): void {
+  setConfig(() => ephConfigs.javas.push(java));
 }
 
 export function removeJava(id: number): void {
-  setConfig({ javas: ephConfigs.javas.filter((value) => value.id !== id) });
+  setConfig(() => ephConfigs.javas.splice(id, 1));
 }

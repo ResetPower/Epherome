@@ -62,7 +62,7 @@ export function IconButton(props: {
 export function Select<T extends string | number>(props: {
   value: T;
   label?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   className?: string;
   marginBottom?: boolean;
   children: ReactNode;
@@ -82,7 +82,7 @@ export function Select<T extends string | number>(props: {
       <select
         value={props.value}
         onChange={(ev) => {
-          props.onChange(ev.currentTarget.value);
+          unwrapFunction(props.onChange)(ev.currentTarget.value);
         }}
         className={`block py-2 px-3 bg-card text-black dark:text-white rounded-lg border border-divide shadow-sm focus:outline-none ${props.className}`}
         disabled={props.disabled}
