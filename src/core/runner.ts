@@ -26,6 +26,9 @@ export function runMinecraft(
         coreLogger.info("Minecraft is running");
       })()
   );
+  raw.on("exit", () => {
+    !done && onDone();
+  });
   const proc = new Process(profile);
   raw.stdout.on("data", (d) => proc.output(d.toString()));
   raw.stderr.on("data", (d) => proc.output(d.toString()));

@@ -32,7 +32,7 @@ export function DownloadDialog(props: {
 }): JSX.Element {
   const [step, setStep] = useState<string | null>(null);
   const startDownload = useCallback(async () => {
-    setStep("Downloading JSON...");
+    setStep(t.downloadingJson);
     const jsonPath = path.join(
       mcDownloadPath,
       "versions",
@@ -41,7 +41,7 @@ export function DownloadDialog(props: {
     );
     await downloadFile(props.version.url, jsonPath, true);
 
-    setStep("Downloading JAR...");
+    setStep(t.downloadingJar);
     const jarPath = path.join(
       mcDownloadPath,
       "versions",
@@ -55,12 +55,17 @@ export function DownloadDialog(props: {
     // but eslint-plugin-react-hooks doesn't think so
     unwrapFunction(props.onClose)();
 
-    createProfile(`Minecraft ${props.version.id}`, mcDownloadPath, props.version.id, "download");
+    createProfile({
+      name: `Minecraft ${props.version.id}`,
+      dir: mcDownloadPath,
+      ver: props.version.id,
+      from: "download",
+    });
   }, [props.version, props.onClose]);
 
   return (
     <Dialog indentBottom>
-      <Typography className="font-semibold text-xl">
+      <Typography className="font-semibold text-lg">
         {t.download} Minecraft {props.version.id}
       </Typography>
       <div>
@@ -68,7 +73,7 @@ export function DownloadDialog(props: {
       </div>
       <div className="flex">
         {step === null && <Button onClick={startDownload}>{t.download}</Button>}
-        <div className="flex-grow"></div>
+        <div className="flex-grow" />
         <Button onClick={props.onClose}>{t.cancel}</Button>
       </div>
     </Dialog>

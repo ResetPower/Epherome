@@ -11,10 +11,8 @@ import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { useController } from "../tools/hooks";
 import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
-import { useCallback } from "react";
 import { useState } from "react";
 import { DefaultFunction, EmptyObject } from "../tools/types";
 import Spin from "../components/Spin";
@@ -24,21 +22,16 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [msAccNoMcAlert, setMsAccNoMcAlert] = useState(false);
-  const valueController = useController("mojang");
-  const authserverController = useController("");
-  const nameController = useController("");
-  const passwordController = useController("");
+  const [value, setValue] = useState("mojang");
+  const [authserver, setAuthserver] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleCreate = useCallback(() => {
+  const handleCreate = () => {
     setLoading(true);
     setErrAlert(false);
     setMsAccNoMcAlert(false);
-    createAccount(
-      valueController.value,
-      nameController.value,
-      passwordController.value,
-      authserverController.value
-    ).then((value: CreateAccountImplResult) => {
+    createAccount(value, name, password, authserver).then((value: CreateAccountImplResult) => {
       setLoading(false);
       if (value.success) {
         props.onDone();
@@ -50,13 +43,7 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
         }
       }
     });
-  }, [
-    authserverController.value,
-    nameController.value,
-    passwordController.value,
-    props,
-    valueController.value,
-  ]);
+  };
 
   return (
     <>
@@ -72,26 +59,26 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
             <Alert severity="warn">{t.msAccNoMinecraft}</Alert>
           </div>
         )}
-        <Select {...valueController}>
+        <Select value={value} onChange={setValue}>
           <option value={"mojang"}>{t.mojang}</option>
           <option value={"microsoft"}>{t.microsoft}</option>
           <option value={"authlib"}>{t.authlib}</option>
           <option value={"offline"}>{t.offline}</option>
         </Select>
-        <div hidden={valueController.value !== "mojang"}>
-          <TextField label={t.email} {...nameController} />
-          <TextField label={t.password} {...passwordController} type="password" />
+        <div hidden={value !== "mojang"}>
+          <TextField label={t.email} value={name} onChange={setName} />
+          <TextField label={t.password} value={password} onChange={setPassword} type="password" />
         </div>
-        <div hidden={valueController.value !== "microsoft"}>
+        <div hidden={value !== "microsoft"}>
           <Typography>{t.clickToLogin}</Typography>
         </div>
-        <div hidden={valueController.value !== "authlib"}>
-          <TextField label={t.authserver} {...authserverController} />
-          <TextField label={t.email} {...nameController} />
-          <TextField label={t.password} {...passwordController} type="password" />
+        <div hidden={value !== "authlib"}>
+          <TextField label={t.authserver} value={authserver} onChange={setAuthserver} />
+          <TextField label={t.email} value={name} onChange={setName} />
+          <TextField label={t.password} value={password} onChange={setPassword} type="password" />
         </div>
-        <div hidden={valueController.value !== "offline"}>
-          <TextField label={t.username} {...nameController} />
+        <div hidden={value !== "offline"}>
+          <TextField label={t.username} value={name} onChange={setName} />
         </div>
       </div>
       <div className="flex">

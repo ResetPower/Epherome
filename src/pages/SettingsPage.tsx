@@ -14,7 +14,7 @@ import { FlexibleComponent } from "../tools/component";
 import { DefaultFunction, EmptyObject } from "../tools/types";
 import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
-import { useController, useForceUpdater } from "../tools/hooks";
+import { useForceUpdater } from "../tools/hooks";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { checkJavaVersion, createJava, detectJava, removeJava } from "../struct/java";
 import { useState, useCallback } from "react";
@@ -22,7 +22,7 @@ import { useState, useCallback } from "react";
 export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.Element {
   const forceUpdate = useForceUpdater();
   const [err, setErr] = useState<string | null>(null);
-  const newJavaController = useController("", () => setErr(""));
+  const [newJavaPath, setNewJavaPath] = useState("");
   const javas = ephConfigs.javas;
   const checkDuplicate = useCallback(
     (dir: string) => {
@@ -57,7 +57,7 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
             <div className="flex-grow" />
             <IconButton
               onClick={() => {
-                removeJava(value.id);
+                removeJava(index);
                 forceUpdate();
               }}
             >
@@ -67,7 +67,11 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
         ))}
       </List>
       <TextField
-        {...newJavaController}
+        value={newJavaPath}
+        onChange={(ev) => {
+          setNewJavaPath(ev);
+          setErr("");
+        }}
         error={!!err}
         helperText={err ?? undefined}
         icon={<FaJava />}
@@ -76,13 +80,13 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
           <Link
             type="clickable"
             onClick={() => {
-              const val = newJavaController.value;
+              const val = newJavaPath;
               if (checkDuplicate(val)) return;
               setErr(null);
               checkJavaVersion(val).then((result) => {
                 if (result) {
                   createJava(result);
-                  newJavaController.onChange("");
+                  setNewJavaPath("");
                 } else setErr(t.manageJava.invalidJavaPath);
               });
             }}
@@ -225,7 +229,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
               }}
             >
               {ephConfigs.javas.map((value, index) => (
-                <option value={value.id} key={index}>
+                <option value={index} key={index}>
                   {value.name}
                 </option>
               ))}

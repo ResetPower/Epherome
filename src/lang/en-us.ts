@@ -65,6 +65,11 @@ export default defineLanguage({
     downloads: "Downloads",
     add: "Add",
     considerUsingJava16: "Java 16 or later is required to launch Minecraft 1.17.",
+    downloadingJson: "Downloading version json file",
+    downloadingJar: "Downloading version jar file",
+    javaNotFound: "Java Not Found",
+    javaNotFoundMessage:
+      "Java not found on your computer. Please install one and add it through settings.",
     manageJava: {
       newJavaPath: "New Java Path",
       invalidJavaPath: "Invalid Java Path",

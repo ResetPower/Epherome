@@ -1,5 +1,5 @@
 import { Select, Button, IconButton, TextField } from "../components/inputs";
-import { Component, useCallback } from "react";
+import { Component, useState } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../renderer/config";
 import { getAccount, MinecraftAccount } from "../struct/accounts";
@@ -21,26 +21,26 @@ import {
 } from "react-icons/md";
 import { showDialog } from "../components/GlobalOverlay";
 import { ErrorDialog } from "../components/Dialogs";
-import { useController } from "../tools/hooks";
-import { getById } from "../tools";
+import { initRequiredFunction } from "../tools";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
   onClose: DefaultFunction;
   callback: (password: string) => void;
 }): JSX.Element {
-  const passwordController = useController("");
-  const handler = useCallback(() => {
+  const [password, setPassword] = useState("");
+  const handler = () => {
     props.onClose();
-    props.callback(passwordController.value);
-  }, [passwordController, props]);
+    props.callback(password);
+  };
 
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">{t.pleaseInputPassword}</Typography>
       <div>
         <TextField
-          {...passwordController}
+          value={password}
+          onChange={setPassword}
           label={t.password}
           type="password"
           helperText={props.again ? t.passwordWrong : ""}
@@ -62,8 +62,6 @@ export interface HomePageState {
   hitokoto: Hitokoto;
   value: number | string;
   againRequestPassword: boolean;
-  isLaunching: boolean;
-  launchingHelper: string;
 }
 
 export default class HomePage extends Component<EmptyObject, HomePageState> {
@@ -72,8 +70,15 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     value: "",
     hitokoto: { content: "...", from: "..." },
     againRequestPassword: false,
+  };
+  static updateHomePage = initRequiredFunction();
+  static staticState = {
     isLaunching: false,
     launchingHelper: "",
+  };
+  static setStaticState = (state: Partial<typeof HomePage.staticState>): void => {
+    Object.assign(HomePage.staticState, state);
+    this.updateHomePage();
   };
   static hitokoto: Hitokoto | null = null;
   enableHitokoto = ephConfigs.hitokoto;
@@ -84,6 +89,8 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     const profile = getProfile(tId);
     this.state.value = profile === null ? "" : tId;
     this.account = getAccount(ephConfigs.selectedAccount);
+    // init static
+    HomePage.updateHomePage = () => this.setState({});
   }
   componentDidMount(): void {
     if (!HomePage.hitokoto) {
@@ -125,14 +132,14 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     const account = this.account;
     const profile = getProfile(val);
     if (account !== null && profile !== null) {
-      this.setState((prev) => ({ isLaunching: !prev.isLaunching }));
+      HomePage.setStaticState({ isLaunching: !HomePage.staticState.isLaunching });
       launchMinecraft({
         account,
         profile,
-        setHelper: (helper) => this.setState({ launchingHelper: helper }),
-        java: getById(ephConfigs.javas, ephConfigs.selectedJava),
+        setHelper: (helper) => HomePage.setStaticState({ launchingHelper: helper }),
+        java: ephConfigs.javas[ephConfigs.selectedJava],
         onDone: () => {
-          this.setState({ isLaunching: false });
+          HomePage.setStaticState({ isLaunching: false });
         },
         requestPassword: (again: boolean) =>
           new Promise((resolve) => {
@@ -216,7 +223,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               <Select
                 value={this.state.value}
                 onChange={this.handleChange}
-                disabled={this.state.isLaunching}
+                disabled={HomePage.staticState.isLaunching}
               >
                 {profiles.map((i: MinecraftProfile) => (
                   <option key={i.id} value={i.id}>
@@ -225,20 +232,20 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
                 ))}
               </Select>
             )}
-            <Button onClick={this.handleLaunch} disabled={this.state.isLaunching}>
+            <Button onClick={this.handleLaunch} disabled={HomePage.staticState.isLaunching}>
               <MdPlayArrow />
               {t.launch}
             </Button>
-            {this.state.isLaunching && (
+            {HomePage.staticState.isLaunching && (
               <>
-                <Typography className="text-sm">{this.state.launchingHelper}</Typography>
+                <Typography className="text-sm">{HomePage.staticState.launchingHelper}</Typography>
                 <div className="bg-blue-500 rounded-full h-1 animate-pulse" />
               </>
             )}
           </Card>
           <Card className="flex-grow">
-            <Typography className="text-xl font-semibold">{t.warning}</Typography>
-            <Typography>{t.alphaWarning}</Typography>
+            <Typography className="text-xl font-semibold">{t.news}</Typography>
+            <Typography>{t.notSupportedYet}</Typography>
           </Card>
         </div>
       </Container>

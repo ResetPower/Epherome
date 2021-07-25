@@ -87,6 +87,10 @@ export interface LanguageTranslator {
   done: string;
   add: string;
   considerUsingJava16: string;
+  downloadingJson: string;
+  downloadingJar: string;
+  javaNotFound: string;
+  javaNotFoundMessage: string;
   manageJava: {
     newJavaPath: string;
     invalidJavaPath: string;

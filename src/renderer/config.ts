@@ -60,7 +60,7 @@ try {
 // initialize java config
 if (initConfig.javas.length === 0) {
   detectJava().then((java) => {
-    java && initConfig.javas.push({ id: getNextId(ephConfigs.javas), ...java });
+    java && initConfig.javas.push(java);
   });
 }
 

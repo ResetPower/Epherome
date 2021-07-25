@@ -66,6 +66,11 @@ export default defineLanguage({
     downloads: "ダウンロード",
     add: "追加",
     considerUsingJava16: "Minecraft 1.17 を起動するには、Java 16 以降が必要です。",
+    downloadingJson: "バージョン json ファイルをダウンロードしています。",
+    downloadingJar: "バージョン jar ファイルをダウンロードしています。",
+    javaNotFound: "Javaが見つかりません",
+    javaNotFoundMessage:
+      "コンピュータにJavaが見つかりません。 インストールして、設定で追加してください。",
     manageJava: {
       newJavaPath: "新しい Java パス",
       invalidJavaPath: "間違った Java パス",

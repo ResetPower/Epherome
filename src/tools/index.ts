@@ -50,6 +50,10 @@ export function unwrapFunction<P extends unknown[] = []>(
   return fn ?? emptyFunction;
 }
 
+export function invokeFunction<P extends unknown[], R>(fn: (...args: P) => R, ...args: P): R {
+  return fn(...args);
+}
+
 export function initRequiredFunction(): () => void {
   return () => throwNotInitError();
 }
@@ -81,8 +85,4 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
   } else {
     return accessible;
   }
-}
-
-export function deduplicateArray<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr));
 }

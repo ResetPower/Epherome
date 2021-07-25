@@ -6,7 +6,6 @@ import { ephConfigs, setConfig } from "../renderer/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete, MdFileDownload, MdFolder, MdGamepad } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { useController } from "../tools/hooks";
 import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { ipcRenderer } from "electron";
@@ -14,6 +13,8 @@ import { DefaultFunction, EmptyObject } from "../tools/types";
 import { FlexibleComponent } from "../tools/component";
 import fs from "fs";
 import path from "path";
+import { useState } from "react";
+import { invokeFunction } from "../tools";
 
 export function ChangeProfileFragment(props: {
   onDone: DefaultFunction;
@@ -21,34 +22,53 @@ export function ChangeProfileFragment(props: {
   current?: MinecraftProfile;
 }): JSX.Element {
   const current = props.current;
-  const nameController = useController(current?.name ?? "");
-  const dirController = useController(current?.dir ?? "");
-  const verController = useController(current?.ver ?? "");
+  const [name, setName] = useState(current?.name ?? "");
+  const [dir, setDir] = useState(current?.dir ?? "");
+  const [ver, setVer] = useState(current?.ver ?? "");
+  const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? "");
 
   const handleEdit = () => {
     if (current) {
-      editProfile(current.id, nameController.value, dirController.value, verController.value);
-      props.onDone();
+      editProfile(current.id, {
+        name,
+        dir,
+        ver,
+        jvmArgs,
+      });
+      invokeFunction(props.onDone);
     }
   };
   const handleCreate = () => {
-    if (createProfile(nameController.value, dirController.value, verController.value, "create")) {
+    if (
+      createProfile({
+        name,
+        dir,
+        ver,
+        from: "create",
+        jvmArgs,
+      })
+    ) {
       props.onDone();
     }
   };
   const handleOpenDirectory = () => {
-    ipcRenderer.once("replyOpenDirectory", (_ev, arg) => {
-      dirController.onChange(arg);
-    });
+    ipcRenderer.once("replyOpenDirectory", (_ev, arg) => setDir(arg));
     ipcRenderer.send("openDirectory");
   };
+
   return (
     <>
       {props.action === "create" && <div className="h-12" />}
       <div>
-        <TextField label={t.name} {...nameController} />
-        <TextField label={t.directory} {...dirController} helperText={t.usuallyDotMinecraftEtc} />
-        <TextField label={t.version} {...verController} />
+        <TextField label={t.name} value={name} onChange={setName} />
+        <TextField
+          label={t.directory}
+          value={dir}
+          onChange={setDir}
+          helperText={t.usuallyDotMinecraftEtc}
+        />
+        <TextField label={t.version} value={ver} onChange={setVer} />
+        <TextField label="JVM Arguments" value={jvmArgs} onChange={setJvmArgs} />
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
@@ -131,9 +151,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
           <div className="border-l border-divide p-3 w-3/4">
             <ChangeProfileFragment
               action="create"
-              onDone={() => {
-                this.setState({ creating: false });
-              }}
+              onDone={() => this.setState({ creating: false })}
             />
           </div>
         ) : (

@@ -7,14 +7,14 @@ export interface MinecraftProfile extends WithId {
   dir: string;
   ver: string;
   from?: "create" | "download";
+  jvmArgs?: string;
+  resolution?: [number, number];
 }
 
-export function createProfile(
-  name: string,
-  dir: string,
-  ver: string,
-  from: "create" | "download"
-): boolean {
+export type MinecraftProfileWithoutId = Omit<MinecraftProfile, "id">;
+export type MinecraftProfileEditablePart = Omit<MinecraftProfileWithoutId, "from">;
+
+export function createProfile({ name, dir, ver, from }: MinecraftProfileWithoutId): boolean {
   if (name === "" || dir === "" || ver === "") return false;
   const theId = getNextId(ephConfigs.profiles);
   setConfig(() =>
@@ -30,10 +30,10 @@ export function createProfile(
   return true;
 }
 
-export function editProfile(id: number, name: string, dir: string, ver: string): boolean {
+export function editProfile(id: number, profile: MinecraftProfileEditablePart): boolean {
   setConfig({
     profiles: ephConfigs.profiles.map((value: MinecraftProfile) => {
-      return value.id === id ? { id, name, dir, ver, from: value.from } : value;
+      return value.id === id ? Object.assign(value, profile) : value;
     }),
   });
   logger.info(`Update profile, id: ${id}`);

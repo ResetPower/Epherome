@@ -65,6 +65,10 @@ export default defineLanguage({
     downloads: "下载",
     add: "添加",
     considerUsingJava16: "启动 Minecraft 1.17 需要使用 Java 16 或以上版本。",
+    downloadingJson: "正在下载版本 json 文件",
+    downloadingJar: "正在下载版本 jar 文件",
+    javaNotFound: "Java 缺失",
+    javaNotFoundMessage: "无法在您的电脑上找到 Java，请安装一个并在设置中添加。",
     manageJava: {
       newJavaPath: "新的 Java 路径",
       invalidJavaPath: "错误的 Java 路径",
