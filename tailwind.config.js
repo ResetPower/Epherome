@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       backgroundColor: ["active"],
       backgroundOpacity: ["active"],
-      display: ["group-hover"],
     },
   },
   theme: {

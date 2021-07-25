@@ -1,75 +1,55 @@
-import { Component } from "react";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { useEffect, useRef } from "react";
+import { DefaultFunction } from "../tools/types";
 import { throwNotInitError } from "../tools";
-import { createRef } from "react";
+import { useForceUpdater } from "../tools/hooks";
 
-export interface GlobalOverlayState {
-  show: boolean;
+export class OverlayService {
+  static stack: JSX.Element[] = [];
+  static updateOverlay: (action: "add" | "remove") => void = () => throwNotInitError();
+  static showDialog = (render: (close: DefaultFunction) => JSX.Element): void => {
+    const index = this.stack.length;
+    this.stack[index] = render(() => {
+      this.stack.splice(index, 1);
+      this.updateOverlay("remove");
+    });
+    this.updateOverlay("add");
+  };
 }
 
-export default class GlobalOverlay extends Component<EmptyObject, GlobalOverlayState> {
-  state: GlobalOverlayState = {
-    show: false,
-  };
-  dialog = createRef<HTMLDivElement>();
-  stack: JSX.Element[] = [];
-  static showDialog: (render: (close: DefaultFunction) => JSX.Element) => void = (): void =>
-    throwNotInitError();
+export const showDialog = OverlayService.showDialog;
 
-  updateOverlay(): void {
-    this.setState({ show: this.stack.length !== 0 });
-  }
-  shouldOverlayHide(index: number): boolean {
-    return index !== this.stack.length - 1;
-  }
-  clearOverlayStack(): void {
-    this.stack.length !== 0 && this.stack.slice(0, 0);
-  }
+// global dialog manager component
+export default function GlobalOverlay(): JSX.Element {
+  const forceUpdate = useForceUpdater();
+  const dialog = useRef<HTMLDivElement>(null);
+  const overlay = [...OverlayService.stack].pop();
 
-  constructor(props: EmptyObject) {
-    super(props);
-    !this.state.show && this.clearOverlayStack();
-
-    // init static
-    GlobalOverlay.showDialog = (
-      render: (close: DefaultFunction) => JSX.Element
-    ): DefaultFunction => {
-      const index = this.stack.length;
-      const onClose = () => {
-        const act = () => {
-          this.stack.splice(index, 1);
-          this.updateOverlay();
-        };
-        if (this.dialog.current) {
-          const current = this.dialog.current;
-          current.classList.remove("anime-zoom-in");
-          current.classList.add("anime-zoom-out");
-          setTimeout(act, 200);
-        } else {
-          act();
-        }
-      };
-      this.stack[index] = render(onClose);
-      this.updateOverlay();
-      return onClose;
+  useEffect(() => {
+    OverlayService.updateOverlay = (action) => {
+      const current = dialog.current;
+      if (action === "remove" && current) {
+        current.classList.remove("anime-zoom-in");
+        current.classList.add("anime-zoom-out");
+        setTimeout(() => {
+          forceUpdate();
+        }, 200);
+      } else {
+        forceUpdate();
+      }
     };
-  }
+  }, [forceUpdate]);
 
-  render(): JSX.Element {
-    return (
-      <div
-        className={`flex fixed pin inset-0 z-50 overflow-auto bg-black bg-opacity-50 ${
-          this.state.show ? "" : "hidden"
-        }`}
-      >
-        {this.stack.map((comp, index) => {
-          return !this.shouldOverlayHide(index) ? (
-            <div ref={this.dialog} className="anime-zoom-in mx-auto my-auto" key={index}>
-              {comp}
-            </div>
-          ) : null;
-        })}
-      </div>
-    );
-  }
+  return (
+    <div
+      className={`flex fixed pin inset-0 z-50 overflow-auto bg-black bg-opacity-50 ${
+        overlay ? "" : "hidden"
+      }`}
+    >
+      {overlay && (
+        <div className="m-auto anime-zoom-in" ref={dialog}>
+          {overlay}
+        </div>
+      )}
+    </div>
+  );
 }

@@ -51,9 +51,7 @@ export function unwrapFunction<P extends unknown[] = []>(
 }
 
 export function initRequiredFunction(): () => void {
-  return () => {
-    throw new Error("This function is not initialized");
-  };
+  return () => throwNotInitError();
 }
 
 export function throwNotInitError(): never {

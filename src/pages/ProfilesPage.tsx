@@ -7,7 +7,7 @@ import { RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete, MdFileDownload, MdFolder, MdGamepad } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { useController } from "../tools/hooks";
-import GlobalOverlay from "../components/GlobalOverlay";
+import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { ipcRenderer } from "electron";
 import { DefaultFunction, EmptyObject } from "../tools/types";
@@ -80,7 +80,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
   };
   handleCreate = (): void => this.setState({ creating: true });
   handleRemove = (selected: number): void =>
-    GlobalOverlay.showDialog((close) => (
+    showDialog((close) => (
       <RemoveProfileDialog onClose={close} updateProfiles={this.updateUI} id={selected} />
     ));
   render(): JSX.Element {

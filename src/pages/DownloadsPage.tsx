@@ -7,7 +7,7 @@ import Spin from "../components/Spin";
 import got from "got";
 import { Container, Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
-import GlobalOverlay from "../components/GlobalOverlay";
+import { showDialog } from "../components/GlobalOverlay";
 import Dialog from "../components/Dialog";
 import { useCallback } from "react";
 import { useState } from "react";
@@ -131,9 +131,7 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
                   <ListItem
                     className="rounded-lg p-2"
                     onClick={() =>
-                      GlobalOverlay.showDialog((close) => (
-                        <DownloadDialog version={item} onClose={close} />
-                      ))
+                      showDialog((close) => <DownloadDialog version={item} onClose={close} />)
                     }
                     key={index}
                   >

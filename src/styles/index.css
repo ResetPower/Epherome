@@ -1,9 +1,17 @@
+@import url("anime.css");
+
 /* long live the tailwind!!!!!! */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("anime.css");
+:root {
+  /*
+    only for default value, for more global css variables please see:
+      `src/renderer/theme.ts` and `tailwind.config.js`
+  */
+  --eph-background-color: white;
+}
 
 body {
   background: var(--eph-background-color);

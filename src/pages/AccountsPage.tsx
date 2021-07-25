@@ -12,7 +12,7 @@ import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { useController } from "../tools/hooks";
-import GlobalOverlay from "../components/GlobalOverlay";
+import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useCallback } from "react";
 import { useState } from "react";
@@ -117,7 +117,7 @@ export default class AccountsPage extends FlexibleComponent<EmptyObject, Account
   };
   handleCreate = (): void => this.setState({ creating: true });
   handleRemove = (selected: number): void =>
-    GlobalOverlay.showDialog((close) => (
+    showDialog((close) => (
       <RemoveAccountDialog updateAccounts={this.updateUI} onClose={close} id={selected} />
     ));
   render(): JSX.Element {
