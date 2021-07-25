@@ -19,7 +19,7 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
-import GlobalOverlay from "../components/GlobalOverlay";
+import { showDialog } from "../components/GlobalOverlay";
 import { ErrorDialog } from "../components/Dialogs";
 import { useController } from "../tools/hooks";
 import { getById } from "../tools";
@@ -141,7 +141,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
                 againRequestPassword: again,
               });
             }
-            GlobalOverlay.showDialog((close) => (
+            showDialog((close) => (
               <RequestPasswordDialog
                 onClose={close}
                 again={this.state.againRequestPassword}
@@ -152,12 +152,10 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             ));
           }),
       }).catch((err: Error) => {
-        GlobalOverlay.showDialog((close) => (
-          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
-        ));
+        showDialog((close) => <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />);
       });
     } else {
-      GlobalOverlay.showDialog((close) => (
+      showDialog((close) => (
         <AlertDialog title={t.warning} message={t.noAccOrProSelected} close={close} />
       ));
     }
@@ -234,7 +232,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             {this.state.isLaunching && (
               <>
                 <Typography className="text-sm">{this.state.launchingHelper}</Typography>
-                <div className="bg-blue-500 rounded-full h-1 animate-pulse"></div>
+                <div className="bg-blue-500 rounded-full h-1 animate-pulse" />
               </>
             )}
           </Card>

@@ -8,7 +8,7 @@ import { updateTheme } from "../renderer/theme";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { checkEphUpdate } from "../renderer/updater";
 import Spin from "../components/Spin";
-import GlobalOverlay from "../components/GlobalOverlay";
+import { showDialog } from "../components/GlobalOverlay";
 import { UpdateAvailableDialog } from "../components/Dialogs";
 import { FlexibleComponent } from "../tools/component";
 import { DefaultFunction, EmptyObject } from "../tools/types";
@@ -128,9 +128,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
       if (result) {
         if (result.need) {
           this.setState({ updateCheckResult: t.updateAvailable.replace("{}", result.name) });
-          GlobalOverlay.showDialog((close) => (
-            <UpdateAvailableDialog version={result.name} onClose={close} />
-          ));
+          showDialog((close) => <UpdateAvailableDialog version={result.name} onClose={close} />);
         } else {
           this.setState({ updateCheckResult: t.youAreUsingTheLatestVersion });
         }
@@ -158,7 +156,7 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
     this.updateUI();
   };
   handleManageJava = (): void => {
-    GlobalOverlay.showDialog((close) => (
+    showDialog((close) => (
       <JavaManagementDialog
         onClose={() => {
           close();
