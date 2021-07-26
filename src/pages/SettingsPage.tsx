@@ -1,5 +1,5 @@
 import { Select, Checkbox, Link, Button, TextField, IconButton } from "../components/inputs";
-import { cfgPath, constraints, ephConfigs, mcDownloadPath, setConfig } from "../renderer/config";
+import { cfgPath, constraints, ephConfigs, mcDownloadPath, setConfig } from "../struct/config";
 import { t, i18n, logger, hist } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";

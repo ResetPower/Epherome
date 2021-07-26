@@ -11,7 +11,7 @@ import {
   XBLToken2XSTSToken,
   XSTSToken2MinecraftToken,
 } from "../tools/auth";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "./config";
 import { logger } from "../renderer/global";
 
 export interface MinecraftAccount extends WithId {

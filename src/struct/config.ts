@@ -2,11 +2,10 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { ipcRenderer } from "electron";
-import { MinecraftProfile } from "../struct/profiles";
-import { MinecraftAccount } from "../struct/accounts";
+import { MinecraftProfile } from "./profiles";
+import { MinecraftAccount } from "./accounts";
 import { DefaultFunction } from "../tools/types";
-import { detectJava, Java } from "../struct/java";
-import { getNextId } from "../tools";
+import { detectJava, Java } from "./java";
 
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
@@ -84,11 +83,11 @@ export function saveConfig(): void {
 }
 
 // change config and save
-export function setConfig(cb: DefaultFunction | Partial<EphConfig>, save = true): void {
+export function setConfig(cb: ((cfg: EphConfig) => unknown) | Partial<EphConfig>): void {
   if (cb instanceof Function) {
-    cb();
+    cb(ephConfigs);
   } else {
     Object.assign(ephConfigs, cb);
   }
-  save && saveConfig();
+  saveConfig();
 }

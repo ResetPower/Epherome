@@ -1,5 +1,5 @@
 import { I18n } from "../lang/i18n";
-import { ephConfigs } from "./config";
+import { ephConfigs } from "../struct/config";
 import enUs from "../lang/en-us";
 import zhCn from "../lang/zh-cn";
 import jaJp from "../lang/ja-jp";

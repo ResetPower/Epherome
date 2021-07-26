@@ -1,5 +1,5 @@
 import got from "got";
-import { constraints } from "./config";
+import { constraints } from "../struct/config";
 
 export interface EphUpdatableVersion {
   need: boolean;

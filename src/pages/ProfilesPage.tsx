@@ -2,7 +2,7 @@ import { Button, TextField } from "../components/inputs";
 import { Typography } from "../components/layouts";
 import { createProfile, editProfile, getProfile, MinecraftProfile } from "../struct/profiles";
 import { hist, logger, t } from "../renderer/global";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "../struct/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete, MdFileDownload, MdFolder, MdGamepad } from "react-icons/md";
 import { List, ListItem } from "../components/lists";

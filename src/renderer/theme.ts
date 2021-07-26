@@ -1,6 +1,6 @@
 import { StringMap } from "../tools/types";
 import App from "./App";
-import { ephConfigs, setConfig } from "./config";
+import { ephConfigs, setConfig } from "../struct/config";
 import { darkTheme, lightTheme } from "./global";
 
 const ss = document.documentElement.style;
