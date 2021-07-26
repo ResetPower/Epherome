@@ -1,5 +1,5 @@
 import { getById, getNextId, WithId } from "../tools";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "./config";
 import { logger } from "../renderer/global";
 
 export interface MinecraftProfile extends WithId {

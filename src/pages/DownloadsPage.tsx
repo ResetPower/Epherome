@@ -12,7 +12,7 @@ import Dialog from "../components/Dialog";
 import { useCallback } from "react";
 import { useState } from "react";
 import { downloadFile } from "../core/download";
-import { mcDownloadPath } from "../renderer/config";
+import { mcDownloadPath } from "../struct/config";
 import path from "path";
 import fs from "fs";
 import { ClientJson } from "../core/struct";

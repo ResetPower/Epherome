@@ -1,7 +1,7 @@
-import { spawn } from "child_process";
+import { spawnSync } from "child_process";
 import findJavaHome from "find-java-home";
 import path from "path";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "./config";
 
 export interface Java {
   dir: string;
@@ -12,23 +12,22 @@ export interface Java {
 export function checkJavaVersion(dir: string): Promise<Java | null> {
   return new Promise((resolve) => {
     try {
-      const proc = spawn(dir, ["-version"]);
-      proc.on("error", () => resolve(null));
-      proc.stderr.on("data", (data) => {
-        const name = data
-          .toString()
-          .match(/"(.*?)"/)
-          ?.pop();
+      const pro = spawnSync(dir, ["-version"]);
+      if (pro.error) {
+        resolve(null);
+      } else {
+        const data = pro.stderr.toString();
+        const name = data.match(/"(.*?)"/)?.pop();
         if (name) {
           resolve({
             dir,
             name,
-            is64Bit: data.includes("64-Bit"),
+            is64Bit: data.toLowerCase().includes("64-bit"),
           });
         } else {
           resolve(null);
         }
-      });
+      }
     } catch {
       resolve(null);
     }

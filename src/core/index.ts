@@ -4,7 +4,7 @@ import { MinecraftProfile } from "../struct/profiles";
 import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
 import { analyzeLibrary } from "./libraries";
-import { constraints } from "../renderer/config";
+import { constraints } from "../struct/config";
 import { t } from "../renderer/global";
 import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
 import { isCompliant, osName } from "./rules";

@@ -7,7 +7,7 @@ import {
   MinecraftAccount,
 } from "../struct/accounts";
 import { logger, t } from "../renderer/global";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "../struct/config";
 import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";

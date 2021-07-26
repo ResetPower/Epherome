@@ -1,7 +1,7 @@
 import { Select, Button, IconButton, TextField } from "../components/inputs";
 import { Component, useState } from "react";
 import { hist, logger } from "../renderer/global";
-import { ephConfigs, setConfig } from "../renderer/config";
+import { ephConfigs, setConfig } from "../struct/config";
 import { getAccount, MinecraftAccount } from "../struct/accounts";
 import { getProfile, MinecraftProfile } from "../struct/profiles";
 import { t } from "../renderer/global";
