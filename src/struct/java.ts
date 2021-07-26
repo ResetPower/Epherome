@@ -12,11 +12,11 @@ export interface Java {
 export function checkJavaVersion(dir: string): Promise<Java | null> {
   return new Promise((resolve) => {
     try {
-      const pro = spawnSync(dir, ["-version"]);
-      if (pro.error) {
+      const proc = spawnSync(dir, ["-version"]);
+      if (proc.error) {
         resolve(null);
       } else {
-        const data = pro.stderr.toString();
+        const data = proc.stderr.toString();
         const name = data.match(/"(.*?)"/)?.pop();
         if (name) {
           resolve({
