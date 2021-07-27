@@ -45,14 +45,11 @@ export default class App extends Component<EmptyObject, AppState> {
     return (
       <IconContext.Provider value={{ size: "1.5em" }}>
         <GlobalOverlay />
-        <div className="bg-primary shadow-lg flex py-2 px-3 items-center z-30 top-0 h-16 eph-dragging-area">
-          <IconButton
-            className="text-white eph-non-dragging-area"
-            onClick={isAtHome ? unwrapFunction() : hist.goBack}
-          >
+        <div className="eph-appbar">
+          <IconButton className="text-white" onClick={isAtHome ? unwrapFunction() : hist.goBack}>
             {isAtHome ? <MdMenu /> : <MdArrowBack />}
           </IconButton>
-          <p className="flex-grow pl-3 select-none text-white text-xl">{this.state.title}</p>
+          <p className="eph-appbar-title">{this.state.title}</p>
         </div>
         <Router
           initial="home"

@@ -124,7 +124,7 @@ export default class AccountsPage extends FlexibleComponent<EmptyObject, Account
 
     return (
       <div className="flex eph-h-full">
-        <div className="overflow-y-scroll py-3 w-1/4">
+        <div className="py-3 w-1/4">
           <div className="flex p-3">
             <Button variant="contained" onClick={this.handleCreate}>
               <MdCreate />

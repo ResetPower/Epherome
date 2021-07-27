@@ -36,7 +36,7 @@ export function TabController(props: {
 export function TabBody(props: { children: JSX.Element[] }): JSX.Element {
   const { value } = useContext(TabContext);
 
-  return <div className="p-3 flex-grow">{props.children[value]}</div>;
+  return <div className="eph-tab-body">{props.children[value]}</div>;
 }
 
 export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
@@ -44,8 +44,8 @@ export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
 
   return (
     <div
-      className={`p-3 ${
-        orientation === "horizontal" ? "flex space-x-1" : "border-r border-divide space-y-1"
+      className={`eph-tab-bar ${
+        orientation === "horizontal" ? "eph-tab-bar-horizontal" : "eph-tab-bar-vertical"
       }`}
     >
       {props.children}
@@ -58,10 +58,8 @@ export function TabBarItem(props: { children: ReactNode; value: number }): JSX.E
 
   return (
     <button
-      className={`flex px-3 py-2 transition-colors duration-200 transform hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600 rounded-md focus:outline-none ${
-        props.value === value
-          ? "text-blue-500 dark:text-indigo-400 bg-gray-200 dark:bg-gray-700"
-          : "text-black dark:text-white"
+      className={`eph-tab-bar-item ${
+        props.value === value ? "eph-tab-bar-item-selected" : "eph-default-color"
       }`}
       onClick={() => setValue(props.value)}
     >

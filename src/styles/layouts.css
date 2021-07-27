@@ -1,0 +1,9 @@
+@layer components {
+  .eph-alert {
+    @apply flex bg-opacity-60 text-white shadow-md rounded-md text-base p-3;
+  }
+
+  .eph-container {
+    @apply container mx-auto;
+  }
+}

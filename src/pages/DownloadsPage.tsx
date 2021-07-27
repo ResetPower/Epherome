@@ -107,7 +107,7 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
   }
   render(): JSX.Element {
     return (
-      <Container className="p-3 eph-h-full overflow-y-scroll">
+      <Container className="p-3 eph-h-full overflow-y-auto">
         <div className="flex space-x-3">
           <Checkbox
             checked={this.state.release}
