@@ -1,9 +1,22 @@
-@import url("anime.css");
+@import "tailwind.css";
+@import "anime.css";
+@import "inputs.css";
+@import "overlay.css";
+@import "tabs.css";
+@import "layouts.css";
 
-/* long live the tailwind!!!!!! */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer components {
+  .eph-default-color {
+    @apply text-black dark:text-white;
+  }
+
+  .eph-appbar {
+    @apply bg-primary shadow-lg flex py-2 px-3 items-center z-30 top-0 h-16;
+  }
+  .eph-appbar-title {
+    @apply flex-grow pl-3 select-none text-white text-xl;
+  }
+}
 
 :root {
   /*
@@ -18,7 +31,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0 !important;
+  width: 0;
 }
 
 :root {
@@ -27,10 +40,6 @@ body {
 
 #root {
   height: calc(100vh);
-}
-
-.eph-dialog {
-  min-width: 500px;
 }
 
 .eph-h-full {
@@ -47,13 +56,4 @@ body {
 input:checked ~ .dot {
   transform: translateX(100%);
   background-color: #48bb78;
-}
-
-/* dragging area just like a title bar */
-.eph-dragging-area {
-  -webkit-app-region: drag;
-}
-
-.eph-non-dragging-area {
-  -webkit-app-region: no-drag;
 }

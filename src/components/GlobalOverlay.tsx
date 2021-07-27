@@ -40,11 +40,7 @@ export default function GlobalOverlay(): JSX.Element {
   }, [forceUpdate]);
 
   return (
-    <div
-      className={`flex fixed pin inset-0 z-50 overflow-auto bg-black bg-opacity-50 ${
-        overlay ? "" : "hidden"
-      }`}
-    >
+    <div className={`eph-global-overlay ${overlay ? "" : "hidden"}`}>
       {overlay && (
         <div className="m-auto anime-zoom-in" ref={dialog}>
           {overlay}

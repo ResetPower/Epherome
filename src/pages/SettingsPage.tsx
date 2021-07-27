@@ -44,7 +44,7 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
   return (
     <Dialog className="eph-max-h-full flex flex-col overflow-hidden" indentBottom>
       <Typography className="font-semibold text-xl">{t.manageXxx.replace("{}", "Java")}</Typography>
-      <List className="overflow-y-scroll">
+      <List className="overflow-y-auto">
         {javas.map((value, index) => (
           <ListItem key={index}>
             <ListItemText

@@ -7,7 +7,7 @@ export function Alert(props: {
 }): JSX.Element {
   return (
     <div
-      className={`flex bg-opacity-60 text-white shadow-md rounded-md text-base p-3 ${
+      className={`eph-alert ${
         props.severity === "warn"
           ? "bg-yellow-600"
           : props.severity === "error"
@@ -30,7 +30,7 @@ export function Alert(props: {
 }
 
 export function Container(props: { children: ReactNode; className?: string }): JSX.Element {
-  return <div className={`container mx-auto ${props.className}`}>{props.children}</div>;
+  return <div className={`eph-container ${props.className}`}>{props.children}</div>;
 }
 
 export function Card(props: {
@@ -55,7 +55,7 @@ export function Typography(props: {
   textInherit?: boolean;
 }): JSX.Element {
   return (
-    <p className={`${props.textInherit ? "" : "text-black dark:text-white"} ${props.className}`}>
+    <p className={`${props.textInherit ? "" : "eph-default-color"} ${props.className}`}>
       {props.children}
     </p>
   );

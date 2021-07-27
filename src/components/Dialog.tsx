@@ -11,7 +11,7 @@ export default function Dialog(props: {
 }): JSX.Element {
   return (
     <div
-      className={`shadow-xl rounded-xl bg-card eph-dialog p-6 ${props.indentBottom ? "pb-4" : ""} ${
+      className={`eph-dialog ${props.indentBottom ? "eph-dialog-indent-bottom" : ""} ${
         props.className ?? ""
       }`}
     >

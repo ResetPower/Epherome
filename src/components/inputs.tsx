@@ -10,28 +10,15 @@ export function Button(props: {
   disabled?: boolean;
   onClick?: DefaultFunction;
   textInherit?: boolean;
-  variant?: "contained" | "default";
+  variant?: "contained" | "text";
 }): JSX.Element {
   return (
     <button
       disabled={props.disabled ?? false}
       type="button"
-      className={`flex select-none items-center px-4 py-2 rounded-lg text-sm font-medium m-1 focus:outline-none
-        ${
-          props.variant === "contained"
-            ? `text-white ${
-                props.disabled
-                  ? "bg-blue-800 dark:bg-gray-700 text-gray-200"
-                  : "transition-colors duration-200 transform bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
-              }` // eph-btn-contained
-            : `bg-gray-500 bg-opacity-0 ${
-                props.disabled
-                  ? ""
-                  : "transition-colors duration-200 transform hover:bg-opacity-5 active:bg-opacity-10"
-              } ${props.textInherit ? "" : "text-black dark:text-white"}` // eph-btn-text
-        }
-        ${props.disabled ? "cursor-not-allowed text-shallow" : ""}
-        ${props.className}`}
+      className={`eph-button eph-button-${props.variant ?? "text"} ${
+        props.textInherit ? "" : "eph-default-color"
+      } ${props.className ?? ""}`}
       onClick={props.onClick}
     >
       {props.children}
@@ -47,10 +34,8 @@ export function IconButton(props: {
 }): JSX.Element {
   return (
     <button
-      className={`rounded-full select-none ${
-        props.textInherit ? "" : "text-black dark:text-white"
-      } focus:outline-none h-12 w-12 flex items-center justify-center transition-colors duration-200 transform hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 ${
-        props.className
+      className={`eph-icon-button ${props.className ?? ""} ${
+        props.textInherit ? "" : "eph-default-color"
       }`}
       onClick={props.onClick}
     >
@@ -70,21 +55,13 @@ export function Select<T extends string | number>(props: {
 }): JSX.Element {
   return (
     <div className={props.marginBottom ? "mb-3" : ""}>
-      {props.label && (
-        <label
-          className={`${
-            props.disabled ? "text-shallow" : "text-gray-600 dark:text-gray-400"
-          } font-bold`}
-        >
-          {props.label}
-        </label>
-      )}
+      {props.label && <label className="eph-label">{props.label}</label>}
       <select
         value={props.value}
         onChange={(ev) => {
           unwrapFunction(props.onChange)(ev.currentTarget.value);
         }}
-        className={`block py-2 px-3 bg-card text-black dark:text-white rounded-lg border border-divide shadow-sm focus:outline-none ${props.className}`}
+        className={`eph-select ${props.className ?? ""}`}
         disabled={props.disabled}
       >
         {props.children}
@@ -108,17 +85,9 @@ export function TextField(props: {
 }): JSX.Element {
   return (
     <div className={`${props.marginBottom ? "mb-3" : ""} ${props.className ?? ""}`}>
-      {props.label && (
-        <label className="text-gray-600 dark:text-gray-400 leading-7 text-sm font-bold">
-          {props.label}
-        </label>
-      )}
+      {props.label && <label className="eph-label">{props.label}</label>}
       <div className="flex">
-        {props.icon && (
-          <div className="rounded-l-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-l border-b border-divide text-shallow shadow-sm">
-            {props.icon}
-          </div>
-        )}
+        {props.icon && <div className="eph-textfield-icon">{props.icon}</div>}
         <input
           type={props.type}
           value={props.value}
@@ -132,20 +101,16 @@ export function TextField(props: {
               : props.trailing
               ? "rounded-l-lg"
               : "rounded-lg"
-          } flex-1 appearance-none border border-divide w-full py-2 px-4 bg-card text-gray-700 dark:text-gray-50 placeholder-gray-400 shadow-sm text-base focus:outline-none ${
+          } eph-textfield ${
             props.error
               ? "ring-1 ring-red-500"
               : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
           }`}
         />
-        {props.trailing && (
-          <div className="rounded-r-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-r border-b border-divide text-shallow shadow-sm">
-            {props.trailing}
-          </div>
-        )}
+        {props.trailing && <div className="eph-textfield-trailing">{props.trailing}</div>}
       </div>
       {props.helperText && (
-        <p className={`text-sm ${props.error ? "text-red-500" : "text-shallow"} -bottom-6`}>
+        <p className={`eph-helper-text ${props.error ? "eph-helper-text-error" : ""}`}>
           {props.helperText}
         </p>
       )}
@@ -160,19 +125,14 @@ export function Checkbox(props: {
 }): JSX.Element {
   return (
     <div className="flex items-center">
-      <div className="bg-card border rounded-md border-divide w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+      <div className="eph-checkbox">
         <input
           type="checkbox"
           className="opacity-0 absolute"
           checked={props.checked}
           onChange={(ev) => unwrapFunction(props.onChange)(ev.currentTarget.checked)}
         />
-        <svg
-          className={`fill-current w-3 h-3 text-blue-500 pointer-events-none ${
-            props.checked ? "" : "hidden"
-          }`}
-          viewBox="0 0 20 20"
-        >
+        <svg className={`eph-checkbox-svg ${props.checked ? "" : "hidden"}`} viewBox="0 0 20 20">
           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
         </svg>
       </div>
@@ -198,10 +158,7 @@ export function Link(props: {
     }
   };
   return (
-    <span
-      className={`text-blue-500 hover:text-blue-600 cursor-pointer select-none ${props.className}`}
-      onClick={handleClick}
-    >
+    <span className={`eph-link ${props.className ?? ""}`} onClick={handleClick}>
       {props.children}
     </span>
   );

@@ -12,7 +12,7 @@ export default function ProcessesPage(): JSX.Element {
 
   return (
     <div className="flex eph-h-full">
-      <div className="overflow-y-scroll w-1/4">
+      <div className="overflow-y-auto w-1/4">
         <div className="border-b border-divide">
           <ListItem
             checked={selected === -1}
@@ -41,7 +41,7 @@ export default function ProcessesPage(): JSX.Element {
           ))
         )}
       </div>
-      <div className="w-3/4 border-l border-divide overflow-y-scroll p-3">
+      <div className="w-3/4 border-l border-divide overflow-y-auto p-3">
         <div className="text-black dark:text-white">
           {current
             ? current.outputs.map((value, index) => <p key={index}>{value}</p>)

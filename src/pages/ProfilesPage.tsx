@@ -119,7 +119,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
 
     return (
       <div className="flex eph-h-full">
-        <div className="overflow-y-scroll py-3 w-1/4">
+        <div className="overflow-y-auto py-3 w-1/4">
           <div className="flex my-3 justify-center">
             <Button variant="contained" onClick={this.handleCreate}>
               <MdCreate /> {t.create}
