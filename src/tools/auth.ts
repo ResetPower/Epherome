@@ -189,24 +189,29 @@ export async function authCode2AuthToken(code: string): Promise<StringMap> {
   }
 }
 
-export async function authToken2XBLToken(token: string): Promise<XBLTokenResult> {
+export async function authToken2XBLToken(
+  token: string
+): Promise<XBLTokenResult> {
   try {
-    const result = await got("https://user.auth.xboxlive.com/user/authenticate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        Properties: {
-          AuthMethod: "RPS",
-          SiteName: "user.auth.xboxlive.com",
-          RpsTicket: token,
+    const result = await got(
+      "https://user.auth.xboxlive.com/user/authenticate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        RelyingParty: "http://auth.xboxlive.com",
-        TokenType: "JWT",
-      }),
-    });
+        body: JSON.stringify({
+          Properties: {
+            AuthMethod: "RPS",
+            SiteName: "user.auth.xboxlive.com",
+            RpsTicket: token,
+          },
+          RelyingParty: "http://auth.xboxlive.com",
+          TokenType: "JWT",
+        }),
+      }
+    );
     return JSON.parse(result.body);
   } catch {
     // unable to get xbl token
@@ -214,7 +219,9 @@ export async function authToken2XBLToken(token: string): Promise<XBLTokenResult>
   }
 }
 
-export async function XBLToken2XSTSToken(token: string): Promise<XSTSTokenResult> {
+export async function XBLToken2XSTSToken(
+  token: string
+): Promise<XSTSTokenResult> {
   try {
     const result = await got("https://xsts.auth.xboxlive.com/xsts/authorize", {
       method: "POST",
@@ -243,30 +250,38 @@ export async function XSTSToken2MinecraftToken(
   uhs: string
 ): Promise<MicrosoftMinecraftTokenResult> {
   try {
-    const result = await got("https://api.minecraftservices.com/authentication/login_with_xbox", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        identityToken: `XBL3.0 x=${uhs};${token}`,
-      }),
-    });
+    const result = await got(
+      "https://api.minecraftservices.com/authentication/login_with_xbox",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identityToken: `XBL3.0 x=${uhs};${token}`,
+        }),
+      }
+    );
     return JSON.parse(result.body);
   } catch (e) {
     return { err: true };
   }
 }
 
-export async function checkMinecraftOwnership(token: string): Promise<MinecraftOwnershipResult> {
+export async function checkMinecraftOwnership(
+  token: string
+): Promise<MinecraftOwnershipResult> {
   try {
-    const result = await got("https://api.minecraftservices.com/entitlements/mcstore", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const result = await got(
+      "https://api.minecraftservices.com/entitlements/mcstore",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return JSON.parse(result.body);
   } catch (e) {
     return { err: true };
@@ -277,13 +292,16 @@ export async function getMicrosoftMinecraftProfile(
   token: string
 ): Promise<MicrosoftMinecraftProfileResult> {
   try {
-    const result = await got("https://api.minecraftservices.com/minecraft/profile", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application.json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const result = await got(
+      "https://api.minecraftservices.com/minecraft/profile",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application.json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return JSON.parse(result.body);
   } catch (e) {
     return { err: true };

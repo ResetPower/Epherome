@@ -1,5 +1,18 @@
-import { Select, Checkbox, Link, Button, TextField, IconButton } from "../components/inputs";
-import { cfgPath, constraints, ephConfigs, mcDownloadPath, setConfig } from "../struct/config";
+import {
+  Select,
+  Checkbox,
+  Link,
+  Button,
+  TextField,
+  IconButton,
+} from "../components/inputs";
+import {
+  cfgPath,
+  constraints,
+  ephConfigs,
+  mcDownloadPath,
+  setConfig,
+} from "../struct/config";
 import { t, i18n, logger, hist } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
@@ -16,10 +29,17 @@ import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
 import { useForceUpdater } from "../tools/hooks";
 import { List, ListItem, ListItemText } from "../components/lists";
-import { checkJavaVersion, createJava, detectJava, removeJava } from "../struct/java";
+import {
+  checkJavaVersion,
+  createJava,
+  detectJava,
+  removeJava,
+} from "../struct/java";
 import { useState, useCallback } from "react";
 
-export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.Element {
+export function JavaManagementDialog(props: {
+  onClose: DefaultFunction;
+}): JSX.Element {
   const forceUpdate = useForceUpdater();
   const [err, setErr] = useState<string | null>(null);
   const [newJavaPath, setNewJavaPath] = useState("");
@@ -42,14 +62,22 @@ export function JavaManagementDialog(props: { onClose: DefaultFunction }): JSX.E
   );
 
   return (
-    <Dialog className="eph-max-h-full flex flex-col overflow-hidden" indentBottom>
-      <Typography className="font-semibold text-xl">{t.manageXxx.replace("{}", "Java")}</Typography>
+    <Dialog
+      className="eph-max-h-full flex flex-col overflow-hidden"
+      indentBottom
+    >
+      <Typography className="font-semibold text-xl">
+        {t.manageXxx.replace("{}", "Java")}
+      </Typography>
       <List className="overflow-y-auto">
         {javas.map((value, index) => (
           <ListItem key={index}>
             <ListItemText
               primary={
-                value.name + " (" + t.xxxBit.replace("{}", value.is64Bit ? "64" : "32") + ") "
+                value.name +
+                " (" +
+                t.xxxBit.replace("{}", value.is64Bit ? "64" : "32") +
+                ") "
               }
               secondary={value.dir}
               longSecondary
@@ -120,7 +148,10 @@ export interface SettingsPageState {
   updateCheckResult: string | null;
 }
 
-export default class SettingsPage extends FlexibleComponent<EmptyObject, SettingsPageState> {
+export default class SettingsPage extends FlexibleComponent<
+  EmptyObject,
+  SettingsPageState
+> {
   state: SettingsPageState = {
     updateCheckResult: "",
   };
@@ -131,8 +162,12 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
     checkEphUpdate().then((result) => {
       if (result) {
         if (result.need) {
-          this.setState({ updateCheckResult: t.updateAvailable.replace("{}", result.name) });
-          showDialog((close) => <UpdateAvailableDialog version={result.name} onClose={close} />);
+          this.setState({
+            updateCheckResult: t.updateAvailable.replace("{}", result.name),
+          });
+          showDialog((close) => (
+            <UpdateAvailableDialog version={result.name} onClose={close} />
+          ));
         } else {
           this.setState({ updateCheckResult: t.youAreUsingTheLatestVersion });
         }
@@ -222,9 +257,9 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
             <Select
               label="Java"
               className="mb-2"
-              value={ephConfigs.selectedJava.toString()}
+              value={ephConfigs.javas.getSelectedIndex()?.toString() ?? ""}
               onChange={(value) => {
-                setConfig({ selectedJava: parseInt(value) });
+                setConfig((cfg) => cfg.javas.select(cfg.javas[+value]));
                 this.updateUI();
               }}
             >
@@ -256,7 +291,11 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
                 {t.checkUpdate}
               </Button>
               <Typography>
-                {this.state.updateCheckResult !== null ? this.state.updateCheckResult : <Spin />}
+                {this.state.updateCheckResult !== null ? (
+                  this.state.updateCheckResult
+                ) : (
+                  <Spin />
+                )}
               </Typography>
             </div>
           </div>
@@ -271,16 +310,25 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
               <option value="light">Light</option>
               <option value="dark">Dark</option>
             </Select>
-            <Checkbox checked={ephConfigs.themeFollowOs} onChange={this.handleThemeFollowOs}>
+            <Checkbox
+              checked={ephConfigs.themeFollowOs}
+              onChange={this.handleThemeFollowOs}
+            >
               {t.followOs}
             </Checkbox>
           </div>
 
           <div className="space-y-3">
             <Card variant="contained" className="flex items-center space-x-3">
-              <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
+              <img
+                src={EpheromeLogo}
+                alt="EpheromeLogo"
+                className="w-16 h-16"
+              />
               <div>
-                <Typography className="font-semibold text-xl">Epherome Beta</Typography>
+                <Typography className="font-semibold text-xl">
+                  Epherome Beta
+                </Typography>
                 <Typography>
                   {t.version} {cnst.version}
                 </Typography>
@@ -311,7 +359,8 @@ export default class SettingsPage extends FlexibleComponent<EmptyObject, Setting
             </Card>
             <Card variant="contained">
               <Typography>
-                {t.officialSite}: <Link href="https://epherome.com">https://epherome.com</Link>
+                {t.officialSite}:{" "}
+                <Link href="https://epherome.com">https://epherome.com</Link>
               </Typography>
               <Typography>
                 GitHub:{" "}

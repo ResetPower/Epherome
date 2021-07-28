@@ -2,8 +2,8 @@ import { Select, Button, IconButton, TextField } from "../components/inputs";
 import { Component, useState } from "react";
 import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../struct/config";
-import { getAccount, MinecraftAccount } from "../struct/accounts";
-import { getProfile, MinecraftProfile } from "../struct/profiles";
+import { MinecraftAccount } from "../struct/accounts";
+import { MinecraftProfile } from "../struct/profiles";
 import { t } from "../renderer/global";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
 import { DefaultFunction, EmptyObject } from "../tools/types";
@@ -36,7 +36,9 @@ export function RequestPasswordDialog(props: {
 
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">{t.pleaseInputPassword}</Typography>
+      <Typography className="text-xl font-semibold">
+        {t.pleaseInputPassword}
+      </Typography>
       <div>
         <TextField
           value={password}
@@ -48,7 +50,7 @@ export function RequestPasswordDialog(props: {
         />
       </div>
       <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.onClose} textInherit>
+        <Button className="text-shallow" onClick={props.onClose}>
           {t.cancel}
         </Button>
         <Button onClick={handler}>{t.ok}</Button>
@@ -76,19 +78,19 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     isLaunching: false,
     launchingHelper: "",
   };
-  static setStaticState = (state: Partial<typeof HomePage.staticState>): void => {
+  static setStaticState = (
+    state: Partial<typeof HomePage.staticState>
+  ): void => {
     Object.assign(HomePage.staticState, state);
     this.updateHomePage();
   };
   static hitokoto: Hitokoto | null = null;
   enableHitokoto = ephConfigs.hitokoto;
-  account: MinecraftAccount | null;
+  account: MinecraftAccount | undefined;
   constructor(props: EmptyObject) {
     super(props);
-    const tId = ephConfigs.selectedProfile;
-    const profile = getProfile(tId);
-    this.state.value = profile === null ? "" : tId;
-    this.account = getAccount(ephConfigs.selectedAccount);
+    this.state.value = ephConfigs.profiles.getSelectedIndex() ?? "";
+    this.account = ephConfigs.accounts.getSelected();
     // init static
     HomePage.updateHomePage = () => this.setState({});
   }
@@ -121,8 +123,8 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
   };
   // handle minecraft profile select
   handleChange = (val: string): void => {
-    const newValue = parseInt(val);
-    setConfig({ selectedProfile: newValue });
+    const newValue = +val;
+    setConfig((cfg) => cfg.profiles.select(cfg.profiles[newValue]));
     logger.info(`Profile selection changed to id ${newValue}`);
     this.setState({ value: newValue });
   };
@@ -130,14 +132,17 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     // value will be "" if not selected
     const val = Number(this.state.value);
     const account = this.account;
-    const profile = getProfile(val);
-    if (account !== null && profile !== null) {
-      HomePage.setStaticState({ isLaunching: !HomePage.staticState.isLaunching });
+    const profile = ephConfigs.profiles[val];
+    if (account && profile) {
+      HomePage.setStaticState({
+        isLaunching: !HomePage.staticState.isLaunching,
+      });
       launchMinecraft({
         account,
         profile,
-        setHelper: (helper) => HomePage.setStaticState({ launchingHelper: helper }),
-        java: ephConfigs.javas[ephConfigs.selectedJava],
+        setHelper: (helper) =>
+          HomePage.setStaticState({ launchingHelper: helper }),
+        java: ephConfigs.javas.getSelected(),
         onDone: () => {
           HomePage.setStaticState({ isLaunching: false });
         },
@@ -159,11 +164,17 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             ));
           }),
       }).catch((err: Error) => {
-        showDialog((close) => <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />);
+        showDialog((close) => (
+          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
+        ));
       });
     } else {
       showDialog((close) => (
-        <AlertDialog title={t.warning} message={t.noAccOrProSelected} close={close} />
+        <AlertDialog
+          title={t.warning}
+          message={t.noAccOrProSelected}
+          close={close}
+        />
       ));
     }
   };
@@ -181,8 +192,10 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               </Typography>
               {this.enableHitokoto && (
                 <div>
-                  <Typography className="text-sm">{this.state.hitokoto.content}</Typography>
-                  <Typography className="text-sm text-shallow" textInherit>
+                  <Typography className="text-sm">
+                    {this.state.hitokoto.content}
+                  </Typography>
+                  <Typography className="text-sm text-shallow">
                     {this.state.hitokoto.from}
                   </Typography>
                 </div>
@@ -218,27 +231,34 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
         <div className="flex space-x-6">
           <Card className="flex-grow">
             {profiles.length === 0 ? (
-              <Typography className="text-sm p-1 m-1">{t.noProSelected}</Typography>
+              <Typography className="text-sm p-1 m-1">
+                {t.noProSelected}
+              </Typography>
             ) : (
               <Select
                 value={this.state.value}
                 onChange={this.handleChange}
                 disabled={HomePage.staticState.isLaunching}
               >
-                {profiles.map((i: MinecraftProfile) => (
-                  <option key={i.id} value={i.id}>
+                {profiles.map((i: MinecraftProfile, index) => (
+                  <option key={index} value={index}>
                     {i.name}
                   </option>
                 ))}
               </Select>
             )}
-            <Button onClick={this.handleLaunch} disabled={HomePage.staticState.isLaunching}>
+            <Button
+              onClick={this.handleLaunch}
+              disabled={HomePage.staticState.isLaunching}
+            >
               <MdPlayArrow />
               {t.launch}
             </Button>
             {HomePage.staticState.isLaunching && (
               <>
-                <Typography className="text-sm">{HomePage.staticState.launchingHelper}</Typography>
+                <Typography className="text-sm">
+                  {HomePage.staticState.launchingHelper}
+                </Typography>
                 <div className="bg-blue-500 rounded-full h-1 animate-pulse" />
               </>
             )}

@@ -1,5 +1,9 @@
 import os from "os";
-import { ClientJsonRules, ClientJsonOSRule, ClientJsonFeaturesRule } from "./struct";
+import {
+  ClientJsonRules,
+  ClientJsonOSRule,
+  ClientJsonFeaturesRule,
+} from "./struct";
 
 export const osName = os.platform();
 export const osVer = os.version();

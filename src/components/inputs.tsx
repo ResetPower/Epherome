@@ -9,7 +9,6 @@ export function Button(props: {
   className?: string;
   disabled?: boolean;
   onClick?: DefaultFunction;
-  textInherit?: boolean;
   variant?: "contained" | "text";
 }): JSX.Element {
   return (
@@ -17,8 +16,8 @@ export function Button(props: {
       disabled={props.disabled ?? false}
       type="button"
       className={`eph-button eph-button-${props.variant ?? "text"} ${
-        props.textInherit ? "" : "eph-default-color"
-      } ${props.className ?? ""}`}
+        props.className ?? ""
+      }`}
       onClick={props.onClick}
     >
       {props.children}
@@ -30,13 +29,10 @@ export function IconButton(props: {
   children: ReactNode;
   className?: string;
   onClick?: DefaultFunction;
-  textInherit?: boolean;
 }): JSX.Element {
   return (
     <button
-      className={`eph-icon-button ${props.className ?? ""} ${
-        props.textInherit ? "" : "eph-default-color"
-      }`}
+      className={`eph-icon-button color-contrast ${props.className ?? ""}`}
       onClick={props.onClick}
     >
       {props.children}
@@ -44,8 +40,8 @@ export function IconButton(props: {
   );
 }
 
-export function Select<T extends string | number>(props: {
-  value: T;
+export function Select(props: {
+  value: string | number;
   label?: string;
   onChange?: (value: string) => void;
   className?: string;
@@ -58,9 +54,7 @@ export function Select<T extends string | number>(props: {
       {props.label && <label className="eph-label">{props.label}</label>}
       <select
         value={props.value}
-        onChange={(ev) => {
-          unwrapFunction(props.onChange)(ev.currentTarget.value);
-        }}
+        onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
         className={`eph-select ${props.className ?? ""}`}
         disabled={props.disabled}
       >
@@ -84,7 +78,9 @@ export function TextField(props: {
   onChange?: (ev: string) => void;
 }): JSX.Element {
   return (
-    <div className={`${props.marginBottom ? "mb-3" : ""} ${props.className ?? ""}`}>
+    <div
+      className={`${props.marginBottom ? "mb-3" : ""} ${props.className ?? ""}`}
+    >
       {props.label && <label className="eph-label">{props.label}</label>}
       <div className="flex">
         {props.icon && <div className="eph-textfield-icon">{props.icon}</div>}
@@ -107,10 +103,16 @@ export function TextField(props: {
               : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
           }`}
         />
-        {props.trailing && <div className="eph-textfield-trailing">{props.trailing}</div>}
+        {props.trailing && (
+          <div className="eph-textfield-trailing">{props.trailing}</div>
+        )}
       </div>
       {props.helperText && (
-        <p className={`eph-helper-text ${props.error ? "eph-helper-text-error" : ""}`}>
+        <p
+          className={`eph-helper-text ${
+            props.error ? "eph-helper-text-error" : ""
+          }`}
+        >
           {props.helperText}
         </p>
       )}
@@ -130,9 +132,14 @@ export function Checkbox(props: {
           type="checkbox"
           className="opacity-0 absolute"
           checked={props.checked}
-          onChange={(ev) => unwrapFunction(props.onChange)(ev.currentTarget.checked)}
+          onChange={(ev) =>
+            unwrapFunction(props.onChange)(ev.currentTarget.checked)
+          }
         />
-        <svg className={`eph-checkbox-svg ${props.checked ? "" : "hidden"}`} viewBox="0 0 20 20">
+        <svg
+          className={`eph-checkbox-svg ${props.checked ? "" : "hidden"}`}
+          viewBox="0 0 20 20"
+        >
           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
         </svg>
       </div>

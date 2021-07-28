@@ -80,7 +80,10 @@ export function DownloadDialog(props: {
   );
 }
 
-export default class DownloadsPage extends Component<EmptyObject, DownloadsPageState> {
+export default class DownloadsPage extends Component<
+  EmptyObject,
+  DownloadsPageState
+> {
   state: DownloadsPageState = {
     release: true,
     snapshot: false,
@@ -97,13 +100,15 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
   }
   componentDidMount(): void {
     logger.info("Fetching Minecraft launcher meta...");
-    got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((resp) => {
-      const parsed = JSON.parse(resp.body);
-      if (parsed.hasOwnProperty("versions")) {
-        this.setState({ versions: parsed.versions });
-        logger.info("Fetched Minecraft launcher meta");
+    got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then(
+      (resp) => {
+        const parsed = JSON.parse(resp.body);
+        if (parsed.hasOwnProperty("versions")) {
+          this.setState({ versions: parsed.versions });
+          logger.info("Fetched Minecraft launcher meta");
+        }
       }
-    });
+    );
   }
   render(): JSX.Element {
     return (
@@ -136,7 +141,9 @@ export default class DownloadsPage extends Component<EmptyObject, DownloadsPageS
                   <ListItem
                     className="rounded-lg p-2"
                     onClick={() =>
-                      showDialog((close) => <DownloadDialog version={item} onClose={close} />)
+                      showDialog((close) => (
+                        <DownloadDialog version={item} onClose={close} />
+                      ))
                     }
                     key={index}
                   >

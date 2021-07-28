@@ -24,7 +24,11 @@ export function createDirByPath(p: string): void {
   }
 }
 
-export async function downloadFile(url: string, target: string, recursive = false): Promise<void> {
+export async function downloadFile(
+  url: string,
+  target: string,
+  recursive = false
+): Promise<void> {
   if (recursive) {
     createDirByPath(target);
   }
@@ -32,6 +36,8 @@ export async function downloadFile(url: string, target: string, recursive = fals
     await pipelineAsync(got.stream(url), fs.createWriteStream(target));
   } catch (e) {
     coreLogger.warn("Unable to download: " + url);
-    throw new Error(`Unable to download file at ${url} \n Caused by: ${e.message}`);
+    throw new Error(
+      `Unable to download file at ${url} \n Caused by: ${e.message}`
+    );
   }
 }

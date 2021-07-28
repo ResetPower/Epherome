@@ -1,14 +1,15 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
     "serve": "webpack serve --env dev --env process='renderer'",
     "electron": "webpack build --env dev --env process='main' && electron . --remote-debugging-port=9222",
     "test": "mocha --require ts-node/register test/**/*.spec.ts",
-    "lint": "eslint src/**/*.ts src/**/*.tsx test/**/*.ts",
+    "eslint": "eslint src/**/*.{ts,tsx} test/**/*.{ts,tsx} --no-error-on-unmatched-pattern",
+    "prettier": "prettier src/**/*.{ts,tsx} test/**/*.{ts,tsx} --write --no-error-on-unmatched-pattern",
     "dev": "concurrently -n wdm,ele 'npm:serve' 'npm:electron'",
     "prod": "webpack build --env prod --env process='all'"
   },
@@ -83,7 +84,6 @@
     "react-refresh": "^0.10.0",
     "spectron": "^15.0.0",
     "tailwindcss": "^2.2.5",
-    "ts-loader": "^9.2.3",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
     "webpack": "^5.45.1",
@@ -96,6 +96,7 @@
     "node-stream-zip": "^1.13.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-icons": "^4.2.0"
+    "react-icons": "^4.2.0",
+    "ts-loader": "^9.2.4"
   }
 }

@@ -4,8 +4,8 @@ import path from "path";
 import { ipcRenderer } from "electron";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
-import { DefaultFunction } from "../tools/types";
 import { detectJava, Java } from "./java";
+import { SelectableArray } from "../tools/arrays";
 
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
@@ -13,12 +13,9 @@ export const constraints = ipcRenderer.sendSync("initialize");
 export type EphDownloadProvider = "official" | "bmclapi" | "mcbbs";
 
 export interface EphConfig {
-  accounts: MinecraftAccount[];
-  profiles: MinecraftProfile[];
-  javas: Java[];
-  selectedAccount: number;
-  selectedProfile: number;
-  selectedJava: number;
+  accounts: SelectableArray<MinecraftAccount>;
+  profiles: SelectableArray<MinecraftProfile>;
+  javas: SelectableArray<Java>;
   theme: string;
   themeFollowOs: boolean;
   language: string;
@@ -26,21 +23,7 @@ export interface EphConfig {
   downloadProvider: EphDownloadProvider;
 }
 
-// default values of config
-const initConfig: EphConfig = {
-  accounts: [],
-  profiles: [],
-  javas: [],
-  selectedAccount: 0,
-  selectedProfile: 0,
-  selectedJava: 0,
-  theme: "light",
-  themeFollowOs: false,
-  hitokoto: true,
-  // if no language found in config, follow the system
-  language: navigator.language.startsWith("zh") ? "zh-cn" : "en-us",
-  downloadProvider: "official",
-};
+let parsed: Partial<EphConfig> = {};
 
 // prepare config
 export const cfgPath = path.join(constraints.dir, "settings.json");
@@ -49,21 +32,33 @@ try {
   fs.accessSync(cfgPath);
   // file does exist
   const str = fs.readFileSync(cfgPath).toString();
-  const obj = JSON.parse(str);
-  Object.assign(initConfig, obj);
+  parsed = JSON.parse(str);
 } catch {
   // file does not exist
   fs.writeFileSync(cfgPath, "{}");
 }
 
+// default values of config
+export const ephConfigs: EphConfig = {
+  accounts: SelectableArray.create(parsed.accounts),
+  profiles: SelectableArray.create(parsed.profiles),
+  javas: SelectableArray.create(parsed.javas),
+  theme: parsed.theme ?? "light",
+  themeFollowOs: parsed.themeFollowOs ?? false,
+  hitokoto: parsed.hitokoto ?? true,
+  // if no language found in config, follow the system
+  language:
+    parsed.language ??
+    (navigator.language.startsWith("zh") ? "zh-cn" : "en-us"),
+  downloadProvider: parsed.downloadProvider ?? "official",
+};
+
 // initialize java config
-if (initConfig.javas.length === 0) {
+if (ephConfigs.javas.length === 0) {
   detectJava().then((java) => {
-    java && initConfig.javas.push(java);
+    java && ephConfigs.javas.push(java);
   });
 }
-
-export const ephConfigs: EphConfig = initConfig;
 
 // create directories
 
@@ -83,7 +78,9 @@ export function saveConfig(): void {
 }
 
 // change config and save
-export function setConfig(cb: ((cfg: EphConfig) => unknown) | Partial<EphConfig>): void {
+export function setConfig(
+  cb: ((cfg: EphConfig) => unknown) | Partial<EphConfig>
+): void {
   if (cb instanceof Function) {
     cb(ephConfigs);
   } else {

@@ -1,4 +1,8 @@
-export type MinecraftVersionType = "release" | "snapshot" | "old_beta" | "old_alpha";
+export type MinecraftVersionType =
+  | "release"
+  | "snapshot"
+  | "old_beta"
+  | "old_alpha";
 
 export interface MinecraftVersion {
   id: string;
@@ -20,14 +24,16 @@ export function isJava16Required(detail: MinecraftVersionDetail): boolean {
   return detail.major >= 1 && detail.minor >= 17;
 }
 
-export function parseMinecraftVersionDetail(id: string): MinecraftVersionDetail {
+export function parseMinecraftVersionDetail(
+  id: string
+): MinecraftVersionDetail {
   const split = id.split("-");
   const split1 = split[0].split(".");
   const vanilla = split.length === 1;
   return {
-    major: parseInt(split1[0]),
-    minor: parseInt(split1[1]),
-    patch: parseInt(split1[2]),
+    major: +split1[0],
+    minor: +split1[1],
+    patch: +split1[2],
     other: vanilla ? "" : split.slice(1, split.length).join("-"),
     vanilla,
   };

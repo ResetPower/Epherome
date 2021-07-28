@@ -14,10 +14,16 @@ describe("core", function () {
       });
       it("deals when length of arg is 2", function () {
         assert(
-          isCompliant([{ action: "disallow" }, { action: "allow", os: { name: os.platform() } }])
+          isCompliant([
+            { action: "disallow" },
+            { action: "allow", os: { name: os.platform() } },
+          ])
         );
         assert(
-          !isCompliant([{ action: "allow" }, { action: "disallow", os: { name: os.platform() } }])
+          !isCompliant([
+            { action: "allow" },
+            { action: "disallow", os: { name: os.platform() } },
+          ])
         );
       });
       it("deals with 'features' key", function () {
@@ -28,17 +34,28 @@ describe("core", function () {
           })
         );
         assert(
-          isCompliant([{ action: "allow", features: { has_custom_resolution: true } }], {
-            is_demo_user: false,
-            has_custom_resolution: true,
-          })
+          isCompliant(
+            [{ action: "allow", features: { has_custom_resolution: true } }],
+            {
+              is_demo_user: false,
+              has_custom_resolution: true,
+            }
+          )
         );
-        assert(!isCompliant([{ action: "allow", features: { is_demo_user: true } }], {}));
         assert(
-          !isCompliant([{ action: "disallow", features: { is_demo_user: true } }], {
-            is_demo_user: true,
-            has_custom_resolution: true,
-          })
+          !isCompliant(
+            [{ action: "allow", features: { is_demo_user: true } }],
+            {}
+          )
+        );
+        assert(
+          !isCompliant(
+            [{ action: "disallow", features: { is_demo_user: true } }],
+            {
+              is_demo_user: true,
+              has_custom_resolution: true,
+            }
+          )
         );
       });
     });

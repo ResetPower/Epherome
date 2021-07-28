@@ -17,6 +17,3 @@ Epherome is a simple Minecraft launcher developed by Electron and React
 ## LICENSE
 
 [GNU General Public License 3.0](LICENSE)
-
-
-

@@ -1,13 +1,13 @@
 import Dialog, { AlertDialog, ConfirmDialog } from "./Dialog";
 import { t } from "../renderer/global";
-import { removeAccount } from "../struct/accounts";
-import { removeProfile } from "../struct/profiles";
+import { MinecraftAccount, removeAccount } from "../struct/accounts";
+import { MinecraftProfile, removeProfile } from "../struct/profiles";
 import { DefaultFunction } from "../tools/types";
 import { Button, Link } from "./inputs";
 import { Typography } from "./layouts";
 
 export function RemoveAccountDialog(props: {
-  id: number;
+  account: MinecraftAccount;
   updateAccounts: DefaultFunction;
   onClose: DefaultFunction;
 }): JSX.Element {
@@ -16,7 +16,7 @@ export function RemoveAccountDialog(props: {
       title={t.removeAccount}
       message={t.confirmRemoving}
       action={() => {
-        removeAccount(props.id);
+        removeAccount(props.account);
         props.updateAccounts();
       }}
       close={props.onClose}
@@ -29,14 +29,14 @@ export function RemoveAccountDialog(props: {
 export function RemoveProfileDialog(props: {
   updateProfiles: DefaultFunction;
   onClose: DefaultFunction;
-  id: number;
+  profile: MinecraftProfile;
 }): JSX.Element {
   return (
     <ConfirmDialog
       title={t.removeProfile}
       message={t.confirmRemoving}
       action={() => {
-        removeProfile(props.id);
+        removeProfile(props.profile);
         props.updateProfiles();
       }}
       close={props.onClose}
@@ -46,9 +46,17 @@ export function RemoveProfileDialog(props: {
   );
 }
 
-export function ErrorDialog(props: { stacktrace: string; onClose: DefaultFunction }): JSX.Element {
+export function ErrorDialog(props: {
+  stacktrace: string;
+  onClose: DefaultFunction;
+}): JSX.Element {
   return (
-    <AlertDialog title={t.errorOccurred} message={props.stacktrace} close={props.onClose} pre />
+    <AlertDialog
+      title={t.errorOccurred}
+      message={props.stacktrace}
+      close={props.onClose}
+      pre
+    />
   );
 }
 
@@ -58,7 +66,9 @@ export function UpdateAvailableDialog(props: {
 }): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">{t.epheromeUpdate}</Typography>
+      <Typography className="text-xl font-semibold">
+        {t.epheromeUpdate}
+      </Typography>
       <Typography>{t.updateAvailable.replace("{}", props.version)}</Typography>
       <Typography>
         {t.pleaseGoToSiteToDownloadLatestVersion}:{" "}
@@ -67,7 +77,7 @@ export function UpdateAvailableDialog(props: {
         </Link>
       </Typography>
       <div className="flex justify-end">
-        <Button className="text-secondary" onClick={props.onClose} textInherit>
+        <Button className="text-secondary" onClick={props.onClose}>
           {t.ok}
         </Button>
       </div>

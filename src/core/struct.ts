@@ -54,12 +54,18 @@ export interface ClientJsonCommonArtifact {
   url: string;
 }
 
-export function mergeClientJson(parsed: ClientJson, inherit: ClientJson): ClientJson {
+export function mergeClientJson(
+  parsed: ClientJson,
+  inherit: ClientJson
+): ClientJson {
   const ret = { ...inherit, ...parsed };
   if (inherit.arguments) {
     ret.arguments?.game.push(...inherit.arguments.game);
   } else if (inherit.minecraftArguments) {
-    ret.minecraftArguments = [ret.minecraftArguments, inherit.minecraftArguments].join(" ");
+    ret.minecraftArguments = [
+      ret.minecraftArguments,
+      inherit.minecraftArguments,
+    ].join(" ");
   }
   ret.libraries.push(...inherit.libraries);
   return ret;

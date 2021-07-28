@@ -30,8 +30,10 @@ export default defineLanguage({
     password: "Password",
     username: "Username",
     authserver: "Auth Server",
-    errCreatingAccount: "The information is incorrect or the authentication server is down.",
-    confirmRemoving: "Are you sure you want to remove it? The operation is irreversible.",
+    errCreatingAccount:
+      "The information is incorrect or the authentication server is down.",
+    confirmRemoving:
+      "Are you sure you want to remove it? The operation is irreversible.",
     name: "Name",
     directory: "Directory",
     version: "Version",
@@ -49,7 +51,8 @@ export default defineLanguage({
     launching: "Launching",
     javaPath: "Java Path",
     openDirectory: "Open Directory",
-    usuallyDotMinecraftEtc: "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux",
+    usuallyDotMinecraftEtc:
+      "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux",
     theme: "Theme",
     ok: "OK",
     passwordWrong: "Password Wrong",
@@ -58,13 +61,15 @@ export default defineLanguage({
     manageXxx: "Manage {}",
     notSupportedYet: "Sorry, this feature is not yet available.",
     warning: "Warning",
-    alphaWarning: "The program is in the alpha stage, please use it with caution.",
+    alphaWarning:
+      "The program is in the alpha stage, please use it with caution.",
     hitokoto: "Hitokoto",
     download: "Download",
     clickToLogin: 'Click "Create" to log in to your Microsoft account',
     downloads: "Downloads",
     add: "Add",
-    considerUsingJava16: "Java 16 or later is required to launch Minecraft 1.17.",
+    considerUsingJava16:
+      "Java 16 or later is required to launch Minecraft 1.17.",
     downloadingJson: "Downloading version json file",
     downloadingJar: "Downloading version jar file",
     javaNotFound: "Java Not Found",
@@ -90,14 +95,18 @@ export default defineLanguage({
     release: "Release",
     snapshot: "Snapshot",
     old: "Old",
-    cannotConnectToInternet: "The web is different for you, cannot connect to the Internet.",
-    hitokotoDescription: "Display a random line of text provided by Epherome on your homepage.",
+    cannotConnectToInternet:
+      "The web is different for you, cannot connect to the Internet.",
+    hitokotoDescription:
+      "Display a random line of text provided by Epherome on your homepage.",
     msAccNoMinecraft: "You don’t have Minecraft in your Microsoft account yet",
     downloading: "Downloading",
     official: "Official",
     downloadProvider: "Download Provider",
-    downloadProviderIsNotAble: "Sorry, it's not supported to change download providers now.",
-    downloadNotSupported: "Sorry, it's not supported to download Minecraft client now.",
+    downloadProviderIsNotAble:
+      "Sorry, it's not supported to change download providers now.",
+    downloadNotSupported:
+      "Sorry, it's not supported to download Minecraft client now.",
     maps: "Maps",
     resourcePacks: "Resourcepacks",
     noAccOrProSelected: "No account or profile selected.",

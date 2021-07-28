@@ -38,6 +38,7 @@ export class EphHistory {
     });
   replace = (pathname: string, params: StringMap = {}): void =>
     this.act(() => (this.location = { pathname, params }));
-  goBack = (): void => this.act(() => (this.location.pathname = this.paths.pop() ?? ""));
+  goBack = (): void =>
+    this.act(() => (this.location.pathname = this.paths.pop() ?? ""));
   dispatch = (): void => this.histListener();
 }

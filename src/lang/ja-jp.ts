@@ -30,7 +30,8 @@ export default defineLanguage({
     password: "パスワード",
     username: "ユーザー名",
     authserver: "認証サーバー",
-    errCreatingAccount: "情報が間違っているか、認証サーバーがダウンしています。",
+    errCreatingAccount:
+      "情報が間違っているか、認証サーバーがダウンしています。",
     confirmRemoving: "削除してもよろしいですか? 操作は元に戻せません。",
     name: "名前",
     directory: "パス",
@@ -44,8 +45,10 @@ export default defineLanguage({
     oss: "オープンソースソフトウェア",
     language: "言語",
     save: "セーブ",
-    noAccountsYet: "アカウントはまだありません。 「作成」をクリックして新規作成します。",
-    noProfilesYet: "プロフィルはまだありません。 「作成」をクリックして新規作成します。",
+    noAccountsYet:
+      "アカウントはまだありません。 「作成」をクリックして新規作成します。",
+    noProfilesYet:
+      "プロフィルはまだありません。 「作成」をクリックして新規作成します。",
     launching: "起動中しています",
     javaPath: "Java パス",
     openDirectory: "パスを開けて",
@@ -59,13 +62,16 @@ export default defineLanguage({
     manageXxx: "{} を管理する",
     notSupportedYet: "申し訳ありませんが、この機能はまだご利用いただけません。",
     warning: "警告",
-    alphaWarning: "このプログラムは Alpha 段階にあります。注意して使用してください。",
+    alphaWarning:
+      "このプログラムは Alpha 段階にあります。注意して使用してください。",
     hitokoto: "一言",
     download: "ダウンロード",
-    clickToLogin: "「作成」をクリックして Microsoft アカウントにログインします。",
+    clickToLogin:
+      "「作成」をクリックして Microsoft アカウントにログインします。",
     downloads: "ダウンロード",
     add: "追加",
-    considerUsingJava16: "Minecraft 1.17 を起動するには、Java 16 以降が必要です。",
+    considerUsingJava16:
+      "Minecraft 1.17 を起動するには、Java 16 以降が必要です。",
     downloadingJson: "バージョン json ファイルをダウンロードしています。",
     downloadingJar: "バージョン jar ファイルをダウンロードしています。",
     javaNotFound: "Javaが見つかりません",
@@ -91,8 +97,10 @@ export default defineLanguage({
     release: "リリース",
     snapshot: "スナップショット",
     old: "古い",
-    cannotConnectToInternet: "Web はあなたにとって異なる、インターネットに接続できません",
-    hitokotoDescription: "Epherome が提供するランダムなテキスト行をホームページに表示します。",
+    cannotConnectToInternet:
+      "Web はあなたにとって異なる、インターネットに接続できません",
+    hitokotoDescription:
+      "Epherome が提供するランダムなテキスト行をホームページに表示します。",
     msAccNoMinecraft: "Microsoft アカウントに Minecraft がまだありません",
     downloading: "ダウンロード",
     official: "公式ソース",

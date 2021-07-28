@@ -13,8 +13,9 @@ export interface EphTheme {
     primary: string;
     secondary: string;
     shallow: string;
-    divide: string;
+    divider: string;
     card: string;
+    contrast: string;
   };
 }
 
@@ -36,8 +37,9 @@ export function applyTheme(theme: EphTheme): void {
     "--eph-primary-color": theme.palette.primary,
     "--eph-secondary-color": theme.palette.secondary,
     "--eph-shallow-color": theme.palette.shallow,
-    "--eph-divide-color": theme.palette.divide,
+    "--eph-divider-color": theme.palette.divider,
     "--eph-card-color": theme.palette.card,
+    "--eph-contrast-color": theme.palette.contrast,
   });
 }
 

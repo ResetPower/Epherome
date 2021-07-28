@@ -3,11 +3,10 @@ import { Button, Select, TextField } from "../components/inputs";
 import {
   createAccount,
   CreateAccountImplResult,
-  getAccount,
   MinecraftAccount,
 } from "../struct/accounts";
 import { logger, t } from "../renderer/global";
-import { ephConfigs, setConfig } from "../struct/config";
+import { ephConfigs } from "../struct/config";
 import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
@@ -18,7 +17,9 @@ import { DefaultFunction, EmptyObject } from "../tools/types";
 import Spin from "../components/Spin";
 import { FlexibleComponent } from "../tools/component";
 
-export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.Element {
+export function CreateAccountFragment(props: {
+  onDone: DefaultFunction;
+}): JSX.Element {
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [msAccNoMcAlert, setMsAccNoMcAlert] = useState(false);
@@ -31,18 +32,20 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
     setLoading(true);
     setErrAlert(false);
     setMsAccNoMcAlert(false);
-    createAccount(value, name, password, authserver).then((value: CreateAccountImplResult) => {
-      setLoading(false);
-      if (value.success) {
-        props.onDone();
-      } else {
-        if (value.message === "msAccNoMinecraft") {
-          setMsAccNoMcAlert(true);
+    createAccount(value, name, password, authserver).then(
+      (value: CreateAccountImplResult) => {
+        setLoading(false);
+        if (value.success) {
+          props.onDone();
         } else {
-          setErrAlert(true);
+          if (value.message === "msAccNoMinecraft") {
+            setMsAccNoMcAlert(true);
+          } else {
+            setErrAlert(true);
+          }
         }
       }
-    });
+    );
   };
 
   return (
@@ -67,15 +70,29 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
         </Select>
         <div hidden={value !== "mojang"}>
           <TextField label={t.email} value={name} onChange={setName} />
-          <TextField label={t.password} value={password} onChange={setPassword} type="password" />
+          <TextField
+            label={t.password}
+            value={password}
+            onChange={setPassword}
+            type="password"
+          />
         </div>
         <div hidden={value !== "microsoft"}>
           <Typography>{t.clickToLogin}</Typography>
         </div>
         <div hidden={value !== "authlib"}>
-          <TextField label={t.authserver} value={authserver} onChange={setAuthserver} />
+          <TextField
+            label={t.authserver}
+            value={authserver}
+            onChange={setAuthserver}
+          />
           <TextField label={t.email} value={name} onChange={setName} />
-          <TextField label={t.password} value={password} onChange={setPassword} type="password" />
+          <TextField
+            label={t.password}
+            value={password}
+            onChange={setPassword}
+            type="password"
+          />
         </div>
         <div hidden={value !== "offline"}>
           <TextField label={t.username} value={name} onChange={setName} />
@@ -83,7 +100,7 @@ export function CreateAccountFragment(props: { onDone: DefaultFunction }): JSX.E
       </div>
       <div className="flex">
         <div className="flex-grow">{isLoading && <Spin />}</div>
-        <Button className="text-shallow" onClick={props.onDone} textInherit>
+        <Button className="text-shallow" onClick={props.onDone}>
           {t.cancel}
         </Button>
         <Button disabled={isLoading} onClick={handleCreate}>
@@ -98,29 +115,25 @@ export interface AccountsPageState {
   creating: boolean;
 }
 
-export default class AccountsPage extends FlexibleComponent<EmptyObject, AccountsPageState> {
+export default class AccountsPage extends FlexibleComponent<
+  EmptyObject,
+  AccountsPageState
+> {
   state = {
     creating: false,
   };
   handleCreate = (): void => this.setState({ creating: true });
-  handleRemove = (selected: number): void =>
+  handleRemove = (selected: MinecraftAccount): void =>
     showDialog((close) => (
-      <RemoveAccountDialog updateAccounts={this.updateUI} onClose={close} id={selected} />
+      <RemoveAccountDialog
+        updateAccounts={this.updateUI}
+        onClose={close}
+        account={selected}
+      />
     ));
   render(): JSX.Element {
     const accounts = ephConfigs.accounts;
-    const selected = ephConfigs.selectedAccount;
-    const current = getAccount(selected);
-
-    /**<div className="flex flex-col eph-h-full justify-center items-center">
-        <Typography className="text-shallow" textInherit>
-          {t.noAccountsYet}
-        </Typography>
-        <Button variant="contained" onClick={this.handleCreate}>
-          <MdCreate />
-          {t.create}
-        </Button>
-      </div> */
+    const current = accounts.getSelected();
 
     return (
       <div className="flex eph-h-full">
@@ -132,16 +145,16 @@ export default class AccountsPage extends FlexibleComponent<EmptyObject, Account
             </Button>
           </div>
           <List className="space-y-3">
-            {accounts.map((i: MinecraftAccount) => (
+            {accounts.map((i: MinecraftAccount, index) => (
               <ListItem
                 className="p-3 mx-2 rounded-lg"
-                checked={!this.state.creating && selected === i.id}
+                checked={!this.state.creating && current === i}
                 onClick={() => {
-                  logger.info(`Account selection changed to id ${i.id}`);
-                  setConfig({ selectedAccount: i.id });
+                  logger.info(`Account selection changed`);
+                  accounts.select(i);
                   this.updateUI();
                 }}
-                key={i.id}
+                key={index}
               >
                 <Typography className="flex space-x-1">{i.name}</Typography>
               </ListItem>
@@ -149,11 +162,16 @@ export default class AccountsPage extends FlexibleComponent<EmptyObject, Account
           </List>
         </div>
         {this.state.creating ? (
-          <div className="border-l border-divide p-3 w-3/4">
-            <CreateAccountFragment onDone={() => this.setState({ creating: false })} />
+          <div className="border-l border-divider p-3 w-3/4">
+            <CreateAccountFragment
+              onDone={() => this.setState({ creating: false })}
+            />
           </div>
         ) : (
-          <TabController className="flex-grow p-3 w-3/4" orientation="horizontal">
+          <TabController
+            className="flex-grow p-3 w-3/4"
+            orientation="horizontal"
+          >
             <TabBar>
               <TabBarItem value={0}>{t.general}</TabBarItem>
               <TabBarItem value={1}>{t.edit}</TabBarItem>
@@ -161,17 +179,13 @@ export default class AccountsPage extends FlexibleComponent<EmptyObject, Account
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
-                  <Typography className="text-shallow" textInherit>
-                    ID: {current?.id}
-                  </Typography>
                   <Typography>{current?.name}</Typography>
                   <Typography>{current && t[current.mode]}</Typography>
                 </div>
                 <div className="flex justify-end">
                   <Button
                     className="text-red-500"
-                    onClick={() => this.handleRemove(selected)}
-                    textInherit
+                    onClick={() => current && this.handleRemove(current)}
                   >
                     <MdDelete /> {t.remove}
                   </Button>
