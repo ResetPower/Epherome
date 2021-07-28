@@ -22,9 +22,9 @@ export class Logger {
   };
   private makeTime = (): string => {
     const date = new Date();
-    return `${appendZero(date.getHours())}:${appendZero(date.getMinutes())}:${appendZero(
-      date.getSeconds()
-    )}`;
+    return `${appendZero(date.getHours())}:${appendZero(
+      date.getMinutes()
+    )}:${appendZero(date.getSeconds())}`;
   };
   log = (level: LogLevel, msg: LogMessage): void => {
     const time = this.makeTime();

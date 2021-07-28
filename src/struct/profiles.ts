@@ -1,8 +1,7 @@
-import { getById, getNextId, WithId } from "../tools";
 import { ephConfigs, setConfig } from "./config";
 import { logger } from "../renderer/global";
 
-export interface MinecraftProfile extends WithId {
+export interface MinecraftProfile {
   name: string;
   dir: string;
   ver: string;
@@ -11,40 +10,37 @@ export interface MinecraftProfile extends WithId {
   resolution?: [number, number];
 }
 
-export type MinecraftProfileWithoutId = Omit<MinecraftProfile, "id">;
-export type MinecraftProfileEditablePart = Omit<MinecraftProfileWithoutId, "from">;
+export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;
 
-export function createProfile({ name, dir, ver, from }: MinecraftProfileWithoutId): boolean {
+export function createProfile({
+  name,
+  dir,
+  ver,
+  from,
+}: MinecraftProfile): boolean {
   if (name === "" || dir === "" || ver === "") return false;
-  const theId = getNextId(ephConfigs.profiles);
   setConfig(() =>
     ephConfigs.profiles.push({
-      id: theId,
       name,
       dir,
       ver,
       from,
     })
   );
-  logger.info(`Created profile named '${name}', id: ${theId}`);
+  logger.info(`Created profile named '${name}'`);
   return true;
 }
 
-export function editProfile(id: number, profile: MinecraftProfileEditablePart): boolean {
-  setConfig({
-    profiles: ephConfigs.profiles.map((value: MinecraftProfile) => {
-      return value.id === id ? Object.assign(value, profile) : value;
-    }),
-  });
-  logger.info(`Update profile, id: ${id}`);
+export function editProfile(
+  former: MinecraftProfile,
+  profile: MinecraftProfileEditablePart
+): boolean {
+  setConfig(() => Object.assign(former, profile));
+  logger.info(`Update profile`);
   return true;
 }
 
-export function removeProfile(id: number): void {
-  setConfig({ profiles: ephConfigs.profiles.filter((value) => value.id !== id) });
-  logger.info(`Removed profile, id: ${id}`);
-}
-
-export function getProfile(id: number): MinecraftProfile | null {
-  return getById(ephConfigs.profiles, id);
+export function removeProfile(profile: MinecraftProfile): void {
+  setConfig((cfg) => cfg.profiles.remove(profile));
+  logger.info(`Removed profile.`);
 }

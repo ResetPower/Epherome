@@ -1,5 +1,7 @@
 import { app, BrowserWindow } from "electron";
-import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+} from "electron-devtools-installer";
 import touchBar from "./touchbar";
 import { mainLogger, platform } from "./system";
 import "./ms-auth";

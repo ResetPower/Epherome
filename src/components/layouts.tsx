@@ -22,15 +22,20 @@ export function Alert(props: {
       ) : (
         <MdInfo />
       )}
-      <Typography className="pl-3" textInherit>
-        {props.children}
-      </Typography>
+      <Typography className="pl-3">{props.children}</Typography>
     </div>
   );
 }
 
-export function Container(props: { children: ReactNode; className?: string }): JSX.Element {
-  return <div className={`eph-container ${props.className}`}>{props.children}</div>;
+export function Container(props: {
+  children: ReactNode;
+  className?: string;
+}): JSX.Element {
+  return (
+    <div className={`eph-container ${props.className ?? ""}`}>
+      {props.children}
+    </div>
+  );
 }
 
 export function Card(props: {
@@ -41,8 +46,8 @@ export function Card(props: {
   return (
     <div
       className={`${
-        props.variant === "contained" ? "shadow-md" : "border border-divide"
-      } p-3 bg-card rounded-lg ${props.className}`}
+        props.variant === "contained" ? "shadow-md" : "border border-divider"
+      } p-3 bg-card rounded-lg ${props.className ?? ""}`}
     >
       {props.children}
     </div>
@@ -52,10 +57,9 @@ export function Card(props: {
 export function Typography(props: {
   children: ReactNode;
   className?: string;
-  textInherit?: boolean;
 }): JSX.Element {
   return (
-    <p className={`${props.textInherit ? "" : "eph-default-color"} ${props.className}`}>
+    <p className={`color-contrast ${props.className ?? ""}`}>
       {props.children}
     </p>
   );

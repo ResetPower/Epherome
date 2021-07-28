@@ -12,7 +12,9 @@ export function unzipNatives(target: string, natives: string[]): void {
       zip.extract(null, target, (err, count) => {
         zip.close();
         if (err) {
-          coreLogger.error(`Error occurred in unzipping File "${file}", unzipped ${count} files`);
+          coreLogger.error(
+            `Error occurred in unzipping File "${file}", unzipped ${count} files`
+          );
         }
       });
     });

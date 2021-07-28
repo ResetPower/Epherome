@@ -68,7 +68,8 @@ export default defineLanguage({
     downloadingJson: "正在下载版本 json 文件",
     downloadingJar: "正在下载版本 jar 文件",
     javaNotFound: "Java 缺失",
-    javaNotFoundMessage: "无法在您的电脑上找到 Java，请安装一个并在设置中添加。",
+    javaNotFoundMessage:
+      "无法在您的电脑上找到 Java，请安装一个并在设置中添加。",
     manageJava: {
       newJavaPath: "新的 Java 路径",
       invalidJavaPath: "错误的 Java 路径",
@@ -111,7 +112,8 @@ export default defineLanguage({
     youAreUsingTheLatestVersion: "Epherome 已是最新版本。",
     updateAvailable: "新版本 {} 现在可用。",
     epheromeUpdate: "Epherome 更新",
-    pleaseGoToSiteToDownloadLatestVersion: "请前往 Epherome 官方网站下载最新版本",
+    pleaseGoToSiteToDownloadLatestVersion:
+      "请前往 Epherome 官方网站下载最新版本",
     noMinecraftProcesses: "没有 Minecraft 进程",
     xxxBit: "{}位",
     done: "完成",

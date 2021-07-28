@@ -1,5 +1,4 @@
 import { ipcRenderer } from "electron";
-import { getById, getNextId, WithId } from "../tools";
 import {
   authCode2AuthToken,
   authenticate,
@@ -14,7 +13,7 @@ import {
 import { ephConfigs, setConfig } from "./config";
 import { logger } from "../renderer/global";
 
-export interface MinecraftAccount extends WithId {
+export interface MinecraftAccount {
   email: string;
   name: string;
   uuid: string;
@@ -30,7 +29,7 @@ export interface CreateAccountImplResult {
 
 function appendAccount(account: MinecraftAccount) {
   setConfig(() => ephConfigs.accounts.push(account));
-  logger.info(`Created ${account.mode} account, id: ${account.id}`);
+  logger.info(`Created new ${account.mode} account`);
 }
 
 export async function createAccount(
@@ -39,7 +38,6 @@ export async function createAccount(
   password: string,
   authserver: string
 ): Promise<CreateAccountImplResult> {
-  const array = ephConfigs.accounts;
   const unsuccessfulResult: CreateAccountImplResult = { success: false };
   const successfulResult: CreateAccountImplResult = { success: true };
   if (mode === "mojang") {
@@ -49,7 +47,6 @@ export async function createAccount(
       return unsuccessfulResult;
     } else {
       appendAccount({
-        id: getNextId(array),
         email: username,
         name: result.name,
         uuid: result.uuid,
@@ -100,7 +97,10 @@ export async function createAccount(
     }
 
     // XSTS Token -> Minecraft Token
-    const minecraftTokenResult = await XSTSToken2MinecraftToken(XSTSToken, XSTSTokenUhs);
+    const minecraftTokenResult = await XSTSToken2MinecraftToken(
+      XSTSToken,
+      XSTSTokenUhs
+    );
     const minecraftToken = minecraftTokenResult.access_token;
     if (minecraftTokenResult.err || !minecraftToken) {
       // unable to get minecraft token
@@ -119,7 +119,6 @@ export async function createAccount(
         throw new Error("Unable to get Minecraft profile");
       } else {
         appendAccount({
-          id: getNextId(array),
           email: username,
           name,
           uuid,
@@ -132,14 +131,14 @@ export async function createAccount(
       return { success: false, message: "msAccNoMinecraft" };
     }
   } else if (mode === "authlib") {
-    if (username === "" || password === "" || authserver === "") return unsuccessfulResult;
+    if (username === "" || password === "" || authserver === "")
+      return unsuccessfulResult;
     const server = authserver + "/authserver";
     const result = await authenticate(username, password, server);
     if (result.err) {
       return unsuccessfulResult;
     } else {
       appendAccount({
-        id: getNextId(array),
         email: username,
         name: result.name,
         uuid: result.uuid,
@@ -153,7 +152,6 @@ export async function createAccount(
     // offline account
     if (username === "") return unsuccessfulResult;
     appendAccount({
-      id: getNextId(array),
       email: "",
       name: username,
       uuid: genUUID(),
@@ -164,26 +162,19 @@ export async function createAccount(
   }
 }
 
-export function removeAccount(id: number): void {
-  setConfig({ accounts: ephConfigs.accounts.filter((value) => value.id !== id) });
-  logger.info(`Removed account, id: ${id}`);
+export function removeAccount(account: MinecraftAccount): void {
+  setConfig(() => ephConfigs.accounts.remove(account));
+  logger.info(`Removed account`);
 }
 
-export function getAccount(id: number): MinecraftAccount | null {
-  return getById(ephConfigs.accounts, id);
-}
-
-export function updateAccountToken(id: number, newToken: string): void {
-  setConfig(
-    () =>
-      (ephConfigs.accounts = ephConfigs.accounts.map((value) => {
-        if (value.id === id) {
-          value.token = newToken;
-          return value;
-        } else {
-          return value;
-        }
-      }))
+export function updateAccountToken(
+  account: MinecraftAccount,
+  newToken: string
+): void {
+  setConfig(() =>
+    ephConfigs.accounts.forEach((value) => {
+      value === account && (value.token = newToken);
+    })
   );
-  logger.info(`Updated account access token, id: ${id}`);
+  logger.info(`Updated account access token`);
 }

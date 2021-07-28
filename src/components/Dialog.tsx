@@ -11,9 +11,9 @@ export default function Dialog(props: {
 }): JSX.Element {
   return (
     <div
-      className={`eph-dialog ${props.indentBottom ? "eph-dialog-indent-bottom" : ""} ${
-        props.className ?? ""
-      }`}
+      className={`eph-dialog ${
+        props.indentBottom ? "eph-dialog-indent-bottom" : ""
+      } ${props.className ?? ""}`}
     >
       {props.children}
     </div>
@@ -30,12 +30,12 @@ export function AlertDialog(props: {
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">{props.title}</Typography>
       {props.pre ? (
-        <pre className="text-black dark:text-white whitespace-pre-line">{props.message}</pre>
+        <pre className="text-contrast whitespace-pre-line">{props.message}</pre>
       ) : (
         <Typography>{props.message}</Typography>
       )}
       <div className="flex justify-end">
-        <Button className="text-secondary" onClick={props.close} textInherit>
+        <Button className="text-secondary" onClick={props.close}>
           {t.ok}
         </Button>
       </div>
@@ -56,7 +56,7 @@ export function ConfirmDialog(props: {
       <Typography className="text-xl font-semibold">{props.title}</Typography>
       <Typography>{props.message}</Typography>
       <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.close} textInherit>
+        <Button className="text-shallow" onClick={props.close}>
           {t.cancel}
         </Button>
         <Button
@@ -65,7 +65,6 @@ export function ConfirmDialog(props: {
             props.action();
             props.close();
           }}
-          textInherit
         >
           {props.positiveText ?? t.ok}
         </Button>

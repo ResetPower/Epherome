@@ -29,9 +29,13 @@ export class Router extends Component<RouterProps, RouterState> {
     const initial = this.props.initial;
     const hist = this.props.history;
     hist.listen(() => {
-      const route = this.props.routes.find((value) => value.pathname === hist.location.pathname);
+      const route = this.props.routes.find(
+        (value) => value.pathname === hist.location.pathname
+      );
       this.setState({ route, mainClassName: "anime-fade-out" });
-      unwrapFunction(this.props.onChange)(route ? unwrapAccessible(route.title) : "");
+      unwrapFunction(this.props.onChange)(
+        route ? unwrapAccessible(route.title) : ""
+      );
     });
     hist.listenAnime(() => this.setState({ mainClassName: "anime-fade-in" }));
     initial && hist.push(initial);
@@ -40,7 +44,12 @@ export class Router extends Component<RouterProps, RouterState> {
     const route = this.state.route;
     return (
       <div className={this.state.mainClassName}>
-        {route ? unwrapAccessible(route.component, this.props.history.location.params) : null}
+        {route
+          ? unwrapAccessible(
+              route.component,
+              this.props.history.location.params
+            )
+          : null}
       </div>
     );
   }

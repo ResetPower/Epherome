@@ -13,7 +13,7 @@ export default function ProcessesPage(): JSX.Element {
   return (
     <div className="flex eph-h-full">
       <div className="overflow-y-auto w-1/4">
-        <div className="border-b border-divide">
+        <div className="border-b border-divider">
           <ListItem
             checked={selected === -1}
             onClick={() => setSelected(-1)}
@@ -24,7 +24,7 @@ export default function ProcessesPage(): JSX.Element {
         </div>
         {minecraftProcesses.length === 0 ? (
           <div className="flex justify-center">
-            <Typography className="text-shallow" textInherit>
+            <Typography className="text-shallow">
               {t.noMinecraftProcesses}
             </Typography>
           </div>
@@ -41,11 +41,13 @@ export default function ProcessesPage(): JSX.Element {
           ))
         )}
       </div>
-      <div className="w-3/4 border-l border-divide overflow-y-auto p-3">
-        <div className="text-black dark:text-white">
+      <div className="w-3/4 border-l border-divider overflow-y-auto p-3">
+        <div className="text-contrast">
           {current
             ? current.outputs.map((value, index) => <p key={index}>{value}</p>)
-            : LoggerService.logs.map((value, index) => <p key={index}>{value}</p>)}
+            : LoggerService.logs.map((value, index) => (
+                <p key={index}>{value}</p>
+              ))}
         </div>
       </div>
     </div>

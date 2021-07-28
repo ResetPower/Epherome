@@ -61,8 +61,11 @@ describe("tools", function () {
     });
     it("replaces all correctly", function () {
       assert(
-        replaceAll("'{{ msg }}'. The message is '{{ msg }}'", "{{ msg }}", "Hello, World!") ===
-          "'Hello, World!'. The message is 'Hello, World!'"
+        replaceAll(
+          "'{{ msg }}'. The message is '{{ msg }}'",
+          "{{ msg }}",
+          "Hello, World!"
+        ) === "'Hello, World!'. The message is 'Hello, World!'"
       );
     });
     it("appends zero correctly", function () {

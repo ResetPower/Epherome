@@ -21,10 +21,14 @@ export function TabController(props: {
   const [value, setValue] = useState(0);
 
   return (
-    <TabContext.Provider value={{ value, setValue, orientation: props.orientation }}>
+    <TabContext.Provider
+      value={{ value, setValue, orientation: props.orientation }}
+    >
       <div
         className={`flex ${
-          props.orientation === "vertical" ? "flex-row" : "border-l border-divide flex-col"
+          props.orientation === "vertical"
+            ? "flex-row"
+            : "border-l border-divider flex-col"
         } ${props.className ?? ""}`}
       >
         {props.children}
@@ -45,7 +49,9 @@ export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
   return (
     <div
       className={`eph-tab-bar ${
-        orientation === "horizontal" ? "eph-tab-bar-horizontal" : "eph-tab-bar-vertical"
+        orientation === "horizontal"
+          ? "eph-tab-bar-horizontal"
+          : "eph-tab-bar-vertical"
       }`}
     >
       {props.children}
@@ -53,13 +59,16 @@ export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
   );
 }
 
-export function TabBarItem(props: { children: ReactNode; value: number }): JSX.Element {
+export function TabBarItem(props: {
+  children: ReactNode;
+  value: number;
+}): JSX.Element {
   const { value, setValue } = useContext(TabContext);
 
   return (
     <button
       className={`eph-tab-bar-item ${
-        props.value === value ? "eph-tab-bar-item-selected" : "eph-default-color"
+        props.value === value ? "eph-tab-bar-item-selected" : "text-contrast"
       }`}
       onClick={() => setValue(props.value)}
     >

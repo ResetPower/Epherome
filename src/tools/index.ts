@@ -1,25 +1,5 @@
 import { Accessible, StringMap } from "./types";
 
-// get element in array by id
-export function getById<T extends WithId>(arr: T[], id: number): T | null {
-  for (const i of arr) {
-    if (i.id === id) {
-      return i;
-    }
-  }
-  return null;
-}
-
-// get the id of next array item
-export function getNextId<T extends WithId>(arr: T[]): number {
-  return arr.length === 0 ? 0 : arr[arr.length - 1].id + 1;
-}
-
-// object type that contains an unique id
-export interface WithId {
-  id: number;
-}
-
 export function removePrefix(src: string, pre: string): string {
   return src.startsWith(pre) ? src.substr(pre.length, src.length) : src;
 }
@@ -50,7 +30,10 @@ export function unwrapFunction<P extends unknown[] = []>(
   return fn ?? emptyFunction;
 }
 
-export function invokeFunction<P extends unknown[], R>(fn: (...args: P) => R, ...args: P): R {
+export function invokeFunction<P extends unknown[], R>(
+  fn: (...args: P) => R,
+  ...args: P
+): R {
   return fn(...args);
 }
 
@@ -70,7 +53,9 @@ export function throwNotInitError(): never {
 export function obj2form(data: StringMap): string {
   const urlEncodedDataPairs = [];
   for (const name in data) {
-    urlEncodedDataPairs.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
+    urlEncodedDataPairs.push(
+      encodeURIComponent(name) + "=" + encodeURIComponent(data[name])
+    );
   }
   const urlEncodedData = urlEncodedDataPairs.join("&").replace(/%20/g, "+");
   return urlEncodedData;

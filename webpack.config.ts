@@ -19,42 +19,12 @@ function makeArray<T>(...items: (T | undefined)[]): T[] {
   return arr;
 }
 
-export default (env: { [key: string]: string }): Config | Config[] => {
+export default (env: { [key: string]: string }): Config[] => {
   // build environment
   const dev = env.dev;
 
-  // main process
-  const main: Config = {
-    entry: {
-      main: "./src/main/main",
-    },
-    target: "electron-main",
-    mode: dev ? "development" : "production",
-    devtool: dev ? "inline-source-map" : "source-map",
-    module: {
-      rules: [
-        {
-          test: /\.ts$/,
-          exclude: /node_modules/,
-          use: "ts-loader",
-        },
-      ],
-    },
-    resolve: {
-      extensions: [".js", ".ts"],
-    },
-    output: {
-      path: path.join(__dirname, "./dist"),
-      filename: "main.js",
-    },
-  };
-
-  // renderer process
-  const renderer: Config = {
-    entry: {
-      app: "./src/renderer/index",
-    },
-    target: "electron-renderer",
+  // base config
+  const base: Config = {
     mode: dev ? "development" : "production",
     devtool: dev ? "inline-source-map" : "source-map",
     module: {
@@ -63,7 +33,7 @@ export default (env: { [key: string]: string }): Config | Config[] => {
         {
           test: /\.(js|ts|tsx)?$/,
           exclude: /node_modules/,
-          use: "ts-loader",
+          loader: "ts-loader",
         },
         {
           test: /\.css$/,
@@ -75,6 +45,29 @@ export default (env: { [key: string]: string }): Config | Config[] => {
         },
       ],
     },
+    resolve: {
+      extensions: [".js", ".ts", ".tsx"],
+    },
+    output: {
+      path: path.join(__dirname, "./dist"),
+      filename: "[name].js",
+    },
+  };
+
+  // main process
+  const main: Config = {
+    entry: {
+      main: "./src/main/main",
+    },
+    target: "electron-main",
+  };
+
+  // renderer process
+  const renderer: Config = {
+    entry: {
+      app: "./src/renderer/index",
+    },
+    target: "electron-renderer",
     optimization: {
       splitChunks: {
         chunks: "all",
@@ -85,13 +78,6 @@ export default (env: { [key: string]: string }): Config | Config[] => {
           },
         },
       },
-    },
-    resolve: {
-      extensions: [".js", ".ts", ".tsx"],
-    },
-    output: {
-      path: path.join(__dirname, "./dist"),
-      filename: "[name].js",
     },
     devServer: {
       hot: true,
@@ -110,13 +96,16 @@ export default (env: { [key: string]: string }): Config | Config[] => {
     ),
   };
 
+  let ret: Config[] = [];
   if (env.process === "main") {
-    return main;
+    ret = [main];
   } else if (env.process === "renderer") {
-    return renderer;
+    ret = [renderer];
   } else if (env.process === "all") {
-    return [main, renderer];
+    ret = [main, renderer];
   } else {
     throw new Error("env.process should be 'main', 'renderer' or 'all'");
   }
+
+  return ret.map((value) => ({ ...base, ...value }));
 };

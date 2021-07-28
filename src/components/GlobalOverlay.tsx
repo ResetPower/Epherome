@@ -5,8 +5,11 @@ import { useForceUpdater } from "../tools/hooks";
 
 export class OverlayService {
   static stack: JSX.Element[] = [];
-  static updateOverlay: (action: "add" | "remove") => void = () => throwNotInitError();
-  static showDialog = (render: (close: DefaultFunction) => JSX.Element): void => {
+  static updateOverlay: (action: "add" | "remove") => void = () =>
+    throwNotInitError();
+  static showDialog = (
+    render: (close: DefaultFunction) => JSX.Element
+  ): void => {
     const index = this.stack.length;
     this.stack[index] = render(() => {
       this.stack.splice(index, 1);

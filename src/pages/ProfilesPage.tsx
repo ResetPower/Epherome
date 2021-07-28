@@ -1,10 +1,20 @@
 import { Button, TextField } from "../components/inputs";
 import { Typography } from "../components/layouts";
-import { createProfile, editProfile, getProfile, MinecraftProfile } from "../struct/profiles";
+import {
+  createProfile,
+  editProfile,
+  MinecraftProfile,
+} from "../struct/profiles";
 import { hist, logger, t } from "../renderer/global";
 import { ephConfigs, setConfig } from "../struct/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
-import { MdCreate, MdDelete, MdFileDownload, MdFolder, MdGamepad } from "react-icons/md";
+import {
+  MdCreate,
+  MdDelete,
+  MdFileDownload,
+  MdFolder,
+  MdGamepad,
+} from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
@@ -29,7 +39,7 @@ export function ChangeProfileFragment(props: {
 
   const handleEdit = () => {
     if (current) {
-      editProfile(current.id, {
+      editProfile(current, {
         name,
         dir,
         ver,
@@ -68,7 +78,11 @@ export function ChangeProfileFragment(props: {
           helperText={t.usuallyDotMinecraftEtc}
         />
         <TextField label={t.version} value={ver} onChange={setVer} />
-        <TextField label="JVM Arguments" value={jvmArgs} onChange={setJvmArgs} />
+        <TextField
+          label="JVM Arguments"
+          value={jvmArgs}
+          onChange={setJvmArgs}
+        />
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
@@ -94,26 +108,34 @@ export interface ProfilesPageState {
   creating: boolean;
 }
 
-export default class ProfilesPage extends FlexibleComponent<EmptyObject, ProfilesPageState> {
+export default class ProfilesPage extends FlexibleComponent<
+  EmptyObject,
+  ProfilesPageState
+> {
   state = {
     creating: false,
   };
   handleCreate = (): void => this.setState({ creating: true });
-  handleRemove = (selected: number): void =>
+  handleRemove = (selected: MinecraftProfile): void =>
     showDialog((close) => (
-      <RemoveProfileDialog onClose={close} updateProfiles={this.updateUI} id={selected} />
+      <RemoveProfileDialog
+        onClose={close}
+        updateProfiles={this.updateUI}
+        profile={selected}
+      />
     ));
   render(): JSX.Element {
     const profiles = ephConfigs.profiles;
-    const selected = ephConfigs.selectedProfile;
-    const current = getProfile(selected);
+    const current = profiles.getSelected();
     let mapsList: string[] = [];
     let resourcePacksList: string[] = [];
 
     if (current) {
       try {
         mapsList = fs.readdirSync(path.join(current.dir, "saves"));
-        resourcePacksList = fs.readdirSync(path.join(current.dir, "resourcepacks"));
+        resourcePacksList = fs.readdirSync(
+          path.join(current.dir, "resourcepacks")
+        );
       } catch {}
     }
 
@@ -129,33 +151,37 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
             </Button>
           </div>
           <List className="space-y-1">
-            {profiles.map((i: MinecraftProfile) => (
+            {profiles.map((i: MinecraftProfile, index) => (
               <ListItem
                 className="p-3 mx-2 rounded-lg"
-                checked={!this.state.creating && selected === i.id}
+                checked={!this.state.creating && current === i}
                 onClick={() => {
-                  logger.info(`Profile selection changed to id ${i.id}`);
-                  setConfig({ selectedProfile: i.id });
+                  logger.info(`Profile selection changed`);
+                  setConfig(() => profiles.select(i));
                   this.updateUI();
                 }}
-                key={i.id}
+                key={index}
               >
                 <Typography className="flex">
-                  {i.from === "download" ? <MdFileDownload /> : <MdGamepad />} {i.name}
+                  {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}{" "}
+                  {i.name}
                 </Typography>
               </ListItem>
             ))}
           </List>
         </div>
         {this.state.creating ? (
-          <div className="border-l border-divide p-3 w-3/4">
+          <div className="border-l border-divider p-3 w-3/4">
             <ChangeProfileFragment
               action="create"
               onDone={() => this.setState({ creating: false })}
             />
           </div>
         ) : (
-          <TabController className="flex-grow p-3 w-3/4" orientation="horizontal">
+          <TabController
+            className="flex-grow p-3 w-3/4"
+            orientation="horizontal"
+          >
             <TabBar>
               <TabBarItem value={0}>{t.general}</TabBarItem>
               <TabBarItem value={1}>{t.edit}</TabBarItem>
@@ -166,9 +192,6 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
-                  <Typography className="text-shallow" textInherit>
-                    ID: {current?.id}
-                  </Typography>
                   <Typography>
                     {t.name}: {current?.name}
                   </Typography>
@@ -182,8 +205,7 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                 <div className="flex justify-end">
                   <Button
                     className="text-red-500"
-                    onClick={() => this.handleRemove(selected)}
-                    textInherit
+                    onClick={() => current && this.handleRemove(current)}
                   >
                     <MdDelete />
                     {t.remove}
@@ -192,14 +214,20 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
               </div>
               <div>
                 {current && (
-                  <ChangeProfileFragment action="edit" onDone={this.updateUI} current={current} />
+                  <ChangeProfileFragment
+                    action="edit"
+                    onDone={this.updateUI}
+                    current={current}
+                  />
                 )}
               </div>
               <div>
                 {mapsList.map(
                   (m, index) =>
                     m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                      /* avoid useless .DS_Store file on macOS */ <Typography
+                        key={index}
+                      >
                         {m}
                       </Typography>
                     )
@@ -209,7 +237,9 @@ export default class ProfilesPage extends FlexibleComponent<EmptyObject, Profile
                 {resourcePacksList.map(
                   (m, index) =>
                     m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography key={index}>
+                      /* avoid useless .DS_Store file on macOS */ <Typography
+                        key={index}
+                      >
                         {m}
                       </Typography>
                     )

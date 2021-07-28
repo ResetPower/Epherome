@@ -28,13 +28,15 @@ export interface MinecraftLaunchDetail {
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   profile: MinecraftProfile;
-  java: Java | null;
+  java?: Java;
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: DefaultFunction;
 }
 
-export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<void> {
+export async function launchMinecraft(
+  options: MinecraftLaunchOptions
+): Promise<void> {
   const java = options.java;
 
   if (!java) {
@@ -48,7 +50,10 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const account = options.account;
   const profile = options.profile;
   const setHelper = options.setHelper;
-  const authlibInjectorPath = path.join(constraints.dir, "authlib-injector-1.1.35.jar");
+  const authlibInjectorPath = path.join(
+    constraints.dir,
+    "authlib-injector-1.1.35.jar"
+  );
 
   const buff = [];
   const dir = path.resolve(profile.dir);
@@ -72,13 +77,13 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
               coreLogger.warn("Password wrong, requesting for password again");
               await act(true);
             } else {
-              updateAccountToken(account.id, result.token);
+              updateAccountToken(account, result.token);
             }
           };
           coreLogger.warn("Failed to refresh token, requesting for password");
           await act(false);
         } else {
-          updateAccountToken(account.id, refreshed.token);
+          updateAccountToken(account, refreshed.token);
         }
       }
     } else if (account.mode === "microsoft") {
@@ -89,12 +94,21 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   }
 
   // === parsing json file ===
-  const jsonFile = path.join(dir, "versions", profile.ver, `${profile.ver}.json`);
+  const jsonFile = path.join(
+    dir,
+    "versions",
+    profile.ver,
+    `${profile.ver}.json`
+  );
   let parsed: ClientJson = JSON.parse(fs.readFileSync(jsonFile).toString());
   if (parsed.inheritsFrom) {
     const inheritsFrom = parsed.inheritsFrom;
     const inherit: ClientJson = JSON.parse(
-      fs.readFileSync(path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.json`)).toString()
+      fs
+        .readFileSync(
+          path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.json`)
+        )
+        .toString()
     );
     parsed = mergeClientJson(parsed, inherit);
   }
@@ -102,7 +116,12 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
   const clientJar = parsed.jar // use jar file in json if it has
     ? path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)
     : path.join(dir, "versions", profile.ver, `${profile.ver}.jar`);
-  const nativeDir = path.join(dir, "versions", profile.ver, `${profile.ver}-natives`);
+  const nativeDir = path.join(
+    dir,
+    "versions",
+    profile.ver,
+    `${profile.ver}-natives`
+  );
   createDirIfNotExist(nativeDir);
 
   // === analyzing library ===
@@ -115,19 +134,27 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   // download missing libraries
   for (const item of obj.missing) {
-    setHelper(`${t.helper.downloadingLib}: ${item.name} (${mCount}/${missingCount})`);
+    setHelper(
+      `${t.helper.downloadingLib}: ${item.name} (${mCount}/${missingCount})`
+    );
     await downloadFile(item.url, item.path, true);
     mCount++;
   }
 
   // download missing assets
-  const assetIndexPath = path.join(dir, "assets/indexes", `${assetIndex.id}.json`);
+  const assetIndexPath = path.join(
+    dir,
+    "assets/indexes",
+    `${assetIndex.id}.json`
+  );
   try {
     fs.accessSync(assetIndexPath);
   } catch (e) {
     await downloadFile(assetIndex.url, assetIndexPath, true);
   }
-  const parsedAssetIndex = JSON.parse(fs.readFileSync(assetIndexPath).toString());
+  const parsedAssetIndex = JSON.parse(
+    fs.readFileSync(assetIndexPath).toString()
+  );
   const objs = parsedAssetIndex.objects;
   const objsCount = Object.keys(objs).length;
   let oCount = 0;
@@ -139,8 +166,14 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
     try {
       fs.accessSync(p);
     } catch (e) {
-      setHelper(`${t.helper.downloadingAsset}: ${startHash}... (${oCount}/${objsCount})`);
-      await downloadFile(`https://resources.download.minecraft.net/${startHash}/${hash}`, p, true);
+      setHelper(
+        `${t.helper.downloadingAsset}: ${startHash}... (${oCount}/${objsCount})`
+      );
+      await downloadFile(
+        `https://resources.download.minecraft.net/${startHash}/${hash}`,
+        p,
+        true
+      );
     }
     oCount++;
   }
@@ -237,8 +270,14 @@ export async function launchMinecraft(options: MinecraftLaunchOptions): Promise<
 
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
   const javaVersion = java.name;
-  if (isJava16Required(versionDetail) && javaVersion && parseInt(javaVersion.split(".")[0]) < 16) {
-    coreLogger.warn(`Minecraft version is higher than 1.17 but is using a java version under 16`);
+  if (
+    isJava16Required(versionDetail) &&
+    javaVersion &&
+    +javaVersion.split(".")[0] < 16
+  ) {
+    coreLogger.warn(
+      `Minecraft version is higher than 1.17 but is using a java version under 16`
+    );
     showJava16RequiredDialog();
     options.onDone();
   } else {

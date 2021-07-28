@@ -2,10 +2,17 @@ import fs from "fs";
 import path from "path";
 import { isCompliant, equalOS } from "./rules";
 import { coreLogger } from ".";
-import { ClientAnalyzedLibrary, ClientJsonLibraries, ClientLibraryResult } from "./struct";
+import {
+  ClientAnalyzedLibrary,
+  ClientJsonLibraries,
+  ClientLibraryResult,
+} from "./struct";
 import { removeSuffix, replaceAll } from "../tools";
 
-export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): ClientLibraryResult {
+export function analyzeLibrary(
+  dir: string,
+  libraries: ClientJsonLibraries
+): ClientLibraryResult {
   const classpath: string[] = [];
   const missing: ClientAnalyzedLibrary[] = [];
   const natives: string[] = [];
@@ -80,9 +87,9 @@ export function analyzeLibrary(dir: string, libraries: ClientJsonLibraries): Cli
         if (url) {
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
-            url: `${replaceAll(removeSuffix(url, "/"), "/", ":")}/${name[0]}/${name[1]}/${
-              name[2]
-            }/${name[1]}-${name[2]}.jar`,
+            url: `${replaceAll(removeSuffix(url, "/"), "/", ":")}/${name[0]}/${
+              name[1]
+            }/${name[2]}/${name[1]}-${name[2]}.jar`,
             path: p,
           });
         }

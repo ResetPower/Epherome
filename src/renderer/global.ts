@@ -29,8 +29,9 @@ export const lightTheme = defineTheme({
     primary: colors.blue["500"],
     secondary: colors.pink["500"],
     shallow: colors.gray["500"],
-    divide: colors.gray["200"],
+    divider: colors.gray["200"],
     card: colors.white,
+    contrast: colors.black,
   },
 });
 
@@ -41,8 +42,9 @@ export const darkTheme = defineTheme({
     primary: colors.indigo["600"],
     secondary: colors.pink["500"],
     shallow: colors.coolGray["400"],
-    divide: colors.gray["600"],
+    divider: colors.gray["600"],
     card: colors.gray["700"],
+    contrast: colors.white,
   },
 });
 
