@@ -1,8 +1,5 @@
 import assert from "assert";
 import {
-  getById,
-  getNextId,
-  WithId,
   obj2form,
   unwrapFunction,
   appendZero,
@@ -11,25 +8,7 @@ import {
   replaceAll,
 } from "../src/tools";
 
-interface MyStructWithId extends WithId {
-  name: string;
-}
-
-const arr: MyStructWithId[] = [
-  { id: 2, name: "a" },
-  { id: 3, name: "b" },
-];
-
 describe("tools", function () {
-  describe("arrays", function () {
-    it("gets object by id", function () {
-      assert(getById(arr, 2)?.name === "a");
-      assert(getById(arr, 3)?.name === "b");
-    });
-    it("gets next id", function () {
-      assert(getNextId(arr) === 4);
-    });
-  });
   describe("objects", function () {
     describe("#unwrapFunction", function () {
       it("returns empty function if arg is undefined", function () {
