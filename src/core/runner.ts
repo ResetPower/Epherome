@@ -2,13 +2,13 @@ import { spawn } from "child_process";
 import { coreLogger } from ".";
 import { Process, ProcessesService } from "../struct/processes";
 import { MinecraftProfile } from "../struct/profiles";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 
 export function runMinecraft(
   java: string,
   buff: string[],
   dir: string,
-  onDone: DefaultFunction,
+  onDone: DefaultFn,
   profile: MinecraftProfile
 ): void {
   let done = false;

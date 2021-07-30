@@ -1,8 +1,8 @@
 import { Component } from "react";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { DefaultFn, EmptyObject } from "../tools/types";
 import { Button, Checkbox } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
-import { logger, t } from "../renderer/global";
+import { logger } from "../renderer/global";
 import Spin from "../components/Spin";
 import got from "got";
 import { Container, Typography } from "../components/layouts";
@@ -18,6 +18,7 @@ import fs from "fs";
 import { ClientJson } from "../core/struct";
 import { unwrapFunction } from "../tools";
 import { createProfile } from "../struct/profiles";
+import { t } from "../intl";
 
 interface DownloadsPageState {
   release: boolean;
@@ -28,11 +29,11 @@ interface DownloadsPageState {
 
 export function DownloadDialog(props: {
   version: MinecraftVersion;
-  onClose: DefaultFunction;
+  onClose: DefaultFn;
 }): JSX.Element {
   const [step, setStep] = useState<string | null>(null);
   const startDownload = useCallback(async () => {
-    setStep(t.downloadingJson);
+    setStep(t("downloadingJson"));
     const jsonPath = path.join(
       mcDownloadPath,
       "versions",
@@ -41,7 +42,7 @@ export function DownloadDialog(props: {
     );
     await downloadFile(props.version.url, jsonPath, true);
 
-    setStep(t.downloadingJar);
+    setStep(t("downloadingJar"));
     const jarPath = path.join(
       mcDownloadPath,
       "versions",
@@ -66,15 +67,17 @@ export function DownloadDialog(props: {
   return (
     <Dialog indentBottom>
       <Typography className="font-semibold text-lg">
-        {t.download} Minecraft {props.version.id}
+        {t("download")} Minecraft {props.version.id}
       </Typography>
       <div>
         <Typography>{step}</Typography>
       </div>
       <div className="flex">
-        {step === null && <Button onClick={startDownload}>{t.download}</Button>}
+        {step === null && (
+          <Button onClick={startDownload}>{t("download")}</Button>
+        )}
         <div className="flex-grow" />
-        <Button onClick={props.onClose}>{t.cancel}</Button>
+        <Button onClick={props.onClose}>{t("cancel")}</Button>
       </div>
     </Dialog>
   );
@@ -118,19 +121,19 @@ export default class DownloadsPage extends Component<
             checked={this.state.release}
             onChange={(checked) => this.setState({ release: checked })}
           >
-            {t.release}
+            {t("release")}
           </Checkbox>
           <Checkbox
             checked={this.state.snapshot}
             onChange={(checked) => this.setState({ snapshot: checked })}
           >
-            {t.snapshot}
+            {t("snapshot")}
           </Checkbox>
           <Checkbox
             checked={this.state.old}
             onChange={(checked) => this.setState({ old: checked })}
           >
-            {t.old}
+            {t("old")}
           </Checkbox>
         </div>
         {this.state.versions ? (

@@ -1,24 +1,8 @@
-import { I18n } from "../lang/i18n";
-import { ephConfigs } from "../struct/config";
-import enUs from "../lang/en-us";
-import zhCn from "../lang/zh-cn";
-import jaJp from "../lang/ja-jp";
 import { ipcRenderer } from "electron";
 import { EphHistory } from "../tools/history";
 import { Logger } from "../tools/logging";
 import { defineTheme } from "./theme";
 import colors from "./colors";
-
-// global i18n toolkit
-const lang = ephConfigs.language;
-export const i18n = new I18n({
-  language: lang,
-  fallback: enUs,
-  languages: [enUs, zhCn, jaJp],
-});
-
-export let t = i18n.currentTranslator;
-i18n.listen(() => (t = i18n.currentTranslator));
 
 // global themes
 

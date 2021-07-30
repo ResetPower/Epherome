@@ -4,9 +4,8 @@ import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../struct/config";
 import { MinecraftAccount } from "../struct/accounts";
 import { MinecraftProfile } from "../struct/profiles";
-import { t } from "../renderer/global";
 import { launchMinecraft, MinecraftLaunchDetail } from "../core";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { DefaultFn, EmptyObject } from "../tools/types";
 import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
 import { Card, Typography, Container } from "../components/layouts";
 import Dialog, { AlertDialog } from "../components/Dialog";
@@ -22,10 +21,11 @@ import {
 import { showDialog } from "../components/GlobalOverlay";
 import { ErrorDialog } from "../components/Dialogs";
 import { initRequiredFunction } from "../tools";
+import { t } from "../intl";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
-  onClose: DefaultFunction;
+  onClose: DefaultFn;
   callback: (password: string) => void;
 }): JSX.Element {
   const [password, setPassword] = useState("");
@@ -37,23 +37,23 @@ export function RequestPasswordDialog(props: {
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">
-        {t.pleaseInputPassword}
+        {t("pleaseInputPassword")}
       </Typography>
       <div>
         <TextField
           value={password}
           onChange={setPassword}
-          label={t.password}
+          label={t("password")}
           type="password"
-          helperText={props.again ? t.passwordWrong : ""}
+          helperText={props.again ? t("passwordWrong") : ""}
           error={props.again}
         />
       </div>
       <div className="flex justify-end">
         <Button className="text-shallow" onClick={props.onClose}>
-          {t.cancel}
+          {t("cancel")}
         </Button>
-        <Button onClick={handler}>{t.ok}</Button>
+        <Button onClick={handler}>{t("ok")}</Button>
       </div>
     </Dialog>
   );
@@ -109,7 +109,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
       fetchHitokoto().then((hk) => {
         if (hk === null) {
           const hk: Hitokoto = {
-            content: t.cannotConnectToInternet,
+            content: t("cannotConnectToInternet"),
             from: "",
           };
           HomePage.hitokoto = hk;
@@ -171,8 +171,8 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
     } else {
       showDialog((close) => (
         <AlertDialog
-          title={t.warning}
-          message={t.noAccOrProSelected}
+          title={t("warning")}
+          message={t("noAccOrProSelected")}
           close={close}
         />
       ));
@@ -186,9 +186,9 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
         <Card className="my-3 p-6 shadow-sm">
           <div className="flex">
             <div className="p-3 flex-grow">
-              <p className="text-shallow mt-0">{t.hello}</p>
+              <p className="text-shallow mt-0">{t("hello")}</p>
               <Typography className="text-2xl">
-                {username === undefined ? t.noAccSelected : username}
+                {username === undefined ? t("noAccSelected") : username}
               </Typography>
               {this.enableHitokoto && (
                 <div>
@@ -212,10 +212,10 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
           </div>
           <div className="flex">
             <Button onClick={() => hist.push("accounts")}>
-              <MdAccountCircle /> {t.accounts}
+              <MdAccountCircle /> {t("accounts")}
             </Button>
             <Button onClick={() => hist.push("profiles")}>
-              <MdGamepad /> {t.profiles}
+              <MdGamepad /> {t("profiles")}
             </Button>
             <div className="flex-grow" />
             {this.enableHitokoto && (
@@ -232,7 +232,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
           <Card className="flex-grow">
             {profiles.length === 0 ? (
               <Typography className="text-sm p-1 m-1">
-                {t.noProSelected}
+                {t("noProSelected")}
               </Typography>
             ) : (
               <Select
@@ -252,7 +252,7 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
               disabled={HomePage.staticState.isLaunching}
             >
               <MdPlayArrow />
-              {t.launch}
+              {t("launch")}
             </Button>
             {HomePage.staticState.isLaunching && (
               <>
@@ -264,8 +264,10 @@ export default class HomePage extends Component<EmptyObject, HomePageState> {
             )}
           </Card>
           <Card className="flex-grow">
-            <Typography className="text-xl font-semibold">{t.news}</Typography>
-            <Typography>{t.notSupportedYet}</Typography>
+            <Typography className="text-xl font-semibold">
+              {t("news")}
+            </Typography>
+            <Typography>{t("notSupportedYet")}</Typography>
           </Card>
         </div>
       </Container>

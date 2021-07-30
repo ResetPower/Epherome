@@ -4,7 +4,7 @@ import { defineLanguage } from "./languages";
 export default defineLanguage({
   name: "zh-cn",
   nativeName: "中文简体",
-  translator: {
+  definition: {
     hello: "你好！",
     epherome: "Epherome",
     settings: "设定",
@@ -70,23 +70,12 @@ export default defineLanguage({
     javaNotFound: "Java 缺失",
     javaNotFoundMessage:
       "无法在您的电脑上找到 Java，请安装一个并在设置中添加。",
-    manageJava: {
-      newJavaPath: "新的 Java 路径",
-      invalidJavaPath: "错误的 Java 路径",
-      duplicateJavaPath: "重复的 Java 路径",
-      detect: "自动检测",
-    },
-    progress: {
-      auth: "登录",
-      analyze: "解析 JSON",
-      downloading: "下载缺失的库文件与资源文件",
-      unzipping: "解压原生库",
-      running: "运行中",
-    },
-    helper: {
-      downloadingAsset: "下载资源文件",
-      downloadingLib: "下载库文件",
-    },
+    "manageJava.newJavaPath": "新的 Java 路径",
+    "manageJava.invalidJavaPath": "错误的 Java 路径",
+    "manageJava.duplicateJavaPath": "重复的 Java 路径",
+    "manageJava.detect": "自动检测",
+    "helper.downloadingAsset": "下载资源文件",
+    "helper.downloadingLib": "下载库文件",
     release: "正式版",
     snapshot: "快照版",
     old: "远古版",

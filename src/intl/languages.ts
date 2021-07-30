@@ -1,4 +1,4 @@
-export interface LanguageTranslator {
+export interface LanguageDefinition {
   hello: string;
   epherome: string;
   settings: string;
@@ -91,29 +91,20 @@ export interface LanguageTranslator {
   downloadingJar: string;
   javaNotFound: string;
   javaNotFoundMessage: string;
-  manageJava: {
-    newJavaPath: string;
-    invalidJavaPath: string;
-    duplicateJavaPath: string;
-    detect: string;
-  };
-  progress: {
-    auth: string;
-    analyze: string;
-    downloading: string;
-    unzipping: string;
-    running: string;
-  };
-  helper: {
-    downloadingAsset: string;
-    downloadingLib: string;
-  };
+  "manageJava.newJavaPath": string;
+  "manageJava.invalidJavaPath": string;
+  "manageJava.duplicateJavaPath": string;
+  "manageJava.detect": string;
+  "helper.downloadingAsset": string;
+  "helper.downloadingLib": string;
 }
 
 export interface Language {
   name: string; // eg `en-us`
   nativeName: string; // eg `English`
-  translator: LanguageTranslator;
+  definition: LanguageDefinition;
 }
 
-export const defineLanguage = (language: Language): Language => language;
+export function defineLanguage(language: Language): Language {
+  return language;
+}

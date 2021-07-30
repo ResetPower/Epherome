@@ -1,14 +1,14 @@
 import { shell } from "electron";
 import { ReactNode } from "react";
 import { unwrapFunction } from "../tools";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { Typography } from "./layouts";
 
 export function Button(props: {
   children: ReactNode;
   className?: string;
   disabled?: boolean;
-  onClick?: DefaultFunction;
+  onClick?: DefaultFn;
   variant?: "contained" | "text";
 }): JSX.Element {
   return (
@@ -28,7 +28,7 @@ export function Button(props: {
 export function IconButton(props: {
   children: ReactNode;
   className?: string;
-  onClick?: DefaultFunction;
+  onClick?: DefaultFn;
 }): JSX.Element {
   return (
     <button
@@ -152,7 +152,7 @@ export function Link(props: {
   href?: string;
   className?: string;
   type?: "url" | "file" | "clickable";
-  onClick?: DefaultFunction;
+  onClick?: DefaultFn;
   children: string;
 }): JSX.Element {
   const handleClick = () => {

@@ -1,15 +1,13 @@
 import { useEffect, useRef } from "react";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { throwNotInitError } from "../tools";
-import { useForceUpdater } from "../tools/hooks";
+import { useReducer } from "react";
 
 export class OverlayService {
   static stack: JSX.Element[] = [];
   static updateOverlay: (action: "add" | "remove") => void = () =>
     throwNotInitError();
-  static showDialog = (
-    render: (close: DefaultFunction) => JSX.Element
-  ): void => {
+  static showDialog = (render: (close: DefaultFn) => JSX.Element): void => {
     const index = this.stack.length;
     this.stack[index] = render(() => {
       this.stack.splice(index, 1);
@@ -23,7 +21,7 @@ export const showDialog = OverlayService.showDialog;
 
 // global dialog manager component
 export default function GlobalOverlay(): JSX.Element {
-  const forceUpdate = useForceUpdater();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const dialog = useRef<HTMLDivElement>(null);
   const overlay = [...OverlayService.stack].pop();
 

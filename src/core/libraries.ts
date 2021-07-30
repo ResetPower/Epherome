@@ -7,7 +7,6 @@ import {
   ClientJsonLibraries,
   ClientLibraryResult,
 } from "./struct";
-import { removeSuffix, replaceAll } from "../tools";
 
 export function analyzeLibrary(
   dir: string,
@@ -84,12 +83,15 @@ export function analyzeLibrary(
       } catch (e) {
         // file not exists, add to missing
         coreLogger.warn(`Library file ${p} not exists`);
+
         if (url) {
+          const urlObject = new URL(url);
+          urlObject.pathname = `${name[0].split(".").join("/")}/${name[1]}/${
+            name[2]
+          }/${name[1]}-${name[2]}.jar`;
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
-            url: `${replaceAll(removeSuffix(url, "/"), "/", ":")}/${name[0]}/${
-              name[1]
-            }/${name[2]}/${name[1]}-${name[2]}.jar`,
+            url: urlObject.href,
             path: p,
           });
         }

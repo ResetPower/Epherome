@@ -84,6 +84,7 @@
     "react-refresh": "^0.10.0",
     "spectron": "^15.0.0",
     "tailwindcss": "^2.2.5",
+    "ts-loader": "^9.2.4",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5",
     "webpack": "^5.45.1",
@@ -93,10 +94,11 @@
   "dependencies": {
     "find-java-home": "^1.2.1",
     "got": "^11.8.2",
+    "mobx": "^6.3.2",
+    "mobx-react": "^7.2.0",
     "node-stream-zip": "^1.13.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-icons": "^4.2.0",
-    "ts-loader": "^9.2.4"
+    "react-icons": "^4.2.0"
   }
 }

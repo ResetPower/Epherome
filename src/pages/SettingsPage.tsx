@@ -13,7 +13,7 @@ import {
   mcDownloadPath,
   setConfig,
 } from "../struct/config";
-import { t, i18n, logger, hist } from "../renderer/global";
+import { logger, hist } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
 import { MdClose, MdInfo, MdPalette, MdTune } from "react-icons/md";
@@ -24,10 +24,9 @@ import Spin from "../components/Spin";
 import { showDialog } from "../components/GlobalOverlay";
 import { UpdateAvailableDialog } from "../components/Dialogs";
 import { FlexibleComponent } from "../tools/component";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { DefaultFn, EmptyObject } from "../tools/types";
 import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
-import { useForceUpdater } from "../tools/hooks";
 import { List, ListItem, ListItemText } from "../components/lists";
 import {
   checkJavaVersion,
@@ -36,23 +35,25 @@ import {
   removeJava,
 } from "../struct/java";
 import { useState, useCallback } from "react";
+import { useReducer } from "react";
+import { t, intlStore } from "../intl";
 
 export function JavaManagementDialog(props: {
-  onClose: DefaultFunction;
+  onClose: DefaultFn;
 }): JSX.Element {
-  const forceUpdate = useForceUpdater();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const [err, setErr] = useState<string | null>(null);
   const [newJavaPath, setNewJavaPath] = useState("");
   const javas = ephConfigs.javas;
   const checkDuplicate = useCallback(
     (dir: string) => {
       if (dir === "") {
-        setErr(t.manageJava.invalidJavaPath);
+        setErr(t("manageJava.invalidJavaPath"));
         return false;
       }
       for (const i of javas) {
         if (i.dir === dir) {
-          setErr(t.manageJava.duplicateJavaPath);
+          setErr(t("manageJava.duplicateJavaPath"));
           return true;
         }
       }
@@ -67,7 +68,7 @@ export function JavaManagementDialog(props: {
       indentBottom
     >
       <Typography className="font-semibold text-xl">
-        {t.manageXxx.replace("{}", "Java")}
+        {t("manageXxx", "Java")}
       </Typography>
       <List className="overflow-y-auto">
         {javas.map((value, index) => (
@@ -76,7 +77,7 @@ export function JavaManagementDialog(props: {
               primary={
                 value.name +
                 " (" +
-                t.xxxBit.replace("{}", value.is64Bit ? "64" : "32") +
+                t("xxxBit", value.is64Bit ? "64" : "32") +
                 ") "
               }
               secondary={value.dir}
@@ -103,7 +104,7 @@ export function JavaManagementDialog(props: {
         error={!!err}
         helperText={err ?? undefined}
         icon={<FaJava />}
-        placeholder={t.manageJava.newJavaPath}
+        placeholder={t("manageJava.newJavaPath")}
         trailing={
           <Link
             type="clickable"
@@ -115,11 +116,11 @@ export function JavaManagementDialog(props: {
                 if (result) {
                   createJava(result);
                   setNewJavaPath("");
-                } else setErr(t.manageJava.invalidJavaPath);
+                } else setErr(t("manageJava.invalidJavaPath"));
               });
             }}
           >
-            {t.add}
+            {t("add")}
           </Link>
         }
       />
@@ -135,10 +136,10 @@ export function JavaManagementDialog(props: {
             })
           }
         >
-          {t.manageJava.detect}
+          {t("manageJava.detect")}
         </Button>
         <div className="flex-grow" />
-        <Button onClick={props.onClose}>{t.done}</Button>
+        <Button onClick={props.onClose}>{t("done")}</Button>
       </div>
     </Dialog>
   );
@@ -163,21 +164,23 @@ export default class SettingsPage extends FlexibleComponent<
       if (result) {
         if (result.need) {
           this.setState({
-            updateCheckResult: t.updateAvailable.replace("{}", result.name),
+            updateCheckResult: t("updateAvailable", result.name),
           });
           showDialog((close) => (
             <UpdateAvailableDialog version={result.name} onClose={close} />
           ));
         } else {
-          this.setState({ updateCheckResult: t.youAreUsingTheLatestVersion });
+          this.setState({
+            updateCheckResult: t("youAreUsingTheLatestVersion"),
+          });
         }
       } else {
-        this.setState({ updateCheckResult: t.cannotConnectToInternet });
+        this.setState({ updateCheckResult: t("cannotConnectToInternet") });
       }
     });
   };
   handleChangeLanguage = (ev: string): void => {
-    i18n.changeLanguage(ev);
+    intlStore.setLanguage(ev);
     setConfig({ language: ev });
     hist.dispatch();
     this.setState({ updateCheckResult: "" });
@@ -212,27 +215,27 @@ export default class SettingsPage extends FlexibleComponent<
         <TabBar>
           <TabBarItem value={0}>
             <MdTune />
-            {t.general}
+            {t("general")}
           </TabBarItem>
           <TabBarItem value={1}>
             <MdPalette />
-            {t.appearance}
+            {t("appearance")}
           </TabBarItem>
           <TabBarItem value={2}>
             <MdInfo />
-            {t.about}
+            {t("about")}
           </TabBarItem>
         </TabBar>
         <TabBody>
           <div>
             <Select
-              value={i18n.language?.name ?? ""}
-              label={t.language}
+              value={intlStore.language?.name ?? ""}
+              label={t("language")}
               onChange={this.handleChangeLanguage}
               className="w-32"
               marginBottom
             >
-              {i18n.languages.map((lang, index) => (
+              {intlStore.languages.map((lang, index) => (
                 <option value={lang.name} key={index}>
                   {lang.nativeName}
                 </option>
@@ -241,18 +244,18 @@ export default class SettingsPage extends FlexibleComponent<
             <div className="mb-2">
               <Select
                 value={ephConfigs.downloadProvider}
-                label={t.downloadProvider}
+                label={t("downloadProvider")}
                 onChange={() => {
                   // TODO Set Download Provider Here
                   /**/
                 }}
                 className="w-32"
               >
-                <option value="official">{t.official}</option>
+                <option value="official">{t("official")}</option>
                 <option value="bmclapi">BMCLAPI</option>
                 <option value="mcbbs">MCBBS</option>
               </Select>
-              <p className="text-shallow">{t.downloadProviderIsNotAble}</p>
+              <p className="text-shallow">{t("downloadProviderIsNotAble")}</p>
             </div>
             <Select
               label="Java"
@@ -270,7 +273,7 @@ export default class SettingsPage extends FlexibleComponent<
               ))}
             </Select>
             <Button onClick={this.handleManageJava}>
-              <FaJava /> {t.manageXxx.replace("{}", "Java")}
+              <FaJava /> {t("manageXxx", "Java")}
             </Button>
             <Checkbox
               checked={ephConfigs.hitokoto}
@@ -279,16 +282,16 @@ export default class SettingsPage extends FlexibleComponent<
                 this.updateUI();
               }}
             >
-              {t.hitokoto}
+              {t("hitokoto")}
             </Checkbox>
-            <p className="text-shallow">{t.hitokotoDescription}</p>
+            <p className="text-shallow">{t("hitokotoDescription")}</p>
             <div className="flex my-3 items-center space-x-3">
               <Button
                 variant="contained"
                 onClick={this.handleUpdateCheck}
                 disabled={this.state.updateCheckResult === null}
               >
-                {t.checkUpdate}
+                {t("checkUpdate")}
               </Button>
               <Typography>
                 {this.state.updateCheckResult !== null ? (
@@ -303,7 +306,7 @@ export default class SettingsPage extends FlexibleComponent<
           <div>
             <Select
               value={ephConfigs.theme}
-              label={t.theme}
+              label={t("theme")}
               onChange={this.handleChangeTheme}
               disabled={ephConfigs.themeFollowOs}
             >
@@ -314,7 +317,7 @@ export default class SettingsPage extends FlexibleComponent<
               checked={ephConfigs.themeFollowOs}
               onChange={this.handleThemeFollowOs}
             >
-              {t.followOs}
+              {t("followOs")}
             </Checkbox>
           </div>
 
@@ -330,14 +333,14 @@ export default class SettingsPage extends FlexibleComponent<
                   Epherome Beta
                 </Typography>
                 <Typography>
-                  {t.version} {cnst.version}
+                  {t("version")} {cnst.version}
                 </Typography>
               </div>
             </Card>
             <Card variant="contained">
               <div>
                 <Typography>
-                  {t.os}: {cnst.platform} {cnst.arch} {cnst.release}
+                  {t("os")}: {cnst.platform} {cnst.arch} {cnst.release}
                 </Typography>
               </div>
               <div>
@@ -347,11 +350,11 @@ export default class SettingsPage extends FlexibleComponent<
                 <Typography>V8: {process.versions.v8}</Typography>
               </div>
               <div>
-                <Typography>{t.cfgFilePath}:</Typography>
+                <Typography>{t("cfgFilePath")}:</Typography>
                 <Link href={cfgPath} type="file">
                   {cfgPath}
                 </Link>
-                <Typography>{t.minecraftDirPath}:</Typography>
+                <Typography>{t("minecraftDirPath")}:</Typography>
                 <Link href={mcDownloadPath} type="file">
                   {mcDownloadPath}
                 </Link>
@@ -359,7 +362,7 @@ export default class SettingsPage extends FlexibleComponent<
             </Card>
             <Card variant="contained">
               <Typography>
-                {t.officialSite}:{" "}
+                {t("officialSite")}:{" "}
                 <Link href="https://epherome.com">https://epherome.com</Link>
               </Typography>
               <Typography>
@@ -369,7 +372,9 @@ export default class SettingsPage extends FlexibleComponent<
                 </Link>
               </Typography>
               <Typography>Copyright © 2021 ResetPower.</Typography>
-              <Typography>{t.oss} | GNU General Public License 3.0</Typography>
+              <Typography>
+                {t("oss")} | GNU General Public License 3.0
+              </Typography>
             </Card>
           </div>
         </TabBody>

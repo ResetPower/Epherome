@@ -1,12 +1,5 @@
 import assert from "assert";
-import {
-  obj2form,
-  unwrapFunction,
-  appendZero,
-  removePrefix,
-  removeSuffix,
-  replaceAll,
-} from "../src/tools";
+import { obj2form, unwrapFunction, appendZero } from "../src/tools";
 
 describe("tools", function () {
   describe("objects", function () {
@@ -32,21 +25,6 @@ describe("tools", function () {
     });
   });
   describe("strings", function () {
-    it("removes prefix correctly", function () {
-      assert(removePrefix("String", "St") === "ring");
-    });
-    it("removes suffix correctly", function () {
-      assert(removeSuffix("String", "ring") === "St");
-    });
-    it("replaces all correctly", function () {
-      assert(
-        replaceAll(
-          "'{{ msg }}'. The message is '{{ msg }}'",
-          "{{ msg }}",
-          "Hello, World!"
-        ) === "'Hello, World!'. The message is 'Hello, World!'"
-      );
-    });
     it("appends zero correctly", function () {
       assert(appendZero(0) === "00");
       assert(appendZero(6) === "06");

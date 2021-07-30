@@ -5,7 +5,7 @@ import {
   editProfile,
   MinecraftProfile,
 } from "../struct/profiles";
-import { hist, logger, t } from "../renderer/global";
+import { hist, logger } from "../renderer/global";
 import { ephConfigs, setConfig } from "../struct/config";
 import { RemoveProfileDialog } from "../components/Dialogs";
 import {
@@ -19,15 +19,16 @@ import { List, ListItem } from "../components/lists";
 import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { ipcRenderer } from "electron";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { DefaultFn, EmptyObject } from "../tools/types";
 import { FlexibleComponent } from "../tools/component";
 import fs from "fs";
 import path from "path";
 import { useState } from "react";
 import { invokeFunction } from "../tools";
+import { t } from "../intl";
 
 export function ChangeProfileFragment(props: {
-  onDone: DefaultFunction;
+  onDone: DefaultFn;
   action: "edit" | "create";
   current?: MinecraftProfile;
 }): JSX.Element {
@@ -70,14 +71,14 @@ export function ChangeProfileFragment(props: {
     <>
       {props.action === "create" && <div className="h-12" />}
       <div>
-        <TextField label={t.name} value={name} onChange={setName} />
+        <TextField label={t("name")} value={name} onChange={setName} />
         <TextField
-          label={t.directory}
+          label={t("directory")}
           value={dir}
           onChange={setDir}
-          helperText={t.usuallyDotMinecraftEtc}
+          helperText={t("usuallyDotMinecraftEtc")}
         />
-        <TextField label={t.version} value={ver} onChange={setVer} />
+        <TextField label={t("version")} value={ver} onChange={setVer} />
         <TextField
           label="JVM Arguments"
           value={jvmArgs}
@@ -86,18 +87,18 @@ export function ChangeProfileFragment(props: {
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
-          <MdFolder /> {t.openDirectory}
+          <MdFolder /> {t("openDirectory")}
         </Button>
         <div className="flex-grow" />
         {props.action === "create" ? (
           <>
             <Button className="text-shallow" onClick={props.onDone}>
-              {t.cancel}
+              {t("cancel")}
             </Button>
-            <Button onClick={handleCreate}>{t.create}</Button>
+            <Button onClick={handleCreate}>{t("create")}</Button>
           </>
         ) : (
-          <Button onClick={handleEdit}>{t.save}</Button>
+          <Button onClick={handleEdit}>{t("save")}</Button>
         )}
       </div>
     </>
@@ -144,10 +145,10 @@ export default class ProfilesPage extends FlexibleComponent<
         <div className="overflow-y-auto py-3 w-1/4">
           <div className="flex my-3 justify-center">
             <Button variant="contained" onClick={this.handleCreate}>
-              <MdCreate /> {t.create}
+              <MdCreate /> {t("create")}
             </Button>
             <Button variant="contained" onClick={() => hist.push("downloads")}>
-              <MdFileDownload /> {t.download}
+              <MdFileDownload /> {t("download")}
             </Button>
           </div>
           <List className="space-y-1">
@@ -183,23 +184,23 @@ export default class ProfilesPage extends FlexibleComponent<
             orientation="horizontal"
           >
             <TabBar>
-              <TabBarItem value={0}>{t.general}</TabBarItem>
-              <TabBarItem value={1}>{t.edit}</TabBarItem>
-              <TabBarItem value={2}>{t.maps}</TabBarItem>
-              <TabBarItem value={3}>{t.resourcePacks}</TabBarItem>
+              <TabBarItem value={0}>{t("general")}</TabBarItem>
+              <TabBarItem value={1}>{t("edit")}</TabBarItem>
+              <TabBarItem value={2}>{t("maps")}</TabBarItem>
+              <TabBarItem value={3}>{t("resourcePacks")}</TabBarItem>
               <TabBarItem value={4}>Mods</TabBarItem>
             </TabBar>
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
                   <Typography>
-                    {t.name}: {current?.name}
+                    {t("name")}: {current?.name}
                   </Typography>
                   <Typography>
-                    {t.directory}: {current?.dir}
+                    {t("directory")}: {current?.dir}
                   </Typography>
                   <Typography>
-                    {t.version}: {current?.ver}
+                    {t("version")}: {current?.ver}
                   </Typography>
                 </div>
                 <div className="flex justify-end">
@@ -208,7 +209,7 @@ export default class ProfilesPage extends FlexibleComponent<
                     onClick={() => current && this.handleRemove(current)}
                   >
                     <MdDelete />
-                    {t.remove}
+                    {t("remove")}
                   </Button>
                 </div>
               </div>
@@ -246,7 +247,7 @@ export default class ProfilesPage extends FlexibleComponent<
                 )}
               </div>
               <div>
-                <Typography>{t.notSupportedYet}</Typography>
+                <Typography>{t("notSupportedYet")}</Typography>
               </div>
             </TabBody>
           </TabController>

@@ -1,58 +1,58 @@
 import Dialog, { AlertDialog, ConfirmDialog } from "./Dialog";
-import { t } from "../renderer/global";
 import { MinecraftAccount, removeAccount } from "../struct/accounts";
 import { MinecraftProfile, removeProfile } from "../struct/profiles";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { Button, Link } from "./inputs";
 import { Typography } from "./layouts";
+import { t } from "../intl";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
-  updateAccounts: DefaultFunction;
-  onClose: DefaultFunction;
+  updateAccounts: DefaultFn;
+  onClose: DefaultFn;
 }): JSX.Element {
   return (
     <ConfirmDialog
-      title={t.removeAccount}
-      message={t.confirmRemoving}
+      title={t("removeAccount")}
+      message={t("confirmRemoving")}
       action={() => {
         removeAccount(props.account);
         props.updateAccounts();
       }}
       close={props.onClose}
       positiveClassName="text-red-500"
-      positiveText={t.remove}
+      positiveText={t("remove")}
     />
   );
 }
 
 export function RemoveProfileDialog(props: {
-  updateProfiles: DefaultFunction;
-  onClose: DefaultFunction;
+  updateProfiles: DefaultFn;
+  onClose: DefaultFn;
   profile: MinecraftProfile;
 }): JSX.Element {
   return (
     <ConfirmDialog
-      title={t.removeProfile}
-      message={t.confirmRemoving}
+      title={t("removeProfile")}
+      message={t("confirmRemoving")}
       action={() => {
         removeProfile(props.profile);
         props.updateProfiles();
       }}
       close={props.onClose}
       positiveClassName="text-red-500"
-      positiveText={t.remove}
+      positiveText={t("remove")}
     />
   );
 }
 
 export function ErrorDialog(props: {
   stacktrace: string;
-  onClose: DefaultFunction;
+  onClose: DefaultFn;
 }): JSX.Element {
   return (
     <AlertDialog
-      title={t.errorOccurred}
+      title={t("errorOccurred")}
       message={props.stacktrace}
       close={props.onClose}
       pre
@@ -62,23 +62,23 @@ export function ErrorDialog(props: {
 
 export function UpdateAvailableDialog(props: {
   version: string;
-  onClose: DefaultFunction;
+  onClose: DefaultFn;
 }): JSX.Element {
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">
-        {t.epheromeUpdate}
+        {t("epheromeUpdate")}
       </Typography>
-      <Typography>{t.updateAvailable.replace("{}", props.version)}</Typography>
+      <Typography>{t("updateAvailable", props.version)}</Typography>
       <Typography>
-        {t.pleaseGoToSiteToDownloadLatestVersion}:{" "}
+        {t("pleaseGoToSiteToDownloadLatestVersion")}:{" "}
         <Link type="url" href="https://epherome.com/download">
           https://epherome.com/download
         </Link>
       </Typography>
       <div className="flex justify-end">
         <Button className="text-secondary" onClick={props.onClose}>
-          {t.ok}
+          {t("ok")}
         </Button>
       </div>
     </Dialog>

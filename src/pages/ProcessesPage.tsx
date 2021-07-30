@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
-import { t } from "../renderer/global";
+import { t } from "../intl";
 import { ProcessesService } from "../struct/processes";
 import { LoggerService } from "../tools/logging";
 
@@ -19,13 +19,13 @@ export default function ProcessesPage(): JSX.Element {
             onClick={() => setSelected(-1)}
             className="rounded-lg m-3 p-3"
           >
-            <Typography>{t.epherome}</Typography>
+            <Typography>{t("epherome")}</Typography>
           </ListItem>
         </div>
         {minecraftProcesses.length === 0 ? (
           <div className="flex justify-center">
             <Typography className="text-shallow">
-              {t.noMinecraftProcesses}
+              {t("noMinecraftProcesses")}
             </Typography>
           </div>
         ) : (

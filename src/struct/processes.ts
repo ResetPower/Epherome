@@ -1,4 +1,4 @@
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { MinecraftProfile } from "./profiles";
 
 export class ProcessesService {
@@ -13,15 +13,15 @@ export type ProcessAction = "output";
 export class Process {
   profile: MinecraftProfile;
   outputs: string[] = [];
-  private onOutput?: DefaultFunction;
+  private onOutput?: DefaultFn;
 
   constructor(profile: MinecraftProfile) {
     this.profile = profile;
   }
-  on(action: ProcessAction, fn: DefaultFunction): void {
+  on(action: ProcessAction, fn: DefaultFn): void {
     action === "output" && (this.onOutput = fn);
   }
-  clearOn(action: ProcessAction): void {
+  clearListeners(action: ProcessAction): void {
     action === "output" && (this.onOutput = undefined);
   }
   output(chunk: string): void {

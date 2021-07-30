@@ -1,6 +1,6 @@
 # Epherome
 
-[![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml)
+[![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml) [![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode)
 
 简单的 Minecraft 启动器
 

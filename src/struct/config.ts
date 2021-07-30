@@ -6,6 +6,8 @@ import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { detectJava, Java } from "./java";
 import { SelectableArray } from "../tools/arrays";
+import { createContext } from "react";
+import { initRequiredFunction } from "../tools";
 
 // crucial information from main process
 export const constraints = ipcRenderer.sendSync("initialize");
@@ -22,6 +24,10 @@ export interface EphConfig {
   hitokoto: boolean;
   downloadProvider: EphDownloadProvider;
 }
+
+export type EphConfigSetter = (
+  cb: Partial<EphConfig> | ((prev: EphConfig) => /*Partial<EphConfig>*/ unknown)
+) => unknown;
 
 let parsed: Partial<EphConfig> = {};
 
@@ -78,13 +84,11 @@ export function saveConfig(): void {
 }
 
 // change config and save
-export function setConfig(
-  cb: ((cfg: EphConfig) => unknown) | Partial<EphConfig>
-): void {
+export const setConfig: EphConfigSetter = (cb) => {
   if (cb instanceof Function) {
     cb(ephConfigs);
   } else {
     Object.assign(ephConfigs, cb);
   }
   saveConfig();
-}
+};
