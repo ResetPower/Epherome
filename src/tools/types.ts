@@ -9,4 +9,4 @@ export interface StringMap {
 // value or a function returns value (with or without parameters)
 export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
 
-export type DefaultFunction = () => unknown;
+export type DefaultFn = () => unknown;

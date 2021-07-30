@@ -5,17 +5,17 @@ import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
 import { authenticate, refresh, validate } from "../tools/auth";
 import { analyzeLibrary } from "./libraries";
 import { constraints } from "../struct/config";
-import { t } from "../renderer/global";
 import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { createDirIfNotExist, downloadFile } from "./download";
 import { Logger } from "../tools/logging";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
 import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";
 import { Java } from "../struct/java";
+import { t } from "../intl";
 
 // logger for minecraft launch core
 export const coreLogger = new Logger("Core");
@@ -31,7 +31,7 @@ export interface MinecraftLaunchOptions {
   java?: Java;
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
-  onDone: DefaultFunction;
+  onDone: DefaultFn;
 }
 
 export async function launchMinecraft(
@@ -45,7 +45,7 @@ export async function launchMinecraft(
     return;
   }
 
-  const defaultHelper = t.launching;
+  const defaultHelper = t("launching");
   coreLogger.info("Launching Minecraft ...");
   const account = options.account;
   const profile = options.profile;
@@ -135,7 +135,7 @@ export async function launchMinecraft(
   // download missing libraries
   for (const item of obj.missing) {
     setHelper(
-      `${t.helper.downloadingLib}: ${item.name} (${mCount}/${missingCount})`
+      `${t("helper.downloadingLib")}: ${item.name} (${mCount}/${missingCount})`
     );
     await downloadFile(item.url, item.path, true);
     mCount++;
@@ -167,7 +167,9 @@ export async function launchMinecraft(
       fs.accessSync(p);
     } catch (e) {
       setHelper(
-        `${t.helper.downloadingAsset}: ${startHash}... (${oCount}/${objsCount})`
+        `${t(
+          "helper.downloadingAsset"
+        )}: ${startHash}... (${oCount}/${objsCount})`
       );
       await downloadFile(
         `https://resources.download.minecraft.net/${startHash}/${hash}`,
@@ -183,7 +185,7 @@ export async function launchMinecraft(
     try {
       fs.accessSync(authlibInjectorPath);
     } catch (e) {
-      setHelper(`${t.downloading}: authlib-injector`);
+      setHelper(`${t("downloading")}: authlib-injector`);
       // TODO Need to optimize more here
       await downloadFile(
         "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar",

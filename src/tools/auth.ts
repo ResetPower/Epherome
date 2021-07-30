@@ -112,7 +112,10 @@ export function genOfflineToken(name: string): string {
   const payload = {
     name: encodeURIComponent(name),
   };
-  return `${JWT_META_BASE64}.${btoa(JSON.stringify(payload))}.${Math.random()}`;
+  return `${JWT_META_BASE64}.${Buffer.from(
+    JSON.stringify(payload),
+    "base64"
+  )}.${Math.random()}`;
 }
 
 // === MICROSOFT AUTHENTICATION PART === //
@@ -207,7 +210,7 @@ export async function authToken2XBLToken(
             SiteName: "user.auth.xboxlive.com",
             RpsTicket: token,
           },
-          RelyingParty: "http://auth.xboxlive.com",
+          RelyingParty: "https://auth.xboxlive.com",
           TokenType: "JWT",
         }),
       }

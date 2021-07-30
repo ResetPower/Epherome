@@ -5,7 +5,7 @@ import {
   CreateAccountImplResult,
   MinecraftAccount,
 } from "../struct/accounts";
-import { logger, t } from "../renderer/global";
+import { logger } from "../renderer/global";
 import { ephConfigs } from "../struct/config";
 import { RemoveAccountDialog } from "../components/Dialogs";
 import { MdCreate, MdDelete } from "react-icons/md";
@@ -13,12 +13,13 @@ import { List, ListItem } from "../components/lists";
 import { showDialog } from "../components/GlobalOverlay";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useState } from "react";
-import { DefaultFunction, EmptyObject } from "../tools/types";
+import { DefaultFn, EmptyObject } from "../tools/types";
 import Spin from "../components/Spin";
 import { FlexibleComponent } from "../tools/component";
+import { t } from "../intl";
 
 export function CreateAccountFragment(props: {
-  onDone: DefaultFunction;
+  onDone: DefaultFn;
 }): JSX.Element {
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -54,57 +55,57 @@ export function CreateAccountFragment(props: {
       <div>
         {errAlert && (
           <div className="my-3">
-            <Alert severity="warn">{t.errCreatingAccount}</Alert>
+            <Alert severity="warn">{t("errCreatingAccount")}</Alert>
           </div>
         )}
         {msAccNoMcAlert && (
           <div className="my-3">
-            <Alert severity="warn">{t.msAccNoMinecraft}</Alert>
+            <Alert severity="warn">{t("msAccNoMinecraft")}</Alert>
           </div>
         )}
         <Select value={value} onChange={setValue}>
-          <option value={"mojang"}>{t.mojang}</option>
-          <option value={"microsoft"}>{t.microsoft}</option>
-          <option value={"authlib"}>{t.authlib}</option>
-          <option value={"offline"}>{t.offline}</option>
+          <option value={"mojang"}>{t("mojang")}</option>
+          <option value={"microsoft"}>{t("microsoft")}</option>
+          <option value={"authlib"}>{t("authlib")}</option>
+          <option value={"offline"}>{t("offline")}</option>
         </Select>
         <div hidden={value !== "mojang"}>
-          <TextField label={t.email} value={name} onChange={setName} />
+          <TextField label={t("email")} value={name} onChange={setName} />
           <TextField
-            label={t.password}
+            label={t("password")}
             value={password}
             onChange={setPassword}
             type="password"
           />
         </div>
         <div hidden={value !== "microsoft"}>
-          <Typography>{t.clickToLogin}</Typography>
+          <Typography>{t("clickToLogin")}</Typography>
         </div>
         <div hidden={value !== "authlib"}>
           <TextField
-            label={t.authserver}
+            label={t("authserver")}
             value={authserver}
             onChange={setAuthserver}
           />
-          <TextField label={t.email} value={name} onChange={setName} />
+          <TextField label={t("email")} value={name} onChange={setName} />
           <TextField
-            label={t.password}
+            label={t("password")}
             value={password}
             onChange={setPassword}
             type="password"
           />
         </div>
         <div hidden={value !== "offline"}>
-          <TextField label={t.username} value={name} onChange={setName} />
+          <TextField label={t("username")} value={name} onChange={setName} />
         </div>
       </div>
       <div className="flex">
         <div className="flex-grow">{isLoading && <Spin />}</div>
         <Button className="text-shallow" onClick={props.onDone}>
-          {t.cancel}
+          {t("cancel")}
         </Button>
         <Button disabled={isLoading} onClick={handleCreate}>
-          {t.create}
+          {t("create")}
         </Button>
       </div>
     </>
@@ -141,7 +142,7 @@ export default class AccountsPage extends FlexibleComponent<
           <div className="flex p-3">
             <Button variant="contained" onClick={this.handleCreate}>
               <MdCreate />
-              {t.create}
+              {t("create")}
             </Button>
           </div>
           <List className="space-y-3">
@@ -173,26 +174,26 @@ export default class AccountsPage extends FlexibleComponent<
             orientation="horizontal"
           >
             <TabBar>
-              <TabBarItem value={0}>{t.general}</TabBarItem>
-              <TabBarItem value={1}>{t.edit}</TabBarItem>
+              <TabBarItem value={0}>{t("general")}</TabBarItem>
+              <TabBarItem value={1}>{t("edit")}</TabBarItem>
             </TabBar>
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
                   <Typography>{current?.name}</Typography>
-                  <Typography>{current && t[current.mode]}</Typography>
+                  <Typography>{current && t(current.mode)}</Typography>
                 </div>
                 <div className="flex justify-end">
                   <Button
                     className="text-red-500"
                     onClick={() => current && this.handleRemove(current)}
                   >
-                    <MdDelete /> {t.remove}
+                    <MdDelete /> {t("remove")}
                   </Button>
                 </div>
               </div>
               <div>
-                <Typography>{t.notSupportedYet}</Typography>
+                <Typography>{t("notSupportedYet")}</Typography>
               </div>
             </TabBody>
           </TabController>

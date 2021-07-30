@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { t } from "../renderer/global";
-import { DefaultFunction } from "../tools/types";
+import { t } from "../intl";
+import { DefaultFn } from "../tools/types";
 import { Button } from "./inputs";
 import { Typography } from "./layouts";
 
@@ -24,7 +24,7 @@ export function AlertDialog(props: {
   title: string;
   message: string;
   pre?: boolean;
-  close: DefaultFunction;
+  close: DefaultFn;
 }): JSX.Element {
   return (
     <Dialog indentBottom>
@@ -36,7 +36,7 @@ export function AlertDialog(props: {
       )}
       <div className="flex justify-end">
         <Button className="text-secondary" onClick={props.close}>
-          {t.ok}
+          {t("ok")}
         </Button>
       </div>
     </Dialog>
@@ -46,8 +46,8 @@ export function AlertDialog(props: {
 export function ConfirmDialog(props: {
   title: string;
   message: string;
-  action: DefaultFunction;
-  close: DefaultFunction;
+  action: DefaultFn;
+  close: DefaultFn;
   positiveClassName?: string;
   positiveText?: string;
 }): JSX.Element {
@@ -57,7 +57,7 @@ export function ConfirmDialog(props: {
       <Typography>{props.message}</Typography>
       <div className="flex justify-end">
         <Button className="text-shallow" onClick={props.close}>
-          {t.cancel}
+          {t("cancel")}
         </Button>
         <Button
           className={props.positiveClassName ?? "text-secondary"}
@@ -66,7 +66,7 @@ export function ConfirmDialog(props: {
             props.close();
           }}
         >
-          {props.positiveText ?? t.ok}
+          {props.positiveText ?? t("ok")}
         </Button>
       </div>
     </Dialog>

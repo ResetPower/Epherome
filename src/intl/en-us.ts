@@ -5,7 +5,7 @@ import { defineLanguage } from "./languages";
 export default defineLanguage({
   name: "en-us",
   nativeName: "English",
-  translator: {
+  definition: {
     hello: "Hello!",
     epherome: "Epherome",
     settings: "Settings",
@@ -75,23 +75,12 @@ export default defineLanguage({
     javaNotFound: "Java Not Found",
     javaNotFoundMessage:
       "Java not found on your computer. Please install one and add it through settings.",
-    manageJava: {
-      newJavaPath: "New Java Path",
-      invalidJavaPath: "Invalid Java Path",
-      duplicateJavaPath: "Duplicate Java Path",
-      detect: "Detect",
-    },
-    progress: {
-      auth: "Authenticating",
-      analyze: "Analyzing JSON",
-      downloading: "Downloading Missing Libraries and Assets",
-      unzipping: "Unzipping Native Libraries",
-      running: "Running",
-    },
-    helper: {
-      downloadingAsset: "Downloading Asset",
-      downloadingLib: "Downloading Library",
-    },
+    "manageJava.newJavaPath": "New Java Path",
+    "manageJava.invalidJavaPath": "Invalid Java Path",
+    "manageJava.duplicateJavaPath": "Duplicate Java Path",
+    "manageJava.detect": "Detect",
+    "helper.downloadingAsset": "Downloading Assets",
+    "helper.downloadingLib": "Downloading Libraries",
     release: "Release",
     snapshot: "Snapshot",
     old: "Old",

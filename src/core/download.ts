@@ -15,6 +15,7 @@ export function createDirIfNotExist(p: string): void {
   }
 }
 
+// create a folder which the file is in
 export function createDirByPath(p: string): void {
   const dir = path.dirname(p);
   try {

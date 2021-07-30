@@ -1,5 +1,5 @@
 import { unwrapFunction } from ".";
-import { DefaultFunction, StringMap } from "./types";
+import { DefaultFn, StringMap } from "./types";
 
 export interface Location {
   pathname: string;
@@ -17,14 +17,14 @@ export class EphHistory {
   // listeners
   private histListener = unwrapFunction();
   private animeListener = unwrapFunction();
-  listen(listener: DefaultFunction): void {
+  listen(listener: DefaultFn): void {
     this.histListener = listener;
   }
-  listenAnime(listener: DefaultFunction): void {
+  listenAnime(listener: DefaultFn): void {
     this.animeListener = listener;
   }
   // action wrapper
-  private act = (block: DefaultFunction): void => {
+  private act = (block: DefaultFn): void => {
     this.animeListener();
     setTimeout(() => {
       block();

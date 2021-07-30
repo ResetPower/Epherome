@@ -5,7 +5,7 @@ import { defineLanguage } from "./languages";
 export default defineLanguage({
   name: "ja-jp",
   nativeName: "日本語",
-  translator: {
+  definition: {
     hello: "こんにちは！",
     epherome: "Epherome",
     settings: "設定",
@@ -77,23 +77,12 @@ export default defineLanguage({
     javaNotFound: "Javaが見つかりません",
     javaNotFoundMessage:
       "コンピュータにJavaが見つかりません。 インストールして、設定で追加してください。",
-    manageJava: {
-      newJavaPath: "新しい Java パス",
-      invalidJavaPath: "間違った Java パス",
-      duplicateJavaPath: "重複する Java パス",
-      detect: "検出する",
-    },
-    progress: {
-      auth: "ログイン",
-      analyze: "解析 JSON",
-      downloading: "不足しているライブラリとリソースをダウンロード",
-      unzipping: "ネイティブライブラリを解凍",
-      running: "ランニング",
-    },
-    helper: {
-      downloadingAsset: "リソースをダウンロード",
-      downloadingLib: "ライブラリをダウンロード",
-    },
+    "manageJava.newJavaPath": "新しい Java パス",
+    "manageJava.invalidJavaPath": "間違った Java パス",
+    "manageJava.duplicateJavaPath": "重複する Java パス",
+    "manageJava.detect": "検出する",
+    "helper.downloadingAsset": "リソースをダウンロード",
+    "helper.downloadingLib": "ライブラリをダウンロード",
     release: "リリース",
     snapshot: "スナップショット",
     old: "古い",

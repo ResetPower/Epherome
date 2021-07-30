@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { DefaultFunction } from "../tools/types";
+import { DefaultFn } from "../tools/types";
 import { Typography } from "./layouts";
 
 export function List(props: {
@@ -15,7 +15,7 @@ export function ListItem(props: {
   children: ReactNode;
   className?: string;
   checked?: boolean;
-  onClick?: DefaultFunction;
+  onClick?: DefaultFn;
 }): JSX.Element {
   return (
     <div
