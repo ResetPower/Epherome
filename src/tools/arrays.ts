@@ -15,8 +15,10 @@ export const _ = {
   },
   deselect<T extends WithSelected>(arr: T[]): void {
     for (const i of arr) {
-      i.selected && delete i.selected;
-      break;
+      if (i.selected) {
+        delete i.selected;
+        break;
+      }
     }
   },
   selected<T extends WithSelected>(arr: T[]): T | undefined {
@@ -37,6 +39,7 @@ export const _ = {
     for (const k in arr) {
       if (arr[k] === item) {
         arr.splice(+k);
+        break;
       }
     }
   },
