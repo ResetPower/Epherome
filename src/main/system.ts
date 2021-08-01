@@ -1,5 +1,5 @@
 import { ipcMain, dialog, app } from "electron";
-import { Logger } from "../tools/logging";
+import { Logger } from "../tools/logger";
 import os from "os";
 
 const version = app.getVersion();

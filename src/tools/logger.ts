@@ -9,15 +9,16 @@ function appendZero(src: number): string {
   return src.toString();
 }
 
+export const ephLoggerMessages: string[] = [];
+
 export class Logger {
   scope: string;
-  static messages: string[] = [];
   constructor(scope: string) {
     this.scope = scope;
   }
   private outputText = (chunk: string): void => {
-    Logger.messages.push(chunk);
     process.stdout.write(`${chunk}\n`);
+    ephLoggerMessages.push(chunk);
   };
   private makeTime = (): string => {
     const date = new Date();

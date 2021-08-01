@@ -9,7 +9,7 @@ import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { createDirIfNotExist, downloadFile } from "./net/download";
-import { Logger } from "../tools/logging";
+import { Logger } from "../tools/logger";
 import { DefaultFn } from "../tools";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
 import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";

@@ -3,7 +3,7 @@ import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
 import { t } from "../intl";
 import { Process } from "../struct/processes";
-import { Logger } from "../tools/logging";
+import { ephLoggerMessages } from "../tools/logger";
 
 export class ProcessStore {
   processes: Process[] = [];
@@ -54,7 +54,9 @@ export default function ProcessesPage(): JSX.Element {
         <div className="text-contrast">
           {current
             ? current.outputs.map((value, index) => <p key={index}>{value}</p>)
-            : Logger.messages.map((value, index) => <p key={index}>{value}</p>)}
+            : ephLoggerMessages.map((value, index) => (
+                <p key={index}>{value}</p>
+              ))}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { ipcRenderer } from "electron";
-import { Logger } from "../tools/logging";
+import { Logger } from "../tools/logger";
 import { defineTheme } from "./theme";
 import colors from "./colors";
 import { historyStore } from "./history";
