@@ -1,6 +1,5 @@
 import { defineLanguage } from "./languages";
 
-// Chinese (China Mainland, Simplified) Language Definition File
 export default defineLanguage({
   name: "zh-cn",
   nativeName: "中文简体",
@@ -102,7 +101,7 @@ export default defineLanguage({
     updateAvailable: "新版本 {} 现在可用。",
     epheromeUpdate: "Epherome 更新",
     pleaseGoToSiteToDownloadLatestVersion:
-      "请前往 Epherome 官方网站下载最新版本",
+      "请前往 Epherome 官方网站下载最新版本。",
     noMinecraftProcesses: "没有 Minecraft 进程",
     xxxBit: "{}位",
     done: "完成",

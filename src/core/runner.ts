@@ -1,8 +1,9 @@
 import { spawn } from "child_process";
 import { coreLogger } from ".";
-import { Process, ProcessesService } from "../struct/processes";
+import { Process } from "../struct/processes";
 import { MinecraftProfile } from "../struct/profiles";
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
+import { processStore } from "../views/ProcessesPage";
 
 export function runMinecraft(
   java: string,
@@ -32,5 +33,5 @@ export function runMinecraft(
   const proc = new Process(profile);
   raw.stdout.on("data", (d) => proc.output(d.toString()));
   raw.stderr.on("data", (d) => proc.output(d.toString()));
-  ProcessesService.registerProcess(proc);
+  processStore.register(proc);
 }

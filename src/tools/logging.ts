@@ -1,23 +1,22 @@
-import { appendZero } from ".";
-
 export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 export type LogMessage = string | string[];
 
-export class LoggerService {
-  static logs: string[] = [];
-  static append(log: string): void {
-    this.logs.push(log);
+function appendZero(src: number): string {
+  if (0 <= src && src < 10) {
+    return `0${src}`;
   }
+  return src.toString();
 }
 
 export class Logger {
   scope: string;
+  static messages: string[] = [];
   constructor(scope: string) {
     this.scope = scope;
   }
   private outputText = (chunk: string): void => {
-    LoggerService.append(chunk);
+    Logger.messages.push(chunk);
     process.stdout.write(`${chunk}\n`);
   };
   private makeTime = (): string => {

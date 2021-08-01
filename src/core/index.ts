@@ -2,28 +2,24 @@ import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "../struct/profiles";
 import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
-import { authenticate, refresh, validate } from "../tools/auth";
+import { authenticate, refresh, validate } from "./net/auth";
 import { analyzeLibrary } from "./libraries";
-import { constraints } from "../struct/config";
 import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
-import { createDirIfNotExist, downloadFile } from "./download";
+import { createDirIfNotExist, downloadFile } from "./net/download";
 import { Logger } from "../tools/logging";
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
 import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";
 import { Java } from "../struct/java";
 import { t } from "../intl";
+import { ephVersion } from "../renderer/updater";
+import { userDataPath } from "../struct/config";
 
 // logger for minecraft launch core
 export const coreLogger = new Logger("Core");
-
-export interface MinecraftLaunchDetail {
-  text: string;
-  stat: boolean;
-}
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -51,7 +47,7 @@ export async function launchMinecraft(
   const profile = options.profile;
   const setHelper = options.setHelper;
   const authlibInjectorPath = path.join(
-    constraints.dir,
+    userDataPath,
     "authlib-injector-1.1.35.jar"
   );
 
@@ -217,7 +213,7 @@ export async function launchMinecraft(
     // jvm args
     natives_directory: nativeDir,
     launcher_name: "Epherome",
-    launcher_version: constraints.version,
+    launcher_version: ephVersion,
     classpath: cp.join(":"),
   };
 

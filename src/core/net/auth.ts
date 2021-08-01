@@ -1,5 +1,4 @@
-import { StringMap } from "./types";
-import { obj2form } from ".";
+import { obj2form, StringMap } from "../../tools";
 import got from "got";
 
 // official authentication server url

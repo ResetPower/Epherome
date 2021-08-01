@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
 import { Typography } from "./layouts";
 
 export function List(props: {

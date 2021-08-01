@@ -1,4 +1,4 @@
-import { StringMap } from "../tools/types";
+import { StringMap } from "../tools";
 import { MinecraftVersionType } from "./versions";
 
 export type ClientJsonArguments = (

@@ -9,11 +9,12 @@ import {
   getMicrosoftMinecraftProfile,
   XBLToken2XSTSToken,
   XSTSToken2MinecraftToken,
-} from "../tools/auth";
-import { ephConfigs, setConfig } from "./config";
+} from "../core/net/auth";
+import { configStore, setConfig } from "./config";
 import { logger } from "../renderer/global";
+import { WithSelected, _ } from "../tools/arrays";
 
-export interface MinecraftAccount {
+export interface MinecraftAccount extends WithSelected {
   email: string;
   name: string;
   uuid: string;
@@ -28,7 +29,7 @@ export interface CreateAccountImplResult {
 }
 
 function appendAccount(account: MinecraftAccount) {
-  setConfig(() => ephConfigs.accounts.push(account));
+  setConfig(() => configStore.accounts.push(account));
   logger.info(`Created new ${account.mode} account`);
 }
 
@@ -163,7 +164,7 @@ export async function createAccount(
 }
 
 export function removeAccount(account: MinecraftAccount): void {
-  setConfig(() => ephConfigs.accounts.remove(account));
+  setConfig(() => _.remove(configStore.accounts, account));
   logger.info(`Removed account`);
 }
 
@@ -172,7 +173,7 @@ export function updateAccountToken(
   newToken: string
 ): void {
   setConfig(() =>
-    ephConfigs.accounts.forEach((value) => {
+    configStore.accounts.forEach((value) => {
       value === account && (value.token = newToken);
     })
   );

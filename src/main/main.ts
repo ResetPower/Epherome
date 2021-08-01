@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
+  MOBX_DEVTOOLS,
 } from "electron-devtools-installer";
 import touchBar from "./touchbar";
 import { mainLogger, platform } from "./system";
@@ -9,11 +10,9 @@ import "./ms-auth";
 const prod = process.env.NODE_ENV === "production";
 
 function createWindow() {
-  if (!prod) {
-    installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name) => mainLogger.info(`Added Extension: ${name}`))
-      .catch((err) => mainLogger.error(`An error occurred: ${err}`));
-  }
+  installExtension([REACT_DEVELOPER_TOOLS, MOBX_DEVTOOLS])
+    .then((name) => mainLogger.info(`Added Extension: ${name}`))
+    .catch((err) => mainLogger.error(`An error occurred: ${err}`));
 
   const win = new BrowserWindow({
     width: 800,
@@ -21,6 +20,8 @@ function createWindow() {
     autoHideMenuBar: true,
     resizable: false,
     title: "Epherome",
+    // 8 is between 0 and f in Hexadecimal so it is the best color
+    backgroundColor: "#888888",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

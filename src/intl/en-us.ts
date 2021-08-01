@@ -1,5 +1,3 @@
-// English (United States) Language Definition File
-
 import { defineLanguage } from "./languages";
 
 export default defineLanguage({
@@ -111,7 +109,7 @@ export default defineLanguage({
     updateAvailable: "New version {} is available",
     epheromeUpdate: "Epherome Update",
     pleaseGoToSiteToDownloadLatestVersion:
-      "Please go to Epherome official website to download the latest version",
+      "Please go to Epherome official website to download the latest version.",
     noMinecraftProcesses: "No Minecraft Processes",
     xxxBit: "{}-bit",
     done: "Done",

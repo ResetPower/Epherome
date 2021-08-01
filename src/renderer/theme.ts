@@ -1,65 +1,57 @@
-import { StringMap } from "../tools/types";
-import App from "./App";
-import { ephConfigs, setConfig } from "../struct/config";
+import { configStore, setConfig } from "../struct/config";
 import { darkTheme, lightTheme } from "./global";
 
 const ss = document.documentElement.style;
 const html = document.querySelector("html");
+const isDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+export interface EphThemePalette {
+  background: string;
+  primary: string;
+  secondary: string;
+  shallow: string;
+  divider: string;
+  card: string;
+  contrast: string;
+}
 
 export interface EphTheme {
   type: "light" | "dark";
-  palette: {
-    background: string;
-    primary: string;
-    secondary: string;
-    shallow: string;
-    divider: string;
-    card: string;
-    contrast: string;
-  };
-}
-
-export function setProperties(obj: StringMap): void {
-  for (const i in obj) {
-    ss.setProperty(i, obj[i]);
-  }
-}
-
-export function applyTheme(theme: EphTheme): void {
-  theme.type === "dark"
-    ? // add class "dark" if theme type is dark
-      html && !html.classList.contains("dark") && html.classList.add("dark")
-    : // remove class "dark" if theme type is not dark (light)
-      html && html.classList.contains("dark") && html.classList.remove("dark");
-  // set values of css variables
-  setProperties({
-    "--eph-background-color": theme.palette.background,
-    "--eph-primary-color": theme.palette.primary,
-    "--eph-secondary-color": theme.palette.secondary,
-    "--eph-shallow-color": theme.palette.shallow,
-    "--eph-divider-color": theme.palette.divider,
-    "--eph-card-color": theme.palette.card,
-    "--eph-contrast-color": theme.palette.contrast,
-  });
+  palette: EphThemePalette;
 }
 
 export const defineTheme = (theme: EphTheme): EphTheme => theme;
 
-const isDark = window.matchMedia("(prefers-color-scheme: dark)");
-
-// set config according to system
-function detectSystemTheme(): void {
-  const prefersDarkMode = isDark.matches;
-  setConfig({ theme: prefersDarkMode ? "dark" : "light" });
-}
-
-export function updateTheme(updateUI = true): void {
-  if (ephConfigs.themeFollowOs) {
-    detectSystemTheme();
+export class ThemeStore {
+  constructor() {
+    // listen to system theme changes
+    isDark.addEventListener("change", () => this.updateTheme());
   }
-  applyTheme(ephConfigs.theme === "dark" ? darkTheme : lightTheme);
-  updateUI && App.updateUI();
+  applyTheme(theme: EphTheme): void {
+    theme.type === "dark"
+      ? // add class "dark" if theme type is dark
+        html && !html.classList.contains("dark") && html.classList.add("dark")
+      : // remove class "dark" if theme type is not dark (light)
+        html &&
+        html.classList.contains("dark") &&
+        html.classList.remove("dark");
+    // set values of css variables
+    const palette = theme.palette;
+    for (const k in palette) {
+      ss.setProperty(`--eph-${k}-color`, palette[k as keyof EphThemePalette]);
+    }
+  }
+  // set config according to system
+  detectSystemTheme(): void {
+    const prefersDarkMode = isDark.matches;
+    setConfig((cfg) => (cfg.theme = prefersDarkMode ? "dark" : "light"));
+  }
+  updateTheme(): void {
+    if (configStore.themeFollowOs) {
+      this.detectSystemTheme();
+    }
+    this.applyTheme(configStore.theme === "dark" ? darkTheme : lightTheme);
+  }
 }
 
-// listen to system theme changes
-isDark.addEventListener("change", () => updateTheme());
+export const themeStore = new ThemeStore();
