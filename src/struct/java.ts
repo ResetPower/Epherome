@@ -1,9 +1,10 @@
 import { spawnSync } from "child_process";
 import findJavaHome from "find-java-home";
 import path from "path";
-import { ephConfigs, setConfig } from "./config";
+import { WithSelected } from "../tools/arrays";
+import { configStore, setConfig } from "./config";
 
-export interface Java {
+export interface Java extends WithSelected {
   dir: string;
   name: string;
   is64Bit: boolean;
@@ -47,9 +48,9 @@ export function detectJava(): Promise<Java | null> {
 }
 
 export function createJava(java: Java): void {
-  setConfig(() => ephConfigs.javas.push(java));
+  setConfig(() => configStore.javas.push(java));
 }
 
 export function removeJava(id: number): void {
-  setConfig(() => ephConfigs.javas.splice(id, 1));
+  setConfig(() => configStore.javas.splice(id));
 }

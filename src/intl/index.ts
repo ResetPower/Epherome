@@ -1,4 +1,4 @@
-import { ephConfigs } from "../struct/config";
+import { configStore } from "../struct/config";
 import { format } from "../tools";
 import enUs from "./en-us";
 import jaJp from "./ja-jp";
@@ -18,7 +18,10 @@ export class IntlStore {
 }
 
 // the only instance of IntlStore
-export const intlStore = new IntlStore([enUs, jaJp, zhCn], ephConfigs.language);
+export const intlStore = new IntlStore(
+  [enUs, jaJp, zhCn],
+  configStore.language
+);
 
 export function t(key: keyof LanguageDefinition, ...args: string[]): string {
   return format(intlStore.language?.definition[key] ?? "", ...args);

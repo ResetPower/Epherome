@@ -1,27 +1,16 @@
 import { ipcMain, dialog, app } from "electron";
-import os from "os";
 import { Logger } from "../tools/logging";
+import os from "os";
 
-// epherome application constraints
-const versionId = 6;
-const version = "0.1.0"; // major.minor.patch
-export const platform = os.platform(); // operating system name
-const arch = os.arch(); // operating system arch
-const release = os.release(); // operating system release version
+const version = app.getVersion();
 const dir = app.getPath("userData"); // config file and application data directory
-const javaHome = process.env["JAVA_HOME"] ?? "java"; // environment variable JAVA_HOME
 
-ipcMain.on("initialize", (ev) => {
-  // Epherome Version ID, Epherome Version, OS Platform, OS Arch, OS Release, Epherome Directory, JAVA_HOME
-  ev.returnValue = {
-    versionId,
-    version,
-    platform,
-    arch,
-    release,
-    dir,
-    javaHome,
-  };
+ipcMain.on("getUserDataPath", (ev) => {
+  ev.returnValue = dir;
+});
+
+ipcMain.on("getVersion", (ev) => {
+  ev.returnValue = version;
 });
 
 // deal open folder action
@@ -43,6 +32,10 @@ ipcMain.on("quit", () => {
 
 // global main-process logger
 export const mainLogger = new Logger("Main");
+
+export const platform = os.platform();
+export const arch = os.arch();
+export const release = os.release();
 
 mainLogger.info(`*** Epherome ${version} ***`);
 mainLogger.info(`Epherome  Copyright (C) 2021  ResetPower`);

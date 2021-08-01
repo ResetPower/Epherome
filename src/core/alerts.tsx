@@ -1,5 +1,5 @@
 import { AlertDialog } from "../components/Dialog";
-import { showDialog } from "../components/GlobalOverlay";
+import { showDialog } from "../renderer/overlays";
 import { t } from "../intl";
 
 export function showJava16RequiredDialog(): void {

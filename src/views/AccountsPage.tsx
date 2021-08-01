@@ -4,19 +4,37 @@ import {
   createAccount,
   CreateAccountImplResult,
   MinecraftAccount,
+  removeAccount,
 } from "../struct/accounts";
 import { logger } from "../renderer/global";
-import { ephConfigs } from "../struct/config";
-import { RemoveAccountDialog } from "../components/Dialogs";
+import { configStore } from "../struct/config";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { showDialog } from "../components/GlobalOverlay";
+import { showDialog } from "../renderer/overlays";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
-import { useState } from "react";
-import { DefaultFn, EmptyObject } from "../tools/types";
+import { Component, useState } from "react";
+import { DefaultFn, EmptyObject } from "../tools";
 import Spin from "../components/Spin";
-import { FlexibleComponent } from "../tools/component";
 import { t } from "../intl";
+import { _ } from "../tools/arrays";
+import { ConfirmDialog } from "../components/Dialog";
+import { Observer } from "mobx-react";
+
+export function RemoveAccountDialog(props: {
+  account: MinecraftAccount;
+  onClose: DefaultFn;
+}): JSX.Element {
+  return (
+    <ConfirmDialog
+      title={t("removeAccount")}
+      message={t("confirmRemoving")}
+      action={() => removeAccount(props.account)}
+      close={props.onClose}
+      positiveClassName="text-red-500"
+      positiveText={t("remove")}
+    />
+  );
+}
 
 export function CreateAccountFragment(props: {
   onDone: DefaultFn;
@@ -116,7 +134,7 @@ export interface AccountsPageState {
   creating: boolean;
 }
 
-export default class AccountsPage extends FlexibleComponent<
+export default class AccountsPage extends Component<
   EmptyObject,
   AccountsPageState
 > {
@@ -126,79 +144,82 @@ export default class AccountsPage extends FlexibleComponent<
   handleCreate = (): void => this.setState({ creating: true });
   handleRemove = (selected: MinecraftAccount): void =>
     showDialog((close) => (
-      <RemoveAccountDialog
-        updateAccounts={this.updateUI}
-        onClose={close}
-        account={selected}
-      />
+      <RemoveAccountDialog onClose={close} account={selected} />
     ));
   render(): JSX.Element {
-    const accounts = ephConfigs.accounts;
-    const current = accounts.getSelected();
-
     return (
-      <div className="flex eph-h-full">
-        <div className="py-3 w-1/4">
-          <div className="flex p-3">
-            <Button variant="contained" onClick={this.handleCreate}>
-              <MdCreate />
-              {t("create")}
-            </Button>
-          </div>
-          <List className="space-y-3">
-            {accounts.map((i: MinecraftAccount, index) => (
-              <ListItem
-                className="p-3 mx-2 rounded-lg"
-                checked={!this.state.creating && current === i}
-                onClick={() => {
-                  logger.info(`Account selection changed`);
-                  accounts.select(i);
-                  this.updateUI();
-                }}
-                key={index}
-              >
-                <Typography className="flex space-x-1">{i.name}</Typography>
-              </ListItem>
-            ))}
-          </List>
-        </div>
-        {this.state.creating ? (
-          <div className="border-l border-divider p-3 w-3/4">
-            <CreateAccountFragment
-              onDone={() => this.setState({ creating: false })}
-            />
-          </div>
-        ) : (
-          <TabController
-            className="flex-grow p-3 w-3/4"
-            orientation="horizontal"
-          >
-            <TabBar>
-              <TabBarItem value={0}>{t("general")}</TabBarItem>
-              <TabBarItem value={1}>{t("edit")}</TabBarItem>
-            </TabBar>
-            <TabBody>
-              <div className="flex flex-col">
-                <div className="flex-grow">
-                  <Typography>{current?.name}</Typography>
-                  <Typography>{current && t(current.mode)}</Typography>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    className="text-red-500"
-                    onClick={() => current && this.handleRemove(current)}
-                  >
-                    <MdDelete /> {t("remove")}
+      <Observer>
+        {() => {
+          const accounts = configStore.accounts;
+          const current = _.selected(accounts);
+
+          return (
+            <div className="flex eph-h-full">
+              <div className="py-3 w-1/4">
+                <div className="flex p-3">
+                  <Button variant="contained" onClick={this.handleCreate}>
+                    <MdCreate />
+                    {t("create")}
                   </Button>
                 </div>
+                <List className="space-y-3">
+                  {accounts.map((i: MinecraftAccount, index) => (
+                    <ListItem
+                      className="p-3 mx-2 rounded-lg"
+                      checked={!this.state.creating && current === i}
+                      onClick={() => {
+                        logger.info(`Account selection changed`);
+                        _.select(accounts, i);
+                      }}
+                      key={index}
+                    >
+                      <Typography className="flex space-x-1">
+                        {i.name}
+                      </Typography>
+                    </ListItem>
+                  ))}
+                </List>
               </div>
-              <div>
-                <Typography>{t("notSupportedYet")}</Typography>
-              </div>
-            </TabBody>
-          </TabController>
-        )}
-      </div>
+              {this.state.creating ? (
+                <div className="border-l border-divider p-3 w-3/4">
+                  <CreateAccountFragment
+                    onDone={() => this.setState({ creating: false })}
+                  />
+                </div>
+              ) : (
+                <TabController
+                  className="flex-grow p-3 w-3/4"
+                  orientation="horizontal"
+                >
+                  <TabBar>
+                    <TabBarItem value={0}>{t("general")}</TabBarItem>
+                    <TabBarItem value={1}>{t("edit")}</TabBarItem>
+                  </TabBar>
+                  <TabBody>
+                    <div className="flex flex-col">
+                      <div className="flex-grow">
+                        <Typography>{current?.name}</Typography>
+                        <Typography>{current && t(current.mode)}</Typography>
+                      </div>
+                      <div className="flex justify-end">
+                        <Button
+                          className="text-red-500"
+                          onClick={() => current && this.handleRemove(current)}
+                        >
+                          <MdDelete /> {t("remove")}
+                        </Button>
+                      </div>
+                    </div>
+                    <div>
+                      <Typography>{t("notSupportedYet")}</Typography>
+                    </div>
+                  </TabBody>
+                </TabController>
+              )}
+            </div>
+          );
+        }}
+      </Observer>
     );
   }
 }

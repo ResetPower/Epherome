@@ -1,42 +1,43 @@
-export type WithSelected<T> = T & { selected?: boolean };
+export interface WithSelected {
+  selected?: boolean;
+}
 
-export class SelectableArray<T> extends Array<WithSelected<T>> {
-  constructor(...items: T[]) {
-    super(...items);
-  }
-  static create<T>(arr?: SelectableArray<T>): SelectableArray<T> {
-    return new SelectableArray(...(arr ? (arr as Array<T>) : []));
-  }
-  remove(item: T): void {
-    for (const k in this) {
-      if (this[k] === item) {
-        this.splice(+k, 1);
-        break;
-      }
-    }
-  }
-  select(item: T): void {
-    for (const i of this) {
+// array toolkit set
+export const _ = {
+  select<T extends WithSelected>(arr: T[], item: T): void {
+    for (const i of arr) {
       i.selected && delete i.selected;
       if (item === i) {
         i.selected = true;
         break;
       }
     }
-  }
-  deselect(): void {
-    delete this.getSelected()?.selected;
-  }
-  getSelected(): WithSelected<T> | undefined {
-    return this.find((value) => value.selected);
-  }
-  getSelectedIndex(): number | undefined {
-    for (const k in this) {
-      const v = this[k];
-      if (v.selected) {
+  },
+  deselect<T extends WithSelected>(arr: T[]): void {
+    for (const i of arr) {
+      i.selected && delete i.selected;
+      break;
+    }
+  },
+  selected<T extends WithSelected>(arr: T[]): T | undefined {
+    return arr.find((value) => value.selected);
+  },
+  selectedIndex<T extends WithSelected>(arr: T[]): number | undefined {
+    for (const k in arr) {
+      if (arr[k].selected) {
         return +k;
       }
     }
-    return undefined;
-  }
-}
+  },
+  append<T extends WithSelected>(arr: T[], item: T, select = false): void {
+    select && (item.selected = true);
+    arr.push(item);
+  },
+  remove<T extends WithSelected>(arr: T[], item: T): void {
+    for (const k in arr) {
+      if (arr[k] === item) {
+        arr.splice(+k);
+      }
+    }
+  },
+};

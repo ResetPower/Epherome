@@ -1,12 +1,5 @@
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
 import { MinecraftProfile } from "./profiles";
-
-export class ProcessesService {
-  static processes: Process[] = [];
-  static registerProcess(process: Process): void {
-    this.processes.push(process);
-  }
-}
 
 export type ProcessAction = "output";
 

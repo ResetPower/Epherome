@@ -1,11 +1,10 @@
 import { ipcRenderer } from "electron";
-import { EphHistory } from "../tools/history";
 import { Logger } from "../tools/logging";
 import { defineTheme } from "./theme";
 import colors from "./colors";
+import { historyStore } from "./history";
 
 // global themes
-
 export const lightTheme = defineTheme({
   type: "light",
   palette: {
@@ -35,9 +34,6 @@ export const darkTheme = defineTheme({
 // renderer process logger
 export const logger = new Logger("Renderer");
 
-// global history
-export const hist = new EphHistory(/* animation timeout */ 120);
-
 // response main-process calls
-ipcRenderer.on("nav-back", hist.goBack);
-ipcRenderer.on("nav-home", () => hist.push("home"));
+ipcRenderer.on("nav-back", historyStore.back);
+ipcRenderer.on("nav-home", () => historyStore.push("home"));

@@ -1,26 +1,3 @@
-@keyframes fadeIn {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-.anime-fade-in {
-  animation: fadeIn 0.3s;
-}
-@keyframes fadeOut {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.anime-fade-out {
-  animation: fadeOut 0.3s;
-}
-
 @keyframes zoomIn {
   from {
     opacity: 0;
@@ -30,7 +7,7 @@
     opacity: 1;
   }
 }
-.anime-zoom-in {
+.zoom-entering {
   animation: zoomIn 0.3s;
 }
 @keyframes zoomOut {
@@ -45,6 +22,21 @@
     opacity: 0;
   }
 }
-.anime-zoom-out {
+.zoom-exiting {
   animation: zoomOut 0.3s;
+}
+
+.fade-enter {
+  opacity: 0.1;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0.1;
+  transition: opacity 300ms;
 }

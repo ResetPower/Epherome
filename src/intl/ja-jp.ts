@@ -1,5 +1,3 @@
-// Japanese (Japan) Language Definition File
-
 import { defineLanguage } from "./languages";
 
 export default defineLanguage({
@@ -113,7 +111,7 @@ export default defineLanguage({
     updateAvailable: "新しいバージョン {} が利用可能です。",
     epheromeUpdate: "Epherome アップデート",
     pleaseGoToSiteToDownloadLatestVersion:
-      "Epheromeの公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください",
+      "Epheromeの公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください。",
     noMinecraftProcesses: "Minecraftプロセスはありません",
     xxxBit: "{}ビット",
     done: "完了",

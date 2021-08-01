@@ -3,7 +3,7 @@ import got from "got";
 import path from "path";
 import { pipeline } from "stream";
 import { promisify } from "util";
-import { coreLogger } from ".";
+import { coreLogger } from "../index";
 
 const pipelineAsync = promisify(pipeline);
 

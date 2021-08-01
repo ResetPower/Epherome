@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { t } from "../intl";
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
 import { Button } from "./inputs";
 import { Typography } from "./layouts";
 
@@ -70,5 +70,19 @@ export function ConfirmDialog(props: {
         </Button>
       </div>
     </Dialog>
+  );
+}
+
+export function ErrorDialog(props: {
+  stacktrace: string;
+  onClose: DefaultFn;
+}): JSX.Element {
+  return (
+    <AlertDialog
+      title={t("errorOccurred")}
+      message={props.stacktrace}
+      close={props.onClose}
+      pre
+    />
   );
 }

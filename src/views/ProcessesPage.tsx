@@ -2,11 +2,20 @@ import { useState } from "react";
 import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
 import { t } from "../intl";
-import { ProcessesService } from "../struct/processes";
-import { LoggerService } from "../tools/logging";
+import { Process } from "../struct/processes";
+import { Logger } from "../tools/logging";
+
+export class ProcessStore {
+  processes: Process[] = [];
+  register(process: Process): void {
+    this.processes.push(process);
+  }
+}
+
+export const processStore = new ProcessStore();
 
 export default function ProcessesPage(): JSX.Element {
-  const minecraftProcesses = ProcessesService.processes;
+  const minecraftProcesses = processStore.processes;
   const [selected, setSelected] = useState(-1);
   const current = minecraftProcesses[selected];
 
@@ -45,9 +54,7 @@ export default function ProcessesPage(): JSX.Element {
         <div className="text-contrast">
           {current
             ? current.outputs.map((value, index) => <p key={index}>{value}</p>)
-            : LoggerService.logs.map((value, index) => (
-                <p key={index}>{value}</p>
-              ))}
+            : Logger.messages.map((value, index) => <p key={index}>{value}</p>)}
         </div>
       </div>
     </div>

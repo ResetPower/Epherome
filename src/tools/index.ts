@@ -1,35 +1,15 @@
-import { Accessible, StringMap } from "./types";
-
-export function appendZero(src: number): string {
-  if (0 <= src && src < 10) {
-    return `0${src}`;
-  }
-  return src.toString();
-}
-
-// return an empty function if function is undefined
-const emptyFunction = () => {
-  /**/
-};
-
 export function unwrapFunction<P extends unknown[] = []>(
   fn?: (...args: P) => void
 ): (...args: P) => void {
-  return fn ?? emptyFunction;
+  return (
+    fn ??
+    (() => {
+      // empty function
+    })
+  );
 }
 
-export function invokeFunction<P extends unknown[], R>(
-  fn: (...args: P) => R,
-  ...args: P
-): R {
-  return fn(...args);
-}
-
-export function initRequiredFunction(): () => void {
-  return () => throwNotInitError();
-}
-
-export function throwNotInitError(): never {
+export function throwNotInitError(): unknown {
   throw new Error("This function is not initialized");
 }
 
@@ -66,3 +46,16 @@ export function format(source: string, ...args: string[]): string {
     ? source.replace("{}", args[0])
     : format(source, ...args.slice(1, args.length));
 }
+
+export interface EmptyObject {
+  [key: string]: never;
+}
+
+export interface StringMap {
+  [key: string]: string;
+}
+
+// value or a function returns value (with or without parameters)
+export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
+
+export type DefaultFn = () => unknown;

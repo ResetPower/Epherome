@@ -1,7 +1,8 @@
-import { ephConfigs, setConfig } from "./config";
+import { configStore, setConfig } from "./config";
 import { logger } from "../renderer/global";
+import { WithSelected, _ } from "../tools/arrays";
 
-export interface MinecraftProfile {
+export interface MinecraftProfile extends WithSelected {
   name: string;
   dir: string;
   ver: string;
@@ -20,7 +21,7 @@ export function createProfile({
 }: MinecraftProfile): boolean {
   if (name === "" || dir === "" || ver === "") return false;
   setConfig(() =>
-    ephConfigs.profiles.push({
+    configStore.profiles.push({
       name,
       dir,
       ver,
@@ -41,6 +42,6 @@ export function editProfile(
 }
 
 export function removeProfile(profile: MinecraftProfile): void {
-  setConfig((cfg) => cfg.profiles.remove(profile));
+  setConfig((cfg) => _.remove(cfg.profiles, profile));
   logger.info(`Removed profile.`);
 }

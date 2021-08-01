@@ -1,7 +1,7 @@
 import { shell } from "electron";
 import { ReactNode } from "react";
 import { unwrapFunction } from "../tools";
-import { DefaultFn } from "../tools/types";
+import { DefaultFn } from "../tools";
 import { Typography } from "./layouts";
 
 export function Button(props: {
