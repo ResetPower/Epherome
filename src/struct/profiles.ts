@@ -1,4 +1,4 @@
-import { configStore, setConfig } from "./config";
+import { setConfig } from "./config";
 import { logger } from "../renderer/global";
 import { WithSelected, _ } from "../tools/arrays";
 
@@ -20,8 +20,8 @@ export function createProfile({
   from,
 }: MinecraftProfile): boolean {
   if (name === "" || dir === "" || ver === "") return false;
-  setConfig(() =>
-    configStore.profiles.push({
+  setConfig((cfg) =>
+    cfg.profiles.push({
       name,
       dir,
       ver,

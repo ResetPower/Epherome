@@ -2,7 +2,7 @@ import { spawnSync } from "child_process";
 import findJavaHome from "find-java-home";
 import path from "path";
 import { WithSelected } from "../tools/arrays";
-import { configStore, setConfig } from "./config";
+import { setConfig } from "./config";
 
 export interface Java extends WithSelected {
   dir: string;
@@ -48,9 +48,9 @@ export function detectJava(): Promise<Java | null> {
 }
 
 export function createJava(java: Java): void {
-  setConfig(() => configStore.javas.push(java));
+  setConfig((cfg) => cfg.javas.push(java));
 }
 
 export function removeJava(id: number): void {
-  setConfig(() => configStore.javas.splice(id));
+  setConfig((cfg) => cfg.javas.splice(id));
 }

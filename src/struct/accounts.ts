@@ -10,7 +10,7 @@ import {
   XBLToken2XSTSToken,
   XSTSToken2MinecraftToken,
 } from "../core/net/auth";
-import { configStore, setConfig } from "./config";
+import { setConfig } from "./config";
 import { logger } from "../renderer/global";
 import { WithSelected, _ } from "../tools/arrays";
 
@@ -29,7 +29,7 @@ export interface CreateAccountImplResult {
 }
 
 function appendAccount(account: MinecraftAccount) {
-  setConfig(() => configStore.accounts.push(account));
+  setConfig((cfg) => cfg.accounts.push(account));
   logger.info(`Created new ${account.mode} account`);
 }
 
@@ -164,7 +164,7 @@ export async function createAccount(
 }
 
 export function removeAccount(account: MinecraftAccount): void {
-  setConfig(() => _.remove(configStore.accounts, account));
+  setConfig((cfg) => _.remove(cfg.accounts, account));
   logger.info(`Removed account`);
 }
 
@@ -172,8 +172,8 @@ export function updateAccountToken(
   account: MinecraftAccount,
   newToken: string
 ): void {
-  setConfig(() =>
-    configStore.accounts.forEach((value) => {
+  setConfig((cfg) =>
+    cfg.accounts.forEach((value) => {
       value === account && (value.token = newToken);
     })
   );

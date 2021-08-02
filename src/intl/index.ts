@@ -23,6 +23,7 @@ export const intlStore = new IntlStore(
   configStore.language
 );
 
+// translator function
 export function t(key: keyof LanguageDefinition, ...args: string[]): string {
   return format(intlStore.language?.definition[key] ?? "", ...args);
 }

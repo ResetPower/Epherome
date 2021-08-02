@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { Observer } from "mobx-react";
+import { observer } from "mobx-react";
 import { DefaultFn } from "../tools";
 import { Transition } from "react-transition-group";
 import { useRef } from "react";
@@ -31,25 +31,19 @@ export const overlayStore = new OverlayStore();
 export const showDialog = overlayStore.show;
 
 // global dialog manager component
-export function GlobalOverlay(): JSX.Element {
+export const GlobalOverlay = observer(() => {
   const previous = useRef<JSX.Element | undefined>(undefined);
 
-  return (
-    <Observer>
-      {() => {
-        const overlay = overlayStore.current;
-        overlay && (previous.current = overlay);
+  const overlay = overlayStore.current;
+  overlay && (previous.current = overlay);
 
-        return (
-          <Transition in={!!overlay} timeout={300} unmountOnExit>
-            {(state) => (
-              <div className={`eph-global-overlay`}>
-                <div className={`m-auto zoom-${state}`}>{previous.current}</div>
-              </div>
-            )}
-          </Transition>
-        );
-      }}
-    </Observer>
+  return (
+    <Transition in={!!overlay} timeout={300} unmountOnExit>
+      {(state) => (
+        <div className={`eph-global-overlay`}>
+          <div className={`m-auto zoom-${state}`}>{previous.current}</div>
+        </div>
+      )}
+    </Transition>
   );
-}
+});

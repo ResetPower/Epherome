@@ -26,9 +26,7 @@ export function TabController(props: {
     >
       <div
         className={`flex ${
-          props.orientation === "vertical"
-            ? "flex-row"
-            : "border-l border-divider flex-col"
+          props.orientation === "vertical" ? "flex-row" : "flex-col"
         } ${props.className ?? ""}`}
       >
         {props.children}
