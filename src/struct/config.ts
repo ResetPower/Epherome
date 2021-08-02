@@ -4,7 +4,7 @@ import path from "path";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { detectJava, Java } from "./java";
-import { action, extendObservable, observable, toJS } from "mobx";
+import { extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "../core/net";
 import { ipcRenderer } from "electron";
 
@@ -57,10 +57,10 @@ export class ConfigStore {
       });
     }
   }
-  @action setConfig(cb: (store: ConfigStore) => unknown): void {
-    cb(this);
+  setConfig = (cb: (store: ConfigStore) => unknown): void => {
+    runInAction(() => cb(this));
     this.save();
-  }
+  };
   save(): void {
     fs.writeFileSync(cfgPath, JSON.stringify(toJS(this)));
   }
@@ -68,6 +68,4 @@ export class ConfigStore {
 
 export const configStore = new ConfigStore(parsed);
 
-export function setConfig(cb: (store: ConfigStore) => unknown): void {
-  configStore.setConfig(cb);
-}
+export const setConfig = configStore.setConfig;

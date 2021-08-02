@@ -7,18 +7,19 @@ import {
   removeAccount,
 } from "../struct/accounts";
 import { logger } from "../renderer/global";
-import { configStore } from "../struct/config";
+import { configStore, setConfig } from "../struct/config";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { showDialog } from "../renderer/overlays";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
-import { Component, useState } from "react";
-import { DefaultFn, EmptyObject } from "../tools";
+import { useState } from "react";
+import { DefaultFn } from "../tools";
 import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
-import { Observer } from "mobx-react";
+import { observer } from "mobx-react";
+import { useCallback } from "react";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -68,8 +69,7 @@ export function CreateAccountFragment(props: {
   };
 
   return (
-    <>
-      <div className="h-12" />
+    <div className="p-3">
       <div>
         {errAlert && (
           <div className="my-3">
@@ -126,100 +126,86 @@ export function CreateAccountFragment(props: {
           {t("create")}
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 
-export interface AccountsPageState {
-  creating: boolean;
-}
+const AccountsPage = observer(() => {
+  const [creating, setCreating] = useState(false);
+  const handleCreate = useCallback(() => setCreating(true), []);
+  const handleRemove = useCallback(
+    (selected: MinecraftAccount) =>
+      showDialog((close) => (
+        <RemoveAccountDialog onClose={close} account={selected} />
+      )),
+    []
+  );
 
-export default class AccountsPage extends Component<
-  EmptyObject,
-  AccountsPageState
-> {
-  state = {
-    creating: false,
-  };
-  handleCreate = (): void => this.setState({ creating: true });
-  handleRemove = (selected: MinecraftAccount): void =>
-    showDialog((close) => (
-      <RemoveAccountDialog onClose={close} account={selected} />
-    ));
-  render(): JSX.Element {
-    return (
-      <Observer>
-        {() => {
-          const accounts = configStore.accounts;
-          const current = _.selected(accounts);
+  const accounts = configStore.accounts;
+  const current = _.selected(accounts);
 
-          return (
-            <div className="flex eph-h-full">
-              <div className="py-3 w-1/4">
-                <div className="flex p-3">
-                  <Button variant="contained" onClick={this.handleCreate}>
-                    <MdCreate />
-                    {t("create")}
+  return (
+    <div className="flex eph-h-full">
+      <div className="py-3 w-1/4">
+        <div className="flex p-3">
+          <Button variant="contained" onClick={handleCreate}>
+            <MdCreate />
+            {t("create")}
+          </Button>
+        </div>
+        <List className="space-y-3">
+          {accounts.map((i: MinecraftAccount, index) => (
+            <ListItem
+              className="p-3 mx-2 rounded-lg"
+              checked={!creating && current === i}
+              onClick={() => {
+                logger.info(`Account selection changed`);
+                setConfig(() => _.select(accounts, i));
+              }}
+              key={index}
+            >
+              <Typography className="flex space-x-1">{i.name}</Typography>
+            </ListItem>
+          ))}
+        </List>
+      </div>
+      <div className="border-l border-divider flex-grow p-6 w-3/4 h-full">
+        {creating ? (
+          <CreateAccountFragment onDone={() => setCreating(false)} />
+        ) : current ? (
+          <TabController orientation="horizontal">
+            <TabBar>
+              <TabBarItem value={0}>{t("general")}</TabBarItem>
+              <TabBarItem value={1}>{t("edit")}</TabBarItem>
+            </TabBar>
+            <TabBody>
+              <div className="flex flex-col">
+                <div className="flex-grow">
+                  <Typography>{current?.name}</Typography>
+                  <Typography>{current && t(current.mode)}</Typography>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    className="text-red-500"
+                    onClick={() => current && handleRemove(current)}
+                  >
+                    <MdDelete /> {t("remove")}
                   </Button>
                 </div>
-                <List className="space-y-3">
-                  {accounts.map((i: MinecraftAccount, index) => (
-                    <ListItem
-                      className="p-3 mx-2 rounded-lg"
-                      checked={!this.state.creating && current === i}
-                      onClick={() => {
-                        logger.info(`Account selection changed`);
-                        _.select(accounts, i);
-                      }}
-                      key={index}
-                    >
-                      <Typography className="flex space-x-1">
-                        {i.name}
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
               </div>
-              {this.state.creating ? (
-                <div className="border-l border-divider p-3 w-3/4">
-                  <CreateAccountFragment
-                    onDone={() => this.setState({ creating: false })}
-                  />
-                </div>
-              ) : (
-                <TabController
-                  className="flex-grow p-3 w-3/4"
-                  orientation="horizontal"
-                >
-                  <TabBar>
-                    <TabBarItem value={0}>{t("general")}</TabBarItem>
-                    <TabBarItem value={1}>{t("edit")}</TabBarItem>
-                  </TabBar>
-                  <TabBody>
-                    <div className="flex flex-col">
-                      <div className="flex-grow">
-                        <Typography>{current?.name}</Typography>
-                        <Typography>{current && t(current.mode)}</Typography>
-                      </div>
-                      <div className="flex justify-end">
-                        <Button
-                          className="text-red-500"
-                          onClick={() => current && this.handleRemove(current)}
-                        >
-                          <MdDelete /> {t("remove")}
-                        </Button>
-                      </div>
-                    </div>
-                    <div>
-                      <Typography>{t("notSupportedYet")}</Typography>
-                    </div>
-                  </TabBody>
-                </TabController>
-              )}
-            </div>
-          );
-        }}
-      </Observer>
-    );
-  }
-}
+              <div>
+                <Typography>{t("notSupportedYet")}</Typography>
+              </div>
+            </TabBody>
+          </TabController>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-shallow">{t("noAccountsYet")}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+export default AccountsPage;
