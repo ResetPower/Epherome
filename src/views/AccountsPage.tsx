@@ -6,7 +6,6 @@ import {
   MinecraftAccount,
   removeAccount,
 } from "../struct/accounts";
-import { logger } from "../renderer/global";
 import { configStore, setConfig } from "../struct/config";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
@@ -19,7 +18,6 @@ import { t } from "../intl";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
-import { useCallback } from "react";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -27,7 +25,7 @@ export function RemoveAccountDialog(props: {
 }): JSX.Element {
   return (
     <ConfirmDialog
-      title={t("removeAccount")}
+      title={t("account.removing")}
       message={t("confirmRemoving")}
       action={() => removeAccount(props.account)}
       close={props.onClose}
@@ -70,22 +68,22 @@ export function CreateAccountFragment(props: {
 
   return (
     <div className="p-3">
-      <div>
+      <div className="space-y-3">
         {errAlert && (
           <div className="my-3">
-            <Alert severity="warn">{t("errCreatingAccount")}</Alert>
+            <Alert severity="warn">{t("account.errCreating")}</Alert>
           </div>
         )}
         {msAccNoMcAlert && (
           <div className="my-3">
-            <Alert severity="warn">{t("msAccNoMinecraft")}</Alert>
+            <Alert severity="warn">{t("account.msAccNoMinecraft")}</Alert>
           </div>
         )}
         <Select value={value} onChange={setValue}>
-          <option value={"mojang"}>{t("mojang")}</option>
-          <option value={"microsoft"}>{t("microsoft")}</option>
-          <option value={"authlib"}>{t("authlib")}</option>
-          <option value={"offline"}>{t("offline")}</option>
+          <option value={"mojang"}>{t("account.mojang")}</option>
+          <option value={"microsoft"}>{t("account.microsoft")}</option>
+          <option value={"authlib"}>{t("account.authlib")}</option>
+          <option value={"offline"}>{t("account.offline")}</option>
         </Select>
         <div hidden={value !== "mojang"}>
           <TextField label={t("email")} value={name} onChange={setName} />
@@ -97,7 +95,7 @@ export function CreateAccountFragment(props: {
           />
         </div>
         <div hidden={value !== "microsoft"}>
-          <Typography>{t("clickToLogin")}</Typography>
+          <Typography>{t("account.clickToLogin")}</Typography>
         </div>
         <div hidden={value !== "authlib"}>
           <TextField
@@ -132,14 +130,11 @@ export function CreateAccountFragment(props: {
 
 const AccountsPage = observer(() => {
   const [creating, setCreating] = useState(false);
-  const handleCreate = useCallback(() => setCreating(true), []);
-  const handleRemove = useCallback(
-    (selected: MinecraftAccount) =>
-      showDialog((close) => (
-        <RemoveAccountDialog onClose={close} account={selected} />
-      )),
-    []
-  );
+  const handleCreate = () => setCreating(true);
+  const handleRemove = (selected: MinecraftAccount) =>
+    showDialog((close) => (
+      <RemoveAccountDialog onClose={close} account={selected} />
+    ));
 
   const accounts = configStore.accounts;
   const current = _.selected(accounts);
@@ -147,7 +142,7 @@ const AccountsPage = observer(() => {
   return (
     <div className="flex eph-h-full">
       <div className="py-3 w-1/4">
-        <div className="flex p-3">
+        <div className="flex p-2 flex-wrap">
           <Button variant="contained" onClick={handleCreate}>
             <MdCreate />
             {t("create")}
@@ -159,8 +154,10 @@ const AccountsPage = observer(() => {
               className="p-3 mx-2 rounded-lg"
               checked={!creating && current === i}
               onClick={() => {
-                logger.info(`Account selection changed`);
-                setConfig(() => _.select(accounts, i));
+                creating && setCreating(false);
+                i.selected
+                  ? setConfig(() => _.deselect(accounts))
+                  : setConfig(() => _.select(accounts, i));
               }}
               key={index}
             >
@@ -182,7 +179,9 @@ const AccountsPage = observer(() => {
               <div className="flex flex-col">
                 <div className="flex-grow">
                   <Typography>{current?.name}</Typography>
-                  <Typography>{current && t(current.mode)}</Typography>
+                  <Typography>
+                    {current && t(`account.${current.mode}`)}
+                  </Typography>
                 </div>
                 <div className="flex justify-end">
                   <Button
@@ -200,7 +199,7 @@ const AccountsPage = observer(() => {
           </TabController>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-shallow">{t("noAccountsYet")}</p>
+            <p className="text-shallow">{t("account.notSelected")}</p>
           </div>
         )}
       </div>

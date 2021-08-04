@@ -9,7 +9,6 @@ import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { createDirIfNotExist, downloadFile } from "./net/download";
-import { Logger } from "../tools/logger";
 import { DefaultFn } from "../tools";
 import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
 import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";
@@ -17,9 +16,10 @@ import { Java } from "../struct/java";
 import { t } from "../intl";
 import { ephVersion } from "../renderer/updater";
 import { userDataPath } from "../struct/config";
+import log4js from "log4js";
 
 // logger for minecraft launch core
-export const coreLogger = new Logger("Core");
+export const coreLogger = log4js.getLogger("core");
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -131,7 +131,9 @@ export async function launchMinecraft(
   // download missing libraries
   for (const item of obj.missing) {
     setHelper(
-      `${t("helper.downloadingLib")}: ${item.name} (${mCount}/${missingCount})`
+      `${t("launching.downloadingLib")}: ${
+        item.name
+      } (${mCount}/${missingCount})`
     );
     await downloadFile(item.url, item.path, true);
     mCount++;
@@ -164,7 +166,7 @@ export async function launchMinecraft(
     } catch (e) {
       setHelper(
         `${t(
-          "helper.downloadingAsset"
+          "launching.downloadingAsset"
         )}: ${startHash}... (${oCount}/${objsCount})`
       );
       await downloadFile(

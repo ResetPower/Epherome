@@ -1,6 +1,5 @@
 import { Select, Button, IconButton, TextField } from "../components/inputs";
-import { useCallback, useState } from "react";
-import { logger } from "../renderer/global";
+import { useState } from "react";
 import { configStore, setConfig } from "../struct/config";
 import { MinecraftProfile } from "../struct/profiles";
 import { launchMinecraft } from "../core";
@@ -39,7 +38,7 @@ export function RequestPasswordDialog(props: {
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">
-        {t("pleaseInputPassword")}
+        {t("account.inputPassword")}
       </Typography>
       <div>
         <TextField
@@ -47,7 +46,7 @@ export function RequestPasswordDialog(props: {
           onChange={setPassword}
           label={t("password")}
           type="password"
-          helperText={props.again ? t("passwordWrong") : ""}
+          helperText={props.again ? t("account.wrongPassword") : ""}
           error={props.again}
         />
       </div>
@@ -55,7 +54,7 @@ export function RequestPasswordDialog(props: {
         <Button className="text-shallow" onClick={props.onClose}>
           {t("cancel")}
         </Button>
-        <Button onClick={handler}>{t("ok")}</Button>
+        <Button onClick={handler}>{t("fine")}</Button>
       </div>
     </Dialog>
   );
@@ -84,7 +83,7 @@ export class HomePageStore {
       runInAction(
         () =>
           (this.hitokoto = hk ?? {
-            content: t("cannotConnectToInternet"),
+            content: t("internetNotAvailable"),
             from: "",
           })
       )
@@ -99,22 +98,23 @@ export class HomePageStore {
 export const homePageStore = new HomePageStore();
 
 const HomePage = observer(() => {
-  const isHitokotoEnabled = configStore.hitokoto;
   const account = useRef(_.selected(configStore.accounts));
-  const [value, setValue] = useState(
-    _.selectedIndex(configStore.profiles) ?? ""
+  const profiles = configStore.profiles;
+  const username = account.current?.name;
+  const isHitokotoEnabled = configStore.hitokoto;
+  const [value, setValue] = useState<number | null>(
+    _.selectedIndex(configStore.profiles) ?? null
   );
-  const handleChange = useCallback((val: string): void => {
+
+  const handleChange = (val: string): void => {
     const newValue = +val;
-    setConfig((cfg) => _.select(cfg.profiles, cfg.profiles[newValue]));
+    setConfig(() => _.select(profiles, profiles[newValue]));
     setValue(newValue);
-    logger.info(`Profile selection changed to id ${newValue}`);
-  }, []);
-  const handleLaunch = useCallback(() => {
+  };
+  const handleLaunch = () => {
     // value will be "" if not selected
-    const val = +value;
     const current = account.current;
-    const profile = configStore.profiles[val];
+    const profile = value && configStore.profiles[+value];
     if (current && profile) {
       homePageStore.setLaunching(true);
       launchMinecraft({
@@ -147,19 +147,17 @@ const HomePage = observer(() => {
       showDialog((close) => (
         <AlertDialog
           title={t("warning")}
-          message={t("noAccOrProSelected")}
+          message={t("launching.noAccOrProSelected")}
           close={close}
         />
       ));
     }
-  }, [value]);
+  };
 
   if (isHitokotoEnabled && !homePageStore.hitokoto.content) {
     homePageStore.reloadHitokoto();
   }
 
-  const profiles = configStore.profiles;
-  const username = account.current?.name;
   return (
     <Container>
       <Card className="my-3 p-6 shadow-sm">
@@ -167,7 +165,7 @@ const HomePage = observer(() => {
           <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
             <Typography className="text-2xl">
-              {username === undefined ? t("noAccSelected") : username}
+              {username === undefined ? t("account.notSelected") : username}
             </Typography>
             {isHitokotoEnabled && (
               <div>
@@ -209,11 +207,7 @@ const HomePage = observer(() => {
       </Card>
       <div className="flex space-x-6">
         <Card className="flex-grow">
-          {profiles.length === 0 ? (
-            <Typography className="text-sm p-1 m-1">
-              {t("noProSelected")}
-            </Typography>
-          ) : (
+          {value ? (
             <Select
               value={value}
               onChange={handleChange}
@@ -225,6 +219,10 @@ const HomePage = observer(() => {
                 </option>
               ))}
             </Select>
+          ) : (
+            <Typography className="text-sm p-1 m-1">
+              {t("profile.notSelected")}
+            </Typography>
           )}
           <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
             <MdPlayArrow />

@@ -36,7 +36,7 @@ export function AlertDialog(props: {
       )}
       <div className="flex justify-end">
         <Button className="text-secondary" onClick={props.close}>
-          {t("ok")}
+          {t("fine")}
         </Button>
       </div>
     </Dialog>
@@ -66,7 +66,7 @@ export function ConfirmDialog(props: {
             props.close();
           }}
         >
-          {props.positiveText ?? t("ok")}
+          {props.positiveText ?? t("fine")}
         </Button>
       </div>
     </Dialog>

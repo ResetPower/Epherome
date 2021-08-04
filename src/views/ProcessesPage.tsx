@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
 import { t } from "../intl";
 import { Process } from "../struct/processes";
-import { ephLoggerMessages } from "../tools/logger";
+import fs from "fs";
+import { logFilename } from "../struct/config";
 
 export class ProcessStore {
   processes: Process[] = [];
@@ -18,6 +19,10 @@ export default function ProcessesPage(): JSX.Element {
   const minecraftProcesses = processStore.processes;
   const [selected, setSelected] = useState(-1);
   const current = minecraftProcesses[selected];
+  const messages = useMemo(
+    () => fs.readFileSync(logFilename).toString().split("\n"),
+    []
+  );
 
   return (
     <div className="flex eph-h-full">
@@ -34,7 +39,7 @@ export default function ProcessesPage(): JSX.Element {
         {minecraftProcesses.length === 0 ? (
           <div className="flex justify-center">
             <Typography className="text-shallow">
-              {t("noMinecraftProcesses")}
+              {t("processes.noMinecraft")}
             </Typography>
           </div>
         ) : (
@@ -54,9 +59,7 @@ export default function ProcessesPage(): JSX.Element {
         <div className="text-contrast">
           {current
             ? current.outputs.map((value, index) => <p key={index}>{value}</p>)
-            : ephLoggerMessages.map((value, index) => (
-                <p key={index}>{value}</p>
-              ))}
+            : messages.map((value, index) => <p key={index}>{value}</p>)}
         </div>
       </div>
     </div>

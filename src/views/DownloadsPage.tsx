@@ -8,9 +8,9 @@ import { Container, Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { showDialog } from "../renderer/overlays";
 import Dialog from "../components/Dialog";
-import { useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { downloadFile } from "../core/net/download";
-import { mcDownloadPath } from "../struct/config";
+import { minecraftDownloadPath } from "../struct/config";
 import path from "path";
 import fs from "fs";
 import { ClientJson } from "../core/struct";
@@ -23,19 +23,19 @@ export function DownloadDialog(props: {
   onClose: DefaultFn;
 }): JSX.Element {
   const [step, setStep] = useState<string | null>(null);
-  const startDownload = useCallback(async () => {
-    setStep(t("downloadingJson"));
+  const startDownload = async () => {
+    setStep(t("downloadingSomething", "Json"));
     const jsonPath = path.join(
-      mcDownloadPath,
+      minecraftDownloadPath,
       "versions",
       props.version.id,
       `${props.version.id}.json`
     );
     await downloadFile(props.version.url, jsonPath, true);
 
-    setStep(t("downloadingJar"));
+    setStep(t("downloadingSomething", "Jar"));
     const jarPath = path.join(
-      mcDownloadPath,
+      minecraftDownloadPath,
       "versions",
       props.version.id,
       `${props.version.id}.jar`
@@ -49,11 +49,11 @@ export function DownloadDialog(props: {
 
     createProfile({
       name: `Minecraft ${props.version.id}`,
-      dir: mcDownloadPath,
+      dir: minecraftDownloadPath,
       ver: props.version.id,
       from: "download",
     });
-  }, [props.version, props.onClose]);
+  };
 
   return (
     <Dialog indentBottom>
@@ -78,18 +78,15 @@ export default function DownloadsPage(): JSX.Element {
   const [release, setRelease] = useState(true);
   const [snapshot, setSnapshot] = useState(false);
   const [old, setOld] = useState(false);
-  const [versions, setVersions] = useState<MinecraftVersion[]>([]);
-  const matchType = useCallback(
-    (type: MinecraftVersionType) =>
-      type === "release"
-        ? release
-        : type === "snapshot"
-        ? snapshot
-        : type === "old_beta" || type === "old_alpha"
-        ? old
-        : false,
-    [release, snapshot, old]
-  );
+  const [versions, setVersions] = useState<MinecraftVersion[] | null>(null);
+  const matchType = (type: MinecraftVersionType) =>
+    type === "release"
+      ? release
+      : type === "snapshot"
+      ? snapshot
+      : type === "old_beta" || type === "old_alpha"
+      ? old
+      : false;
 
   useEffect(() => {
     logger.info("Fetching Minecraft launcher meta...");
@@ -108,13 +105,13 @@ export default function DownloadsPage(): JSX.Element {
     <Container className="p-3 eph-h-full overflow-y-auto">
       <div className="flex space-x-3">
         <Checkbox checked={release} onChange={setRelease}>
-          {t("release")}
+          {t("version.release")}
         </Checkbox>
         <Checkbox checked={snapshot} onChange={setSnapshot}>
-          {t("snapshot")}
+          {t("version.snapshot")}
         </Checkbox>
         <Checkbox checked={old} onChange={setOld}>
-          {t("old")}
+          {t("version.old")}
         </Checkbox>
       </div>
       {versions ? (

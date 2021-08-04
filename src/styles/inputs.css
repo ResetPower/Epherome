@@ -14,6 +14,9 @@
   .eph-button-text {
     @apply transition-colors duration-200 transform bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10;
   }
+  .eph-button-text:disabled {
+    @apply hover:bg-opacity-0;
+  }
 
   .eph-icon-button {
     @apply select-none rounded-full h-12 w-12 flex items-center justify-center
@@ -25,7 +28,7 @@
   }
 
   .eph-label {
-    @apply text-gray-600 dark:text-gray-400 font-bold;
+    @apply text-gray-600 dark:text-gray-400 font-bold text-sm;
   }
   .eph-label:disabled {
     @apply text-shallow dark:text-shallow;

@@ -7,10 +7,7 @@ export const _ = {
   select<T extends WithSelected>(arr: T[], item: T): void {
     for (const i of arr) {
       i.selected && delete i.selected;
-      if (item === i) {
-        i.selected = true;
-        break;
-      }
+      i === item && (i.selected = true);
     }
   },
   deselect<T extends WithSelected>(arr: T[]): void {
@@ -32,8 +29,8 @@ export const _ = {
     }
   },
   append<T extends WithSelected>(arr: T[], item: T, select = false): void {
-    select && (item.selected = true);
     arr.push(item);
+    select && _.select(arr, item);
   },
   remove<T extends WithSelected>(arr: T[], item: T): void {
     for (const k in arr) {
