@@ -28,19 +28,16 @@ export default (env: { [key: string]: string }): Config[] => {
         },
         {
           test: /\.css$/,
-          exclude: /node_modules/,
           use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         },
         {
           test: /\.(png|jpe?g|gif)$/i,
-          exclude: /node_modules/,
           use: "file-loader",
         },
       ],
     },
     resolve: {
       extensions: [".js", ".ts", ".tsx"],
-      modules: [path.resolve(__dirname, "node_modules")],
     },
     output: {
       path: path.join(__dirname, "./dist"),

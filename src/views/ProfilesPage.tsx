@@ -145,7 +145,7 @@ const ProfilesPage = observer(() => {
 
   return (
     <div className="flex eph-h-full">
-      <div className="overflow-y-auto py-3 w-1/4">
+      <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
         <div className="flex p-2 flex-wrap">
           <Button
             className="whitespace-nowrap"
@@ -183,7 +183,7 @@ const ProfilesPage = observer(() => {
           ))}
         </List>
       </div>
-      <div className="border-l border-divider flex-grow p-3 w-3/4 h-full">
+      <div className="flex-grow p-3 w-3/4">
         {creating ? (
           <ChangeProfileFragment
             action="create"

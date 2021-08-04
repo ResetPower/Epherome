@@ -81,7 +81,7 @@ export const RouterView = observer(() => {
     <SwitchTransition mode="out-in">
       <CSSTransition
         key={historyStore.current?.pathname}
-        timeout={150}
+        timeout={120}
         classNames="fade"
       >
         {unwrapAccessible(
