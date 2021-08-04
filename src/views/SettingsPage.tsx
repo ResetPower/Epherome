@@ -7,9 +7,9 @@ import {
   IconButton,
 } from "../components/inputs";
 import {
-  cfgPath,
+  configFilename,
   configStore,
-  mcDownloadPath,
+  minecraftDownloadPath,
   setConfig,
 } from "../struct/config";
 import { logger } from "../renderer/global";
@@ -31,7 +31,7 @@ import {
   detectJava,
   removeJava,
 } from "../struct/java";
-import { useState, useCallback, Component } from "react";
+import { useState, Component } from "react";
 import { t, intlStore } from "../intl";
 import { _ } from "../tools/arrays";
 import os from "os";
@@ -47,14 +47,14 @@ export function UpdateAvailableDialog(props: {
       <Typography className="text-xl font-semibold">
         {t("epheromeUpdate")}
       </Typography>
-      <Typography>{t("updateAvailable", props.version)}</Typography>
-      <Typography>{t("pleaseGoToSiteToDownloadLatestVersion")}</Typography>
+      <Typography>{t("epheromeUpdate.available", props.version)}</Typography>
+      <Typography>{t("epheromeUpdate.availableMessage")}</Typography>
       <Link type="url" href="https://epherome.com/download">
         https://epherome.com/download
       </Link>
       <div className="flex justify-end">
         <Button className="text-secondary" onClick={props.onClose}>
-          {t("ok")}
+          {t("fine")}
         </Button>
       </div>
     </Dialog>
@@ -66,22 +66,19 @@ export const JavaManagementDialog = observer(
     const [err, setErr] = useState<string | null>(null);
     const [newJavaPath, setNewJavaPath] = useState("");
     const javas = configStore.javas;
-    const checkDuplicate = useCallback(
-      (dir: string) => {
-        if (dir === "") {
-          setErr(t("manageJava.invalidJavaPath"));
-          return false;
-        }
-        for (const i of javas) {
-          if (i.dir === dir) {
-            setErr(t("manageJava.duplicateJavaPath"));
-            return true;
-          }
-        }
+    const checkDuplicate = (dir: string) => {
+      if (dir === "") {
+        setErr(t("java.invalidPath"));
         return false;
-      },
-      [javas]
-    );
+      }
+      for (const i of javas) {
+        if (i.dir === dir) {
+          setErr(t("java.duplicatePath"));
+          return true;
+        }
+      }
+      return false;
+    };
 
     return (
       <Dialog
@@ -89,7 +86,7 @@ export const JavaManagementDialog = observer(
         indentBottom
       >
         <Typography className="font-semibold text-xl">
-          {t("manageXxx", "Java")}
+          {t("java.manage")}
         </Typography>
         <List className="overflow-y-auto">
           {javas.map((value, index) => (
@@ -98,7 +95,7 @@ export const JavaManagementDialog = observer(
                 primary={
                   value.name +
                   " (" +
-                  t("xxxBit", value.is64Bit ? "64" : "32") +
+                  t("java.bitNumber", value.is64Bit ? "64" : "32") +
                   ") "
                 }
                 secondary={value.dir}
@@ -124,7 +121,7 @@ export const JavaManagementDialog = observer(
           error={!!err}
           helperText={err ?? undefined}
           icon={<FaJava />}
-          placeholder={t("manageJava.newJavaPath")}
+          placeholder={t("java.newPath")}
           trailing={
             <Link
               type="clickable"
@@ -136,7 +133,7 @@ export const JavaManagementDialog = observer(
                   if (result) {
                     createJava(result);
                     setNewJavaPath("");
-                  } else setErr(t("manageJava.invalidJavaPath"));
+                  } else setErr(t("java.invalidPath"));
                 });
               }}
             >
@@ -155,7 +152,7 @@ export const JavaManagementDialog = observer(
               })
             }
           >
-            {t("manageJava.detect")}
+            {t("java.detect")}
           </Button>
           <div className="flex-grow" />
           <Button onClick={props.onClose}>{t("done")}</Button>
@@ -185,45 +182,46 @@ export default class SettingsPage extends Component<
       if (result) {
         if (result.need) {
           this.setState({
-            updateCheckResult: t("updateAvailable", result.name),
+            updateCheckResult: t("epheromeUpdate.available", result.name),
           });
           showDialog((close) => (
             <UpdateAvailableDialog version={result.name} onClose={close} />
           ));
         } else {
           this.setState({
-            updateCheckResult: t("youAreUsingTheLatestVersion"),
+            updateCheckResult: t("epheromeUpdate.needNot"),
           });
         }
       } else {
-        this.setState({ updateCheckResult: t("cannotConnectToInternet") });
+        this.setState({ updateCheckResult: t("internetNotAvailable") });
       }
     });
   };
   handleChangeLanguage = (ev: string): void => {
+    logger.info(`Changing language to ${ev}'`);
     intlStore.setLanguage(ev);
-    this.setState({ updateCheckResult: "" });
     setConfig((cfg) => (cfg.language = ev));
-    historyStore.dispatch();
-    logger.info(`Language changed to '${ev}'`);
+    this.setState({ updateCheckResult: "" });
+    historyStore.dispatch(ev);
   };
   handleChangeTheme = (ev: string): void => {
+    logger.info(`Changing theme to '${ev}'`);
     setConfig((cfg) => (cfg.theme = ev));
     themeStore.updateTheme();
-    logger.info(`Theme changed to '${ev}'`);
   };
   handleThemeFollowOs = (checked: boolean): void => {
+    logger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
     setConfig((cfg) => (cfg.themeFollowOs = checked));
     themeStore.updateTheme();
-    logger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
   };
   handleManageJava = (): void => {
     showDialog((close) => <JavaManagementDialog onClose={close} />);
   };
+
   render(): JSX.Element {
     return (
       <TabController className="eph-h-full" orientation="vertical">
-        <TabBar>
+        <TabBar className="shadow-md">
           <TabBarItem value={0}>
             <MdTune />
             {t("general")}
@@ -237,7 +235,7 @@ export default class SettingsPage extends Component<
             {t("about")}
           </TabBarItem>
         </TabBar>
-        <TabBody>
+        <TabBody className="flex-grow overflow-y-auto">
           <div>
             <Select
               value={intlStore.language?.name ?? ""}
@@ -255,18 +253,22 @@ export default class SettingsPage extends Component<
             <div className="mb-2">
               <Select
                 value={configStore.downloadProvider}
-                label={t("downloadProvider")}
+                label={t("settings.downloadProvider")}
                 onChange={() => {
                   // TODO Set Download Provider Here
                   /**/
                 }}
                 className="w-32"
               >
-                <option value="official">{t("official")}</option>
+                <option value="official">
+                  {t("settings.downloadProvider.official")}
+                </option>
                 <option value="bmclapi">BMCLAPI</option>
                 <option value="mcbbs">MCBBS</option>
               </Select>
-              <p className="text-shallow">{t("downloadProviderIsNotAble")}</p>
+              <p className="text-shallow">
+                {t("settings.downloadProvider.notAvailable")}
+              </p>
             </div>
             <Select
               label="Java"
@@ -283,7 +285,7 @@ export default class SettingsPage extends Component<
               ))}
             </Select>
             <Button onClick={this.handleManageJava}>
-              <FaJava /> {t("manageXxx", "Java")}
+              <FaJava /> {t("java.manage")}
             </Button>
             <Checkbox
               checked={configStore.hitokoto}
@@ -291,16 +293,16 @@ export default class SettingsPage extends Component<
                 setConfig((cfg) => (cfg.hitokoto = checked))
               }
             >
-              {t("hitokoto")}
+              {t("settings.hitokoto")}
             </Checkbox>
-            <p className="text-shallow">{t("hitokotoDescription")}</p>
+            <p className="text-shallow">{t("settings.hitokoto.description")}</p>
             <div className="flex my-3 items-center space-x-3">
               <Button
                 variant="contained"
                 onClick={this.handleUpdateCheck}
                 disabled={this.state.updateCheckResult === null}
               >
-                {t("checkUpdate")}
+                {t("epheromeUpdate.check")}
               </Button>
               <Typography>
                 {this.state.updateCheckResult !== null ? (
@@ -315,7 +317,7 @@ export default class SettingsPage extends Component<
           <div>
             <Select
               value={configStore.theme}
-              label={t("theme")}
+              label={t("settings.theme")}
               onChange={this.handleChangeTheme}
               disabled={configStore.themeFollowOs}
             >
@@ -326,12 +328,12 @@ export default class SettingsPage extends Component<
               checked={configStore.themeFollowOs}
               onChange={this.handleThemeFollowOs}
             >
-              {t("followOs")}
+              {t("settings.theme.followOS")}
             </Checkbox>
           </div>
 
           <div className="space-y-3">
-            <Card variant="contained" className="flex items-center space-x-3">
+            <Card className="flex items-center space-x-3">
               <img
                 src={EpheromeLogo}
                 alt="EpheromeLogo"
@@ -346,7 +348,7 @@ export default class SettingsPage extends Component<
                 </Typography>
               </div>
             </Card>
-            <Card variant="contained">
+            <Card>
               <div>
                 <Typography>
                   {t("os")}: {os.platform()} {os.arch()} {os.release()}
@@ -359,19 +361,19 @@ export default class SettingsPage extends Component<
                 <Typography>V8: {process.versions.v8}</Typography>
               </div>
               <div>
-                <Typography>{t("cfgFilePath")}:</Typography>
-                <Link href={cfgPath} type="file">
-                  {cfgPath}
+                <Typography>{t("settings.configFilePath")}:</Typography>
+                <Link href={configFilename} type="file">
+                  {configFilename}
                 </Link>
-                <Typography>{t("minecraftDirPath")}:</Typography>
-                <Link href={mcDownloadPath} type="file">
-                  {mcDownloadPath}
+                <Typography>{t("settings.minecraftDownloadPath")}:</Typography>
+                <Link href={minecraftDownloadPath} type="file">
+                  {minecraftDownloadPath}
                 </Link>
               </div>
             </Card>
-            <Card variant="contained">
+            <Card>
               <Typography>
-                {t("officialSite")}:{" "}
+                {t("settings.officialSite")}:{" "}
                 <Link href="https://epherome.com">https://epherome.com</Link>
               </Typography>
               <Typography>
@@ -382,7 +384,8 @@ export default class SettingsPage extends Component<
               </Typography>
               <Typography>Copyright © 2021 ResetPower.</Typography>
               <Typography>
-                {t("oss")} | GNU General Public License 3.0
+                {t("settings.openSourceSoftware")} | GNU General Public License
+                3.0
               </Typography>
             </Card>
           </div>

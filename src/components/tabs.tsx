@@ -35,13 +35,23 @@ export function TabController(props: {
   );
 }
 
-export function TabBody(props: { children: JSX.Element[] }): JSX.Element {
+export function TabBody(props: {
+  children: JSX.Element[];
+  className?: string;
+}): JSX.Element {
   const { value } = useContext(TabContext);
 
-  return <div className="eph-tab-body">{props.children[value]}</div>;
+  return (
+    <div className={`eph-tab-body ${props.className ?? ""}`}>
+      {props.children[value]}
+    </div>
+  );
 }
 
-export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
+export function TabBar(props: {
+  children: JSX.Element[];
+  className?: string;
+}): JSX.Element {
   const { orientation } = useContext(TabContext);
 
   return (
@@ -50,7 +60,7 @@ export function TabBar(props: { children: JSX.Element[] }): JSX.Element {
         orientation === "horizontal"
           ? "eph-tab-bar-horizontal"
           : "eph-tab-bar-vertical"
-      }`}
+      } ${props.className ?? ""}`}
     >
       {props.children}
     </div>
@@ -67,7 +77,7 @@ export function TabBarItem(props: {
     <button
       className={`eph-tab-bar-item ${
         props.value === value ? "eph-tab-bar-item-selected" : "text-contrast"
-      }`}
+      } whitespace-nowrap`}
       onClick={() => setValue(props.value)}
     >
       {props.children}

@@ -1,9 +1,8 @@
-import { Component } from "react";
 import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/ProfilesPage";
 import SettingsPage from "../views/SettingsPage";
-import { Accessible, EmptyObject, StringMap, unwrapAccessible } from "../tools";
+import { Accessible, StringMap, unwrapAccessible } from "../tools";
 import DownloadsPage from "../views/DownloadsPage";
 import { GlobalOverlay } from "./overlays";
 import { historyStore } from "./history";
@@ -16,10 +15,8 @@ import ExtensionsPage from "../views/ExtensionsPage";
 import { IconButton } from "../components/inputs";
 import { t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-
-export interface AppState {
-  title: string;
-}
+import { observer } from "mobx-react";
+import { useLayoutEffect } from "react";
 
 export interface RouteList {
   [key: string]: {
@@ -28,84 +25,84 @@ export interface RouteList {
   };
 }
 
-export default class App extends Component<EmptyObject, AppState> {
-  state: AppState = {
-    title: "",
-  };
-  routes: RouteList = {
-    home: {
-      component: <HomePage />,
-      title: (): string => t("epherome"),
-    },
-    accounts: {
-      component: <AccountsPage />,
-      title: (): string => t("accounts"),
-    },
-    profiles: {
-      component: <ProfilesPage />,
-      title: (): string => t("profiles"),
-    },
-    settings: {
-      component: <SettingsPage />,
-      title: (): string => t("settings"),
-    },
-    downloads: {
-      component: <DownloadsPage />,
-      title: (): string => t("downloads"),
-    },
-    processes: {
-      component: <ProcessesPage />,
-      title: (): string => t("processes"),
-    },
-    extensions: {
-      component: <ExtensionsPage />,
-      title: (): string => t("extensions"),
-    },
-  };
-  constructor(props: EmptyObject) {
-    super(props);
+const routes: RouteList = {
+  home: {
+    component: <HomePage />,
+    title: (): string => t("epherome"),
+  },
+  accounts: {
+    component: <AccountsPage />,
+    title: (): string => t("accounts"),
+  },
+  profiles: {
+    component: <ProfilesPage />,
+    title: (): string => t("profiles"),
+  },
+  settings: {
+    component: <SettingsPage />,
+    title: (): string => t("settings"),
+  },
+  downloads: {
+    component: <DownloadsPage />,
+    title: (): string => t("download"),
+  },
+  processes: {
+    component: <ProcessesPage />,
+    title: (): string => t("processes"),
+  },
+  extensions: {
+    component: <ExtensionsPage />,
+    title: (): string => t("extensions"),
+  },
+};
+
+export const AppBar = observer(() => {
+  // visit the key in order to update title on language change correctly
+  historyStore.key;
+  const route = routes[historyStore.pathname];
+  const title = unwrapAccessible(route?.title);
+  const isAtHome = title === "Epherome";
+  return (
+    <div className="eph-appbar">
+      <IconButton
+        className="text-white"
+        onClick={isAtHome ? unwrapFunction() : historyStore.back}
+      >
+        {isAtHome ? <MdMenu /> : <MdArrowBack />}
+      </IconButton>
+      <p className="eph-appbar-title">{title}</p>
+    </div>
+  );
+});
+
+export const RouterView = observer(() => {
+  const route = routes[historyStore.pathname];
+  return (
+    <SwitchTransition mode="out-in">
+      <CSSTransition
+        key={historyStore.current?.pathname}
+        timeout={150}
+        classNames="fade"
+      >
+        {unwrapAccessible(
+          route?.component,
+          historyStore.current?.params ?? {}
+        ) ?? <></>}
+      </CSSTransition>
+    </SwitchTransition>
+  );
+});
+
+export default function App(): JSX.Element {
+  useLayoutEffect(() => {
     themeStore.updateTheme();
-  }
-  updateTitle = (): void =>
-    this.setState({
-      title:
-        unwrapAccessible(
-          this.routes[historyStore.current?.pathname ?? ""]?.title
-        ) ?? "",
-    });
-  componentDidMount(): void {
     historyStore.isEmpty && historyStore.push("home");
-    this.updateTitle();
-    historyStore.listen(this.updateTitle);
-  }
-  render(): JSX.Element {
-    const route = this.routes[historyStore.current?.pathname ?? ""];
-    const isAtHome = this.state.title === "Epherome";
-    return (
-      <IconContext.Provider value={{ size: "1.5em" }}>
-        <GlobalOverlay />
-        <div className="eph-appbar">
-          <IconButton
-            className="text-white"
-            onClick={isAtHome ? unwrapFunction() : historyStore.back}
-          >
-            {isAtHome ? <MdMenu /> : <MdArrowBack />}
-          </IconButton>
-          <p className="eph-appbar-title">{this.state.title}</p>
-        </div>
-        <SwitchTransition mode="out-in">
-          <CSSTransition
-            key={historyStore.current?.pathname}
-            timeout={150}
-            classNames="fade"
-          >
-            {unwrapAccessible(
-              route?.component,
-              historyStore.current?.params ?? {}
-            ) ?? <></>}
-          </CSSTransition>
-        </SwitchTransition>
-      </IconContext.Provider>
-    );
-  }
+  }, []);
+  return (
+    <IconContext.Provider value={{ size: "1.5em" }}>
+      <GlobalOverlay />
+      <AppBar />
+      <RouterView />
+    </IconContext.Provider>
+  );
 }

@@ -1,7 +1,6 @@
 import { equal, ok } from "assert";
 import {
   Accessible,
-  format,
   obj2form,
   unwrapAccessible,
   unwrapFunction,
@@ -28,24 +27,6 @@ describe("tools", function () {
         b: "b",
       };
       equal(obj2form(obj), "a=a&b=b");
-    });
-  });
-  describe("#format", function () {
-    it("formats string without curly braces", function () {
-      equal(format("Hello, World!"), "Hello, World!");
-      equal(
-        format("Hello, World!", "Unused", "Information", "Here"),
-        "Hello, World!"
-      );
-    });
-    it("formats string with single curly brace", function () {
-      equal(format("Hello, {}", "World!"), "Hello, World!");
-    });
-    it("formats string with multiple curly braces", function () {
-      equal(
-        format("Hello, {} (From {})", "World!", "Mocha"),
-        "Hello, World! (From Mocha)"
-      );
     });
   });
   describe("#unwrapAccessible", function () {

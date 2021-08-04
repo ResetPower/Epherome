@@ -1,9 +1,15 @@
 import { configStore } from "../struct/config";
-import { format } from "../tools";
+import { format } from "util";
 import enUs from "./en-us";
 import jaJp from "./ja-jp";
-import { Language, LanguageDefinition } from "./languages";
+import { LanguageDefinition } from "./definition";
 import zhCn from "./zh-cn";
+
+export interface Language {
+  name: string; // eg `en-us`
+  nativeName: string; // eg `English`
+  definition: LanguageDefinition;
+}
 
 export class IntlStore {
   languages: Language[];

@@ -10,15 +10,6 @@ interface Config extends Configuration {
   devServer?: WebpackDevServerConfiguration;
 }
 
-function makeArray<T>(...items: (T | undefined)[]): T[] {
-  const arr = [];
-  for (const i of items) {
-    // don't add item if undefined
-    i && arr.push(i);
-  }
-  return arr;
-}
-
 export default (env: { [key: string]: string }): Config[] => {
   // build environment
   const dev = env.dev;
@@ -26,27 +17,30 @@ export default (env: { [key: string]: string }): Config[] => {
   // base config
   const base: Config = {
     mode: dev ? "development" : "production",
-    devtool: dev ? "inline-source-map" : "source-map",
+    devtool: "source-map",
     module: {
       exprContextCritical: false,
       rules: [
         {
           test: /\.(js|ts|tsx)?$/,
           exclude: /node_modules/,
-          loader: "ts-loader",
+          use: "ts-loader",
         },
         {
           test: /\.css$/,
+          exclude: /node_modules/,
           use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         },
         {
           test: /\.(png|jpe?g|gif)$/i,
+          exclude: /node_modules/,
           use: "file-loader",
         },
       ],
     },
     resolve: {
       extensions: [".js", ".ts", ".tsx"],
+      modules: [path.resolve(__dirname, "node_modules")],
     },
     output: {
       path: path.join(__dirname, "./dist"),
@@ -83,7 +77,7 @@ export default (env: { [key: string]: string }): Config[] => {
       hot: true,
       port: 3000,
     },
-    plugins: makeArray(
+    plugins: [
       new HtmlPlugin({
         title: "Epherome",
         template: "./assets/template.txt",
@@ -91,9 +85,9 @@ export default (env: { [key: string]: string }): Config[] => {
       }),
       new MiniCssExtractPlugin(),
       // minimize css in production
-      dev ? undefined : new CssMinimizerPlugin(),
-      dev ? new ReactRefreshPlugin() : undefined
-    ),
+      ...(dev ? [] : [new CssMinimizerPlugin()]),
+      ...(dev ? [new ReactRefreshPlugin()] : []),
+    ],
   };
 
   let ret: Config[] = [];

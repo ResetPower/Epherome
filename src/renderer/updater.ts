@@ -2,7 +2,7 @@ import { ipcRenderer } from "electron";
 import got from "got";
 import { logger } from "./global";
 
-export const ephVersion = ipcRenderer.sendSync("getVersion");
+export const ephVersion = ipcRenderer.sendSync("get-version");
 
 export interface EphUpdatableVersion {
   name: string;

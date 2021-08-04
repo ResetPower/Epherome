@@ -1,4 +1,5 @@
-import { DefaultFn, StringMap, unwrapFunction } from "../tools";
+import { action, computed, makeObservable, observable } from "mobx";
+import { StringMap } from "../tools";
 
 export interface Location {
   pathname: string;
@@ -6,27 +7,41 @@ export interface Location {
 }
 
 export class HistoryStore {
+  @observable
   private locations: Location[] = [];
-  private listener: DefaultFn = unwrapFunction();
-  listen(listener: DefaultFn): void {
-    this.listener = listener;
+  // useless observable
+  // in order to help to update title on language change correctly
+  @observable
+  key = "";
+  constructor() {
+    makeObservable(this);
   }
+  @action
   push = (pathname: string, params?: StringMap): void => {
-    this.locations.push({ pathname, params: params ?? {} });
-    this.listener();
+    this.locations.push({
+      pathname,
+      params: params ?? {},
+    });
   };
+  @action
   back = (): void => {
     this.locations.length > 0 && this.locations.pop();
-    this.listener();
   };
-  dispatch = (): void => {
-    this.listener();
+  @action
+  dispatch = (action: string): void => {
+    this.key = action;
   };
+  @computed
   get isEmpty(): boolean {
     return this.locations.length === 0;
   }
+  @computed
   get current(): Location | undefined {
     return [...this.locations].pop();
+  }
+  @computed
+  get pathname(): string {
+    return this.current?.pathname ?? "";
   }
 }
 

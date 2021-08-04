@@ -6,7 +6,7 @@ export function showJava16RequiredDialog(): void {
   showDialog((close) => (
     <AlertDialog
       title={t("warning")}
-      message={t("considerUsingJava16")}
+      message={t("launching.considerUsingJava16")}
       close={close}
     />
   ));
@@ -15,8 +15,8 @@ export function showJava16RequiredDialog(): void {
 export function showNoJavaDialog(): void {
   showDialog((close) => (
     <AlertDialog
-      title={t("javaNotFound")}
-      message={t("javaNotFoundMessage")}
+      title={t("launching.javaNotFound")}
+      message={t("launching.javaNotFoundMessage")}
       close={close}
     />
   ));

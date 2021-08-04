@@ -6,7 +6,7 @@
     @apply flex space-x-1;
   }
   .eph-tab-bar-vertical {
-    @apply border-r border-divider space-y-1;
+    @apply space-y-1;
   }
 
   .eph-tab-bar-item {

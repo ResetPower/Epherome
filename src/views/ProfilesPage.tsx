@@ -6,7 +6,6 @@ import {
   MinecraftProfile,
   removeProfile,
 } from "../struct/profiles";
-import { logger } from "../renderer/global";
 import { configStore, setConfig } from "../struct/config";
 import {
   MdCreate,
@@ -22,7 +21,7 @@ import { ipcRenderer } from "electron";
 import { DefaultFn } from "../tools";
 import fs from "fs";
 import path from "path";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
@@ -35,7 +34,7 @@ export function RemoveProfileDialog(props: {
 }): JSX.Element {
   return (
     <ConfirmDialog
-      title={t("removeProfile")}
+      title={t("profile.removing")}
       message={t("confirmRemoving")}
       action={() => removeProfile(props.profile)}
       close={props.onClose}
@@ -80,10 +79,10 @@ export function ChangeProfileFragment(props: {
       props.onDone();
     }
   };
-  const handleOpenDirectory = () => {
-    ipcRenderer.once("replyOpenDirectory", (_ev, arg) => setDir(arg));
-    ipcRenderer.send("openDirectory");
-  };
+  const handleOpenDirectory = () =>
+    ipcRenderer
+      .invoke("open-directory")
+      .then((value) => value && setDir(value));
 
   return (
     <div className="p-3">
@@ -94,7 +93,7 @@ export function ChangeProfileFragment(props: {
           label={t("directory")}
           value={dir}
           onChange={setDir}
-          helperText={t("usuallyDotMinecraftEtc")}
+          helperText={t("profile.usuallyDotMinecraftEtc")}
         />
         <TextField label={t("version")} value={ver} onChange={setVer} />
         <TextField
@@ -105,7 +104,7 @@ export function ChangeProfileFragment(props: {
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
-          <MdFolder /> {t("openDirectory")}
+          <MdFolder /> {t("profile.openDirectory")}
         </Button>
         <div className="flex-grow" />
         {props.action === "create" ? (
@@ -125,14 +124,11 @@ export function ChangeProfileFragment(props: {
 
 const ProfilesPage = observer(() => {
   const [creating, setCreating] = useState(false);
-  const handleCreate = useCallback(() => setCreating(true), []);
-  const handleRemove = useCallback(
-    (selected: MinecraftProfile) =>
-      showDialog((close) => (
-        <RemoveProfileDialog onClose={close} profile={selected} />
-      )),
-    []
-  );
+  const handleCreate = () => setCreating(true);
+  const handleRemove = (selected: MinecraftProfile) =>
+    showDialog((close) => (
+      <RemoveProfileDialog onClose={close} profile={selected} />
+    ));
   const profiles = configStore.profiles;
   const current = _.selected(profiles);
   let mapsList: string[] = [];
@@ -150,11 +146,16 @@ const ProfilesPage = observer(() => {
   return (
     <div className="flex eph-h-full">
       <div className="overflow-y-auto py-3 w-1/4">
-        <div className="flex my-3 justify-center">
-          <Button variant="contained" onClick={handleCreate}>
+        <div className="flex p-2 flex-wrap">
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            onClick={handleCreate}
+          >
             <MdCreate /> {t("create")}
           </Button>
           <Button
+            className="whitespace-nowrap"
             variant="contained"
             onClick={() => historyStore.push("downloads")}
           >
@@ -167,8 +168,10 @@ const ProfilesPage = observer(() => {
               className="p-3 mx-2 rounded-lg"
               checked={!creating && current === i}
               onClick={() => {
-                logger.info(`Profile selection changed`);
-                setConfig(() => _.select(profiles, i));
+                creating && setCreating(false);
+                i.selected
+                  ? setConfig(() => _.deselect(profiles))
+                  : setConfig(() => _.select(profiles, i));
               }}
               key={index}
             >
@@ -191,8 +194,8 @@ const ProfilesPage = observer(() => {
             <TabBar>
               <TabBarItem value={0}>{t("general")}</TabBarItem>
               <TabBarItem value={1}>{t("edit")}</TabBarItem>
-              <TabBarItem value={2}>{t("maps")}</TabBarItem>
-              <TabBarItem value={3}>{t("resourcePacks")}</TabBarItem>
+              <TabBarItem value={2}>{t("profile.maps")}</TabBarItem>
+              <TabBarItem value={3}>{t("profile.resourcePacks")}</TabBarItem>
               <TabBarItem value={4}>Mods</TabBarItem>
             </TabBar>
             <TabBody>
@@ -258,7 +261,7 @@ const ProfilesPage = observer(() => {
           </TabController>
         ) : (
           <div className="flex justify-center items-center h-full">
-            <p className="text-shallow">{t("noProfilesYet")}</p>
+            <p className="text-shallow">{t("profile.notSelected")}</p>
           </div>
         )}
       </div>

@@ -39,15 +39,6 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
   }
 }
 
-export function format(source: string, ...args: string[]): string {
-  const ret = source.replace("{}", args[0]);
-  if (ret.indexOf("{}") !== -1) {
-    args.shift();
-    return format(ret, ...args);
-  }
-  return ret;
-}
-
 export interface EmptyObject {
   [key: string]: never;
 }
