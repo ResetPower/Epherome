@@ -141,7 +141,7 @@ const AccountsPage = observer(() => {
 
   return (
     <div className="flex eph-h-full">
-      <div className="py-3 w-1/4">
+      <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
         <div className="flex p-2 flex-wrap">
           <Button variant="contained" onClick={handleCreate}>
             <MdCreate />
@@ -166,7 +166,7 @@ const AccountsPage = observer(() => {
           ))}
         </List>
       </div>
-      <div className="border-l border-divider flex-grow p-6 w-3/4 h-full">
+      <div className="flex-grow p-6 w-3/4">
         {creating ? (
           <CreateAccountFragment onDone={() => setCreating(false)} />
         ) : current ? (

@@ -207,7 +207,11 @@ const HomePage = observer(() => {
       </Card>
       <div className="flex space-x-6">
         <Card className="flex-grow">
-          {value ? (
+          {value === null ? (
+            <Typography className="text-sm p-1 m-1">
+              {t("profile.notSelected")}
+            </Typography>
+          ) : (
             <Select
               value={value}
               onChange={handleChange}
@@ -219,10 +223,6 @@ const HomePage = observer(() => {
                 </option>
               ))}
             </Select>
-          ) : (
-            <Typography className="text-sm p-1 m-1">
-              {t("profile.notSelected")}
-            </Typography>
           )}
           <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
             <MdPlayArrow />

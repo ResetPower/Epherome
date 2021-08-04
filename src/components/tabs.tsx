@@ -1,50 +1,46 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { unwrapFunction } from "../tools";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 export interface TabContext {
   value: number;
   orientation: "vertical" | "horizontal";
+  animate: boolean;
   setValue: (value: number) => void;
 }
 
 export const TabContext = createContext<TabContext>({
   value: 0,
-  setValue: unwrapFunction(),
   orientation: "vertical",
+  animate: true,
+  setValue: unwrapFunction(),
 });
 
 export function TabController(props: {
   children: ReactNode;
   className?: string;
+  animate?: boolean;
   orientation: "vertical" | "horizontal";
 }): JSX.Element {
   const [value, setValue] = useState(0);
 
   return (
     <TabContext.Provider
-      value={{ value, setValue, orientation: props.orientation }}
+      value={{
+        value,
+        setValue,
+        animate: props.animate ?? true,
+        orientation: props.orientation,
+      }}
     >
       <div
         className={`flex ${
           props.orientation === "vertical" ? "flex-row" : "flex-col"
-        } ${props.className ?? ""}`}
+        } overflow-hidden ${props.className ?? ""}`}
       >
         {props.children}
       </div>
     </TabContext.Provider>
-  );
-}
-
-export function TabBody(props: {
-  children: JSX.Element[];
-  className?: string;
-}): JSX.Element {
-  const { value } = useContext(TabContext);
-
-  return (
-    <div className={`eph-tab-body ${props.className ?? ""}`}>
-      {props.children[value]}
-    </div>
   );
 }
 
@@ -82,5 +78,30 @@ export function TabBarItem(props: {
     >
       {props.children}
     </button>
+  );
+}
+
+export function TabBody(props: {
+  children: JSX.Element[];
+  className?: string;
+}): JSX.Element {
+  const { value, animate, orientation } = useContext(TabContext);
+
+  return (
+    <div className={`eph-tab-body ${props.className ?? ""}`}>
+      {animate ? (
+        <SwitchTransition>
+          <CSSTransition
+            key={value}
+            timeout={300}
+            classNames={`tab-${orientation}`}
+          >
+            {props.children[value]}
+          </CSSTransition>
+        </SwitchTransition>
+      ) : (
+        props.children[value]
+      )}
+    </div>
   );
 }

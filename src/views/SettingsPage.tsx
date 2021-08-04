@@ -235,7 +235,7 @@ export default class SettingsPage extends Component<
             {t("about")}
           </TabBarItem>
         </TabBar>
-        <TabBody className="flex-grow overflow-y-auto">
+        <TabBody className="overflow-y-auto">
           <div>
             <Select
               value={intlStore.language?.name ?? ""}
@@ -313,7 +313,6 @@ export default class SettingsPage extends Component<
               </Typography>
             </div>
           </div>
-
           <div>
             <Select
               value={configStore.theme}
@@ -331,7 +330,6 @@ export default class SettingsPage extends Component<
               {t("settings.theme.followOS")}
             </Checkbox>
           </div>
-
           <div className="space-y-3">
             <Card className="flex items-center space-x-3">
               <img
