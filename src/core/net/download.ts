@@ -22,6 +22,30 @@ export function createDirByPath(p: string): void {
   createDirIfNotExist(path.dirname(p));
 }
 
+export function* cancellableDownloadFile(
+  url: string,
+  target: string,
+  onProgress?: DownloadProgressListener,
+  onError?: DefaultFn
+): Generator {
+  createDirByPath(target);
+  const downloadStream = got.stream(url);
+  const fileStream = fs.createWriteStream(target);
+  if (onProgress) {
+    downloadStream
+      .on("downloadProgress", onProgress)
+      .on("error", unwrapFunction(onError));
+  }
+  yield () => {
+    downloadStream.destroy();
+    fileStream.destroy();
+  };
+  yield new Promise((resolve) => {
+    fileStream.on("error", unwrapFunction(onError)).on("finish", resolve);
+    downloadStream.pipe(fileStream);
+  });
+}
+
 export function downloadFile(
   url: string,
   target: string,
