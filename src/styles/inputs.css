@@ -28,7 +28,7 @@
   }
 
   .eph-label {
-    @apply text-gray-600 dark:text-gray-400 font-bold text-sm;
+    @apply text-gray-600 dark:text-gray-400 font-bold text-sm pl-1;
   }
   .eph-label:disabled {
     @apply text-shallow dark:text-shallow;

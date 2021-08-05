@@ -135,7 +135,7 @@ export async function launchMinecraft(
         item.name
       } (${mCount}/${missingCount})`
     );
-    await downloadFile(item.url, item.path, true);
+    await downloadFile(item.url, item.path);
     mCount++;
   }
 
@@ -148,7 +148,7 @@ export async function launchMinecraft(
   try {
     fs.accessSync(assetIndexPath);
   } catch (e) {
-    await downloadFile(assetIndex.url, assetIndexPath, true);
+    await downloadFile(assetIndex.url, assetIndexPath);
   }
   const parsedAssetIndex = JSON.parse(
     fs.readFileSync(assetIndexPath).toString()
@@ -171,8 +171,7 @@ export async function launchMinecraft(
       );
       await downloadFile(
         `https://resources.download.minecraft.net/${startHash}/${hash}`,
-        p,
-        true
+        p
       );
     }
     oCount++;
@@ -187,8 +186,7 @@ export async function launchMinecraft(
       // TODO Need to optimize more here
       await downloadFile(
         "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar",
-        authlibInjectorPath,
-        true
+        authlibInjectorPath
       );
     }
     buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);

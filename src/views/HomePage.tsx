@@ -23,6 +23,7 @@ import { _ } from "../tools/arrays";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
 import { useRef } from "react";
+import ProgressBar from "../components/ProgressBar";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -233,7 +234,7 @@ const HomePage = observer(() => {
               <Typography className="text-sm">
                 {homePageStore.launchingHelper}
               </Typography>
-              <div className="bg-blue-500 rounded-full h-1 animate-pulse" />
+              <ProgressBar unlimited />
             </>
           )}
         </Card>

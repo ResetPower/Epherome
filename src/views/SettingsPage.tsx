@@ -21,7 +21,7 @@ import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { checkEphUpdate, ephVersion } from "../renderer/updater";
 import Spin from "../components/Spin";
 import { showDialog } from "../renderer/overlays";
-import { DefaultFn, EmptyObject } from "../tools";
+import { DefaultFn } from "../tools";
 import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
 import { List, ListItem, ListItemText } from "../components/lists";
@@ -31,7 +31,7 @@ import {
   detectJava,
   removeJava,
 } from "../struct/java";
-import { useState, Component } from "react";
+import { useState } from "react";
 import { t, intlStore } from "../intl";
 import { _ } from "../tools/arrays";
 import os from "os";
@@ -162,233 +162,206 @@ export const JavaManagementDialog = observer(
   }
 );
 
-export interface SettingsPageState {
-  updateCheckResult: string | null;
-}
+const SettingsPage = observer(() => {
+  const [result, setResult] = useState<string | null>("");
 
-@observer
-export default class SettingsPage extends Component<
-  EmptyObject,
-  SettingsPageState
-> {
-  state: SettingsPageState = {
-    updateCheckResult: "",
-  };
-  handleUpdateCheck = (): void => {
-    this.setState({
-      updateCheckResult: null,
-    });
+  const handleUpdateCheck = () => {
+    setResult(null);
     checkEphUpdate().then((result) => {
       if (result) {
         if (result.need) {
-          this.setState({
-            updateCheckResult: t("epheromeUpdate.available", result.name),
-          });
+          setResult(t("epheromeUpdate.available", result.name));
           showDialog((close) => (
             <UpdateAvailableDialog version={result.name} onClose={close} />
           ));
         } else {
-          this.setState({
-            updateCheckResult: t("epheromeUpdate.needNot"),
-          });
+          setResult(t("epheromeUpdate.needNot"));
         }
       } else {
-        this.setState({ updateCheckResult: t("internetNotAvailable") });
+        setResult(t("internetNotAvailable"));
       }
     });
   };
-  handleChangeLanguage = (ev: string): void => {
+  const handleChangeLanguage = (ev: string) => {
     logger.info(`Changing language to ${ev}'`);
     intlStore.setLanguage(ev);
     setConfig((cfg) => (cfg.language = ev));
-    this.setState({ updateCheckResult: "" });
+    setResult("");
     historyStore.dispatch(ev);
   };
-  handleChangeTheme = (ev: string): void => {
+  const handleChangeTheme = (ev: string) => {
     logger.info(`Changing theme to '${ev}'`);
     setConfig((cfg) => (cfg.theme = ev));
     themeStore.updateTheme();
   };
-  handleThemeFollowOs = (checked: boolean): void => {
+  const handleThemeFollowOs = (checked: boolean) => {
     logger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
     setConfig((cfg) => (cfg.themeFollowOs = checked));
     themeStore.updateTheme();
   };
-  handleManageJava = (): void => {
+  const handleManageJava = () => {
     showDialog((close) => <JavaManagementDialog onClose={close} />);
   };
 
-  render(): JSX.Element {
-    return (
-      <TabController className="eph-h-full" orientation="vertical">
-        <TabBar className="shadow-md">
-          <TabBarItem value={0}>
-            <MdTune />
-            {t("general")}
-          </TabBarItem>
-          <TabBarItem value={1}>
-            <MdPalette />
-            {t("appearance")}
-          </TabBarItem>
-          <TabBarItem value={2}>
-            <MdInfo />
-            {t("about")}
-          </TabBarItem>
-        </TabBar>
-        <TabBody className="overflow-y-auto">
-          <div>
+  return (
+    <TabController className="eph-h-full" orientation="vertical">
+      <TabBar className="shadow-md">
+        <TabBarItem value={0}>
+          <MdTune />
+          {t("general")}
+        </TabBarItem>
+        <TabBarItem value={1}>
+          <MdPalette />
+          {t("appearance")}
+        </TabBarItem>
+        <TabBarItem value={2}>
+          <MdInfo />
+          {t("about")}
+        </TabBarItem>
+      </TabBar>
+      <TabBody className="overflow-y-auto">
+        <div>
+          <Select
+            value={intlStore.language?.name ?? ""}
+            label={t("language")}
+            onChange={handleChangeLanguage}
+            className="w-32"
+            marginBottom
+          >
+            {intlStore.languages.map((lang, index) => (
+              <option value={lang.name} key={index}>
+                {lang.nativeName}
+              </option>
+            ))}
+          </Select>
+          <div className="mb-2">
             <Select
-              value={intlStore.language?.name ?? ""}
-              label={t("language")}
-              onChange={this.handleChangeLanguage}
+              value={configStore.downloadProvider}
+              label={t("settings.downloadProvider")}
+              onChange={() => {
+                // TODO Set Download Provider Here
+                /**/
+              }}
               className="w-32"
-              marginBottom
             >
-              {intlStore.languages.map((lang, index) => (
-                <option value={lang.name} key={index}>
-                  {lang.nativeName}
-                </option>
-              ))}
+              <option value="official">
+                {t("settings.downloadProvider.official")}
+              </option>
+              <option value="bmclapi">BMCLAPI</option>
+              <option value="mcbbs">MCBBS</option>
             </Select>
-            <div className="mb-2">
-              <Select
-                value={configStore.downloadProvider}
-                label={t("settings.downloadProvider")}
-                onChange={() => {
-                  // TODO Set Download Provider Here
-                  /**/
-                }}
-                className="w-32"
-              >
-                <option value="official">
-                  {t("settings.downloadProvider.official")}
-                </option>
-                <option value="bmclapi">BMCLAPI</option>
-                <option value="mcbbs">MCBBS</option>
-              </Select>
-              <p className="text-shallow">
-                {t("settings.downloadProvider.notAvailable")}
-              </p>
-            </div>
-            <Select
-              label="Java"
-              className="mb-2"
-              value={_.selectedIndex(configStore.javas)?.toString() ?? ""}
-              onChange={(value) =>
-                setConfig((cfg) => _.select(cfg.javas, cfg.javas[+value]))
-              }
+            <p className="text-shallow">
+              {t("settings.downloadProvider.notAvailable")}
+            </p>
+          </div>
+          <Select
+            label="Java"
+            className="mb-2"
+            value={_.selectedIndex(configStore.javas)?.toString() ?? ""}
+            onChange={(value) =>
+              setConfig((cfg) => _.select(cfg.javas, cfg.javas[+value]))
+            }
+          >
+            {configStore.javas.map((value, index) => (
+              <option value={index} key={index}>
+                {value.name}
+              </option>
+            ))}
+          </Select>
+          <Button onClick={handleManageJava}>
+            <FaJava /> {t("java.manage")}
+          </Button>
+          <Checkbox
+            checked={configStore.hitokoto}
+            onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
+          >
+            {t("settings.hitokoto")}
+          </Checkbox>
+          <p className="text-shallow">{t("settings.hitokoto.description")}</p>
+          <div className="flex my-3 items-center space-x-3">
+            <Button
+              variant="contained"
+              onClick={handleUpdateCheck}
+              disabled={result === null}
             >
-              {configStore.javas.map((value, index) => (
-                <option value={index} key={index}>
-                  {value.name}
-                </option>
-              ))}
-            </Select>
-            <Button onClick={this.handleManageJava}>
-              <FaJava /> {t("java.manage")}
+              {t("epheromeUpdate.check")}
             </Button>
-            <Checkbox
-              checked={configStore.hitokoto}
-              onChange={(checked) =>
-                setConfig((cfg) => (cfg.hitokoto = checked))
-              }
-            >
-              {t("settings.hitokoto")}
-            </Checkbox>
-            <p className="text-shallow">{t("settings.hitokoto.description")}</p>
-            <div className="flex my-3 items-center space-x-3">
-              <Button
-                variant="contained"
-                onClick={this.handleUpdateCheck}
-                disabled={this.state.updateCheckResult === null}
-              >
-                {t("epheromeUpdate.check")}
-              </Button>
+            <Typography>{result !== null ? result : <Spin />}</Typography>
+          </div>
+        </div>
+        <div>
+          <Select
+            value={configStore.theme}
+            label={t("settings.theme")}
+            onChange={handleChangeTheme}
+            disabled={configStore.themeFollowOs}
+          >
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </Select>
+          <Checkbox
+            checked={configStore.themeFollowOs}
+            onChange={handleThemeFollowOs}
+          >
+            {t("settings.theme.followOS")}
+          </Checkbox>
+        </div>
+        <div className="space-y-3">
+          <Card className="flex items-center space-x-3">
+            <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
+            <div>
+              <Typography className="font-semibold text-xl">
+                Epherome Beta
+              </Typography>
               <Typography>
-                {this.state.updateCheckResult !== null ? (
-                  this.state.updateCheckResult
-                ) : (
-                  <Spin />
-                )}
+                {t("version")} {ephVersion}
               </Typography>
             </div>
-          </div>
-          <div>
-            <Select
-              value={configStore.theme}
-              label={t("settings.theme")}
-              onChange={this.handleChangeTheme}
-              disabled={configStore.themeFollowOs}
-            >
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </Select>
-            <Checkbox
-              checked={configStore.themeFollowOs}
-              onChange={this.handleThemeFollowOs}
-            >
-              {t("settings.theme.followOS")}
-            </Checkbox>
-          </div>
-          <div className="space-y-3">
-            <Card className="flex items-center space-x-3">
-              <img
-                src={EpheromeLogo}
-                alt="EpheromeLogo"
-                className="w-16 h-16"
-              />
-              <div>
-                <Typography className="font-semibold text-xl">
-                  Epherome Beta
-                </Typography>
-                <Typography>
-                  {t("version")} {ephVersion}
-                </Typography>
-              </div>
-            </Card>
-            <Card>
-              <div>
-                <Typography>
-                  {t("os")}: {os.platform()} {os.arch()} {os.release()}
-                </Typography>
-              </div>
-              <div>
-                <Typography>Electron: {process.versions.electron}</Typography>
-                <Typography>Chrome: {process.versions.chrome}</Typography>
-                <Typography>Node.js: {process.versions.node}</Typography>
-                <Typography>V8: {process.versions.v8}</Typography>
-              </div>
-              <div>
-                <Typography>{t("settings.configFilePath")}:</Typography>
-                <Link href={configFilename} type="file">
-                  {configFilename}
-                </Link>
-                <Typography>{t("settings.minecraftDownloadPath")}:</Typography>
-                <Link href={minecraftDownloadPath} type="file">
-                  {minecraftDownloadPath}
-                </Link>
-              </div>
-            </Card>
-            <Card>
+          </Card>
+          <Card>
+            <div>
               <Typography>
-                {t("settings.officialSite")}:{" "}
-                <Link href="https://epherome.com">https://epherome.com</Link>
+                {t("os")}: {os.platform()} {os.arch()} {os.release()}
               </Typography>
-              <Typography>
-                GitHub:{" "}
-                <Link href="https://github.com/ResetPower/Epherome">
-                  https://github.com/ResetPower/Epherome
-                </Link>
-              </Typography>
-              <Typography>Copyright © 2021 ResetPower.</Typography>
-              <Typography>
-                {t("settings.openSourceSoftware")} | GNU General Public License
-                3.0
-              </Typography>
-            </Card>
-          </div>
-        </TabBody>
-      </TabController>
-    );
-  }
-}
+            </div>
+            <div>
+              <Typography>Electron: {process.versions.electron}</Typography>
+              <Typography>Chrome: {process.versions.chrome}</Typography>
+              <Typography>Node.js: {process.versions.node}</Typography>
+              <Typography>V8: {process.versions.v8}</Typography>
+            </div>
+            <div>
+              <Typography>{t("settings.configFilePath")}:</Typography>
+              <Link href={configFilename} type="file">
+                {configFilename}
+              </Link>
+              <Typography>{t("settings.minecraftDownloadPath")}:</Typography>
+              <Link href={minecraftDownloadPath} type="file">
+                {minecraftDownloadPath}
+              </Link>
+            </div>
+          </Card>
+          <Card>
+            <Typography>
+              {t("settings.officialSite")}:{" "}
+              <Link href="https://epherome.com">https://epherome.com</Link>
+            </Typography>
+            <Typography>
+              GitHub:{" "}
+              <Link href="https://github.com/ResetPower/Epherome">
+                https://github.com/ResetPower/Epherome
+              </Link>
+            </Typography>
+            <Typography>Copyright © 2021 ResetPower.</Typography>
+            <Typography>
+              {t("settings.openSourceSoftware")} | GNU General Public License
+              3.0
+            </Typography>
+          </Card>
+        </div>
+      </TabBody>
+    </TabController>
+  );
+});
+
+export default SettingsPage;

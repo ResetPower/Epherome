@@ -3,14 +3,14 @@
 }
 .fade-enter-active {
   opacity: 1;
-  transition: opacity 3000ms;
+  transition: opacity 300ms;
 }
 .fade-exit {
   opacity: 1;
 }
 .fade-exit-active {
   opacity: 0.1;
-  transition: opacity 3000ms;
+  transition: opacity 300ms;
 }
 
 @keyframes zoomIn {
@@ -23,7 +23,7 @@
   }
 }
 .zoom-entering {
-  animation: zoomIn 0.3s;
+  animation: zoomIn 300ms;
 }
 @keyframes zoomOut {
   from {
@@ -38,7 +38,7 @@
   }
 }
 .zoom-exiting {
-  animation: zoomOut 0.3s;
+  animation: zoomOut 300ms;
 }
 
 .tab-vertical-enter {
