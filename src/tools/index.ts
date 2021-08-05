@@ -39,10 +39,6 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
   }
 }
 
-export interface EmptyObject {
-  [key: string]: never;
-}
-
 export interface StringMap {
   [key: string]: string;
 }

@@ -1,44 +1,43 @@
 import fs from "fs";
 import got from "got";
 import path from "path";
-import { pipeline } from "stream";
-import { promisify } from "util";
-import { coreLogger } from "../index";
+import { DefaultFn, unwrapFunction } from "../../tools";
 
-const pipelineAsync = promisify(pipeline);
+export type DownloadProgressListener = (event: {
+  transferred: number;
+  total: number;
+  percent: number;
+}) => void;
 
 export function createDirIfNotExist(p: string): void {
   try {
     fs.accessSync(p);
   } catch {
-    fs.mkdirSync(p);
+    fs.mkdirSync(p, { recursive: true });
   }
 }
 
 // create a folder which the file is in
 export function createDirByPath(p: string): void {
-  const dir = path.dirname(p);
-  try {
-    fs.accessSync(dir);
-  } catch {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  createDirIfNotExist(path.dirname(p));
 }
 
-export async function downloadFile(
+export function downloadFile(
   url: string,
   target: string,
-  recursive = false
+  onProgress?: DownloadProgressListener,
+  onError?: DefaultFn
 ): Promise<void> {
-  if (recursive) {
+  return new Promise((resolve) => {
     createDirByPath(target);
-  }
-  try {
-    await pipelineAsync(got.stream(url), fs.createWriteStream(target));
-  } catch (e) {
-    coreLogger.warn("Unable to download: " + url);
-    throw new Error(
-      `Unable to download file at ${url} \n Caused by: ${e.message}`
-    );
-  }
+    const downloadStream = got.stream(url);
+    const fileStream = fs.createWriteStream(target);
+    if (onProgress) {
+      downloadStream
+        .on("downloadProgress", onProgress)
+        .on("error", unwrapFunction(onError));
+    }
+    fileStream.on("error", unwrapFunction(onError)).on("finish", resolve);
+    downloadStream.pipe(fileStream);
+  });
 }

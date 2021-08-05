@@ -70,9 +70,12 @@ export interface LanguageDefinition {
   download: string;
   downloading: string;
   downloadingSomething: string;
+  "download.profileName": string;
   "version.release": string;
   "version.snapshot": string;
   "version.old": string;
+  "version.old_alpha": string;
+  "version.old_beta": string;
   processes: string;
   "processes.noMinecraft": string;
   extensions: string;

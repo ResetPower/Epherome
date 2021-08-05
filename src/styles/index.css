@@ -4,6 +4,7 @@
 @import "overlay.css";
 @import "tabs.css";
 @import "layouts.css";
+@import "progress.css";
 
 @layer components {
   .eph-appbar {

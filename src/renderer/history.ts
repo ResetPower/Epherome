@@ -1,9 +1,10 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { StringMap } from "../tools";
+
+export type LocationParams = Record<string, unknown>;
 
 export interface Location {
   pathname: string;
-  params: StringMap;
+  params: LocationParams;
 }
 
 export class HistoryStore {
@@ -17,7 +18,7 @@ export class HistoryStore {
     makeObservable(this);
   }
   @action
-  push = (pathname: string, params?: StringMap): void => {
+  push = (pathname: string, params?: LocationParams): void => {
     this.locations.push({
       pathname,
       params: params ?? {},

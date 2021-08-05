@@ -1,51 +1,61 @@
-import { DefaultFn } from "../tools";
-import { Button, Checkbox } from "../components/inputs";
+import { Button, Checkbox, TextField } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
 import { logger } from "../renderer/global";
 import Spin from "../components/Spin";
 import got from "got";
-import { Container, Typography } from "../components/layouts";
+import { Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
-import { showDialog } from "../renderer/overlays";
-import Dialog from "../components/Dialog";
 import { useState, useEffect } from "react";
 import { downloadFile } from "../core/net/download";
 import { minecraftDownloadPath } from "../struct/config";
 import path from "path";
 import fs from "fs";
 import { ClientJson } from "../core/struct";
-import { unwrapFunction } from "../tools";
 import { createProfile } from "../struct/profiles";
 import { t } from "../intl";
+import { MdGamepad } from "react-icons/md";
+import ProgressBar from "../components/ProgressBar";
 
-export function DownloadDialog(props: {
+export function DownloadingFragment(props: {
   version: MinecraftVersion;
-  onClose: DefaultFn;
+  setLocking: (locking: boolean) => void;
 }): JSX.Element {
-  const [step, setStep] = useState<string | null>(null);
+  const [percentage, setPercentage] = useState(0);
+  const [step, setStep] = useState<string | boolean>(false);
+  const [name, setName] = useState(`Minecraft ${props.version.id}`);
+
+  useEffect(() => {
+    // update text field on props change
+    if (!step) {
+      setName(`Minecraft ${props.version.id}`);
+    }
+  }, [step, props.version]);
+
   const startDownload = async () => {
-    setStep(t("downloadingSomething", "Json"));
+    props.setLocking(true);
+
+    const jsonFilename = `${props.version.id}.json`;
+    setStep(t("downloadingSomething", jsonFilename));
     const jsonPath = path.join(
       minecraftDownloadPath,
       "versions",
       props.version.id,
-      `${props.version.id}.json`
+      jsonFilename
     );
-    await downloadFile(props.version.url, jsonPath, true);
+    await downloadFile(props.version.url, jsonPath);
 
-    setStep(t("downloadingSomething", "Jar"));
+    const jarFilename = `${props.version.id}.jar`;
+    setStep(t("downloadingSomething", jarFilename));
     const jarPath = path.join(
       minecraftDownloadPath,
       "versions",
       props.version.id,
-      `${props.version.id}.jar`
+      jarFilename
     );
     const parsed: ClientJson = JSON.parse(fs.readFileSync(jsonPath).toString());
-    await downloadFile(parsed.downloads.client.url, jarPath, true);
-
-    // props.onClose is sure to be non-null and we don't need to call unwrapFunction here
-    // but eslint-plugin-react-hooks doesn't think so
-    unwrapFunction(props.onClose)();
+    await downloadFile(parsed.downloads.client.url, jarPath, ({ percent }) =>
+      setPercentage(Math.round(percent * 100))
+    );
 
     createProfile({
       name: `Minecraft ${props.version.id}`,
@@ -53,32 +63,54 @@ export function DownloadDialog(props: {
       ver: props.version.id,
       from: "download",
     });
+
+    setStep(true);
+    props.setLocking(false);
   };
 
   return (
-    <Dialog indentBottom>
-      <Typography className="font-semibold text-lg">
+    <div className="p-16 h-full flex flex-col">
+      <Typography className="font-semibold text-xl py-3">
         {t("download")} Minecraft {props.version.id}
       </Typography>
-      <div>
-        <Typography>{step}</Typography>
+      <TextField
+        icon={<MdGamepad />}
+        label={t("download.profileName")}
+        value={name}
+        onChange={setName}
+        placeholder={t("name")}
+      />
+      <div className="flex-grow py-3">
+        {step && (
+          <>
+            <div className="flex">
+              <Typography className="flex-grow">{step}</Typography>
+              <p className="text-shallow">{percentage}%/100%</p>
+            </div>
+            <ProgressBar percentage={percentage} />
+          </>
+        )}
       </div>
       <div className="flex">
-        {step === null && (
-          <Button onClick={startDownload}>{t("download")}</Button>
-        )}
+        {step && <Button>{t("cancel")}</Button>}
         <div className="flex-grow" />
-        <Button onClick={props.onClose}>{t("cancel")}</Button>
+        <Button variant="contained" disabled={!!step} onClick={startDownload}>
+          {t("download")}
+        </Button>
       </div>
-    </Dialog>
+    </div>
   );
 }
 
 export default function DownloadsPage(): JSX.Element {
+  const [locking, setLocking] = useState(false);
   const [release, setRelease] = useState(true);
   const [snapshot, setSnapshot] = useState(false);
   const [old, setOld] = useState(false);
+  const [selected, setSelected] = useState(-1);
   const [versions, setVersions] = useState<MinecraftVersion[] | null>(null);
+  const current = (versions ?? [])[selected];
+
   const matchType = (type: MinecraftVersionType) =>
     type === "release"
       ? release
@@ -99,49 +131,63 @@ export default function DownloadsPage(): JSX.Element {
         }
       }
     );
+    return () => {
+      // destroy downloads
+    };
   }, []);
 
   return (
-    <Container className="p-3 eph-h-full overflow-y-auto">
-      <div className="flex space-x-3">
-        <Checkbox checked={release} onChange={setRelease}>
-          {t("version.release")}
-        </Checkbox>
-        <Checkbox checked={snapshot} onChange={setSnapshot}>
-          {t("version.snapshot")}
-        </Checkbox>
-        <Checkbox checked={old} onChange={setOld}>
-          {t("version.old")}
-        </Checkbox>
-      </div>
-      {versions ? (
-        <List>
-          {versions.map(
-            (item, index) =>
-              matchType(item.type) && (
-                <ListItem
-                  className="rounded-lg p-2"
-                  onClick={() =>
-                    showDialog((close) => (
-                      <DownloadDialog version={item} onClose={close} />
-                    ))
-                  }
-                  key={index}
-                >
-                  <ListItemText
-                    primary={item.id}
-                    secondary={item.type}
-                    className="cursor-pointer"
-                  />
-                </ListItem>
-              )
-          )}
-        </List>
-      ) : (
-        <div className="flex justify-center">
-          <Spin />
+    <div className="flex eph-h-full">
+      <div className="p-3 bg-card shadow-md overflow-y-auto w-1/4">
+        <div className="p-3">
+          <Checkbox checked={release} onChange={setRelease}>
+            {t("version.release")}
+          </Checkbox>
+          <Checkbox checked={snapshot} onChange={setSnapshot}>
+            {t("version.snapshot")}
+          </Checkbox>
+          <Checkbox checked={old} onChange={setOld}>
+            {t("version.old")}
+          </Checkbox>
         </div>
-      )}
-    </Container>
+        {versions ? (
+          <List>
+            {versions.map(
+              (item, index) =>
+                matchType(item.type) && (
+                  <ListItem
+                    className="rounded-lg p-1 pl-3"
+                    checked={selected === index}
+                    onClick={() =>
+                      !locking &&
+                      (selected === index
+                        ? setSelected(-1)
+                        : setSelected(index))
+                    }
+                    key={index}
+                  >
+                    <ListItemText
+                      primary={item.id}
+                      secondary={t(`version.${item.type}`)}
+                      className="cursor-pointer"
+                    />
+                  </ListItem>
+                )
+            )}
+          </List>
+        ) : (
+          <div className="p-3">
+            <Spin />
+          </div>
+        )}
+      </div>
+      <div className="w-3/4">
+        {current ? (
+          <DownloadingFragment version={current} setLocking={setLocking} />
+        ) : (
+          <div></div>
+        )}
+      </div>
+    </div>
   );
 }

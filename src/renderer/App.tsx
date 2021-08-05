@@ -2,10 +2,10 @@ import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/ProfilesPage";
 import SettingsPage from "../views/SettingsPage";
-import { Accessible, StringMap, unwrapAccessible } from "../tools";
+import { Accessible, unwrapAccessible } from "../tools";
 import DownloadsPage from "../views/DownloadsPage";
 import { GlobalOverlay } from "./overlays";
-import { historyStore } from "./history";
+import { historyStore, LocationParams } from "./history";
 import { themeStore } from "./theme";
 import { MdArrowBack, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
@@ -20,7 +20,7 @@ import { useLayoutEffect } from "react";
 
 export interface RouteList {
   [key: string]: {
-    component: Accessible<JSX.Element, [StringMap]>;
+    component: Accessible<JSX.Element, [LocationParams]>;
     title: Accessible<string>;
   };
 }

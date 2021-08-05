@@ -1,0 +1,5 @@
+@layer components {
+  .eph-progress-bar {
+    @apply bg-blue-500 rounded-full h-1;
+  }
+}
