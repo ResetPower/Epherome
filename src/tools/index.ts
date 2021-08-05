@@ -1,5 +1,5 @@
 export function unwrapFunction<P extends unknown[] = []>(
-  fn?: (...args: P) => void
+  fn?: ((...args: P) => void) | null
 ): (...args: P) => void {
   return (
     fn ??
