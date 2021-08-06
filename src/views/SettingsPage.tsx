@@ -104,7 +104,7 @@ export const JavaManagementDialog = observer(
               <div className="flex-grow" />
               <IconButton
                 onClick={() => {
-                  removeJava(index);
+                  removeJava(value);
                 }}
               >
                 <MdClose />

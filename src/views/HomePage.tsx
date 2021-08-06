@@ -1,7 +1,6 @@
 import { Select, Button, IconButton, TextField } from "../components/inputs";
 import { useState } from "react";
 import { configStore, setConfig } from "../struct/config";
-import { MinecraftProfile } from "../struct/profiles";
 import { launchMinecraft } from "../core";
 import { DefaultFn } from "../tools";
 import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
@@ -109,8 +108,8 @@ const HomePage = observer(() => {
 
   const handleChange = (val: string): void => {
     const newValue = +val;
-    setConfig(() => _.select(profiles, profiles[newValue]));
     setValue(newValue);
+    setConfig(() => _.selectByIndex(profiles, newValue));
   };
   const handleLaunch = () => {
     // value will be "" if not selected
@@ -218,8 +217,8 @@ const HomePage = observer(() => {
               onChange={handleChange}
               disabled={homePageStore.isLaunching}
             >
-              {profiles.map((i: MinecraftProfile, index) => (
-                <option key={index} value={index}>
+              {_.map(profiles, (i, id) => (
+                <option key={id} value={id}>
                   {i.name}
                 </option>
               ))}

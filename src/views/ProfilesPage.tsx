@@ -163,7 +163,7 @@ const ProfilesPage = observer(() => {
           </Button>
         </div>
         <List className="space-y-1">
-          {profiles.map((i: MinecraftProfile, index) => (
+          {_.map(profiles, (i, id) => (
             <ListItem
               className="p-3 mx-2 rounded-lg"
               checked={!creating && current === i}
@@ -173,7 +173,7 @@ const ProfilesPage = observer(() => {
                   ? setConfig(() => _.deselect(profiles))
                   : setConfig(() => _.select(profiles, i));
               }}
-              key={index}
+              key={id}
             >
               <Typography className="flex">
                 {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}{" "}

@@ -1,10 +1,10 @@
 import { spawnSync } from "child_process";
 import findJavaHome from "find-java-home";
 import path from "path";
-import { WithSelected } from "../tools/arrays";
+import { WithUnderline, _ } from "../tools/arrays";
 import { setConfig } from "./config";
 
-export interface Java extends WithSelected {
+export interface Java extends WithUnderline {
   dir: string;
   name: string;
   is64Bit: boolean;
@@ -48,9 +48,9 @@ export function detectJava(): Promise<Java | null> {
 }
 
 export function createJava(java: Java): void {
-  setConfig((cfg) => cfg.javas.push(java));
+  setConfig((cfg) => _.append(cfg.javas, java));
 }
 
-export function removeJava(id: number): void {
-  setConfig((cfg) => cfg.javas.splice(id));
+export function removeJava(java: Java): void {
+  setConfig((cfg) => _.remove(cfg.javas, java));
 }

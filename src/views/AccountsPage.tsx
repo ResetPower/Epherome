@@ -149,7 +149,7 @@ const AccountsPage = observer(() => {
           </Button>
         </div>
         <List className="space-y-3">
-          {accounts.map((i: MinecraftAccount, index) => (
+          {_.map(accounts, (i, id) => (
             <ListItem
               className="p-3 mx-2 rounded-lg"
               checked={!creating && current === i}
@@ -159,7 +159,7 @@ const AccountsPage = observer(() => {
                   ? setConfig(() => _.deselect(accounts))
                   : setConfig(() => _.select(accounts, i));
               }}
-              key={index}
+              key={id}
             >
               <Typography className="flex space-x-1">{i.name}</Typography>
             </ListItem>

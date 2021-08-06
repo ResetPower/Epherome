@@ -1,27 +1,27 @@
-import { WithSelected, _ } from "../../src/tools/arrays";
+import { WithUnderline, _ } from "../../src/tools/arrays";
 import { equal } from "assert";
 
-interface MyWithSelected extends WithSelected {
+interface MyWithUnderline extends WithUnderline {
   a: string;
   b: string;
 }
 
 describe("tools/arrays", function () {
-  const arr: MyWithSelected[] = [
+  const arr: MyWithUnderline[] = [
     { a: "0", b: "0" },
     { a: "1", b: "1" },
     { a: "2", b: "2" },
   ];
-  const myWithSelected: MyWithSelected = { a: "3", b: "3" };
+  const myWithUnderline: MyWithUnderline = { a: "3", b: "3" };
   describe("#append", function () {
     it("appends an item", function () {
-      _.append(arr, myWithSelected, true);
+      _.append(arr, myWithUnderline, true);
       equal(arr.length, 4);
     });
   });
   describe("#remove", function () {
     it("removes an item", function () {
-      _.remove(arr, myWithSelected);
+      _.remove(arr, myWithUnderline);
       equal(arr.length, 3);
     });
   });
