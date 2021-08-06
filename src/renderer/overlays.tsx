@@ -18,7 +18,7 @@ export class OverlayStore {
   };
   @action
   remove = (id: number): void => {
-    this.stack.splice(id);
+    this.stack.splice(id, 1);
   };
   @computed
   get current(): JSX.Element | undefined {

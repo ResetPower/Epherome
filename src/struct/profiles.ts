@@ -1,8 +1,8 @@
 import { setConfig } from "./config";
 import { logger } from "../renderer/global";
-import { WithSelected, _ } from "../tools/arrays";
+import { WithUnderline, _ } from "../tools/arrays";
 
-export interface MinecraftProfile extends WithSelected {
+export interface MinecraftProfile extends WithUnderline {
   name: string;
   dir: string;
   ver: string;

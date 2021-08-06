@@ -1,16 +1,19 @@
-export interface WithSelected {
+export interface WithUnderline {
   selected?: boolean;
 }
 
-// array toolkit set
+// "underline" toolkit for array list actions
 export const _ = {
-  select<T extends WithSelected>(arr: T[], item: T): void {
+  select<T extends WithUnderline>(arr: T[], item: T): void {
     for (const i of arr) {
       i.selected && delete i.selected;
       i === item && (i.selected = true);
     }
   },
-  deselect<T extends WithSelected>(arr: T[]): void {
+  selectByIndex<T extends WithUnderline>(arr: T[], index: number): void {
+    this.select(arr, arr[index]);
+  },
+  deselect<T extends WithUnderline>(arr: T[]): void {
     for (const i of arr) {
       if (i.selected) {
         delete i.selected;
@@ -18,24 +21,35 @@ export const _ = {
       }
     }
   },
-  selected<T extends WithSelected>(arr: T[]): T | undefined {
+  selected<T extends WithUnderline>(arr: T[]): T | undefined {
     return arr.find((value) => value.selected);
   },
-  selectedIndex<T extends WithSelected>(arr: T[]): number | undefined {
+  selectedIndex<T extends WithUnderline>(arr: T[]): number | undefined {
     for (const k in arr) {
       if (arr[k].selected) {
         return +k;
       }
     }
   },
-  append<T extends WithSelected>(arr: T[], item: T, select = false): void {
-    arr.push(item);
-    select && _.select(arr, item);
+  map<T extends WithUnderline, U>(
+    arr: T[],
+    cb: (value: T, id: number, index: number, array: T[]) => U
+  ): U[] {
+    const results: U[] = [];
+    for (const k in arr) {
+      const v = arr[k];
+      results.push(cb(v, +k, +k, arr));
+    }
+    return results;
   },
-  remove<T extends WithSelected>(arr: T[], item: T): void {
+  append<T extends WithUnderline>(arr: T[], item: T, select = false): void {
+    arr.push(item);
+    select && this.select(arr, item);
+  },
+  remove<T extends WithUnderline>(arr: T[], item: T): void {
     for (const k in arr) {
       if (arr[k] === item) {
-        arr.splice(+k);
+        arr.splice(+k, 1);
         break;
       }
     }

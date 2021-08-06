@@ -12,9 +12,9 @@ import {
 } from "../core/net/auth";
 import { setConfig } from "./config";
 import { logger } from "../renderer/global";
-import { WithSelected, _ } from "../tools/arrays";
+import { WithUnderline, _ } from "../tools/arrays";
 
-export interface MinecraftAccount extends WithSelected {
+export interface MinecraftAccount extends WithUnderline {
   email: string;
   name: string;
   uuid: string;
