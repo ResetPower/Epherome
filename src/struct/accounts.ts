@@ -9,7 +9,7 @@ import {
   getMicrosoftMinecraftProfile,
   XBLToken2XSTSToken,
   XSTSToken2MinecraftToken,
-} from "../core/net/auth";
+} from "../craft/auth";
 import { setConfig } from "./config";
 import { logger } from "../renderer/global";
 import { WithUnderline, _ } from "../tools/arrays";

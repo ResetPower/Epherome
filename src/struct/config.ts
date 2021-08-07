@@ -5,7 +5,7 @@ import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { detectJava, Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
-import { MinecraftDownloadProvider } from "../core/net";
+import { MinecraftDownloadProvider } from "../craft/download";
 import { ipcRenderer } from "electron";
 import { logger } from "../renderer/global";
 import log4js from "log4js";

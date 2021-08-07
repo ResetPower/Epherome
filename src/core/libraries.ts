@@ -3,15 +3,19 @@ import path from "path";
 import { isCompliant, equalOS } from "./rules";
 import { coreLogger } from ".";
 import {
+  ClientAnalyzedAsset,
   ClientAnalyzedLibrary,
+  ClientAssetsResult,
+  ClientJsonAssetIndex,
   ClientJsonLibraries,
   ClientLibraryResult,
 } from "./struct";
+import { downloadFile } from "./stream";
 
-export function analyzeLibrary(
+export async function analyzeLibrary(
   dir: string,
   libraries: ClientJsonLibraries
-): ClientLibraryResult {
+): Promise<ClientLibraryResult> {
   const classpath: string[] = [];
   const missing: ClientAnalyzedLibrary[] = [];
   const natives: string[] = [];
@@ -99,9 +103,43 @@ export function analyzeLibrary(
       classpath.push(p);
     }
   }
+
   return {
     classpath,
     natives,
     missing,
   };
+}
+
+export async function analyzeAssets(
+  dir: string,
+  assetIndex: ClientJsonAssetIndex
+): Promise<ClientAssetsResult> {
+  const missing: ClientAnalyzedAsset[] = [];
+  const assetIndexPath = path.join(
+    dir,
+    "assets/indexes",
+    `${assetIndex.id}.json`
+  );
+
+  if (!fs.existsSync(assetIndexPath)) {
+    await downloadFile(assetIndex.url, assetIndexPath);
+  }
+  const parsedAssetIndex = JSON.parse(
+    fs.readFileSync(assetIndexPath).toString()
+  );
+  for (const k in parsedAssetIndex.objects) {
+    const hash = parsedAssetIndex.objects[k].hash;
+    const startHash = hash.slice(0, 2);
+    const p = path.join(dir, "assets/objects", startHash, hash);
+    if (!fs.existsSync(p)) {
+      missing.push({
+        path: p,
+        url: `https://resources.download.minecraft.net/${startHash}/${hash}`,
+        hash,
+      });
+    }
+  }
+
+  return { missing };
 }

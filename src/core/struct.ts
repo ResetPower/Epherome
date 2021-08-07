@@ -1,5 +1,5 @@
 import { StringMap } from "../tools";
-import { MinecraftVersionType } from "./versions";
+import { MinecraftVersionType } from "../craft/versions";
 
 export type ClientJsonArguments = (
   | string
@@ -27,6 +27,14 @@ export interface ClientJsonLibrary {
 }
 
 export type ClientJsonLibraries = ClientJsonLibrary[];
+
+export interface ClientJsonAssetIndex {
+  id: string;
+  sha1: string;
+  size: number;
+  totalSize: number;
+  url: string;
+}
 
 export interface ClientJsonOSRule {
   name?: string;
@@ -78,13 +86,7 @@ export interface ClientJson {
   };
   inheritsFrom?: string;
   minecraftArguments?: string;
-  assetIndex: {
-    id: string;
-    sha1: string;
-    size: number;
-    totalSize: number;
-    url: string;
-  };
+  assetIndex: ClientJsonAssetIndex;
   assets: string;
   downloads: {
     client: {
@@ -103,11 +105,21 @@ export interface ClientJson {
   patches?: Omit<ClientJson, "patches">[]; // appears in minecraft json file of HMCL
 }
 
+export interface ClientAnalyzedAsset {
+  path: string;
+  url: string;
+  hash: string;
+}
+
 export interface ClientAnalyzedLibrary {
   name: string;
   path: string;
   url: string;
   sha1?: string;
+}
+
+export interface ClientAssetsResult {
+  missing: ClientAnalyzedAsset[];
 }
 
 export interface ClientLibraryResult {

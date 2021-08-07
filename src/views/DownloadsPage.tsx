@@ -1,100 +1,74 @@
 import { Button, Checkbox, TextField } from "../components/inputs";
-import { MinecraftVersion, MinecraftVersionType } from "../core/versions";
+import { MinecraftVersion, MinecraftVersionType } from "../craft/versions";
 import { logger } from "../renderer/global";
 import Spin from "../components/Spin";
 import got from "got";
 import { Alert, Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
-import { useState, useEffect } from "react";
-import { cancellableDownloadFile } from "../core/net/download";
+import { useState, useEffect, Fragment } from "react";
 import { minecraftDownloadPath } from "../struct/config";
-import path from "path";
-import fs from "fs";
-import { ClientJson } from "../core/struct";
 import { createProfile } from "../struct/profiles";
 import { t } from "../intl";
 import { MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
 import { useRef } from "react";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { downloadMinecraft } from "../craft/download";
+import { MinecraftUrls } from "../craft/url";
+import { Downloader, DownloaderTask } from "../models/downloader";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
+  locking: boolean;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
-  const cancelDownload = useRef<DefaultFn | null>(null);
-  const [percentage, setPercentage] = useState(0);
-  // meanings of values of step ->
-  // string: downloading
-  // true: done, false: haven't started yet
-  // null: error occurred during download
-  const [step, setStep] = useState<string | boolean | null>(false);
+  const downloader = useRef<Downloader>();
+  const [status, setStatus] = useState<null | "error" | "done">(null);
+  const [tasks, setTasks] = useState<DownloaderTask[]>([]);
+  const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [name, setName] = useState(`Minecraft ${props.version.id}`);
-  const versionDir = path.join(
-    minecraftDownloadPath,
-    "versions",
-    props.version.id
-  );
 
   useEffect(() => {
     // update text field on props change
-    if (!step) {
-      setName(`Minecraft ${props.version.id}`);
-    }
-  }, [step, props.version]);
+    setName(`Minecraft ${props.version.id}`);
+    setStatus(null);
+  }, [props.version.id]);
 
-  const stopDownload = () => {
-    unwrapFunction(cancelDownload.current)();
-    fs.rmdirSync(versionDir, { recursive: true });
-    setStep(false);
+  const onError = (error: Error) => {
+    setStatus("error");
+    props.setLocking(false);
+    throw error;
+  };
+
+  const handleCancel = () => {
+    logger.info("Download cancelled");
+    downloader.current?.cancel();
+    setStatus(null);
     props.setLocking(false);
   };
 
-  const startDownload = async (onErr: (error: Error) => unknown) => {
-    try {
-      props.setLocking(true);
-
-      const jsonFilename = `${props.version.id}.json`;
-      setStep(t("downloadingSomething", jsonFilename));
-      const jsonPath = path.join(versionDir, jsonFilename);
-      const jsonDownloadGen = cancellableDownloadFile(
-        props.version.url,
-        jsonPath
-      );
-      cancelDownload.current = jsonDownloadGen.next().value;
-      await jsonDownloadGen.next().value;
-
-      const jarFilename = `${props.version.id}.jar`;
-      setStep(t("downloadingSomething", jarFilename));
-      const jarPath = path.join(
-        minecraftDownloadPath,
-        "versions",
-        props.version.id,
-        jarFilename
-      );
-      const parsed: ClientJson = JSON.parse(
-        fs.readFileSync(jsonPath).toString()
-      );
-      const jarDownloadGen = cancellableDownloadFile(
-        parsed.downloads.client.url,
-        jarPath,
-        ({ percent }) => setPercentage(Math.round(percent * 100))
-      );
-      cancelDownload.current = jarDownloadGen.next().value;
-      await jarDownloadGen.next().value;
-
-      createProfile({
-        name: `Minecraft ${props.version.id}`,
-        dir: minecraftDownloadPath,
-        ver: props.version.id,
-        from: "download",
-      });
-
-      setStep(true);
-      props.setLocking(false);
-    } catch (error) {
-      onErr(error);
-    }
+  const handleStart = () => {
+    props.setLocking(true);
+    downloadMinecraft(
+      props.version,
+      (tasks, totalPercentage) => {
+        setTasks(tasks);
+        setTotalPercentage(totalPercentage);
+      },
+      onError,
+      () => {
+        createProfile({
+          name,
+          dir: minecraftDownloadPath,
+          ver: props.version.id,
+          from: "download",
+        });
+        setStatus("done");
+        props.setLocking(false);
+      }
+    ).then((result) => {
+      downloader.current = result;
+      result.start();
+    });
   };
 
   return (
@@ -106,28 +80,43 @@ export function DownloadingFragment(props: {
         icon={<MdGamepad />}
         label={t("download.profileName")}
         value={name}
-        onChange={setName}
+        onChange={!props.locking ? setName : undefined}
         placeholder={t("name")}
       />
       <div className="flex-grow py-3">
-        {step === null && <Alert severity="error">{t("errorOccurred")}</Alert>}
-        {typeof step === "string" && (
-          <>
-            <div className="flex">
-              <Typography className="flex-grow">{step}</Typography>
-              <p className="text-shallow">({percentage}%)</p>
-            </div>
-            <ProgressBar percentage={percentage} />
-          </>
+        {status === "error" && (
+          <Alert severity="error">{t("errorOccurred")}</Alert>
         )}
+        {status === "done" && <Typography>{t("done")}</Typography>}
+        {props.locking && tasks.length === 0 && (
+          <Typography>{t("download.preparing")}</Typography>
+        )}
+        {props.locking &&
+          tasks.map((val, index) => (
+            <Fragment key={index}>
+              <div className="flex text-sm">
+                <Typography className="flex-grow">
+                  {t("downloadingSomething", val.filename)}
+                </Typography>
+                {val.error && (
+                  <p className="text-red-500">{t("errorOccurred")}</p>
+                )}
+                {!val.error && (
+                  <p className="text-shallow">({val.percentage}%)</p>
+                )}
+              </div>
+              <ProgressBar percentage={val.percentage} />
+            </Fragment>
+          ))}
       </div>
-      <div className="flex">
-        {step && <Button onClick={stopDownload}>{t("cancel")}</Button>}
-        <div onClick={stopDownload} className="flex-grow" />
+      <div className="flex items-center">
+        {props.locking && <p className="text-shallow">{totalPercentage}%</p>}
+        <div className="flex-grow" />
+        {props.locking && <Button onClick={handleCancel}>{t("cancel")}</Button>}
         <Button
           variant="contained"
-          disabled={!!step}
-          onClick={() => startDownload(() => setStep(null))}
+          disabled={props.locking || status === "done"}
+          onClick={handleStart}
         >
           {t("download")}
         </Button>
@@ -142,7 +131,9 @@ export default function DownloadsPage(): JSX.Element {
   const [snapshot, setSnapshot] = useState(false);
   const [old, setOld] = useState(false);
   const [selected, setSelected] = useState(-1);
-  const [versions, setVersions] = useState<MinecraftVersion[] | null>(null);
+  const [versions, setVersions] = useState<
+    MinecraftVersion[] | null | undefined
+  >(undefined);
   const current = (versions ?? [])[selected];
 
   const matchType = (type: MinecraftVersionType) =>
@@ -156,15 +147,16 @@ export default function DownloadsPage(): JSX.Element {
 
   useEffect(() => {
     logger.info("Fetching Minecraft launcher meta...");
-    got("https://launchermeta.mojang.com/mc/game/version_manifest.json").then(
-      (resp) => {
+    got(MinecraftUrls.versionManifest)
+      .then((resp) => {
         const parsed = JSON.parse(resp.body);
-        if (parsed.hasOwnProperty("versions")) {
-          setVersions(parsed.versions);
-          logger.info("Fetched Minecraft launcher meta");
-        }
-      }
-    );
+        setVersions(parsed.versions);
+        logger.info("Fetched Minecraft launcher meta");
+      })
+      .catch(() => {
+        logger.warn("Unable to fetch Minecraft launcher meta");
+        setVersions(null);
+      });
     return () => {
       // destroy downloads
     };
@@ -209,15 +201,21 @@ export default function DownloadsPage(): JSX.Element {
                 )
             )}
           </List>
-        ) : (
+        ) : versions === undefined ? (
           <div className="p-3">
             <Spin />
           </div>
+        ) : (
+          <p className="text-shallow">{t("internetNotAvailable")}</p>
         )}
       </div>
       <div className="w-3/4">
         {current ? (
-          <DownloadingFragment version={current} setLocking={setLocking} />
+          <DownloadingFragment
+            version={current}
+            locking={locking}
+            setLocking={setLocking}
+          />
         ) : (
           <div></div>
         )}

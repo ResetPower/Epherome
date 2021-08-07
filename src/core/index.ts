@@ -2,16 +2,24 @@ import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "../struct/profiles";
 import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
-import { authenticate, refresh, validate } from "./net/auth";
-import { analyzeLibrary } from "./libraries";
+import { authenticate, refresh, validate } from "../craft/auth";
+import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
-import { createDirIfNotExist, downloadFile } from "./net/download";
+import { createDirIfNotExist, downloadFile } from "./stream";
 import { DefaultFn } from "../tools";
-import { isJava16Required, parseMinecraftVersionDetail } from "./versions";
-import { showJava16RequiredDialog, showNoJavaDialog } from "./alerts";
+import {
+  isJava16Required,
+  isJava8Required,
+  parseMinecraftVersionDetail,
+} from "../craft/versions";
+import {
+  showJava16RequiredDialog,
+  showJava8RequiredDialog,
+  showNoJavaDialog,
+} from "./alerts";
 import { Java } from "../struct/java";
 import { t } from "../intl";
 import { ephVersion } from "../renderer/updater";
@@ -51,7 +59,7 @@ export async function launchMinecraft(
     "authlib-injector-1.1.35.jar"
   );
 
-  const buff = [];
+  const buff: string[] = [];
   const dir = path.resolve(profile.dir);
 
   setHelper(defaultHelper);
@@ -120,61 +128,33 @@ export async function launchMinecraft(
   );
   createDirIfNotExist(nativeDir);
 
-  // === analyzing library ===
-  const obj = analyzeLibrary(dir, parsed.libraries);
+  // === analyzing library & assets ===
+  const analyzedLibrary = await analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
-  const missingCount = Object.keys(obj.missing).length;
-  let mCount = 0;
-  const cp = obj.classpath;
+  const cp = analyzedLibrary.classpath;
   cp.push(clientJar);
 
   // download missing libraries
-  for (const item of obj.missing) {
+  for (const count in analyzedLibrary.missing) {
+    const item = analyzedLibrary.missing[count];
     setHelper(
-      `${t("launching.downloadingLib")}: ${
-        item.name
-      } (${mCount}/${missingCount})`
+      `${t("launching.downloadingLib")}: ${item.name} (${count}/${
+        analyzedLibrary.missing.length
+      })`
     );
     await downloadFile(item.url, item.path);
-    mCount++;
   }
 
+  const analyzedAssets = await analyzeAssets(dir, assetIndex);
+
   // download missing assets
-  const assetIndexPath = path.join(
-    dir,
-    "assets/indexes",
-    `${assetIndex.id}.json`
-  );
-  try {
-    fs.accessSync(assetIndexPath);
-  } catch (e) {
-    await downloadFile(assetIndex.url, assetIndexPath);
-  }
-  const parsedAssetIndex = JSON.parse(
-    fs.readFileSync(assetIndexPath).toString()
-  );
-  const objs = parsedAssetIndex.objects;
-  const objsCount = Object.keys(objs).length;
-  let oCount = 0;
-  for (const i in objs) {
-    const obj = objs[i];
-    const hash = obj.hash;
-    const startHash = hash.slice(0, 2);
-    const p = path.join(dir, "assets/objects", startHash, hash);
-    try {
-      fs.accessSync(p);
-    } catch (e) {
-      setHelper(
-        `${t(
-          "launching.downloadingAsset"
-        )}: ${startHash}... (${oCount}/${objsCount})`
-      );
-      await downloadFile(
-        `https://resources.download.minecraft.net/${startHash}/${hash}`,
-        p
-      );
-    }
-    oCount++;
+  for (const count in analyzedAssets.missing) {
+    const item = analyzedAssets.missing[count];
+    setHelper(
+      `${t("launching.downloadingAsset")}: ${item.hash.slice(0, 2)} (${count}/${
+        analyzedAssets.missing.length
+      })`
+    );
   }
 
   // inject authlib injector
@@ -193,7 +173,7 @@ export async function launchMinecraft(
   }
 
   // unzip native libraries
-  unzipNatives(nativeDir, obj.natives);
+  unzipNatives(nativeDir, analyzedLibrary.natives);
 
   // === resolve arguments ===
   const argumentsMap = {
@@ -266,20 +246,26 @@ export async function launchMinecraft(
     resolveMinecraftArgs(parsed.minecraftArguments.split(" "));
   }
 
+  const finallyRun = () => {
+    runMinecraft(java.dir, buff, dir, options.onDone, options.profile);
+  };
+
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
   const javaVersion = java.name;
-  if (
-    isJava16Required(versionDetail) &&
-    javaVersion &&
-    +javaVersion.split(".")[0] < 16
-  ) {
+  const javaMajor = +javaVersion.split(".")[0];
+  if (isJava16Required(versionDetail) && javaVersion && javaMajor < 16) {
     coreLogger.warn(
       `Minecraft version is higher than 1.17 but is using a java version under 16`
     );
-    showJava16RequiredDialog();
+    showJava16RequiredDialog(finallyRun);
+    options.onDone();
+  } else if (isJava8Required(versionDetail) && javaVersion && +javaMajor > 8) {
+    coreLogger.warn(
+      `Minecraft version is lower than 1.6 but is using a java version higher than 8`
+    );
+    showJava8RequiredDialog(finallyRun);
     options.onDone();
   } else {
-    // start minecraft process
-    runMinecraft(java.dir, buff, dir, options.onDone, options.profile);
+    finallyRun();
   }
 }

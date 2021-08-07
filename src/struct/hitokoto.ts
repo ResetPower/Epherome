@@ -9,7 +9,7 @@ export interface Hitokoto {
 export async function fetchHitokoto(): Promise<Hitokoto | null> {
   logger.info("Fetching hitokoto ...");
   try {
-    const resp = await got("https://epherome.com/api/hitokoto");
+    const resp = await got.get("https://epherome.com/api/hitokoto");
     const parsed = JSON.parse(resp.body);
     logger.info("Fetched hitokoto");
     return {

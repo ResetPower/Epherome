@@ -22,7 +22,7 @@ export function Alert(props: {
       ) : (
         <MdInfo />
       )}
-      <Typography className="pl-3">{props.children}</Typography>
+      <p className="pl-3 text-white">{props.children}</p>
     </div>
   );
 }

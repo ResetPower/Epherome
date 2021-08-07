@@ -78,6 +78,7 @@ const enUs: Language = {
     downloading: "Downloading",
     downloadingSomething: "Downloading %s",
     "download.profileName": "Profile Name",
+    "download.preparing": "Preparing",
     "version.release": "Release",
     "version.snapshot": "Snapshot",
     "version.old": "Old",
@@ -97,7 +98,7 @@ const enUs: Language = {
     "launching.considerUsingJava16":
       "Java 16 is required to launch Minecraft since 1.17.",
     "launching.considerUsingJava8":
-      "Java 8 is required to launch Minecraft before 1.8.9.",
+      "Java 8 is required to launch Minecraft before 1.6.",
     "launching.javaNotFound": "Java Not Found",
     "launching.javaNotFoundMessage":
       "Java not found on your computer. Please install one and add it through settings.",

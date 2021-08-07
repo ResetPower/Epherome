@@ -13,7 +13,7 @@ export interface EphUpdatableVersion {
 export async function checkEphUpdate(): Promise<EphUpdatableVersion | null> {
   try {
     logger.info("Fetching latest version info...");
-    const resp = await got("https://epherome.com/api/version");
+    const resp = await got.get("https://epherome.com/api/version");
     const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(resp.body);
     const need = params.name !== ephVersion;
     logger.info(

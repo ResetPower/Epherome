@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { t } from "../intl";
-import { DefaultFn } from "../tools";
+import { DefaultFn, unwrapFunction } from "../tools";
 import { Button } from "./inputs";
 import { Typography } from "./layouts";
 
@@ -23,6 +23,8 @@ export default function Dialog(props: {
 export function AlertDialog(props: {
   title: string;
   message: string;
+  anyway?: string;
+  onAnyway?: DefaultFn;
   pre?: boolean;
   close: DefaultFn;
 }): JSX.Element {
@@ -34,7 +36,18 @@ export function AlertDialog(props: {
       ) : (
         <Typography>{props.message}</Typography>
       )}
-      <div className="flex justify-end">
+      <div className="flex">
+        {props.anyway && (
+          <Button
+            onClick={() => {
+              unwrapFunction(props.onAnyway)();
+              props.close();
+            }}
+          >
+            {props.anyway}
+          </Button>
+        )}
+        <div className="flex-grow" />
         <Button className="text-secondary" onClick={props.close}>
           {t("fine")}
         </Button>
