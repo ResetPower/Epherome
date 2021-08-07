@@ -155,7 +155,9 @@ export const JavaManagementDialog = observer(
             {t("java.detect")}
           </Button>
           <div className="flex-grow" />
-          <Button onClick={props.onClose}>{t("done")}</Button>
+          <Button className="text-secondary" onClick={props.onClose}>
+            {t("done")}
+          </Button>
         </div>
       </Dialog>
     );

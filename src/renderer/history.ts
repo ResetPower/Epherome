@@ -26,7 +26,7 @@ export class HistoryStore {
   };
   @action
   back = (): void => {
-    this.locations.length > 0 && this.locations.pop();
+    this.locations.length > 1 && this.locations.pop();
   };
   @action
   dispatch = (action: string): void => {

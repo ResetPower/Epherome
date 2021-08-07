@@ -47,3 +47,5 @@ export interface StringMap {
 export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
 
 export type DefaultFn = () => unknown;
+
+export type ErrorHandler = (error: Error) => unknown;

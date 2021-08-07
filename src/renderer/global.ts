@@ -23,7 +23,7 @@ export const darkTheme = defineTheme({
   palette: {
     background: colors.gray["800"],
     primary: colors.indigo["600"],
-    secondary: colors.pink["500"],
+    secondary: colors.pink["400"],
     shallow: colors.coolGray["400"],
     divider: colors.gray["600"],
     card: colors.gray["700"],

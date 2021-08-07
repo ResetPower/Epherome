@@ -78,6 +78,7 @@ const jaJp: Language = {
     downloading: "ダウンロード中",
     downloadingSomething: "%s をダウンロード中",
     "download.profileName": "プロフィル名前",
+    "download.preparing": "準備中",
     "version.release": "リリース",
     "version.snapshot": "スナップショット",
     "version.old": "古い",
@@ -98,7 +99,7 @@ const jaJp: Language = {
     "launching.considerUsingJava16":
       "1.17 以降、Minecraft を起動するには Java 16 が必要です。",
     "launching.considerUsingJava8":
-      "1.8.9 より前に Minecraft を起動するには Java 8 が必要です。",
+      "1.6 より前に Minecraft を起動するには Java 8 が必要です。",
     "launching.javaNotFound": "Java が見つかりません",
     "launching.javaNotFoundMessage":
       "コンピュータにJavaが見つかりません。 インストールして、設定で追加してください。",

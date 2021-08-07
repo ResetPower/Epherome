@@ -74,6 +74,7 @@ const zhCn: Language = {
     downloading: "下载中",
     downloadingSomething: "正在下载 %s",
     "download.profileName": "档案名",
+    "download.preparing": "准备中",
     "version.release": "正式版",
     "version.snapshot": "快照版",
     "version.old": "远古版",
@@ -92,7 +93,7 @@ const zhCn: Language = {
     "launching.considerUsingJava16":
       "从 Minecraft 1.17 开始，启动 Minecraft 需要 Java 16",
     "launching.considerUsingJava8":
-      "在 Minecraft 1.8.9 以前，启动 Minecraft 需要 Java 8",
+      "在 Minecraft 1.6 以前，启动 Minecraft 需要 Java 8",
     "launching.javaNotFound": "找不到 Java",
     "launching.javaNotFoundMessage":
       "在您的电脑上找不到 Java，请安装后在设置中添加。",
