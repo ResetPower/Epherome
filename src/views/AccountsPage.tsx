@@ -9,7 +9,7 @@ import {
 import { configStore, setConfig } from "../struct/config";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { showDialog } from "../renderer/overlays";
+import { showOverlay } from "../renderer/overlays";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useState } from "react";
 import { DefaultFn } from "../tools";
@@ -132,7 +132,7 @@ const AccountsPage = observer(() => {
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
   const handleRemove = (selected: MinecraftAccount) =>
-    showDialog((close) => (
+    showOverlay((close) => (
       <RemoveAccountDialog onClose={close} account={selected} />
     ));
 

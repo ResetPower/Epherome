@@ -5,13 +5,12 @@ import Spin from "../components/Spin";
 import got from "got";
 import { Alert, Typography } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment, MutableRefObject } from "react";
 import { minecraftDownloadPath } from "../struct/config";
 import { createProfile } from "../struct/profiles";
 import { t } from "../intl";
 import { MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
-import { useRef } from "react";
 import { downloadMinecraft } from "../craft/download";
 import { MinecraftUrls } from "../craft/url";
 import { Downloader, DownloaderTask } from "../models/downloader";
@@ -19,9 +18,10 @@ import { Downloader, DownloaderTask } from "../models/downloader";
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
   locking: boolean;
+  downloader: MutableRefObject<Downloader | undefined>;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
-  const downloader = useRef<Downloader>();
+  const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
   const [tasks, setTasks] = useState<DownloaderTask[]>([]);
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
@@ -126,6 +126,7 @@ export function DownloadingFragment(props: {
 }
 
 export default function DownloadsPage(): JSX.Element {
+  const downloader = useRef<Downloader>();
   const [locking, setLocking] = useState(false);
   const [release, setRelease] = useState(true);
   const [snapshot, setSnapshot] = useState(false);
@@ -146,6 +147,9 @@ export default function DownloadsPage(): JSX.Element {
       : false;
 
   useEffect(() => {
+    // copy the ref here in order to satisfy eslint-plugin-react-hooks
+    const downloaderRef = downloader;
+
     logger.info("Fetching Minecraft launcher meta...");
     got(MinecraftUrls.versionManifest)
       .then((resp) => {
@@ -158,7 +162,7 @@ export default function DownloadsPage(): JSX.Element {
         setVersions(null);
       });
     return () => {
-      // destroy downloads
+      downloaderRef.current?.cancel();
     };
   }, []);
 
@@ -212,6 +216,7 @@ export default function DownloadsPage(): JSX.Element {
       <div className="w-3/4">
         {current ? (
           <DownloadingFragment
+            downloader={downloader}
             version={current}
             locking={locking}
             setLocking={setLocking}

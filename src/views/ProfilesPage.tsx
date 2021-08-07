@@ -15,7 +15,7 @@ import {
   MdGamepad,
 } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { showDialog } from "../renderer/overlays";
+import { showOverlay } from "../renderer/overlays";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { ipcRenderer } from "electron";
 import { DefaultFn } from "../tools";
@@ -126,7 +126,7 @@ const ProfilesPage = observer(() => {
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
   const handleRemove = (selected: MinecraftProfile) =>
-    showDialog((close) => (
+    showOverlay((close) => (
       <RemoveProfileDialog onClose={close} profile={selected} />
     ));
   const profiles = configStore.profiles;
@@ -234,11 +234,14 @@ const ProfilesPage = observer(() => {
                 {mapsList.map(
                   (m, index) =>
                     m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography
+                      /* avoid useless .DS_Store file on macOS */
+                      <ListItem
+                        className="rounded-lg m-2 bg-card p-3"
+                        checked={true}
                         key={index}
                       >
-                        {m}
-                      </Typography>
+                        <Typography>{m}</Typography>
+                      </ListItem>
                     )
                 )}
               </div>
@@ -246,11 +249,14 @@ const ProfilesPage = observer(() => {
                 {resourcePacksList.map(
                   (m, index) =>
                     m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */ <Typography
+                      /* avoid useless .DS_Store file on macOS */
+                      <ListItem
+                        className="rounded-lg m-2 bg-card p-3"
+                        checked={true}
                         key={index}
                       >
-                        {m}
-                      </Typography>
+                        <Typography>{m}</Typography>
+                      </ListItem>
                     )
                 )}
               </div>

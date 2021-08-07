@@ -11,7 +11,6 @@ import { MdArrowBack, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import { unwrapFunction } from "../tools";
 import ProcessesPage from "../views/ProcessesPage";
-import ExtensionsPage from "../views/ExtensionsPage";
 import { IconButton } from "../components/inputs";
 import { t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
@@ -49,10 +48,6 @@ const routes: RouteList = {
   processes: {
     component: <ProcessesPage />,
     title: (): string => t("processes"),
-  },
-  extensions: {
-    component: <ExtensionsPage />,
-    title: (): string => t("extensions"),
   },
 };
 
