@@ -20,7 +20,7 @@ import { themeStore } from "../renderer/theme";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { checkEphUpdate, ephVersion } from "../renderer/updater";
 import Spin from "../components/Spin";
-import { showDialog } from "../renderer/overlays";
+import { showOverlay } from "../renderer/overlays";
 import { DefaultFn } from "../tools";
 import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
@@ -37,6 +37,7 @@ import { _ } from "../tools/arrays";
 import os from "os";
 import { observer } from "mobx-react";
 import { historyStore } from "../renderer/history";
+import { useReducer } from "react";
 
 export function UpdateAvailableDialog(props: {
   version: string;
@@ -165,6 +166,7 @@ export const JavaManagementDialog = observer(
 );
 
 const SettingsPage = observer(() => {
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const [result, setResult] = useState<string | null>("");
 
   const handleUpdateCheck = () => {
@@ -173,7 +175,7 @@ const SettingsPage = observer(() => {
       if (result) {
         if (result.need) {
           setResult(t("epheromeUpdate.available", result.name));
-          showDialog((close) => (
+          showOverlay((close) => (
             <UpdateAvailableDialog version={result.name} onClose={close} />
           ));
         } else {
@@ -188,8 +190,9 @@ const SettingsPage = observer(() => {
     logger.info(`Changing language to ${ev}'`);
     intlStore.setLanguage(ev);
     setConfig((cfg) => (cfg.language = ev));
-    setResult("");
     historyStore.dispatch(ev);
+    setResult("");
+    forceUpdate();
   };
   const handleChangeTheme = (ev: string) => {
     logger.info(`Changing theme to '${ev}'`);
@@ -202,7 +205,7 @@ const SettingsPage = observer(() => {
     themeStore.updateTheme();
   };
   const handleManageJava = () => {
-    showDialog((close) => <JavaManagementDialog onClose={close} />);
+    showOverlay((close) => <JavaManagementDialog onClose={close} />);
   };
 
   return (

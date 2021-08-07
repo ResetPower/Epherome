@@ -1,18 +1,3 @@
-.fade-enter {
-  opacity: 0.1;
-}
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 300ms;
-}
-.fade-exit {
-  opacity: 1;
-}
-.fade-exit-active {
-  opacity: 0.1;
-  transition: opacity 300ms;
-}
-
 @keyframes zoomIn {
   from {
     opacity: 0;
@@ -21,9 +6,6 @@
   50% {
     opacity: 1;
   }
-}
-.zoom-entering {
-  animation: zoomIn 300ms;
 }
 @keyframes zoomOut {
   from {
@@ -37,8 +19,52 @@
     opacity: 0;
   }
 }
+.zoom-entering {
+  animation: zoomIn 300ms;
+}
 .zoom-exiting {
   animation: zoomOut 300ms;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0.2;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+.slide-entering {
+  animation: slideIn 300ms;
+}
+.slide-exiting {
+  animation: slideOut 300ms;
+}
+
+.fade-enter {
+  opacity: 0.1;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0.1;
+  transition: opacity 300ms;
 }
 
 .tab-vertical-enter {

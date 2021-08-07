@@ -15,7 +15,7 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
-import { showDialog } from "../renderer/overlays";
+import { showOverlay } from "../renderer/overlays";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
@@ -23,6 +23,7 @@ import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
 import { useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
+import ExtensionsView from "./ExtensionsView";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -128,7 +129,7 @@ const HomePage = observer(() => {
             if (again !== homePageStore.againRequestingPassword) {
               homePageStore.again();
             }
-            showDialog((close) => (
+            showOverlay((close) => (
               <RequestPasswordDialog
                 onClose={close}
                 again={homePageStore.againRequestingPassword}
@@ -139,12 +140,12 @@ const HomePage = observer(() => {
             ));
           }),
       }).catch((err: Error) => {
-        showDialog((close) => (
+        showOverlay((close) => (
           <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
         ));
       });
     } else {
-      showDialog((close) => (
+      showOverlay((close) => (
         <AlertDialog
           title={t("warning")}
           message={t("launching.noAccOrProSelected")}
@@ -182,7 +183,15 @@ const HomePage = observer(() => {
             <IconButton onClick={() => historyStore.push("processes")}>
               <MdViewCarousel />
             </IconButton>
-            <IconButton onClick={() => historyStore.push("extensions")}>
+            <IconButton
+              onClick={() => {
+                showOverlay(
+                  (close) => <ExtensionsView close={close} />,
+                  "sheet",
+                  "slide"
+                );
+              }}
+            >
               <MdApps />
             </IconButton>
           </div>

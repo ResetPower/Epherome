@@ -1,10 +1,10 @@
 import { AlertDialog } from "../components/Dialog";
-import { showDialog } from "../renderer/overlays";
+import { showOverlay } from "../renderer/overlays";
 import { t } from "../intl";
 import { DefaultFn } from "../tools";
 
 export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
-  showDialog((close) => (
+  showOverlay((close) => (
     <AlertDialog
       title={t("warning")}
       message={t("launching.considerUsingJava16")}
@@ -16,7 +16,7 @@ export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
 }
 
 export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
-  showDialog((close) => (
+  showOverlay((close) => (
     <AlertDialog
       title={t("warning")}
       message={t("launching.considerUsingJava8")}
@@ -28,7 +28,7 @@ export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
 }
 
 export function showNoJavaDialog(): void {
-  showDialog((close) => (
+  showOverlay((close) => (
     <AlertDialog
       title={t("launching.javaNotFound")}
       message={t("launching.javaNotFoundMessage")}
