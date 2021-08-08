@@ -59,8 +59,6 @@ const jaJp: Language = {
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",
     "settings.downloadProvider": "ダウンロードソース",
-    "settings.downloadProvider.notAvailable":
-      "すみません、ダウンロードソースを選ぶことはまだいけません",
     "settings.downloadProvider.official": "公式",
     "settings.hitokoto": "一言",
     "settings.hitokoto.description":

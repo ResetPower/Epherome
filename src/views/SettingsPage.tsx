@@ -38,6 +38,7 @@ import os from "os";
 import { observer } from "mobx-react";
 import { historyStore } from "../renderer/history";
 import { useReducer } from "react";
+import { MinecraftDownloadProvider } from "../craft/url";
 
 export function UpdateAvailableDialog(props: {
   version: string;
@@ -243,10 +244,13 @@ const SettingsPage = observer(() => {
             <Select
               value={configStore.downloadProvider}
               label={t("settings.downloadProvider")}
-              onChange={() => {
-                // TODO Set Download Provider Here
-                /**/
-              }}
+              onChange={(provider) =>
+                setConfig(
+                  (cfg) =>
+                    (cfg.downloadProvider =
+                      provider as MinecraftDownloadProvider)
+                )
+              }
               className="w-32"
             >
               <option value="official">
@@ -255,9 +259,6 @@ const SettingsPage = observer(() => {
               <option value="bmclapi">BMCLAPI</option>
               <option value="mcbbs">MCBBS</option>
             </Select>
-            <p className="text-shallow">
-              {t("settings.downloadProvider.notAvailable")}
-            </p>
           </div>
           <Select
             label="Java"

@@ -56,7 +56,6 @@ const zhCn: Language = {
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",
     "settings.downloadProvider": "下载源",
-    "settings.downloadProvider.notAvailable": "抱歉，暂不支持选择下载源。",
     "settings.downloadProvider.official": "官方",
     "settings.hitokoto": "一言",
     "settings.hitokoto.description":

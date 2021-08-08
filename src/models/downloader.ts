@@ -63,8 +63,10 @@ export class DownloaderTask {
   // cancel download in just this task
   destroy(): void {
     this.stream.close();
-    // delete downloaded part
-    fs.rmSync(this.target);
+    try {
+      // delete downloaded part
+      fs.rmSync(this.target);
+    } catch {}
   }
 }
 

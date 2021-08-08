@@ -54,7 +54,6 @@ export interface LanguageDefinition {
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;
   "settings.downloadProvider": string;
-  "settings.downloadProvider.notAvailable": string;
   "settings.downloadProvider.official": string;
   "settings.hitokoto": string;
   "settings.hitokoto.description": string;

@@ -11,6 +11,7 @@ import {
   ClientLibraryResult,
 } from "./struct";
 import { downloadFile } from "./stream";
+import { MinecraftUrlUtils } from "../craft/url";
 
 export async function analyzeLibrary(
   dir: string,
@@ -44,7 +45,7 @@ export async function analyzeLibrary(
                 missing.push({
                   name: nativeObj.path.split("/").pop() ?? "",
                   path: `${dir}/libraries/${nativeObj.path}`,
-                  url: nativeObj.url,
+                  url: MinecraftUrlUtils.library(nativeObj.url),
                   sha1: nativeObj.sha1,
                 });
               }
@@ -63,7 +64,7 @@ export async function analyzeLibrary(
           missing.push({
             name: ar.path.split("/").pop() ?? "",
             path: `${dir}/libraries/${ar.path}`,
-            url: ar.url,
+            url: MinecraftUrlUtils.library(ar.url),
             sha1: ar.sha1,
           });
         }
@@ -95,7 +96,7 @@ export async function analyzeLibrary(
           }/${name[1]}-${name[2]}.jar`;
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
-            url: urlObject.href,
+            url: MinecraftUrlUtils.library(urlObject.href),
             path: p,
           });
         }
@@ -135,7 +136,7 @@ export async function analyzeAssets(
     if (!fs.existsSync(p)) {
       missing.push({
         path: p,
-        url: `https://resources.download.minecraft.net/${startHash}/${hash}`,
+        url: MinecraftUrlUtils.assetObject(startHash, hash),
         hash,
       });
     }
