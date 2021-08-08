@@ -25,6 +25,7 @@ import { t } from "../intl";
 import { ephVersion } from "../renderer/updater";
 import { userDataPath } from "../struct/config";
 import log4js from "log4js";
+import { MinecraftUrlUtils } from "../craft/url";
 
 // logger for minecraft launch core
 export const coreLogger = log4js.getLogger("core");
@@ -131,6 +132,7 @@ export async function launchMinecraft(
   // === analyzing library & assets ===
   const analyzedLibrary = await analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
+  const assetsRoot = path.join(dir, "assets");
   const cp = analyzedLibrary.classpath;
   cp.push(clientJar);
 
@@ -165,7 +167,7 @@ export async function launchMinecraft(
       setHelper(`${t("downloading")}: authlib-injector`);
       // TODO Need to optimize more here
       await downloadFile(
-        "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar",
+        MinecraftUrlUtils.authlibInjector(),
         authlibInjectorPath
       );
     }
@@ -182,8 +184,8 @@ export async function launchMinecraft(
     version_name: profile.ver,
     auth_session: `token:${account.token}`,
     game_directory: dir,
-    game_assets: path.join(dir, "assets"),
-    assets_root: path.join(dir, "assets"),
+    game_assets: assetsRoot,
+    assets_root: assetsRoot,
     assets_index_name: assetIndex.id,
     auth_uuid: account.uuid,
     auth_access_token: account.token,

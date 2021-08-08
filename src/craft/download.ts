@@ -9,15 +9,14 @@ import { analyzeAssets, analyzeLibrary } from "../core/libraries";
 import { createDirByPath } from "../core/stream";
 import { logger } from "../renderer/global";
 import { Downloader, DownloaderDetailsListener } from "../models/downloader";
+import { MinecraftUrlUtils } from "./url";
 
-export type MinecraftDownloadProvider = "official" | "bmclapi" | "mcbbs";
-
-export async function downloadMinecraft(
+export async function* downloadMinecraft(
   version: MinecraftVersion,
   onDetailsChange: DownloaderDetailsListener,
   onError: ErrorHandler,
   onDone: DefaultFn
-): Promise<Downloader> {
+): AsyncGenerator {
   const versionDir = path.join(minecraftDownloadPath, "versions", version.id);
   logger.info(`Start downloading Minecraft ${version.id} to "${versionDir}"`);
 
@@ -25,8 +24,12 @@ export async function downloadMinecraft(
   const jsonFilename = `${version.id}.json`;
   const jsonPath = path.join(versionDir, jsonFilename);
   createDirByPath(jsonPath);
-  const downloadStream = got.stream(version.url);
+  const downloadStream = got.stream(MinecraftUrlUtils.clientJson(version));
   const fileStream = fs.createWriteStream(jsonPath);
+  yield () => {
+    downloadStream.destroy();
+    fileStream.close();
+  };
   await new Promise((resolve) =>
     downloadStream.pipe(fileStream).on("error", onError).on("finish", resolve)
   );
@@ -47,7 +50,7 @@ export async function downloadMinecraft(
 
   logger.info(`Download requirements in "${jsonFilename}" parsed`);
 
-  return new Downloader({
+  yield new Downloader({
     tasksOptions: [
       {
         url: parsed.downloads.client.url,

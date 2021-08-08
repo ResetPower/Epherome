@@ -12,8 +12,9 @@ import { t } from "../intl";
 import { MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "../craft/download";
-import { MinecraftUrls } from "../craft/url";
 import { Downloader, DownloaderTask } from "../models/downloader";
+import { MinecraftUrlUtils } from "../craft/url";
+import { unwrapFunction } from "../tools";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -21,6 +22,7 @@ export function DownloadingFragment(props: {
   downloader: MutableRefObject<Downloader | undefined>;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
+  const canceller = useRef<() => unknown>();
   const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
   const [tasks, setTasks] = useState<DownloaderTask[]>([]);
@@ -41,6 +43,7 @@ export function DownloadingFragment(props: {
 
   const handleCancel = () => {
     logger.info("Download cancelled");
+    unwrapFunction(canceller.current)();
     downloader.current?.cancel();
     setStatus(null);
     props.setLocking(false);
@@ -48,7 +51,7 @@ export function DownloadingFragment(props: {
 
   const handleStart = () => {
     props.setLocking(true);
-    downloadMinecraft(
+    const generator = downloadMinecraft(
       props.version,
       (tasks, totalPercentage) => {
         setTasks(tasks);
@@ -65,9 +68,11 @@ export function DownloadingFragment(props: {
         setStatus("done");
         props.setLocking(false);
       }
-    ).then((result) => {
-      downloader.current = result;
-      result.start();
+    );
+    generator.next().then((result) => (canceller.current = result.value));
+    generator.next().then((result) => {
+      downloader.current = result.value;
+      downloader.current?.start();
     });
   };
 
@@ -151,7 +156,7 @@ export default function DownloadsPage(): JSX.Element {
     const downloaderRef = downloader;
 
     logger.info("Fetching Minecraft launcher meta...");
-    got(MinecraftUrls.versionManifest)
+    got(MinecraftUrlUtils.versionManifest())
       .then((resp) => {
         const parsed = JSON.parse(resp.body);
         setVersions(parsed.versions);

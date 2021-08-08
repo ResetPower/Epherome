@@ -59,8 +59,6 @@ const enUs: Language = {
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",
     "settings.downloadProvider": "Download Provider",
-    "settings.downloadProvider.notAvailable":
-      "Sorry that download provider is not available now.",
     "settings.downloadProvider.official": "Official",
     "settings.hitokoto": "Hitokoto",
     "settings.hitokoto.description":
