@@ -25,17 +25,14 @@ export function AlertDialog(props: {
   message: string;
   anyway?: string;
   onAnyway?: DefaultFn;
-  pre?: boolean;
   close: DefaultFn;
 }): JSX.Element {
   return (
     <Dialog indentBottom>
       <Typography className="text-xl font-semibold">{props.title}</Typography>
-      {props.pre ? (
-        <pre className="text-contrast whitespace-pre-line">{props.message}</pre>
-      ) : (
-        <Typography>{props.message}</Typography>
-      )}
+      {props.message.split("\n").map((val) => (
+        <Typography>{val}</Typography>
+      ))}
       <div className="flex">
         {props.anyway && (
           <Button
@@ -95,7 +92,6 @@ export function ErrorDialog(props: {
       title={t("errorOccurred")}
       message={props.stacktrace}
       close={props.onClose}
-      pre
     />
   );
 }

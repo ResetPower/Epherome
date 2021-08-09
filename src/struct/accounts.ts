@@ -14,13 +14,15 @@ import { setConfig } from "./config";
 import { logger } from "../renderer/global";
 import { WithUnderline, _ } from "../tools/arrays";
 
+export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
+
 export interface MinecraftAccount extends WithUnderline {
   email: string;
   name: string;
   uuid: string;
   token: string;
   authserver?: string;
-  mode: "mojang" | "microsoft" | "authlib" | "offline";
+  mode: MinecraftAuthMode;
 }
 
 export interface CreateAccountImplResult {

@@ -2,7 +2,7 @@ import { MinecraftVersion } from "./versions";
 import path from "path";
 import fs from "fs";
 import got from "got";
-import { minecraftDownloadPath } from "../struct/config";
+import { configStore, minecraftDownloadPath } from "../struct/config";
 import { DefaultFn, ErrorHandler } from "../tools";
 import { ClientJson } from "../core/struct";
 import { analyzeAssets, analyzeLibrary } from "../core/libraries";
@@ -10,6 +10,7 @@ import { createDirByPath } from "../core/stream";
 import { logger } from "../renderer/global";
 import { Downloader, DownloaderDetailsListener } from "../models/downloader";
 import { MinecraftUrlUtils } from "./url";
+import { pipeline } from "stream";
 
 export async function* downloadMinecraft(
   version: MinecraftVersion,
@@ -20,7 +21,6 @@ export async function* downloadMinecraft(
   const versionDir = path.join(minecraftDownloadPath, "versions", version.id);
   logger.info(`Start downloading Minecraft ${version.id} to "${versionDir}"`);
 
-  // download minecraft version json file
   const jsonFilename = `${version.id}.json`;
   const jsonPath = path.join(versionDir, jsonFilename);
   createDirByPath(jsonPath);
@@ -30,8 +30,10 @@ export async function* downloadMinecraft(
     downloadStream.destroy();
     fileStream.close();
   };
-  await new Promise((resolve) =>
-    downloadStream.pipe(fileStream).on("error", onError).on("finish", resolve)
+  await new Promise<void>((resolve) =>
+    pipeline(downloadStream, fileStream, (error) =>
+      error ? onError(error) : resolve()
+    )
   );
 
   // read content from json file
@@ -51,7 +53,7 @@ export async function* downloadMinecraft(
   logger.info(`Download requirements in "${jsonFilename}" parsed`);
 
   yield new Downloader({
-    tasksOptions: [
+    taskOptions: [
       {
         url: parsed.downloads.client.url,
         path: path.join(versionDir, `${version.id}.jar`),
@@ -59,7 +61,7 @@ export async function* downloadMinecraft(
       ...libraries.missing,
       ...assets.missing,
     ].map((val) => ({ url: val.url, target: val.path })),
-    concurrency: 7,
+    concurrency: configStore.downloadConcurrency,
     onDetailsChange,
     onError,
     onDone,

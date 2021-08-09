@@ -23,9 +23,10 @@ import {
 import { Java } from "../struct/java";
 import { t } from "../intl";
 import { ephVersion } from "../renderer/updater";
-import { userDataPath } from "../struct/config";
+import { configStore, userDataPath } from "../struct/config";
 import log4js from "log4js";
 import { MinecraftUrlUtils } from "../craft/url";
+import { Downloader } from "../models/downloader";
 
 // logger for minecraft launch core
 export const coreLogger = log4js.getLogger("core");
@@ -137,27 +138,48 @@ export async function launchMinecraft(
   cp.push(clientJar);
 
   // download missing libraries
-  for (const count in analyzedLibrary.missing) {
-    const item = analyzedLibrary.missing[count];
-    setHelper(
-      `${t("launching.downloadingLib")}: ${item.name} (${count}/${
-        analyzedLibrary.missing.length
-      })`
-    );
-    await downloadFile(item.url, item.path);
-  }
+  setHelper(`${t("launching.downloadingLib")} (0%)`);
+  await new Promise<void>((resolve) => {
+    const downloader = new Downloader({
+      taskOptions: analyzedLibrary.missing.map((val) => ({
+        url: val.url,
+        target: val.path,
+      })),
+      onDetailsChange: (_, totalPercentage) => {
+        setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
+      },
+      onError: (error) => {
+        throw error;
+      },
+      onDone: resolve,
+      concurrency: configStore.downloadConcurrency,
+    });
+    downloader.start();
+  });
 
   const analyzedAssets = await analyzeAssets(dir, assetIndex);
 
-  // download missing assets
-  for (const count in analyzedAssets.missing) {
-    const item = analyzedAssets.missing[count];
-    setHelper(
-      `${t("launching.downloadingAsset")}: ${item.hash.slice(0, 2)} (${count}/${
-        analyzedAssets.missing.length
-      })`
-    );
-  }
+  // download missing libraries
+  setHelper(`${t("launching.downloadingAsset")} (0%)`);
+  await new Promise<void>((resolve) => {
+    const downloader = new Downloader({
+      taskOptions: analyzedAssets.missing.map((val) => ({
+        url: val.url,
+        target: val.path,
+      })),
+      onDetailsChange: (_, totalPercentage) => {
+        setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
+      },
+      onError: (error) => {
+        throw error;
+      },
+      onDone: resolve,
+      concurrency: configStore.downloadConcurrency,
+    });
+    downloader.start();
+  });
+
+  setHelper(defaultHelper);
 
   // inject authlib injector
   if (account.mode === "authlib") {

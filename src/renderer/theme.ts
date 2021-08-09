@@ -13,6 +13,7 @@ export interface EphThemePalette {
   divider: string;
   card: string;
   contrast: string;
+  danger: string;
 }
 
 export interface EphTheme {

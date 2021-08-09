@@ -45,12 +45,11 @@ export function Select(props: {
   label?: string;
   onChange?: (value: string) => void;
   className?: string;
-  marginBottom?: boolean;
   children: ReactNode;
   disabled?: boolean;
 }): JSX.Element {
   return (
-    <div className={props.marginBottom ? "mb-3" : ""}>
+    <div>
       {props.label && <label className="eph-label">{props.label}</label>}
       <select
         value={props.value}
@@ -71,33 +70,35 @@ export function TextField(props: {
   type?: string;
   helperText?: string;
   error?: boolean;
-  marginBottom?: boolean;
   trailing?: JSX.Element;
   value?: string;
   className?: string;
-  onChange?: (ev: string) => void;
+  fieldClassName?: string;
+  onChange?: (ev: string) => unknown;
+  min?: number;
+  max?: number;
 }): JSX.Element {
   return (
-    <div
-      className={`${props.marginBottom ? "mb-3" : ""} ${props.className ?? ""}`}
-    >
+    <div className={props.className}>
       {props.label && <label className="eph-label">{props.label}</label>}
-      <div className="flex">
+      <div className={`flex ${props.fieldClassName ?? ""}`}>
         {props.icon && <div className="eph-textfield-icon">{props.icon}</div>}
         <input
+          min={props.min}
+          max={props.max}
           type={props.type}
           value={props.value}
           placeholder={props.placeholder}
           onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
           className={`${
             props.icon && props.trailing
-              ? "rounded-none z-10"
+              ? "rounded-none"
               : props.icon
               ? "rounded-r-lg"
               : props.trailing
               ? "rounded-l-lg"
               : "rounded-lg"
-          } eph-textfield ${
+          } eph-textfield z-10 ${
             props.error
               ? "ring-1 ring-red-500"
               : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"

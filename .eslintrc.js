@@ -1,11 +1,11 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint", "react-hooks"],
   extends: [
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
   ],
-  plugins: ["@typescript-eslint", "react-hooks"],
   rules: {
     "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars-experimental": 1,

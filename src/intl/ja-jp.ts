@@ -33,6 +33,8 @@ const jaJp: Language = {
     warning: "警告",
     done: "完了",
     add: "追加",
+    tip: "チップ",
+    help: "ヘルプ",
     "account.mojang": "Mojang",
     "account.microsoft": "Microsoft",
     "account.authlib": "Authlib Injector",
@@ -47,6 +49,7 @@ const jaJp: Language = {
       "Microsoft アカウントには Minecraft がありません",
     "account.clickToLogin":
       "「作成」をクリックして、Microsoft アカウントにログインします。",
+    "account.skin": "スキン",
     "profile.removing": "プロフィルを削除",
     "profile.notSelected": "プロフィルが選択だれていません",
     "profile.openDirectory": "パスを開けて",
@@ -60,6 +63,7 @@ const jaJp: Language = {
     "settings.openSourceSoftware": "オープンソースソフトウェア",
     "settings.downloadProvider": "ダウンロードソース",
     "settings.downloadProvider.official": "公式",
+    "settings.downloadConcurrency": "ダウンロード並行数",
     "settings.hitokoto": "一言",
     "settings.hitokoto.description":
       "Epherome が提供するランダムなテキストをホームページに表示します。",
@@ -84,6 +88,14 @@ const jaJp: Language = {
     "version.old_beta": "古い Beta",
     processes: "プロセス",
     "processes.noMinecraft": "Minecraft プロセスはありません",
+    "processes.logExported": "ログは\n%s\nにエクスポートされました。",
+    "processes.terminate": "強制終了",
+    "processes.terminateIrreversible":
+      "プロセスを強制的に終了すると、いくつかの重要なデータが失われる可能性があります。続行しますか？",
+    "processes.lookupLog": "ログを見る",
+    "processes.exportLog": "ログをエクスポート",
+    "processes.lookupProfile": "プロフィルを見る",
+    "processes.notSelected": "プロセスが選択されていません",
     extensions: "拡張",
     epheromeUpdate: "Epherome 更新",
     "epheromeUpdate.check": "更新を確認する",
@@ -93,7 +105,6 @@ const jaJp: Language = {
     "epheromeUpdate.needNot": "Epherome は最新バージョンです。",
     "launching.noAccOrProSelected":
       "アカウントまたはプロフィルを選択されていません",
-    "launching.continueAnyway": "とにかく続けます",
     "launching.considerUsingJava16":
       "1.17 以降、Minecraft を起動するには Java 16 が必要です。",
     "launching.considerUsingJava8":
@@ -108,6 +119,7 @@ const jaJp: Language = {
     errorOccurred: "エラーが発生しました",
     notSupportedYet: "すみません、これはさポードされていません。",
     confirmRemoving: "削除してもよろしいですか? 操作は元に戻せません。",
+    continueAnyway: "とにかく続け",
   },
 };
 

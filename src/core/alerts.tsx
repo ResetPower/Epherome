@@ -8,7 +8,7 @@ export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
     <AlertDialog
       title={t("warning")}
       message={t("launching.considerUsingJava16")}
-      anyway={t("launching.continueAnyway")}
+      anyway={t("continueAnyway")}
       onAnyway={finallyRun}
       close={close}
     />
@@ -20,7 +20,7 @@ export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
     <AlertDialog
       title={t("warning")}
       message={t("launching.considerUsingJava8")}
-      anyway={t("launching.continueAnyway")}
+      anyway={t("continueAnyway")}
       onAnyway={finallyRun}
       close={close}
     />

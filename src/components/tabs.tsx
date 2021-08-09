@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+  MutableRefObject,
+} from "react";
 import { unwrapFunction } from "../tools";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
@@ -21,18 +27,21 @@ export function TabController(props: {
   className?: string;
   animate?: boolean;
   orientation: "vertical" | "horizontal";
+  contextRef?: MutableRefObject<TabContext | undefined>;
 }): JSX.Element {
   const [value, setValue] = useState(0);
+  const context: TabContext = {
+    value,
+    setValue: (value) => {
+      setValue(value);
+    },
+    animate: props.animate ?? true,
+    orientation: props.orientation,
+  };
+  props.contextRef && (props.contextRef.current = context);
 
   return (
-    <TabContext.Provider
-      value={{
-        value,
-        setValue,
-        animate: props.animate ?? true,
-        orientation: props.orientation,
-      }}
-    >
+    <TabContext.Provider value={context}>
       <div
         className={`flex ${
           props.orientation === "vertical" ? "flex-row" : "flex-col"

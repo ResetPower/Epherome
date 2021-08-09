@@ -124,7 +124,10 @@ export async function analyzeAssets(
   );
 
   if (!fs.existsSync(assetIndexPath)) {
-    await downloadFile(assetIndex.url, assetIndexPath);
+    await downloadFile(
+      MinecraftUrlUtils.assetIndex(assetIndex),
+      assetIndexPath
+    );
   }
   const parsedAssetIndex = JSON.parse(
     fs.readFileSync(assetIndexPath).toString()
