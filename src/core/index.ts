@@ -8,7 +8,7 @@ import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
-import { createDirIfNotExist, downloadFile } from "./stream";
+import { createDirIfNotExist, downloadFile } from "../models/files";
 import { DefaultFn } from "../tools";
 import {
   isJava16Required,

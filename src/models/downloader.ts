@@ -2,7 +2,7 @@ import got from "got";
 import path from "path";
 import fs, { WriteStream } from "fs";
 import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
-import { createDirByPath } from "../core/stream";
+import { createDirByPath } from "../models/files";
 import { pipeline } from "stream";
 
 export type DownloaderDetailsListener = (

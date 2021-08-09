@@ -6,7 +6,7 @@ import { configStore, minecraftDownloadPath } from "../struct/config";
 import { DefaultFn, ErrorHandler } from "../tools";
 import { ClientJson } from "../core/struct";
 import { analyzeAssets, analyzeLibrary } from "../core/libraries";
-import { createDirByPath } from "../core/stream";
+import { createDirByPath } from "../models/files";
 import { logger } from "../renderer/global";
 import { Downloader, DownloaderDetailsListener } from "../models/downloader";
 import { MinecraftUrlUtils } from "./url";

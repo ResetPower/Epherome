@@ -170,7 +170,7 @@ const ProcessesPage = observer(() => {
           <CSSTransition timeout={300} classNames="tab-vertical" key={selected}>
             <div
               ref={onScrollPaneLoaded}
-              className="w-3/4 overflow-y-scroll text-contrast rounded-lg bg-card shadow-md m-6"
+              className="overflow-y-scroll w-3/4 text-contrast rounded-lg bg-card shadow-md m-6"
             >
               <div className="px-3 h-12 flex items-center top-0 shadow-sm sticky z-10 bg-card">
                 <Button

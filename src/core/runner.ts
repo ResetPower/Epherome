@@ -15,6 +15,8 @@ export function runMinecraft(
   const raw = spawn(java, buff, {
     cwd: dir,
   });
+  raw.stdout.setEncoding("utf-8");
+  raw.stderr.setEncoding("utf-8");
   raw.stdout.on(
     "data",
     () =>
