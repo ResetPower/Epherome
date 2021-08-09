@@ -10,7 +10,7 @@ import {
   ClientJsonLibraries,
   ClientLibraryResult,
 } from "./struct";
-import { downloadFile } from "./stream";
+import { downloadFile } from "../models/files";
 import { MinecraftUrlUtils } from "../craft/url";
 
 export async function analyzeLibrary(

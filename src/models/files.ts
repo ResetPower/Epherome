@@ -1,6 +1,7 @@
 import fs from "fs";
 import got from "got";
 import path from "path";
+import crypto from "crypto";
 import { DefaultFn, unwrapFunction } from "../tools";
 
 export function createDirIfNotExist(p: string): void {
@@ -29,4 +30,9 @@ export function downloadFile(
     fileStream.on("error", unwrapFunction(onError)).on("finish", resolve);
     downloadStream.pipe(fileStream);
   });
+}
+
+export function calculateHash(file: string): string {
+  const data = fs.readFileSync(file);
+  return crypto.createHash("sha1").update(data).digest("hex");
 }

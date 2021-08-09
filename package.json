@@ -29,7 +29,7 @@
     },
     "productName": "Epherome",
     "copyright": "Copyright (C) 2021 ResetPower.",
-    "artifactName": "Epherome-${version}.${ext}",
+    "artifactName": "Epherome-v${version}.${ext}",
     "directories": {
       "output": "package"
     },
@@ -40,8 +40,7 @@
       "target": "portable"
     },
     "mac": {
-      "target": "dmg",
-      "category": ""
+      "target": "dmg"
     },
     "linux": {
       "target": "tar.gz"
