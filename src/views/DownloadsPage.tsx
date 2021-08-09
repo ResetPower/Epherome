@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, Fragment, MutableRefObject } from "react";
 import { minecraftDownloadPath } from "../struct/config";
 import { createProfile } from "../struct/profiles";
 import { t } from "../intl";
-import { MdGamepad } from "react-icons/md";
+import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "../craft/download";
 import { Downloader, DownloaderTask } from "../models/downloader";
@@ -36,8 +36,8 @@ export function DownloadingFragment(props: {
   }, [props.version.id]);
 
   const onError = (error: Error) => {
-    setStatus("error");
     props.setLocking(false);
+    setStatus("error");
     throw error;
   };
 
@@ -45,8 +45,8 @@ export function DownloadingFragment(props: {
     logger.info("Download cancelled");
     unwrapFunction(canceller.current)();
     downloader.current?.cancel();
-    setStatus(null);
     props.setLocking(false);
+    setStatus(null);
   };
 
   const handleStart = () => {
@@ -77,7 +77,7 @@ export function DownloadingFragment(props: {
   };
 
   return (
-    <div className="p-16 h-full flex flex-col">
+    <div className="p-9 h-full flex flex-col">
       <Typography className="font-semibold text-xl py-3">
         {t("download")} Minecraft {props.version.id}
       </Typography>
@@ -104,7 +104,7 @@ export function DownloadingFragment(props: {
                   {t("downloadingSomething", val.filename)}
                 </Typography>
                 {val.error && (
-                  <p className="text-red-500">{t("errorOccurred")}</p>
+                  <p className="text-danger">{t("errorOccurred")}</p>
                 )}
                 {!val.error && (
                   <p className="text-shallow">({val.percentage}%)</p>
@@ -117,14 +117,17 @@ export function DownloadingFragment(props: {
       <div className="flex items-center">
         {props.locking && <p className="text-shallow">{totalPercentage}%</p>}
         <div className="flex-grow" />
-        {props.locking && <Button onClick={handleCancel}>{t("cancel")}</Button>}
-        <Button
-          variant="contained"
-          disabled={props.locking || status === "done"}
-          onClick={handleStart}
-        >
-          {t("download")}
-        </Button>
+        {props.locking ? (
+          <Button onClick={handleCancel}>
+            <MdClose /> {t("cancel")}
+          </Button>
+        ) : (
+          status !== "done" && (
+            <Button variant="contained" onClick={handleStart}>
+              <MdFileDownload /> {t("download")}
+            </Button>
+          )
+        )}
       </div>
     </div>
   );

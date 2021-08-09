@@ -226,13 +226,11 @@ const SettingsPage = observer(() => {
         </TabBarItem>
       </TabBar>
       <TabBody className="overflow-y-auto">
-        <div>
+        <div className="space-y-2">
           <Select
             value={intlStore.language?.name ?? ""}
             label={t("language")}
             onChange={handleChangeLanguage}
-            className="w-32"
-            marginBottom
           >
             {intlStore.languages.map((lang, index) => (
               <option value={lang.name} key={index}>
@@ -240,29 +238,38 @@ const SettingsPage = observer(() => {
               </option>
             ))}
           </Select>
-          <div className="mb-2">
-            <Select
-              value={configStore.downloadProvider}
-              label={t("settings.downloadProvider")}
-              onChange={(provider) =>
-                setConfig(
-                  (cfg) =>
-                    (cfg.downloadProvider =
-                      provider as MinecraftDownloadProvider)
-                )
-              }
-              className="w-32"
-            >
-              <option value="official">
-                {t("settings.downloadProvider.official")}
-              </option>
-              <option value="bmclapi">BMCLAPI</option>
-              <option value="mcbbs">MCBBS</option>
-            </Select>
-          </div>
+          <Select
+            value={configStore.downloadProvider}
+            label={t("settings.downloadProvider")}
+            onChange={(provider) =>
+              setConfig(
+                (cfg) =>
+                  (cfg.downloadProvider = provider as MinecraftDownloadProvider)
+              )
+            }
+          >
+            <option value="official">
+              {t("settings.downloadProvider.official")}
+            </option>
+            <option value="bmclapi">BMCLAPI</option>
+            <option value="mcbbs">MCBBS</option>
+          </Select>
+          <TextField
+            min={1}
+            max={10}
+            value={configStore.downloadConcurrency.toString()}
+            type="number"
+            label={t("settings.downloadConcurrency")}
+            fieldClassName="w-32"
+            onChange={(concurrency) => {
+              const value = +concurrency;
+              value > 0 &&
+                value < 11 &&
+                setConfig((cfg) => (cfg.downloadConcurrency = value));
+            }}
+          />
           <Select
             label="Java"
-            className="mb-2"
             value={_.selectedIndex(configStore.javas)?.toString() ?? ""}
             onChange={(value) =>
               setConfig((cfg) => _.select(cfg.javas, cfg.javas[+value]))
@@ -314,7 +321,11 @@ const SettingsPage = observer(() => {
         </div>
         <div className="space-y-3">
           <Card className="flex items-center space-x-3">
-            <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
+            <img
+              src={EpheromeLogo}
+              alt="EpheromeLogo"
+              className="w-16 h-16 pointer-events-none"
+            />
             <div>
               <Typography className="font-semibold text-xl">
                 Epherome Beta

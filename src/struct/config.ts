@@ -38,6 +38,7 @@ export interface EphConfig {
   language: string;
   hitokoto: boolean;
   downloadProvider: MinecraftDownloadProvider;
+  downloadConcurrency: number;
 }
 
 // create files
@@ -47,10 +48,12 @@ export const minecraftDownloadPath = path.join(
   os.platform() === "win32" ? ".minecraft" : "minecraft"
 );
 export const ephExtensionsPath = path.join(userDataPath, "extensions");
+export const ephLogExportsPath = path.join(userDataPath, "logs");
 
 !fs.existsSync(configFilename) && fs.writeFileSync(configFilename, "{}");
 !fs.existsSync(minecraftDownloadPath) && fs.mkdirSync(minecraftDownloadPath);
 !fs.existsSync(ephExtensionsPath) && fs.mkdirSync(ephExtensionsPath);
+!fs.existsSync(ephLogExportsPath) && fs.mkdirSync(ephLogExportsPath);
 
 // read config
 
@@ -65,6 +68,7 @@ export class ConfigStore {
   @observable language = getSystemPreferredLanguage();
   @observable hitokoto = false;
   @observable downloadProvider: MinecraftDownloadProvider = "official";
+  @observable downloadConcurrency = 7;
   constructor(preferred: Partial<EphConfig>) {
     extendObservable(this, preferred);
     // initialize java config

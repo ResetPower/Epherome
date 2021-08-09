@@ -32,6 +32,8 @@ export interface LanguageDefinition {
   warning: string;
   done: string;
   add: string;
+  tip: string;
+  help: string;
   "account.mojang": string;
   "account.microsoft": string;
   "account.authlib": string;
@@ -43,6 +45,7 @@ export interface LanguageDefinition {
   "account.inputPassword": string;
   "account.msAccNoMinecraft": string;
   "account.clickToLogin": string;
+  "account.skin": string;
   "profile.removing": string;
   "profile.notSelected": string;
   "profile.openDirectory": string;
@@ -55,6 +58,7 @@ export interface LanguageDefinition {
   "settings.openSourceSoftware": string;
   "settings.downloadProvider": string;
   "settings.downloadProvider.official": string;
+  "settings.downloadConcurrency": string;
   "settings.hitokoto": string;
   "settings.hitokoto.description": string;
   "settings.theme": string;
@@ -78,6 +82,13 @@ export interface LanguageDefinition {
   "version.old_beta": string;
   processes: string;
   "processes.noMinecraft": string;
+  "processes.logExported": string;
+  "processes.terminate": string;
+  "processes.terminateIrreversible": string;
+  "processes.lookupLog": string;
+  "processes.exportLog": string;
+  "processes.lookupProfile": string;
+  "processes.notSelected": string;
   extensions: string;
   epheromeUpdate: string;
   "epheromeUpdate.check": string;
@@ -85,7 +96,6 @@ export interface LanguageDefinition {
   "epheromeUpdate.availableMessage": string;
   "epheromeUpdate.needNot": string;
   "launching.noAccOrProSelected": string;
-  "launching.continueAnyway": string;
   "launching.considerUsingJava16": string;
   "launching.considerUsingJava8": string;
   "launching.javaNotFound": string;
@@ -96,4 +106,5 @@ export interface LanguageDefinition {
   errorOccurred: string;
   notSupportedYet: string;
   confirmRemoving: string;
+  continueAnyway: string;
 }

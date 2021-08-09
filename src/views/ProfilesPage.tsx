@@ -1,4 +1,4 @@
-import { Button, TextField } from "../components/inputs";
+import { Button, Link, TextField } from "../components/inputs";
 import { Typography } from "../components/layouts";
 import {
   createProfile,
@@ -16,9 +16,15 @@ import {
 } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { showOverlay } from "../renderer/overlays";
-import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
+import {
+  TabBar,
+  TabBarItem,
+  TabBody,
+  TabContext,
+  TabController,
+} from "../components/tabs";
 import { ipcRenderer } from "electron";
-import { DefaultFn } from "../tools";
+import { DefaultFn, unwrapFunction } from "../tools";
 import fs from "fs";
 import path from "path";
 import { useState } from "react";
@@ -27,6 +33,7 @@ import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
+import { useRef } from "react";
 
 export function RemoveProfileDialog(props: {
   onClose: DefaultFn;
@@ -38,14 +45,14 @@ export function RemoveProfileDialog(props: {
       message={t("confirmRemoving")}
       action={() => removeProfile(props.profile)}
       close={props.onClose}
-      positiveClassName="text-red-500"
+      positiveClassName="text-danger"
       positiveText={t("remove")}
     />
   );
 }
 
 export function ChangeProfileFragment(props: {
-  onDone: DefaultFn;
+  onDone?: DefaultFn;
   action: "edit" | "create";
   current?: MinecraftProfile;
 }): JSX.Element {
@@ -63,7 +70,7 @@ export function ChangeProfileFragment(props: {
         ver,
         jvmArgs,
       });
-      props.onDone();
+      unwrapFunction(props.onDone)();
     }
   };
   const handleCreate = () => {
@@ -76,7 +83,7 @@ export function ChangeProfileFragment(props: {
         jvmArgs,
       })
     ) {
-      props.onDone();
+      unwrapFunction(props.onDone)();
     }
   };
   const handleOpenDirectory = () =>
@@ -112,10 +119,14 @@ export function ChangeProfileFragment(props: {
             <Button className="text-shallow" onClick={props.onDone}>
               {t("cancel")}
             </Button>
-            <Button onClick={handleCreate}>{t("create")}</Button>
+            <Button onClick={handleCreate} className="text-secondary">
+              {t("create")}
+            </Button>
           </>
         ) : (
-          <Button onClick={handleEdit}>{t("save")}</Button>
+          <Button onClick={handleEdit} className="text-secondary">
+            {t("save")}
+          </Button>
         )}
       </div>
     </div>
@@ -123,6 +134,7 @@ export function ChangeProfileFragment(props: {
 }
 
 const ProfilesPage = observer(() => {
+  const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
   const handleRemove = (selected: MinecraftProfile) =>
@@ -172,6 +184,7 @@ const ProfilesPage = observer(() => {
                 i.selected
                   ? setConfig(() => _.deselect(profiles))
                   : setConfig(() => _.select(profiles, i));
+                tabRef.current?.setValue(0);
               }}
               key={id}
             >
@@ -190,7 +203,7 @@ const ProfilesPage = observer(() => {
             onDone={() => setCreating(false)}
           />
         ) : current ? (
-          <TabController orientation="horizontal">
+          <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>
               <TabBarItem value={0}>{t("general")}</TabBarItem>
               <TabBarItem value={1}>{t("edit")}</TabBarItem>
@@ -205,7 +218,10 @@ const ProfilesPage = observer(() => {
                     {t("name")}: {current?.name}
                   </Typography>
                   <Typography>
-                    {t("directory")}: {current?.dir}
+                    {t("directory")}:{" "}
+                    <Link type="file" href={current?.dir}>
+                      {current?.dir}
+                    </Link>
                   </Typography>
                   <Typography>
                     {t("version")}: {current?.ver}
@@ -213,7 +229,7 @@ const ProfilesPage = observer(() => {
                 </div>
                 <div className="flex justify-end">
                   <Button
-                    className="text-red-500"
+                    className="text-danger"
                     onClick={() => current && handleRemove(current)}
                   >
                     <MdDelete />
@@ -223,11 +239,7 @@ const ProfilesPage = observer(() => {
               </div>
               <div>
                 {current && (
-                  <ChangeProfileFragment
-                    action="edit"
-                    onDone={() => setCreating(false)}
-                    current={current}
-                  />
+                  <ChangeProfileFragment action="edit" current={current} />
                 )}
               </div>
               <div>

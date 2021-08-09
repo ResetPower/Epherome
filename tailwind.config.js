@@ -17,6 +17,7 @@ module.exports = {
         shallow: "var(--eph-shallow-color)",
         divider: "var(--eph-divider-color)",
         card: "var(--eph-card-color)",
+        danger: "var(--eph-danger-color)",
       },
     },
   },

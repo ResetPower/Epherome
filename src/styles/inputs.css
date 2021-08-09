@@ -48,7 +48,7 @@
     @apply text-sm -bottom-6 text-shallow;
   }
   .eph-helper-text-error {
-    @apply text-red-500;
+    @apply text-danger;
   }
 
   .eph-checkbox {

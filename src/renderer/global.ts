@@ -15,6 +15,7 @@ export const lightTheme = defineTheme({
     divider: colors.gray["200"],
     card: colors.white,
     contrast: colors.black,
+    danger: colors.red["500"],
   },
 });
 
@@ -28,6 +29,7 @@ export const darkTheme = defineTheme({
     divider: colors.gray["600"],
     card: colors.gray["700"],
     contrast: colors.white,
+    danger: colors.red["400"],
   },
 });
 

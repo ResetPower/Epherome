@@ -33,6 +33,8 @@ const enUs: Language = {
     warning: "Warning",
     done: "Done",
     add: "Add",
+    tip: "Tip",
+    help: "Help",
     "account.mojang": "Mojang",
     "account.microsoft": "Microsoft",
     "account.authlib": "Authlib Injector",
@@ -47,6 +49,7 @@ const enUs: Language = {
       "You don't have Minecraft in your Microsoft account yet.",
     "account.clickToLogin":
       "Click 'Create' to log in to your Microsoft account.",
+    "account.skin": "Skin",
     "profile.removing": "Remove Profile",
     "profile.notSelected": "No Profile Selected",
     "profile.openDirectory": "Open",
@@ -60,6 +63,7 @@ const enUs: Language = {
     "settings.openSourceSoftware": "Open Source Software",
     "settings.downloadProvider": "Download Provider",
     "settings.downloadProvider.official": "Official",
+    "settings.downloadConcurrency": "Download Concurrency",
     "settings.hitokoto": "Hitokoto",
     "settings.hitokoto.description":
       "Display a random line of text provided by Epherome on your homepage.",
@@ -84,6 +88,14 @@ const enUs: Language = {
     "version.old_beta": "Old Beta",
     processes: "Processes",
     "processes.noMinecraft": "No Minecraft Processes",
+    "processes.logExported": "Log Exported at\n%s",
+    "processes.terminate": "Terminate",
+    "processes.terminateIrreversible":
+      "Forcibly terminating the process may cause you to lose some important data. Do you want to continue?",
+    "processes.lookupLog": "See Log",
+    "processes.exportLog": "Export Log",
+    "processes.lookupProfile": "See Profile",
+    "processes.notSelected": "No Process Selected",
     extensions: "Extensions",
     epheromeUpdate: "Epherome Update",
     "epheromeUpdate.check": "Check Update",
@@ -92,7 +104,6 @@ const enUs: Language = {
       "Please go to Epherome official website to download the latest version.",
     "epheromeUpdate.needNot": "Epherome is the latest version.",
     "launching.noAccOrProSelected": "No account or profile selected.",
-    "launching.continueAnyway": "Continue Anyway",
     "launching.considerUsingJava16":
       "Java 16 is required to launch Minecraft since 1.17.",
     "launching.considerUsingJava8":
@@ -108,6 +119,7 @@ const enUs: Language = {
     notSupportedYet: "Sorry that this is not supported yet.",
     confirmRemoving:
       "Are you sure you want to remove it? The operation is irreversible.",
+    continueAnyway: "Continue Anyway",
   },
 };
 

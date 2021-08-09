@@ -1,24 +1,29 @@
-import { DefaultFn } from "../tools";
+import { ChildProcessWithoutNullStreams } from "child_process";
+import { DefaultFn, unwrapFunction } from "../tools";
 import { MinecraftProfile } from "./profiles";
 
-export type ProcessAction = "output";
+export type ProcessOutputListener = (chunk: string) => unknown;
+
+export interface ProcessListenerMap {
+  output: ProcessOutputListener;
+  exit: DefaultFn;
+}
 
 export class Process {
   profile: MinecraftProfile;
+  done = false;
+  raw: ChildProcessWithoutNullStreams;
   outputs: string[] = [];
-  private onOutput?: DefaultFn;
-
-  constructor(profile: MinecraftProfile) {
+  onOutput?: ProcessListenerMap["output"];
+  onExit?: ProcessListenerMap["exit"];
+  constructor(profile: MinecraftProfile, raw: ChildProcessWithoutNullStreams) {
     this.profile = profile;
-  }
-  on(action: ProcessAction, fn: DefaultFn): void {
-    action === "output" && (this.onOutput = fn);
-  }
-  clearListeners(action: ProcessAction): void {
-    action === "output" && (this.onOutput = undefined);
+    this.raw = raw;
+    raw.on("exit", unwrapFunction(this.onExit));
+    raw.stdout.on("data", (d) => this.output(d.toString()));
+    raw.stderr.on("data", (d) => this.output(d.toString()));
   }
   output(chunk: string): void {
-    this.outputs.push(chunk);
-    this.onOutput && this.onOutput();
+    unwrapFunction(this.onOutput)(chunk);
   }
 }

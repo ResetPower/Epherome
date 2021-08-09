@@ -33,7 +33,7 @@ export function isJava8Required(detail: MinecraftVersionDetail): boolean {
 export function parseMinecraftVersionDetail(
   id: string
 ): MinecraftVersionDetail {
-  const regex = /([0-9]+)\.([0-9]+)\.([0-9]+)/;
+  const regex = /([0-9]+)\.([0-9]+)\.?([0-9]+)?/;
   const fallback = [0, NaN, NaN, NaN];
   const matched = id.match(regex);
   return {

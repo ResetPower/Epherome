@@ -1,7 +1,7 @@
 import got from "got";
 import path from "path";
 import fs, { WriteStream } from "fs";
-import { DefaultFn, ErrorHandler } from "../tools";
+import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
 import { createDirByPath } from "../core/stream";
 import { pipeline } from "stream";
 
@@ -26,7 +26,7 @@ export class DownloaderTask {
   constructor(
     options: DownloaderTaskOptions,
     updateDetails: DefaultFn,
-    finishCallback: (task: DownloaderTask) => void
+    finishCallback: (task: DownloaderTask, error?: boolean) => void
   ) {
     this.url = options.url;
     this.target = options.target;
@@ -51,8 +51,8 @@ export class DownloaderTask {
         // in order to avoid unexpected things
         this.destroy();
         this.error = true;
-        updateDetails();
-        throw error;
+        // have to finish
+        finishCallback(this, true);
       } else {
         this.finished = true;
         finishCallback(this);
@@ -71,7 +71,7 @@ export class DownloaderTask {
 }
 
 export interface DownloaderOptions {
-  tasksOptions: DownloaderTaskOptions[];
+  taskOptions: DownloaderTaskOptions[];
   concurrency: number;
   onDetailsChange: DownloaderDetailsListener;
   onError: ErrorHandler;
@@ -81,18 +81,23 @@ export interface DownloaderOptions {
 export class Downloader {
   cancelled = false;
   finishedTasks = 0;
-  concurrency: number;
+  concurrency = 0;
   tasks: DownloaderTask[] = [];
-  taskOptions: DownloaderTaskOptions[];
-  onDetailsChange: DownloaderDetailsListener;
-  onError: ErrorHandler;
-  onDone: DefaultFn;
+  errors: DownloaderTask[] = [];
+  taskOptions: DownloaderTaskOptions[] = [];
+  onDetailsChange: DownloaderDetailsListener = unwrapFunction();
+  onError: ErrorHandler = unwrapFunction();
+  onDone: DefaultFn = unwrapFunction();
   constructor(options: DownloaderOptions) {
-    this.taskOptions = options.tasksOptions;
-    this.concurrency = options.concurrency;
-    this.onDetailsChange = options.onDetailsChange;
-    this.onError = options.onError;
-    this.onDone = options.onDone;
+    if (options.taskOptions.length === 0) {
+      options.onDone();
+    } else {
+      this.taskOptions = options.taskOptions;
+      this.concurrency = options.concurrency;
+      this.onDetailsChange = options.onDetailsChange;
+      this.onError = options.onError;
+      this.onDone = options.onDone;
+    }
   }
   updateDetails = (): void => {
     // evaluate total percentage
@@ -100,15 +105,20 @@ export class Downloader {
       (this.tasks.map((task) => task.percentage).reduce((a, b) => a + b, 0) +
         this.finishedTasks * 100) /
       this.taskOptions.length;
-    this.onDetailsChange(this.tasks.slice(), Math.round(percentage));
+    this.onDetailsChange(this.tasks.slice(), Math.floor(percentage));
   };
-  finishOne = (task: DownloaderTask): void => {
+  finishOne = (task: DownloaderTask, _error = false): void => {
     // remove finished tasks
     this.tasks.splice(this.tasks.indexOf(task), 1);
     this.finishedTasks++;
     this.updateDetails();
     // check if tasks are all completed
-    this.tasks.length === 0 ? this.onDone() : this.start();
+    if (this.tasks.length === 0) {
+      this.onDone();
+    } else {
+      // add new task to the task list
+      this.start();
+    }
   };
   start = (): void => {
     // search for not added task options

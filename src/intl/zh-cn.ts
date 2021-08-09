@@ -33,6 +33,8 @@ const zhCn: Language = {
     warning: "警告",
     done: "完成",
     add: "添加",
+    tip: "提示",
+    help: "帮助",
     "account.mojang": "Mojang 账户",
     "account.microsoft": "微软账户",
     "account.authlib": "Authlib Injector",
@@ -44,6 +46,7 @@ const zhCn: Language = {
     "account.inputPassword": "请输入密码",
     "account.msAccNoMinecraft": "您的 Microsoft 账户中没有 Minecraft",
     "account.clickToLogin": "点击「创建」以登入您的微软账户。",
+    "account.skin": "皮肤",
     "profile.removing": "移除档案",
     "profile.notSelected": "未选择档案",
     "profile.openDirectory": "打开",
@@ -57,6 +60,7 @@ const zhCn: Language = {
     "settings.openSourceSoftware": "开源软件",
     "settings.downloadProvider": "下载源",
     "settings.downloadProvider.official": "官方",
+    "settings.downloadConcurrency": "下载并发数",
     "settings.hitokoto": "一言",
     "settings.hitokoto.description":
       "在您的首页显示一条由 Epherome 提供的随机一行文本。",
@@ -81,6 +85,14 @@ const zhCn: Language = {
     "version.old_beta": "远古版 (Beta)",
     processes: "进程",
     "processes.noMinecraft": "没有 Minecraft 进程",
+    "processes.logExported": "日志已经导出于\n%s",
+    "processes.terminate": "强制结束",
+    "processes.terminateIrreversible":
+      "强制终止进程可能导致你丢失一些重要数据，是否继续？",
+    "processes.lookupLog": "查看日志",
+    "processes.exportLog": "导出日志",
+    "processes.lookupProfile": "查看档案",
+    "processes.notSelected": "未选择进程",
     extensions: "扩展",
     epheromeUpdate: "Epherome 更新",
     "epheromeUpdate.check": "检查更新",
@@ -88,7 +100,6 @@ const zhCn: Language = {
     "epheromeUpdate.availableMessage": "请前往 Epherome 官方网站下载最新版本。",
     "epheromeUpdate.needNot": "Epherome 已是最新版本。",
     "launching.noAccOrProSelected": "账户或档案未选择。",
-    "launching.continueAnyway": "仍然继续",
     "launching.considerUsingJava16":
       "从 Minecraft 1.17 开始，启动 Minecraft 需要 Java 16",
     "launching.considerUsingJava8":
@@ -102,6 +113,7 @@ const zhCn: Language = {
     errorOccurred: "发生错误",
     notSupportedYet: "抱歉，该功能暂不支持。",
     confirmRemoving: "您确定要移除它吗? 该操作不可逆。",
+    continueAnyway: "仍然继续",
   },
 };
 

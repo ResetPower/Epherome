@@ -28,6 +28,7 @@ import ExtensionsView from "./ExtensionsView";
 export function RequestPasswordDialog(props: {
   again: boolean;
   onClose: DefaultFn;
+  onCancel: DefaultFn;
   callback: (password: string) => void;
 }): JSX.Element {
   const [password, setPassword] = useState("");
@@ -52,7 +53,13 @@ export function RequestPasswordDialog(props: {
         />
       </div>
       <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.onClose}>
+        <Button
+          className="text-shallow"
+          onClick={() => {
+            props.onCancel();
+            props.onClose();
+          }}
+        >
           {t("cancel")}
         </Button>
         <Button onClick={handler}>{t("fine")}</Button>
@@ -107,7 +114,7 @@ const HomePage = observer(() => {
     _.selectedIndex(configStore.profiles) ?? null
   );
 
-  const handleChange = (val: string): void => {
+  const handleChange = (val: string) => {
     const newValue = +val;
     setValue(newValue);
     setConfig(() => _.selectByIndex(profiles, newValue));
@@ -115,7 +122,7 @@ const HomePage = observer(() => {
   const handleLaunch = () => {
     // value will be "" if not selected
     const current = account.current;
-    const profile = value && configStore.profiles[+value];
+    const profile = value !== null && configStore.profiles[+value];
     if (current && profile) {
       homePageStore.setLaunching(true);
       launchMinecraft({
@@ -132,6 +139,7 @@ const HomePage = observer(() => {
             showOverlay((close) => (
               <RequestPasswordDialog
                 onClose={close}
+                onCancel={() => homePageStore.setLaunching(false)}
                 again={homePageStore.againRequestingPassword}
                 callback={(password: string) => {
                   resolve(password);
@@ -143,6 +151,7 @@ const HomePage = observer(() => {
         showOverlay((close) => (
           <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
         ));
+        homePageStore.setLaunching(false);
       });
     } else {
       showOverlay((close) => (

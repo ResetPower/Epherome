@@ -12,7 +12,7 @@ import { List, ListItem } from "../components/lists";
 import { showOverlay } from "../renderer/overlays";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { useState } from "react";
-import { DefaultFn } from "../tools";
+import { DefaultFn, unwrapFunction } from "../tools";
 import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "../tools/arrays";
@@ -29,19 +29,19 @@ export function RemoveAccountDialog(props: {
       message={t("confirmRemoving")}
       action={() => removeAccount(props.account)}
       close={props.onClose}
-      positiveClassName="text-red-500"
+      positiveClassName="text-danger"
       positiveText={t("remove")}
     />
   );
 }
 
-export function CreateAccountFragment(props: {
+export function ChangeAccountFragment(props: {
   onDone: DefaultFn;
 }): JSX.Element {
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [msAccNoMcAlert, setMsAccNoMcAlert] = useState(false);
-  const [value, setValue] = useState("mojang");
+  const [value, setValue] = useState("");
   const [authserver, setAuthserver] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +54,7 @@ export function CreateAccountFragment(props: {
       (value: CreateAccountImplResult) => {
         setLoading(false);
         if (value.success) {
-          props.onDone();
+          unwrapFunction(props.onDone)();
         } else {
           if (value.message === "msAccNoMinecraft") {
             setMsAccNoMcAlert(true);
@@ -168,12 +168,12 @@ const AccountsPage = observer(() => {
       </div>
       <div className="flex-grow p-6 w-3/4">
         {creating ? (
-          <CreateAccountFragment onDone={() => setCreating(false)} />
+          <ChangeAccountFragment onDone={() => setCreating(false)} />
         ) : current ? (
           <TabController orientation="horizontal">
             <TabBar>
               <TabBarItem value={0}>{t("general")}</TabBarItem>
-              <TabBarItem value={1}>{t("edit")}</TabBarItem>
+              <TabBarItem value={1}>{t("account.skin")}</TabBarItem>
             </TabBar>
             <TabBody>
               <div className="flex flex-col">
@@ -185,16 +185,14 @@ const AccountsPage = observer(() => {
                 </div>
                 <div className="flex justify-end">
                   <Button
-                    className="text-red-500"
+                    className="text-danger"
                     onClick={() => current && handleRemove(current)}
                   >
                     <MdDelete /> {t("remove")}
                   </Button>
                 </div>
               </div>
-              <div>
-                <Typography>{t("notSupportedYet")}</Typography>
-              </div>
+              <Typography>{t("notSupportedYet")}</Typography>
             </TabBody>
           </TabController>
         ) : (
