@@ -3,8 +3,10 @@ import findJavaHome from "find-java-home";
 import path from "path";
 import { WithUnderline, _ } from "../tools/arrays";
 import { setConfig } from "./config";
+import { nanoid } from "nanoid";
 
 export interface Java extends WithUnderline {
+  nanoid: string;
   dir: string;
   name: string;
   is64Bit: boolean;
@@ -21,6 +23,7 @@ export function checkJavaVersion(dir: string): Promise<Java | null> {
         const name = data.match(/"(.*?)"/)?.pop();
         if (name) {
           resolve({
+            nanoid: nanoid(),
             dir,
             name,
             is64Bit: data.toLowerCase().includes("64-bit"),

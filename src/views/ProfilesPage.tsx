@@ -1,4 +1,4 @@
-import { Button, Link, TextField } from "../components/inputs";
+import { Button, Link, Select, TextField } from "../components/inputs";
 import { Typography } from "../components/layouts";
 import {
   createProfile,
@@ -27,13 +27,13 @@ import { ipcRenderer } from "electron";
 import { DefaultFn, unwrapFunction } from "../tools";
 import fs from "fs";
 import path from "path";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
-import { useRef } from "react";
+import { FaTimes } from "react-icons/fa";
 
 export function RemoveProfileDialog(props: {
   onClose: DefaultFn;
@@ -61,18 +61,9 @@ export function ChangeProfileFragment(props: {
   const [dir, setDir] = useState(current?.dir ?? "");
   const [ver, setVer] = useState(current?.ver ?? "");
   const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? "");
+  const [resolution, setResolution] = useState(current?.resolution ?? {});
+  const [java, setJava] = useState(current?.java ?? "");
 
-  const handleEdit = () => {
-    if (current) {
-      editProfile(current, {
-        name,
-        dir,
-        ver,
-        jvmArgs,
-      });
-      unwrapFunction(props.onDone)();
-    }
-  };
   const handleCreate = () => {
     if (
       createProfile({
@@ -81,9 +72,32 @@ export function ChangeProfileFragment(props: {
         ver,
         from: "create",
         jvmArgs,
+        resolution,
+        java,
       })
     ) {
       unwrapFunction(props.onDone)();
+    }
+  };
+  const handleEdit = () => {
+    if (current) {
+      editProfile(current, {
+        name,
+        dir,
+        ver,
+        jvmArgs,
+        resolution,
+        java,
+      });
+      unwrapFunction(props.onDone)();
+    }
+  };
+  const handleResolutionChange = (type: "width" | "height", ev: string) => {
+    if (ev === "") {
+      setResolution((prev) => ({ ...prev, [type]: undefined }));
+    } else {
+      const num = +ev;
+      num >= 0 && setResolution((prev) => ({ ...prev, [type]: num }));
     }
   };
   const handleOpenDirectory = () =>
@@ -92,7 +106,7 @@ export function ChangeProfileFragment(props: {
       .then((value) => value && setDir(value));
 
   return (
-    <div className="p-3">
+    <div className="p-1">
       {props.action === "create" && <div className="h-12" />}
       <div>
         <TextField label={t("name")} value={name} onChange={setName} />
@@ -103,11 +117,42 @@ export function ChangeProfileFragment(props: {
           helperText={t("profile.usuallyDotMinecraftEtc")}
         />
         <TextField label={t("version")} value={ver} onChange={setVer} />
-        <TextField
-          label="JVM Arguments"
-          value={jvmArgs}
-          onChange={setJvmArgs}
-        />
+        <div className="flex items-center space-x-3">
+          <TextField
+            className="flex-grow"
+            label={t("profile.jvmArgs")}
+            value={jvmArgs}
+            onChange={setJvmArgs}
+          />
+          <Select label="Java" value={java} onChange={setJava}>
+            <option value="default">{t("useDefault")}</option>
+            {configStore.javas.map((val) => (
+              <option value={val.nanoid} key={val.nanoid}>
+                {val.name}
+              </option>
+            ))}
+          </Select>
+        </div>
+        <div>
+          <label className="eph-label">{t("profile.resolution")}</label>
+          <div className="flex items-center">
+            <TextField
+              placeholder={t("useDefault")}
+              value={`${resolution.width ?? ""}`}
+              onChange={(ev) => handleResolutionChange("width", ev)}
+              className="flex-grow"
+              noSpinButton
+            />
+            <FaTimes className="text-contrast m-3" />
+            <TextField
+              placeholder={t("useDefault")}
+              value={`${resolution.height ?? ""}`}
+              onChange={(ev) => handleResolutionChange("height", ev)}
+              className="flex-grow"
+              noSpinButton
+            />
+          </div>
+        </div>
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
@@ -196,7 +241,7 @@ const ProfilesPage = observer(() => {
           ))}
         </List>
       </div>
-      <div className="flex-grow p-3 w-3/4">
+      <div className="flex-grow p-3 overflow-y-auto w-3/4">
         {creating ? (
           <ChangeProfileFragment
             action="create"

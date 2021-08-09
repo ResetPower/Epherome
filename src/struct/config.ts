@@ -10,6 +10,7 @@ import { ipcRenderer } from "electron";
 import { logger } from "../renderer/global";
 import log4js from "log4js";
 import log4jsConfiguration from "../tools/logging";
+import { nanoid } from "nanoid";
 
 export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
 
@@ -76,6 +77,12 @@ export class ConfigStore {
       detectJava().then((java) => {
         java && this.javas.push(java);
       });
+    }
+    // process java instances of old epherome
+    for (const i of this.javas) {
+      if (!i.nanoid) {
+        i.nanoid = nanoid();
+      }
     }
   }
   setConfig = (cb: (store: ConfigStore) => unknown): void => {

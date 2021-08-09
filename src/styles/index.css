@@ -53,6 +53,13 @@ body {
   max-height: calc(100vh - 4rem);
 }
 
+input[type="number"].no-spin-button::-webkit-outer-spin-button,
+input[type="number"].no-spin-button::-webkit-inner-spin-button {
+  display: none;
+  appearance: none;
+  margin: 0;
+}
+
 /* Checkbox Component */
 input:checked ~ .dot {
   transform: translateX(100%);

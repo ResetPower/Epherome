@@ -129,7 +129,9 @@ const HomePage = observer(() => {
         account: current,
         profile,
         setHelper: homePageStore.setLaunchHelper,
-        java: _.selected(configStore.javas),
+        java:
+          configStore.javas.find((val) => val.nanoid === profile.java) ??
+          _.selected(configStore.javas),
         onDone: () => homePageStore.setLaunching(false),
         requestPassword: (again: boolean) =>
           new Promise((resolve) => {

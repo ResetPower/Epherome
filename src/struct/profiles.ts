@@ -2,13 +2,20 @@ import { setConfig } from "./config";
 import { logger } from "../renderer/global";
 import { WithUnderline, _ } from "../tools/arrays";
 
+export interface MinecraftResolution {
+  width?: number;
+  height?: number;
+}
+
 export interface MinecraftProfile extends WithUnderline {
   name: string;
   dir: string;
   ver: string;
   from?: "create" | "download";
   jvmArgs?: string;
-  resolution?: [number, number];
+  resolution?: MinecraftResolution;
+  // nanoid of selected java instance
+  java?: string;
 }
 
 export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;
