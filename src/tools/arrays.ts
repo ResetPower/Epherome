@@ -54,4 +54,17 @@ export const _ = {
       }
     }
   },
+  modify<T extends WithUnderline>(
+    arr: T[],
+    item: T,
+    modifier: (source: T) => T
+  ): void {
+    for (const k in arr) {
+      const v = arr[k];
+      if (v === item) {
+        arr[k] = modifier(v);
+        break;
+      }
+    }
+  },
 };

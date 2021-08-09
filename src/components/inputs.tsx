@@ -77,6 +77,7 @@ export function TextField(props: {
   onChange?: (ev: string) => unknown;
   min?: number;
   max?: number;
+  noSpinButton?: boolean;
 }): JSX.Element {
   return (
     <div className={props.className}>
@@ -102,7 +103,7 @@ export function TextField(props: {
             props.error
               ? "ring-1 ring-red-500"
               : "focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
-          }`}
+          } ${props.noSpinButton ? "no-spin-button" : ""}`}
         />
         {props.trailing && (
           <div className="eph-textfield-trailing">{props.trailing}</div>

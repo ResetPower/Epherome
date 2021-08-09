@@ -60,6 +60,7 @@ export async function launchMinecraft(
     userDataPath,
     "authlib-injector-1.1.35.jar"
   );
+  const customResolution = profile.resolution;
 
   const buff: string[] = [];
   const dir = path.resolve(profile.dir);
@@ -219,6 +220,8 @@ export async function launchMinecraft(
     launcher_name: "Epherome",
     launcher_version: ephVersion,
     classpath: cp.join(":"),
+    resolution_width: customResolution?.width,
+    resolution_height: customResolution?.height,
   };
 
   const reg = /\${([\w]*)}/g;
@@ -237,7 +240,15 @@ export async function launchMinecraft(
     };
     for (const i of arr) {
       if (typeof i === "string") act(i);
-      else if (isCompliant(i.rules)) {
+      else if (
+        isCompliant(i.rules, {
+          has_custom_resolution: !!(
+            customResolution &&
+            customResolution.width &&
+            customResolution.height
+          ),
+        })
+      ) {
         if (typeof i.value === "string") act(i.value);
         else i.value.forEach((i) => act(i));
       }

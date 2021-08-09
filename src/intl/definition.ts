@@ -34,6 +34,7 @@ export interface LanguageDefinition {
   add: string;
   tip: string;
   help: string;
+  useDefault: string;
   "account.mojang": string;
   "account.microsoft": string;
   "account.authlib": string;
@@ -52,6 +53,8 @@ export interface LanguageDefinition {
   "profile.usuallyDotMinecraftEtc": string;
   "profile.maps": string;
   "profile.resourcePacks": string;
+  "profile.resolution": string;
+  "profile.jvmArgs": string;
   "settings.configFilePath": string;
   "settings.minecraftDownloadPath": string;
   "settings.officialSite": string;
