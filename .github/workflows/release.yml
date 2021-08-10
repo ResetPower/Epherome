@@ -2,36 +2,38 @@ name: release
 
 on:
   workflow_dispatch:
-    tags:
-      - "v*.*.*"
     inputs:
+      tag:
+        description: Tag of the release
+        required: true
+        default: vx.x.x
       title:
-        description: "Title of the release"
+        description: Title of the release
         required: true
-        default: "Epherome vX.X.X"
+        default: Epherome vX.X.X
       content:
-        description: "Content of the release"
+        description: Content of the release
         required: true
-        default: "New version of epherome"
+        default: New version of epherome
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "14"
       - name: Cache node modules
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
         with:
-          path: ~/.npm
+          path: |
+            ~/.npm
+            **/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -49,16 +51,13 @@ jobs:
         run: npm run package -- --windows
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.event.tags }}
-          name: ${{ github.event.input.title }}
-          body: ${{ github.event.input.content }}
+          tag_name: ${{ github.event.inputs.tag }}
+          name: ${{ github.event.inputs.title }}
+          body: ${{ github.event.inputs.content }}
           draft: true
           prerelease: true
           files: |
-            package/Epherome-${{ github.event.tags }}.exe
-            package/Epherome-${{ github.event.tags }}.dmg
-            package/Epherome-${{ github.event.tags }}.tar.gz
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            package/Epherome-${{ github.event.inputs.tag }}.exe
+            package/Epherome-${{ github.event.inputs.tag }}.dmg
+            package/Epherome-${{ github.event.inputs.tag }}.tar.gz
