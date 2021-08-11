@@ -13,6 +13,7 @@ interface Config extends Configuration {
 export default (env: { [key: string]: string }): Config[] => {
   // build environment
   const dev = env.dev;
+  process.env.NODE_ENV = dev ? "development" : "production";
 
   // base config
   const base: Config = {
