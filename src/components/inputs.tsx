@@ -77,14 +77,22 @@ export function TextField(props: {
   onChange?: (ev: string) => unknown;
   min?: number;
   max?: number;
+  maxLength?: number;
   noSpinButton?: boolean;
+  required?: boolean;
 }): JSX.Element {
   return (
     <div className={props.className}>
-      {props.label && <label className="eph-label">{props.label}</label>}
+      {props.label && (
+        <label className="eph-label">
+          {props.label}{" "}
+          {props.required && <span className="text-danger">*</span>}
+        </label>
+      )}
       <div className={`flex ${props.fieldClassName ?? ""}`}>
         {props.icon && <div className="eph-textfield-icon">{props.icon}</div>}
         <input
+          maxLength={props.maxLength}
           min={props.min}
           max={props.max}
           type={props.type}

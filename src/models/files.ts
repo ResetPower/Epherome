@@ -2,7 +2,8 @@ import fs from "fs";
 import got from "got";
 import path from "path";
 import crypto from "crypto";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
+import { MutableRefObject } from "react";
 
 export function createDirIfNotExist(p: string): void {
   try {
@@ -20,7 +21,8 @@ export function createDirByPath(p: string): void {
 export function downloadFile(
   url: string,
   target: string,
-  onError?: DefaultFn
+  onError?: ErrorHandler,
+  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
   return new Promise((resolve) => {
     createDirByPath(target);
@@ -28,11 +30,19 @@ export function downloadFile(
     const fileStream = fs.createWriteStream(target);
     downloadStream.on("error", unwrapFunction(onError));
     fileStream.on("error", unwrapFunction(onError)).on("finish", resolve);
+    cancellerWrapper &&
+      (cancellerWrapper.current = () => {
+        try {
+          downloadStream.destroy();
+          fileStream.destroy();
+          fs.rmSync(target);
+        } catch {}
+      });
     downloadStream.pipe(fileStream);
   });
 }
 
-export function calculateHash(file: string): string {
+export function calculateHash(file: string, type: "sha1"): string {
   const data = fs.readFileSync(file);
-  return crypto.createHash("sha1").update(data).digest("hex");
+  return crypto.createHash(type).update(data).digest("hex");
 }

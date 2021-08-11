@@ -14,7 +14,7 @@ import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "../craft/download";
 import { Downloader, DownloaderTask } from "../models/downloader";
 import { MinecraftUrlUtils } from "../craft/url";
-import { unwrapFunction } from "../tools";
+import { DefaultFn, unwrapFunction } from "../tools";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -22,7 +22,7 @@ export function DownloadingFragment(props: {
   downloader: MutableRefObject<Downloader | undefined>;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
-  const canceller = useRef<() => unknown>();
+  const canceller = useRef<DefaultFn>();
   const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
   const [tasks, setTasks] = useState<DownloaderTask[]>([]);
@@ -51,10 +51,10 @@ export function DownloadingFragment(props: {
 
   const handleStart = () => {
     props.setLocking(true);
-    const generator = downloadMinecraft(
+    downloadMinecraft(
       props.version,
       (tasks, totalPercentage) => {
-        setTasks(tasks);
+        setTasks(tasks.current);
         setTotalPercentage(totalPercentage);
       },
       onError,
@@ -67,11 +67,10 @@ export function DownloadingFragment(props: {
         });
         setStatus("done");
         props.setLocking(false);
-      }
-    );
-    generator.next().then((result) => (canceller.current = result.value));
-    generator.next().then((result) => {
-      downloader.current = result.value;
+      },
+      canceller
+    ).then((result) => {
+      downloader.current = result;
       downloader.current?.start();
     });
   };

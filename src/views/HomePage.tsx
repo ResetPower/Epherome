@@ -226,7 +226,7 @@ const HomePage = observer(() => {
         </div>
       </Card>
       <div className="flex space-x-6">
-        <Card className="flex-grow">
+        <Card className="w-1/2">
           {value === null ? (
             <Typography className="text-sm p-1 m-1">
               {t("profile.notSelected")}
@@ -236,6 +236,7 @@ const HomePage = observer(() => {
               value={value}
               onChange={handleChange}
               disabled={homePageStore.isLaunching}
+              className="overflow-ellipsis"
             >
               {_.map(profiles, (i, id) => (
                 <option key={id} value={id}>
@@ -257,7 +258,7 @@ const HomePage = observer(() => {
             </>
           )}
         </Card>
-        <Card className="flex-grow">
+        <Card className="w-1/2">
           <Typography className="text-xl font-semibold">{t("news")}</Typography>
           <Typography>{t("notSupportedYet")}</Typography>
         </Card>
