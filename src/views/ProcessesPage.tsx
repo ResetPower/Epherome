@@ -137,10 +137,12 @@ const ProcessesPage = observer(() => {
           <ListItem
             checked={selected === -1}
             onClick={() => processStore.select(-1)}
-            className="rounded-lg m-3 p-3 items-center"
+            className="rounded-lg m-3 p-3 items-center overflow-x-hidden"
           >
-            <FaLayerGroup className="mx-1 text-contrast" size="1em" />
-            <Typography>{t("epherome")}</Typography>
+            <Typography className="flex items-center">
+              <FaLayerGroup className="mx-1 text-contrast" size="1em" />
+              {t("epherome")}
+            </Typography>
           </ListItem>
         </div>
         {minecraftProcesses.length === 0 ? (
@@ -152,13 +154,17 @@ const ProcessesPage = observer(() => {
         ) : (
           minecraftProcesses.map((value, index) => (
             <ListItem
-              className="rounded-lg m-3 p-3 items-center"
+              className="rounded-lg m-3 p-3 items-center overflow-x-hidden"
               checked={selected === index}
               onClick={() => processStore.select(index)}
               key={index}
             >
-              <GiStoneBlock className="mx-1 text-contrast" size="1em" />
-              <Typography className={value.done ? "text-danger" : ""}>
+              <Typography
+                className={`flex items-center ${
+                  value.done ? "text-danger" : ""
+                }`}
+              >
+                <GiStoneBlock className="mx-1 text-contrast" size="1em" />
                 {value.profile.name}
               </Typography>
             </ListItem>

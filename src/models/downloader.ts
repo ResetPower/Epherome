@@ -4,9 +4,10 @@ import fs, { WriteStream } from "fs";
 import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
 import { createDirByPath } from "../models/files";
 import { pipeline } from "stream";
+import { ObjectWrapper } from "../tools/object";
 
 export type DownloaderDetailsListener = (
-  details: DownloaderTask[],
+  details: ObjectWrapper<DownloaderTask[]>,
   totalPercentage: number
 ) => unknown;
 
@@ -105,7 +106,7 @@ export class Downloader {
       (this.tasks.map((task) => task.percentage).reduce((a, b) => a + b, 0) +
         this.finishedTasks * 100) /
       this.taskOptions.length;
-    this.onDetailsChange(this.tasks.slice(), Math.floor(percentage));
+    this.onDetailsChange(new ObjectWrapper(this.tasks), Math.floor(percentage));
   };
   finishOne = (task: DownloaderTask, _error = false): void => {
     // remove finished tasks

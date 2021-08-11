@@ -27,13 +27,14 @@ import { ipcRenderer } from "electron";
 import { DefaultFn, unwrapFunction } from "../tools";
 import fs from "fs";
 import path from "path";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
 import { FaTimes } from "react-icons/fa";
+import { useEffect } from "react";
 
 export function RemoveProfileDialog(props: {
   onClose: DefaultFn;
@@ -56,6 +57,7 @@ export function ChangeProfileFragment(props: {
   action: "edit" | "create";
   current?: MinecraftProfile;
 }): JSX.Element {
+  const flag = useRef(true);
   const current = props.current;
   const [name, setName] = useState(current?.name ?? "");
   const [dir, setDir] = useState(current?.dir ?? "");
@@ -79,7 +81,7 @@ export function ChangeProfileFragment(props: {
       unwrapFunction(props.onDone)();
     }
   };
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     if (current) {
       editProfile(current, {
         name,
@@ -91,7 +93,7 @@ export function ChangeProfileFragment(props: {
       });
       unwrapFunction(props.onDone)();
     }
-  };
+  }, [name, dir, ver, jvmArgs, resolution, java, props.onDone, current]);
   const handleResolutionChange = (type: "width" | "height", ev: string) => {
     if (ev === "") {
       setResolution((prev) => ({ ...prev, [type]: undefined }));
@@ -105,18 +107,43 @@ export function ChangeProfileFragment(props: {
       .invoke("open-directory")
       .then((value) => value && setDir(value));
 
+  useEffect(
+    () => () => {
+      flag.current = false;
+    },
+    []
+  );
+  useEffect(
+    () => () => {
+      !flag.current && handleEdit();
+    },
+    [handleEdit]
+  );
+
   return (
     <div className="p-1">
       {props.action === "create" && <div className="h-12" />}
       <div>
-        <TextField label={t("name")} value={name} onChange={setName} />
+        <TextField
+          label={t("name")}
+          value={name}
+          maxLength={32}
+          onChange={setName}
+          required
+        />
         <TextField
           label={t("directory")}
           value={dir}
           onChange={setDir}
           helperText={t("profile.usuallyDotMinecraftEtc")}
+          required
         />
-        <TextField label={t("version")} value={ver} onChange={setVer} />
+        <TextField
+          label={t("version")}
+          value={ver}
+          onChange={setVer}
+          required
+        />
         <div className="flex items-center space-x-3">
           <TextField
             className="flex-grow"
@@ -222,7 +249,7 @@ const ProfilesPage = observer(() => {
         <List className="space-y-1">
           {_.map(profiles, (i, id) => (
             <ListItem
-              className="p-3 mx-2 rounded-lg"
+              className="p-3 mx-2 rounded-lg overflow-x-hidden"
               checked={!creating && current === i}
               onClick={() => {
                 creating && setCreating(false);

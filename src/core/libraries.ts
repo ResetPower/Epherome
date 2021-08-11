@@ -10,8 +10,10 @@ import {
   ClientJsonLibraries,
   ClientLibraryResult,
 } from "./struct";
-import { downloadFile } from "../models/files";
+import { calculateHash, downloadFile } from "../models/files";
 import { MinecraftUrlUtils } from "../craft/url";
+import { DefaultFn } from "../tools";
+import { MutableRefObject } from "react";
 
 export async function analyzeLibrary(
   dir: string,
@@ -36,19 +38,27 @@ export async function analyzeLibrary(
           for (const nativeKey in lib.natives) {
             const native = lib.natives[nativeKey];
             if (equalOS(nativeKey)) {
-              const file = `${dir}/libraries/${classifiers[native].path}`;
-              try {
-                fs.accessSync(file);
-              } catch (e) {
+              const nativeObj = classifiers[native];
+              const file = `${dir}/libraries/${nativeObj.path}`;
+              let miss = false;
+              if (fs.existsSync(file)) {
+                if (
+                  nativeObj.sha1 &&
+                  nativeObj.sha1 !== calculateHash(file, "sha1")
+                ) {
+                  miss = true;
+                }
+              } else {
                 coreLogger.warn(`Native library file ${file} not exists`);
-                const nativeObj = classifiers[native];
+                miss = true;
+              }
+              miss &&
                 missing.push({
                   name: nativeObj.path.split("/").pop() ?? "",
                   path: `${dir}/libraries/${nativeObj.path}`,
                   url: MinecraftUrlUtils.library(nativeObj.url),
                   sha1: nativeObj.sha1,
                 });
-              }
               natives.push(file);
             }
           }
@@ -57,17 +67,22 @@ export async function analyzeLibrary(
         // has artifact only: java cross-platform library
         const ar = downloads.artifact;
         const file = `${dir}/libraries/${ar.path}`;
-        try {
-          fs.accessSync(file);
-        } catch (e) {
+        let miss = false;
+        if (fs.existsSync(file)) {
+          if (ar.sha1 && ar.sha1 !== calculateHash(file, "sha1")) {
+            miss = true;
+          }
+        } else {
           coreLogger.warn(`Library file ${file} not exists`);
+          miss = true;
+        }
+        miss &&
           missing.push({
             name: ar.path.split("/").pop() ?? "",
             path: `${dir}/libraries/${ar.path}`,
             url: MinecraftUrlUtils.library(ar.url),
             sha1: ar.sha1,
           });
-        }
         classpath.push(file);
       }
     } else if (lib.name) {
@@ -83,10 +98,7 @@ export async function analyzeLibrary(
         `${name[1]}-${name[2]}.jar`
       );
 
-      try {
-        fs.accessSync(p);
-      } catch (e) {
-        // file not exists, add to missing
+      if (!fs.existsSync(p)) {
         coreLogger.warn(`Library file ${p} not exists`);
 
         if (url) {
@@ -114,7 +126,8 @@ export async function analyzeLibrary(
 
 export async function analyzeAssets(
   dir: string,
-  assetIndex: ClientJsonAssetIndex
+  assetIndex: ClientJsonAssetIndex,
+  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<ClientAssetsResult> {
   const missing: ClientAnalyzedAsset[] = [];
   const assetIndexPath = path.join(
@@ -126,7 +139,11 @@ export async function analyzeAssets(
   if (!fs.existsSync(assetIndexPath)) {
     await downloadFile(
       MinecraftUrlUtils.assetIndex(assetIndex),
-      assetIndexPath
+      assetIndexPath,
+      (error) => {
+        throw error;
+      },
+      cancellerWrapper
     );
   }
   const parsedAssetIndex = JSON.parse(
@@ -136,13 +153,20 @@ export async function analyzeAssets(
     const hash = parsedAssetIndex.objects[k].hash;
     const startHash = hash.slice(0, 2);
     const p = path.join(dir, "assets/objects", startHash, hash);
-    if (!fs.existsSync(p)) {
+    let miss = false;
+    if (fs.existsSync(p)) {
+      if (hash && hash !== calculateHash(p, "sha1")) {
+        miss = true;
+      }
+    } else {
+      miss = true;
+    }
+    miss &&
       missing.push({
         path: p,
         url: MinecraftUrlUtils.assetObject(startHash, hash),
         hash,
       });
-    }
   }
 
   return { missing };
