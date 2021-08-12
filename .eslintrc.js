@@ -10,6 +10,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars-experimental": 1,
     "@typescript-eslint/no-empty-function": 1,
+    "@typescript-eslint/no-var-requires": 0,
     eqeqeq: ["error", "always"],
   },
 };
