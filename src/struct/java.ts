@@ -51,7 +51,12 @@ export function detectJava(): Promise<Java | null> {
 }
 
 export function createJava(java: Java): void {
-  setConfig((cfg) => _.append(cfg.javas, java));
+  setConfig((cfg) => {
+    _.append(cfg.javas, java);
+    if (cfg.javas.length === 1) {
+      _.select(cfg.javas, java);
+    }
+  });
 }
 
 export function removeJava(java: Java): void {

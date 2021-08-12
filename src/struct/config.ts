@@ -3,7 +3,7 @@ import os from "os";
 import path from "path";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
-import { detectJava, Java } from "./java";
+import { createJava, detectJava, Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "../craft/url";
 import { ipcRenderer } from "electron";
@@ -75,7 +75,7 @@ export class ConfigStore {
     // initialize java config
     if (this.javas.length === 0) {
       detectJava().then((java) => {
-        java && this.javas.push(java);
+        java && createJava(java);
       });
     }
     // process java instances of old epherome

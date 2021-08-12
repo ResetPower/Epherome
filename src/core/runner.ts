@@ -12,11 +12,11 @@ export function runMinecraft(
   profile: MinecraftProfile
 ): void {
   let done = false;
-  const raw = spawn(java, buff, {
+  const raw = spawn(java, ["-Dfile.encoding=UTF-8", ...buff], {
     cwd: dir,
   });
-  raw.stdout.setEncoding("utf-8");
-  raw.stderr.setEncoding("utf-8");
+  raw.stdout.setEncoding("utf8");
+  raw.stderr.setEncoding("utf8");
   raw.stdout.on(
     "data",
     () =>

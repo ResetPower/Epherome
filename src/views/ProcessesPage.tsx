@@ -59,10 +59,10 @@ export class ProcessStore {
       runInAction(() => (this.processes[index].done = true))
     );
     raw.stdout.on("data", (d) =>
-      runInAction(() => this.processes[index].outputs.push(d.toString()))
+      runInAction(() => this.processes[index].outputs.push(d))
     );
     raw.stderr.on("data", (d) =>
-      runInAction(() => this.processes[index].outputs.push(d.toString()))
+      runInAction(() => this.processes[index].outputs.push(d))
     );
   }
   @action
@@ -172,55 +172,62 @@ const ProcessesPage = observer(() => {
         )}
       </div>
       {current || selected === -1 ? (
-        <SwitchTransition>
-          <CSSTransition timeout={300} classNames="tab-vertical" key={selected}>
-            <div
-              ref={onScrollPaneLoaded}
-              className="overflow-y-scroll w-3/4 text-contrast rounded-lg bg-card shadow-md m-6"
+        <div className="w-3/4 p-6">
+          <SwitchTransition>
+            <CSSTransition
+              timeout={300}
+              classNames="tab-vertical"
+              key={selected}
             >
-              <div className="px-3 h-12 flex items-center top-0 shadow-sm sticky z-10 bg-card">
-                <Button
-                  className="text-blue-500 dark:text-blue-400"
-                  onClick={handleExport}
-                >
-                  <BiExport />{" "}
-                  {selected === -1
-                    ? t("processes.lookupLog")
-                    : t("processes.exportLog")}
-                </Button>
-                {selected !== -1 && (
-                  <Button onClick={handleOpenProfile}>
-                    <MdGamepad /> {t("processes.lookupProfile")}
+              <div
+                ref={onScrollPaneLoaded}
+                className="text-contrast overflow-y-auto rounded-lg bg-card shadow-md"
+                style={{ height: "calc(var(--eph-height) - 3rem)" }}
+              >
+                <div className="px-3 flex items-center top-0 sticky shadow-sm bg-card">
+                  <Button
+                    className="text-blue-500 dark:text-blue-400"
+                    onClick={handleExport}
+                  >
+                    <BiExport />{" "}
+                    {selected === -1
+                      ? t("processes.lookupLog")
+                      : t("processes.exportLog")}
                   </Button>
-                )}
-                <div className="flex-grow" />
-                {selected !== -1 &&
-                  (current.done ? (
-                    <Button onClick={handleRemove} className="text-danger">
-                      <MdRemoveCircle />
-                      {t("remove")}
+                  {selected !== -1 && (
+                    <Button onClick={handleOpenProfile}>
+                      <MdGamepad /> {t("processes.lookupProfile")}
                     </Button>
-                  ) : (
-                    <Button onClick={handleTerminate} className="text-danger">
-                      <MdStop />
-                      {t("processes.terminate")}
-                    </Button>
-                  ))}
-              </div>
-              <div className="p-6">
-                {current
-                  ? current.outputs.map((value, index) => (
-                      <Typography key={index}>{value}</Typography>
-                    ))
-                  : processStore.messages
-                      .split("\n")
-                      .map((value, index) => (
+                  )}
+                  <div className="flex-grow" />
+                  {selected !== -1 &&
+                    (current.done ? (
+                      <Button onClick={handleRemove} className="text-danger">
+                        <MdRemoveCircle />
+                        {t("remove")}
+                      </Button>
+                    ) : (
+                      <Button onClick={handleTerminate} className="text-danger">
+                        <MdStop />
+                        {t("processes.terminate")}
+                      </Button>
+                    ))}
+                </div>
+                <div className="p-6">
+                  {current
+                    ? current.outputs.map((value, index) => (
                         <Typography key={index}>{value}</Typography>
-                      ))}
+                      ))
+                    : processStore.messages
+                        .split("\n")
+                        .map((value, index) => (
+                          <Typography key={index}>{value}</Typography>
+                        ))}
+                </div>
               </div>
-            </div>
-          </CSSTransition>
-        </SwitchTransition>
+            </CSSTransition>
+          </SwitchTransition>
+        </div>
       ) : (
         <div className="w-3/4 flex justify-center items-center">
           <p className="text-shallow">{t("processes.notSelected")}</p>

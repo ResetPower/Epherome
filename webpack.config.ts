@@ -18,7 +18,7 @@ export default (env: { [key: string]: string }): Config[] => {
   // base config
   const base: Config = {
     mode: dev ? "development" : "production",
-    devtool: "source-map",
+    devtool: dev ? "inline-source-map" : undefined,
     module: {
       exprContextCritical: false,
       rules: [

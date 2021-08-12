@@ -219,7 +219,7 @@ export async function launchMinecraft(
     natives_directory: nativeDir,
     launcher_name: "Epherome",
     launcher_version: ephVersion,
-    classpath: cp.join(":"),
+    classpath: cp.join(process.platform === "win32" ? ";" : ":"),
     resolution_width: customResolution?.width,
     resolution_height: customResolution?.height,
   };

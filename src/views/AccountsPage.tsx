@@ -41,7 +41,7 @@ export function ChangeAccountFragment(props: {
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [msAccNoMcAlert, setMsAccNoMcAlert] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("mojang");
   const [authserver, setAuthserver] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");

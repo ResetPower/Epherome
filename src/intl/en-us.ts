@@ -84,6 +84,7 @@ const enUs: Language = {
     downloadingSomething: "Downloading %s",
     "download.profileName": "Profile Name",
     "download.preparing": "Preparing",
+    "download.notSelected": "No Version Selected",
     "version.release": "Release",
     "version.snapshot": "Snapshot",
     "version.old": "Old",
