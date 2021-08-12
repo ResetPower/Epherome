@@ -49,6 +49,8 @@ jobs:
         run: npm run package -- --macos
       - name: Electron Build Package (Windows)
         run: npm run package -- --windows
+      - name: Run Post Release Script
+        run: node scripts/post-release.js
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -59,5 +61,8 @@ jobs:
           prerelease: true
           files: |
             package/Epherome-${{ github.event.inputs.tag }}.exe
+            package/Epherome-${{ github.event.inputs.tag }}.exe.sha1
             package/Epherome-${{ github.event.inputs.tag }}.dmg
+            package/Epherome-${{ github.event.inputs.tag }}.dmg.sha1
             package/Epherome-${{ github.event.inputs.tag }}.tar.gz
+            package/Epherome-${{ github.event.inputs.tag }}.tar.gz.sha1
