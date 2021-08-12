@@ -2,18 +2,39 @@
 
 [![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml) [![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode)
 
-Simple Minecraft launcher
+Powerful Minecraft launcher
 
-[简体中文](docs/README_zh_cn.md)
+[简体中文](docs/README_zh_cn.md) | English
 
-## Introduction
+[Official Site](https://epherome.com) · [CHANGELOG](docs/CHANGELOG.md) · [Documents](https://epherome.com/docs)
 
-Epherome is a simple Minecraft launcher developed by Electron and React
+## Brief
 
-## Screenshots
+**Redefine Minecraft Launching.**
 
-![alt](assets/HomePage_en_us.jpg)
+_Epherome, which shocks the world, always surprises you by bringing you appalling new features._
+
+## Extensions
+
+We will provide an extension API in the future. Once it's available, this line of text will be replaced with entrances of extension API documents.
+
+We encourages people contribute to this project by developing extensions.
+
+## Contribution
+
+If you really want to send a pull request, here's some required information:
+
+- `npm run dev` to launch Epherome in development mode
+- `npm run prettier` to auto prettify your code
+- `npm run eslint` to lint your code
+- `npm test` to test
+
+## CI
+
+Our CI is public for everyone: [GitHub Actions](https://github.com/ResetPower/Epherome/actions)
 
 ## LICENSE
 
-[GNU General Public License 3.0](LICENSE)
+The software is distributed under [GNU General Public License 3.0](LICENSE)
+
+Authored by [ResetPower](https://github.com/ResetPower)
