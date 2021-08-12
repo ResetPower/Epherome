@@ -56,13 +56,12 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           name: ${{ github.event.inputs.title }}
-          body: ${{ github.event.inputs.content }}
-          draft: true
+          body_path: docs/CHANGELOG.md
           prerelease: true
           files: |
             package/Epherome-${{ github.event.inputs.tag }}.exe
-            package/Epherome-${{ github.event.inputs.tag }}.exe.sha1
+            package/Epherome-${{ github.event.inputs.tag }}.exe.hash
             package/Epherome-${{ github.event.inputs.tag }}.dmg
-            package/Epherome-${{ github.event.inputs.tag }}.dmg.sha1
+            package/Epherome-${{ github.event.inputs.tag }}.dmg.hash
             package/Epherome-${{ github.event.inputs.tag }}.tar.gz
-            package/Epherome-${{ github.event.inputs.tag }}.tar.gz.sha1
+            package/Epherome-${{ github.event.inputs.tag }}.tar.gz.hash
