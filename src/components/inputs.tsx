@@ -15,9 +15,11 @@ export function Button(props: {
     <button
       disabled={props.disabled ?? false}
       type="button"
-      className={`eph-button eph-button-${props.variant ?? "text"} ${
-        props.className ?? ""
-      }`}
+      className={`eph-button ${
+        props.variant === "contained"
+          ? "eph-button-contained"
+          : "eph-button-text"
+      } ${props.className ?? ""}`}
       onClick={props.onClick}
     >
       {props.children}

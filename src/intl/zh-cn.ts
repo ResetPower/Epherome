@@ -81,6 +81,7 @@ const zhCn: Language = {
     downloadingSomething: "正在下载 %s",
     "download.profileName": "档案名",
     "download.preparing": "准备中",
+    "download.notSelected": "未选择版本",
     "version.release": "正式版",
     "version.snapshot": "快照版",
     "version.old": "远古版",

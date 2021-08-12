@@ -34,9 +34,10 @@
       "output": "package"
     },
     "asar": true,
-    "compression": "normal",
+    "compression": "maximum",
     "icon": "assets/Epherome.png",
     "win": {
+      "compression": "normal",
       "target": "portable"
     },
     "mac": {

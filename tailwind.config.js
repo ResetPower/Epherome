@@ -1,6 +1,6 @@
 module.exports = {
   darkMode: "class",
-  purge: ["./src/**/*.tsx"],
+  purge: { enabled: true, content: ["./src/**/*.tsx"] },
   variants: {
     extend: {
       backgroundColor: ["active"],

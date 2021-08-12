@@ -247,7 +247,7 @@ const HomePage = observer(() => {
           )}
           <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
             <MdPlayArrow />
-            {t("launch")}
+            {homePageStore.isLaunching ? t("launching") : t("launch")}
           </Button>
           {homePageStore.isLaunching && (
             <>

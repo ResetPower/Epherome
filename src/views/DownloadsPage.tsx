@@ -229,7 +229,9 @@ export default function DownloadsPage(): JSX.Element {
             setLocking={setLocking}
           />
         ) : (
-          <div></div>
+          <div className="flex items-center justify-center">
+            {t("download.notSelected")}
+          </div>
         )}
       </div>
     </div>

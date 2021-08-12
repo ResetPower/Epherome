@@ -78,6 +78,7 @@ export interface LanguageDefinition {
   downloadingSomething: string;
   "download.profileName": string;
   "download.preparing": string;
+  "download.notSelected": string;
   "version.release": string;
   "version.snapshot": string;
   "version.old": string;

@@ -20,6 +20,7 @@
 }
 
 :root {
+  --eph-height: calc(100vh - 4rem);
   /*
     only for default value, for more global css variables please see:
       `src/renderer/theme.ts` and `tailwind.config.js`
@@ -44,13 +45,13 @@ body {
 }
 
 .eph-h-full {
-  height: calc(100vh - 4rem);
+  height: var(--eph-height);
 }
 .eph-min-h-full {
-  min-height: calc(100vh - 4rem);
+  min-height: var(--eph-height);
 }
 .eph-max-h-full {
-  max-height: calc(100vh - 4rem);
+  max-height: var(--eph-height);
 }
 
 input[type="number"].no-spin-button::-webkit-outer-spin-button,
