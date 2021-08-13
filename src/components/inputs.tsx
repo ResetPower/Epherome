@@ -27,6 +27,26 @@ export function Button(props: {
   );
 }
 
+export function TinyButton(props: {
+  children: ReactNode;
+  className?: string;
+  paddingRight?: boolean;
+  onClick?: DefaultFn;
+}): JSX.Element {
+  return (
+    <button
+      className={`text-contrast inline-flex items-center m-1 ${
+        props.paddingRight ? "pr-1" : ""
+      } rounded-md bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 transition-colors ${
+        props.className ?? ""
+      }`}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  );
+}
+
 export function IconButton(props: {
   children: ReactNode;
   className?: string;

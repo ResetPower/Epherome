@@ -4,6 +4,7 @@ import {
   Link,
   Select,
   TextField,
+  TinyButton,
 } from "../components/inputs";
 import { Typography } from "../components/layouts";
 import {
@@ -221,13 +222,10 @@ export function ChangeProfileFragment(props: {
             </div>
           </>
         )}
-        <p
-          className="text-contrast inline-flex items-center m-1 pr-1 rounded-md select-none cursor-pointer bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 transition-colors"
-          onClick={() => setMore((prev) => !prev)}
-        >
+        <TinyButton onClick={() => setMore((prev) => !prev)} paddingRight>
           {more ? <MdExpandLess /> : <MdExpandMore />}
           {more ? t("collapse") : t("expand")}
-        </p>
+        </TinyButton>
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
@@ -383,12 +381,12 @@ const ProfilesPage = observer(() => {
                       manager.saves,
                       (i) => (
                         <ListItem
-                          className="rounded-lg m-2 p-3"
+                          className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.save === i.id}
                           onClick={() => select("save", i.id)}
                           key={i.id}
                         >
-                          <Typography>{i.name}</Typography>
+                          <p>{i.name}</p>
                           <div className="flex-grow" />
                           <MdClose onClick={() => manager.moveToTrash(i)} />
                         </ListItem>
@@ -422,7 +420,7 @@ const ProfilesPage = observer(() => {
                       manager.resourcePacks,
                       (i) => (
                         <ListItem
-                          className="rounded-lg m-2 p-3"
+                          className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.resourcePack === i.id}
                           onClick={() => select("resourcePack", i.id)}
                           key={i.id}
@@ -476,7 +474,7 @@ const ProfilesPage = observer(() => {
                       manager.mods,
                       (i) => (
                         <ListItem
-                          className="rounded-lg m-2 p-3"
+                          className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.mod === i.id}
                           onClick={() => select("mod", i.id)}
                           key={i.id}

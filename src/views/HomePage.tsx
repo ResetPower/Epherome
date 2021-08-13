@@ -1,4 +1,11 @@
-import { Select, Button, IconButton, TextField } from "../components/inputs";
+import {
+  Select,
+  Button,
+  IconButton,
+  TextField,
+  TinyButton,
+  Link,
+} from "../components/inputs";
 import { useState } from "react";
 import { configStore, setConfig } from "../struct/config";
 import { launchMinecraft } from "../core";
@@ -10,6 +17,7 @@ import {
   MdAccountCircle,
   MdApps,
   MdGamepad,
+  MdMoreHoriz,
   MdPlayArrow,
   MdRefresh,
   MdSettings,
@@ -24,6 +32,9 @@ import { observer } from "mobx-react";
 import { useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
 import ExtensionsView from "./ExtensionsView";
+import NewsView from "./NewsView";
+import { fetchNews, Oshirase } from "../struct/oshirase";
+import { JavaManagementDialog } from "./SettingsPage";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -73,6 +84,8 @@ export class HomePageStore {
   @observable launchingHelper = "";
   @observable hitokoto: Hitokoto = { content: "", from: "" };
   @observable againRequestingPassword = false;
+  // empty array: not loaded yet; null: loading; undefined: error occurred;
+  @observable news: Oshirase[] | null | undefined = [];
   constructor() {
     makeObservable(this);
   }
@@ -96,6 +109,13 @@ export class HomePageStore {
           })
       )
     );
+  };
+  @action
+  reloadNews = (): void => {
+    this.news = null;
+    fetchNews()
+      .then((news) => runInAction(() => (this.news = news)))
+      .catch(() => runInAction(() => (this.news = undefined)));
   };
   @action
   again = (): void => {
@@ -169,6 +189,9 @@ const HomePage = observer(() => {
   if (isHitokotoEnabled && !homePageStore.hitokoto.content) {
     homePageStore.reloadHitokoto();
   }
+  if (homePageStore.news?.length === 0) {
+    homePageStore.reloadNews();
+  }
 
   return (
     <Container>
@@ -226,7 +249,7 @@ const HomePage = observer(() => {
         </div>
       </Card>
       <div className="flex space-x-6">
-        <Card className="w-1/2">
+        <Card className="w-1/2 flex flex-col">
           {value === null ? (
             <Typography className="text-sm p-1 m-1">
               {t("profile.notSelected")}
@@ -245,10 +268,12 @@ const HomePage = observer(() => {
               ))}
             </Select>
           )}
-          <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
-            <MdPlayArrow />
-            {homePageStore.isLaunching ? t("launching") : t("launch")}
-          </Button>
+          <div>
+            <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
+              <MdPlayArrow />
+              {homePageStore.isLaunching ? t("launching") : t("launch")}
+            </Button>
+          </div>
           {homePageStore.isLaunching && (
             <>
               <Typography className="text-sm">
@@ -257,10 +282,66 @@ const HomePage = observer(() => {
               <ProgressBar unlimited />
             </>
           )}
+          <div className="flex-grow" />
+          <div className="border-t border-divider text-contrast flex">
+            <TinyButton
+              className="px-1"
+              onClick={() =>
+                showOverlay((close) => <JavaManagementDialog close={close} />)
+              }
+            >
+              {t("java.manage")}
+            </TinyButton>
+            <div className="flex-grow" />
+            <p className="text-shallow">
+              {t("java.default")}:{" "}
+              {_.selected(configStore.javas)?.name ?? t("haveNot")}
+            </p>
+          </div>
         </Card>
-        <Card className="w-1/2">
+        <Card className="w-1/2 flex flex-col">
           <Typography className="text-xl font-semibold">{t("news")}</Typography>
-          <Typography>{t("notSupportedYet")}</Typography>
+          {homePageStore.news === null ? (
+            <Typography>
+              ...
+              <br />
+              <br />
+            </Typography>
+          ) : homePageStore.news === undefined ? (
+            <Typography>
+              {t("internetNotAvailable")}
+              <br />
+              <br />
+            </Typography>
+          ) : (
+            homePageStore.news
+              .slice(0, 2)
+              .map((val, index) => (
+                <Typography key={index}>{val.title}</Typography>
+              ))
+          )}
+          <div>
+            <TinyButton
+              onClick={() =>
+                showOverlay(
+                  (close) => <NewsView close={close} />,
+                  "sheet",
+                  "slide"
+                )
+              }
+              paddingRight
+            >
+              <MdMoreHoriz /> {t("expand")}
+            </TinyButton>
+          </div>
+          <div className="flex border-t border-divider p-1">
+            <MdRefresh
+              className="cursor-pointer text-contrast"
+              onClick={homePageStore.reloadNews}
+            />
+            <div className="flex-grow" />
+            <Link href="https://www.mcbbs.net">MCBBS</Link>
+          </div>
         </Card>
       </div>
     </Container>
