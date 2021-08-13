@@ -39,6 +39,13 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
   }
 }
 
+export function adapt<T>(keys: T[], value: T): boolean {
+  for (const i of keys) {
+    if (i === value) return true;
+  }
+  return false;
+}
+
 export interface StringMap {
   [key: string]: string;
 }

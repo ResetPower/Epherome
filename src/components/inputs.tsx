@@ -1,5 +1,5 @@
-import { shell } from "electron";
 import { ReactNode } from "react";
+import { openInBrowser, showItemInFinder } from "../models/open";
 import { unwrapFunction } from "../tools";
 import { DefaultFn } from "../tools";
 import { Typography } from "./layouts";
@@ -133,12 +133,13 @@ export function TextField(props: {
 }
 
 export function Checkbox(props: {
+  className?: string;
   children: string;
   checked?: boolean;
   onChange?: (checked: boolean) => void;
 }): JSX.Element {
   return (
-    <div className="flex items-center">
+    <div className={`flex items-center ${props.className ?? ""}`}>
       <div className="eph-checkbox">
         <input
           type="checkbox"
@@ -169,11 +170,11 @@ export function Link(props: {
 }): JSX.Element {
   const handleClick = () => {
     if (props.type === "file") {
-      shell.showItemInFolder(props.href ?? "");
+      showItemInFinder(props.href ?? "");
     } else if (props.type === "clickable") {
       unwrapFunction(props.onClick)();
     } else {
-      shell.openExternal(props.href ?? "").then();
+      openInBrowser(props.href ?? "");
     }
   };
   return (

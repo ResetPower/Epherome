@@ -35,6 +35,9 @@ const enUs: Language = {
     add: "Add",
     tip: "Tip",
     help: "Help",
+    refresh: "Refresh",
+    collapse: "Collapse",
+    expand: "Expand",
     useDefault: "<Default>",
     "account.mojang": "Mojang",
     "account.microsoft": "Microsoft",
@@ -53,13 +56,18 @@ const enUs: Language = {
     "account.skin": "Skin",
     "profile.removing": "Remove Profile",
     "profile.notSelected": "No Profile Selected",
-    "profile.openDirectory": "Open",
+    "profile.openDirectory": "Open Directory",
     "profile.usuallyDotMinecraftEtc":
       "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux.",
     "profile.maps": "Maps",
     "profile.resourcePacks": "Resourcepacks",
     "profile.resolution": "Resolution",
     "profile.jvmArgs": "JVM Arguments",
+    "profile.noContent": "No Content",
+    "profile.disable": "Disable",
+    "profile.enable": "Enable",
+    "profile.import": "Import",
+    "profile.gameDirIsolation": "Game Dir Isolation",
     "settings.configFilePath": "Config File Path",
     "settings.minecraftDownloadPath": "Minecraft Download Path",
     "settings.officialSite": "Official Site",
@@ -124,6 +132,9 @@ const enUs: Language = {
     confirmRemoving:
       "Are you sure you want to remove it? The operation is irreversible.",
     continueAnyway: "Continue Anyway",
+    moveToTrash: "Move To Trash",
+    confirmMoveSomethingToTrash:
+      "Are you sure you want to remove %s to trash? This operation is irreversible.",
   },
 };
 

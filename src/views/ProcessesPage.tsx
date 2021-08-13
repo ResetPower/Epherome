@@ -13,13 +13,13 @@ import { showOverlay } from "../renderer/overlays";
 import { AlertDialog, ConfirmDialog } from "../components/Dialog";
 import { FaLayerGroup } from "react-icons/fa";
 import { GiStoneBlock } from "react-icons/gi";
-import { shell } from "electron";
 import { useCallback } from "react";
 import path from "path";
 import { MinecraftProfile } from "../struct/profiles";
 import { ChildProcessWithoutNullStreams } from "child_process";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
+import { showItemInFinder } from "../models/open";
 
 export interface Process {
   profile: MinecraftProfile;
@@ -93,14 +93,14 @@ const ProcessesPage = observer(() => {
 
   const handleExport = () => {
     if (selected === -1) {
-      shell.showItemInFolder(logFilename);
+      showItemInFinder(logFilename);
     } else {
       const logFile = path.join(
         ephLogExportsPath,
         `log.${new Date().getTime()}_${selected}.log`
       );
       fs.writeFileSync(logFile, current.outputs.join("\n"));
-      shell.showItemInFolder(logFile);
+      showItemInFinder(logFile);
       showOverlay((close) => (
         <AlertDialog
           title={t("tip")}

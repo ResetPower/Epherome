@@ -200,13 +200,17 @@ export async function launchMinecraft(
   // unzip native libraries
   unzipNatives(nativeDir, analyzedLibrary.natives);
 
+  const gameDir = profile.gameDirIsolation
+    ? path.join(dir, "versions", profile.ver)
+    : dir;
+
   // === resolve arguments ===
   const argumentsMap = {
     // game args
     auth_player_name: account.name,
     version_name: profile.ver,
     auth_session: `token:${account.token}`,
-    game_directory: dir,
+    game_directory: gameDir,
     game_assets: assetsRoot,
     assets_root: assetsRoot,
     assets_index_name: assetIndex.id,

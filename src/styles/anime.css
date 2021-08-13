@@ -75,7 +75,7 @@
   opacity: 1;
   transform: translateY(0);
   transition-property: opacity transform;
-  transition-duration: 300ms;
+  transition-duration: 150ms;
 }
 .tab-vertical-exit {
   opacity: 1;
@@ -85,7 +85,7 @@
   opacity: 0;
   transform: translateY(-50%);
   transition-property: opacity transform;
-  transition-duration: 300ms;
+  transition-duration: 150ms;
 }
 
 .tab-horizontal-enter {
@@ -96,7 +96,7 @@
   opacity: 1;
   transform: translateX(0);
   transition-property: opacity transform;
-  transition-duration: 300ms;
+  transition-duration: 150ms;
 }
 .tab-horizontal-exit {
   opacity: 1;
@@ -106,5 +106,5 @@
   opacity: 0;
   transform: translateX(-50%);
   transition-property: opacity transform;
-  transition-duration: 300ms;
+  transition-duration: 150ms;
 }
