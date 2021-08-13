@@ -15,7 +15,14 @@ import {
 import { logger } from "../renderer/global";
 import { Typography, Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
-import { MdClose, MdInfo, MdPalette, MdTune } from "react-icons/md";
+import {
+  MdClose,
+  MdInfo,
+  MdPalette,
+  MdRadioButtonChecked,
+  MdRadioButtonUnchecked,
+  MdTune,
+} from "react-icons/md";
 import { themeStore } from "../renderer/theme";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { checkEphUpdate, ephVersion } from "../renderer/updater";
@@ -63,108 +70,116 @@ export function UpdateAvailableDialog(props: {
   );
 }
 
-export const JavaManagementDialog = observer(
-  (props: { onClose: DefaultFn }) => {
-    const [err, setErr] = useState<string | null>(null);
-    const [newJavaPath, setNewJavaPath] = useState("");
-    const javas = configStore.javas;
-    const checkDuplicate = (dir: string) => {
-      if (dir === "") {
-        setErr(t("java.invalidPath"));
-        return false;
-      }
-      for (const i of javas) {
-        if (i.dir === dir) {
-          setErr(t("java.duplicatePath"));
-          return true;
-        }
-      }
+export const JavaManagementDialog = observer((props: { close: DefaultFn }) => {
+  const [err, setErr] = useState<string | null>(null);
+  const [newJavaPath, setNewJavaPath] = useState("");
+  const javas = configStore.javas;
+  const checkDuplicate = (dir: string) => {
+    if (dir === "") {
+      setErr(t("java.invalidPath"));
       return false;
-    };
+    }
+    for (const i of javas) {
+      if (i.dir === dir) {
+        setErr(t("java.duplicatePath"));
+        return true;
+      }
+    }
+    return false;
+  };
 
-    return (
-      <Dialog
-        className="eph-max-h-full flex flex-col overflow-hidden"
-        indentBottom
-      >
-        <Typography className="font-semibold text-xl">
-          {t("java.manage")}
-        </Typography>
-        <List className="overflow-y-auto">
-          {javas.map((value, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={
-                  value.name +
-                  " (" +
-                  t("java.bitNumber", value.is64Bit ? "64" : "32") +
-                  ") "
-                }
-                secondary={value.dir}
-                longSecondary
-              />
-              <div className="flex-grow" />
-              <IconButton
-                onClick={() => {
-                  removeJava(value);
-                }}
-              >
-                <MdClose />
-              </IconButton>
-            </ListItem>
-          ))}
-        </List>
-        <TextField
-          value={newJavaPath}
-          onChange={(ev) => {
-            setNewJavaPath(ev);
-            setErr("");
-          }}
-          error={!!err}
-          helperText={err ?? undefined}
-          icon={<FaJava />}
-          placeholder={t("java.newPath")}
-          trailing={
-            <Link
-              type="clickable"
+  return (
+    <Dialog
+      className="eph-max-h-full flex flex-col overflow-hidden"
+      indentBottom
+    >
+      <Typography className="font-semibold text-xl">
+        {t("java.manage")}
+      </Typography>
+      <List className="overflow-y-auto">
+        {javas.map((value, index) => (
+          <ListItem className="items-center" key={index}>
+            <div
+              className="text-secondary p-1 cursor-pointer mr-1 rounded-full bg-opacity-0 bg-yellow-300 hover:bg-opacity-20 active:bg-opacity-40 transition-colors"
+              onClick={() => !value.selected && _.select(javas, value)}
+            >
+              {value.selected ? (
+                <MdRadioButtonChecked />
+              ) : (
+                <MdRadioButtonUnchecked />
+              )}
+            </div>
+            <ListItemText
+              primary={
+                value.name +
+                " (" +
+                t("java.bitNumber", value.is64Bit ? "64" : "32") +
+                ") "
+              }
+              secondary={value.dir}
+              longSecondary
+            />
+            <div className="flex-grow" />
+            <IconButton
               onClick={() => {
-                const val = newJavaPath;
-                if (checkDuplicate(val)) return;
-                setErr(null);
-                checkJavaVersion(val).then((result) => {
-                  if (result) {
-                    createJava(result);
-                    setNewJavaPath("");
-                  } else setErr(t("java.invalidPath"));
-                });
+                removeJava(value);
               }}
             >
-              {t("add")}
-            </Link>
-          }
-        />
-        <div className="flex">
-          <Button
-            onClick={() =>
-              detectJava().then((result) => {
+              <MdClose />
+            </IconButton>
+          </ListItem>
+        ))}
+      </List>
+      <TextField
+        value={newJavaPath}
+        onChange={(ev) => {
+          setNewJavaPath(ev);
+          setErr("");
+        }}
+        error={!!err}
+        helperText={err ?? undefined}
+        icon={<FaJava />}
+        placeholder={t("java.newPath")}
+        trailing={
+          <Link
+            type="clickable"
+            onClick={() => {
+              const val = newJavaPath;
+              if (checkDuplicate(val)) return;
+              setErr(null);
+              checkJavaVersion(val).then((result) => {
                 if (result) {
-                  if (checkDuplicate(result.dir)) return;
                   createJava(result);
-                }
-              })
-            }
+                  setNewJavaPath("");
+                } else setErr(t("java.invalidPath"));
+              });
+            }}
           >
-            {t("java.detect")}
-          </Button>
-          <div className="flex-grow" />
-          <Button className="text-secondary" onClick={props.onClose}>
-            {t("done")}
-          </Button>
-        </div>
-      </Dialog>
-    );
-  }
-);
+            {t("add")}
+          </Link>
+        }
+      />
+      <div className="flex">
+        <Button
+          onClick={() =>
+            detectJava().then((result) => {
+              if (result) {
+                if (checkDuplicate(result.dir)) return;
+                createJava(result);
+              }
+            })
+          }
+        >
+          {t("java.detect")}
+        </Button>
+        <div className="flex-grow" />
+        <Button className="text-secondary" onClick={props.close}>
+          {t("done")}
+        </Button>
+      </div>
+    </Dialog>
+  );
+});
 
 const SettingsPage = observer(() => {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -206,7 +221,7 @@ const SettingsPage = observer(() => {
     themeStore.updateTheme();
   };
   const handleManageJava = () => {
-    showOverlay((close) => <JavaManagementDialog onClose={close} />);
+    showOverlay((close) => <JavaManagementDialog close={close} />);
   };
 
   return (

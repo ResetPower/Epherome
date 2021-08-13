@@ -38,6 +38,7 @@ export interface LanguageDefinition {
   collapse: string;
   expand: string;
   useDefault: string;
+  haveNot: string;
   "account.mojang": string;
   "account.microsoft": string;
   "account.authlib": string;
@@ -81,6 +82,7 @@ export interface LanguageDefinition {
   "java.duplicatePath": string;
   "java.detect": string;
   "java.bitNumber": string;
+  "java.default": string;
   download: string;
   downloading: string;
   downloadingSomething: string;
