@@ -6,7 +6,6 @@ import {
   TextField,
   TinyButton,
 } from "../components/inputs";
-import { Typography } from "../components/layouts";
 import {
   createProfile,
   editProfile,
@@ -307,10 +306,10 @@ const ProfilesPage = observer(() => {
               }}
               key={id}
             >
-              <Typography className="flex">
+              <p className="flex">
                 {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}{" "}
                 {i.name}
-              </Typography>
+              </p>
             </ListItem>
           ))}
         </List>
@@ -333,18 +332,18 @@ const ProfilesPage = observer(() => {
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
-                  <Typography>
+                  <p>
                     {t("name")}: {current?.name}
-                  </Typography>
-                  <Typography>
+                  </p>
+                  <p>
                     {t("directory")}:{" "}
                     <Link type="file" href={current?.dir}>
                       {current?.dir}
                     </Link>
-                  </Typography>
-                  <Typography>
+                  </p>
+                  <p>
                     {t("version")}: {current?.ver}
-                  </Typography>
+                  </p>
                 </div>
                 <div className="flex justify-end">
                   <Button
@@ -479,11 +478,9 @@ const ProfilesPage = observer(() => {
                           onClick={() => select("mod", i.id)}
                           key={i.id}
                         >
-                          <Typography
-                            className={i.enabled ? "" : "text-shallow"}
-                          >
+                          <p className={i.enabled ? "" : "text-shallow"}>
                             {i.name}
-                          </Typography>
+                          </p>
                           <div className="flex-grow" />
                           <MdClose onClick={() => manager.moveToTrash(i)} />
                         </ListItem>

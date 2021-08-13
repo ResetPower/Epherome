@@ -53,14 +53,3 @@ export function Card(props: {
     </div>
   );
 }
-
-export function Typography(props: {
-  children: ReactNode;
-  className?: string;
-}): JSX.Element {
-  return (
-    <p className={`color-contrast ${props.className ?? ""}`}>
-      {props.children}
-    </p>
-  );
-}

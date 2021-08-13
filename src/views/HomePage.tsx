@@ -11,7 +11,7 @@ import { configStore, setConfig } from "../struct/config";
 import { launchMinecraft } from "../core";
 import { DefaultFn } from "../tools";
 import { fetchHitokoto, Hitokoto } from "../struct/hitokoto";
-import { Card, Typography, Container } from "../components/layouts";
+import { Card, Container } from "../components/layouts";
 import Dialog, { AlertDialog, ErrorDialog } from "../components/Dialog";
 import {
   MdAccountCircle,
@@ -50,9 +50,7 @@ export function RequestPasswordDialog(props: {
 
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">
-        {t("account.inputPassword")}
-      </Typography>
+      <p className="text-xl font-semibold">{t("account.inputPassword")}</p>
       <div>
         <TextField
           value={password}
@@ -199,17 +197,15 @@ const HomePage = observer(() => {
         <div className="flex">
           <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
-            <Typography className="text-2xl">
+            <p className="text-2xl">
               {username === undefined ? t("account.notSelected") : username}
-            </Typography>
+            </p>
             {isHitokotoEnabled && (
               <div>
-                <Typography className="text-sm">
-                  {homePageStore.hitokoto.content}
-                </Typography>
-                <Typography className="text-sm text-shallow">
+                <p className="text-sm">{homePageStore.hitokoto.content}</p>
+                <p className="text-sm text-shallow">
                   {homePageStore.hitokoto.from}
-                </Typography>
+                </p>
               </div>
             )}
           </div>
@@ -251,9 +247,7 @@ const HomePage = observer(() => {
       <div className="flex space-x-6">
         <Card className="w-1/2 flex flex-col">
           {value === null ? (
-            <Typography className="text-sm p-1 m-1">
-              {t("profile.notSelected")}
-            </Typography>
+            <p className="text-sm p-1 m-1">{t("profile.notSelected")}</p>
           ) : (
             <Select
               value={value}
@@ -276,9 +270,7 @@ const HomePage = observer(() => {
           </div>
           {homePageStore.isLaunching && (
             <>
-              <Typography className="text-sm">
-                {homePageStore.launchingHelper}
-              </Typography>
+              <p className="text-sm">{homePageStore.launchingHelper}</p>
               <ProgressBar unlimited />
             </>
           )}
@@ -300,25 +292,23 @@ const HomePage = observer(() => {
           </div>
         </Card>
         <Card className="w-1/2 flex flex-col">
-          <Typography className="text-xl font-semibold">{t("news")}</Typography>
+          <p className="text-xl font-semibold">{t("news")}</p>
           {homePageStore.news === null ? (
-            <Typography>
+            <p>
               ...
               <br />
               <br />
-            </Typography>
+            </p>
           ) : homePageStore.news === undefined ? (
-            <Typography>
+            <p>
               {t("internetNotAvailable")}
               <br />
               <br />
-            </Typography>
+            </p>
           ) : (
             homePageStore.news
               .slice(0, 2)
-              .map((val, index) => (
-                <Typography key={index}>{val.title}</Typography>
-              ))
+              .map((val, index) => <p key={index}>{val.title}</p>)
           )}
           <div>
             <TinyButton

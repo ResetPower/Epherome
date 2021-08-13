@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { t } from "../intl";
 import { DefaultFn, unwrapFunction } from "../tools";
 import { Button } from "./inputs";
-import { Typography } from "./layouts";
 
 export default function Dialog(props: {
   children: ReactNode;
@@ -29,9 +28,9 @@ export function AlertDialog(props: {
 }): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">{props.title}</Typography>
+      <p className="text-xl font-semibold">{props.title}</p>
       {props.message.split("\n").map((val) => (
-        <Typography>{val}</Typography>
+        <p>{val}</p>
       ))}
       <div className="flex">
         {props.anyway && (
@@ -63,8 +62,8 @@ export function ConfirmDialog(props: {
 }): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">{props.title}</Typography>
-      <Typography>{props.message}</Typography>
+      <p className="text-xl font-semibold">{props.title}</p>
+      <p>{props.message}</p>
       <div className="flex justify-end">
         <Button className="text-shallow" onClick={props.close}>
           {t("cancel")}

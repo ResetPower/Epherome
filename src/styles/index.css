@@ -13,10 +13,6 @@
   .eph-appbar-title {
     @apply flex-grow pl-3 select-none text-white text-xl;
   }
-
-  .color-contrast {
-    @apply text-contrast;
-  }
 }
 
 :root {
@@ -26,6 +22,7 @@
       `src/renderer/theme.ts` and `tailwind.config.js`
   */
   --eph-background-color: white;
+  @apply text-contrast;
 }
 
 body {

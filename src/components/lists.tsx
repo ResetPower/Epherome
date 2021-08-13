@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { DefaultFn } from "../tools";
-import { Typography } from "./layouts";
 
 export function List(props: {
   children: ReactNode;
@@ -42,7 +41,7 @@ export function ListItemText(props: {
     <div
       className={`${props.expand ? "flex-grow" : ""} ${props.className ?? ""}`}
     >
-      <Typography>{props.primary ?? ""}</Typography>
+      <p>{props.primary ?? ""}</p>
       <p
         className={`text-shallow ${
           props.longSecondary ? "overflow-ellipsis" : ""

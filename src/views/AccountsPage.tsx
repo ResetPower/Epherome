@@ -1,4 +1,4 @@
-import { Alert, Typography } from "../components/layouts";
+import { Alert } from "../components/layouts";
 import { Button, Select, TextField } from "../components/inputs";
 import {
   createAccount,
@@ -95,7 +95,7 @@ export function ChangeAccountFragment(props: {
           />
         </div>
         <div hidden={value !== "microsoft"}>
-          <Typography>{t("account.clickToLogin")}</Typography>
+          <p>{t("account.clickToLogin")}</p>
         </div>
         <div hidden={value !== "authlib"}>
           <TextField
@@ -161,7 +161,7 @@ const AccountsPage = observer(() => {
               }}
               key={id}
             >
-              <Typography className="flex space-x-1">{i.name}</Typography>
+              <p className="flex space-x-1">{i.name}</p>
             </ListItem>
           ))}
         </List>
@@ -178,10 +178,8 @@ const AccountsPage = observer(() => {
             <TabBody>
               <div className="flex flex-col">
                 <div className="flex-grow">
-                  <Typography>{current?.name}</Typography>
-                  <Typography>
-                    {current && t(`account.${current.mode}`)}
-                  </Typography>
+                  <p>{current?.name}</p>
+                  <p>{current && t(`account.${current.mode}`)}</p>
                 </div>
                 <div className="flex justify-end">
                   <Button
@@ -192,7 +190,7 @@ const AccountsPage = observer(() => {
                   </Button>
                 </div>
               </div>
-              <Typography>{t("notSupportedYet")}</Typography>
+              <p>{t("notSupportedYet")}</p>
             </TabBody>
           </TabController>
         ) : (
