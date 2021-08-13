@@ -1,5 +1,4 @@
 import { MdArrowDownward } from "react-icons/md";
-import { Typography } from "../components/layouts";
 import { List, ListItem } from "../components/lists";
 import { t } from "../intl";
 import { openInBrowser } from "../models/open";
@@ -15,9 +14,7 @@ export default function NewsView(props: { close: DefaultFn }): JSX.Element {
         style={{ height: "calc(100vh * 0.833333)" }}
       >
         <div className="flex items-center bg-card z-10 p-6 border-b border-divider top-0 sticky">
-          <Typography className="font-semibold text-xl flex-grow">
-            {t("news")}
-          </Typography>
+          <p className="font-semibold text-xl flex-grow">{t("news")}</p>
           <MdArrowDownward
             className="text-contrast cursor-pointer"
             onClick={props.close}
@@ -30,10 +27,10 @@ export default function NewsView(props: { close: DefaultFn }): JSX.Element {
               key={index}
               onClick={() => openInBrowser(val.url)}
             >
-              <Typography>{val.title}</Typography>
+              <p>{val.title}</p>
               <div className="flex-grow" />
               <div className="flex flex-col items-end">
-                <Typography>{val.author}</Typography>
+                <p>{val.author}</p>
                 <p className="text-shallow">{val.time}</p>
               </div>
             </ListItem>

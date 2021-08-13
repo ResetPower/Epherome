@@ -3,7 +3,7 @@ import { MinecraftVersion, MinecraftVersionType } from "../craft/versions";
 import { logger } from "../renderer/global";
 import Spin from "../components/Spin";
 import got from "got";
-import { Alert, Typography } from "../components/layouts";
+import { Alert } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { useState, useEffect, useRef, Fragment, MutableRefObject } from "react";
 import { minecraftDownloadPath } from "../struct/config";
@@ -77,9 +77,9 @@ export function DownloadingFragment(props: {
 
   return (
     <div className="p-9 h-full flex flex-col">
-      <Typography className="font-semibold text-xl py-3">
+      <p className="font-semibold text-xl py-3">
         {t("download")} Minecraft {props.version.id}
-      </Typography>
+      </p>
       <TextField
         icon={<MdGamepad />}
         label={t("download.profileName")}
@@ -91,17 +91,17 @@ export function DownloadingFragment(props: {
         {status === "error" && (
           <Alert severity="error">{t("errorOccurred")}</Alert>
         )}
-        {status === "done" && <Typography>{t("done")}</Typography>}
+        {status === "done" && <p>{t("done")}</p>}
         {props.locking && tasks.length === 0 && (
-          <Typography>{t("download.preparing")}</Typography>
+          <p>{t("download.preparing")}</p>
         )}
         {props.locking &&
           tasks.map((val, index) => (
             <Fragment key={index}>
               <div className="flex text-sm">
-                <Typography className="flex-grow">
+                <p className="flex-grow">
                   {t("downloadingSomething", val.filename)}
-                </Typography>
+                </p>
                 {val.error && (
                   <p className="text-danger">{t("errorOccurred")}</p>
                 )}

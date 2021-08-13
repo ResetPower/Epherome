@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { openInBrowser, showItemInFinder } from "../models/open";
 import { unwrapFunction } from "../tools";
 import { DefaultFn } from "../tools";
-import { Typography } from "./layouts";
 
 export function Button(props: {
   children: ReactNode;
@@ -176,7 +175,7 @@ export function Checkbox(props: {
           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
         </svg>
       </div>
-      <Typography className="whitespace-nowrap">{props.children}</Typography>
+      <p className="whitespace-nowrap">{props.children}</p>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import {
   setConfig,
 } from "../struct/config";
 import { logger } from "../renderer/global";
-import { Typography, Card } from "../components/layouts";
+import { Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
 import {
   MdClose,
@@ -53,11 +53,9 @@ export function UpdateAvailableDialog(props: {
 }): JSX.Element {
   return (
     <Dialog indentBottom>
-      <Typography className="text-xl font-semibold">
-        {t("epheromeUpdate")}
-      </Typography>
-      <Typography>{t("epheromeUpdate.available", props.version)}</Typography>
-      <Typography>{t("epheromeUpdate.availableMessage")}</Typography>
+      <p className="text-xl font-semibold">{t("epheromeUpdate")}</p>
+      <p>{t("epheromeUpdate.available", props.version)}</p>
+      <p>{t("epheromeUpdate.availableMessage")}</p>
       <Link type="url" href="https://epherome.com/download">
         https://epherome.com/download
       </Link>
@@ -93,9 +91,7 @@ export const JavaManagementDialog = observer((props: { close: DefaultFn }) => {
       className="eph-max-h-full flex flex-col overflow-hidden"
       indentBottom
     >
-      <Typography className="font-semibold text-xl">
-        {t("java.manage")}
-      </Typography>
+      <p className="font-semibold text-xl">{t("java.manage")}</p>
       <List className="overflow-y-auto">
         {javas.map((value, index) => (
           <ListItem className="items-center" key={index}>
@@ -314,7 +310,7 @@ const SettingsPage = observer(() => {
             >
               {t("epheromeUpdate.check")}
             </Button>
-            <Typography>{result !== null ? result : <Spin />}</Typography>
+            <p>{result !== null ? result : <Spin />}</p>
           </div>
         </div>
         <div>
@@ -342,53 +338,51 @@ const SettingsPage = observer(() => {
               className="w-16 h-16 pointer-events-none"
             />
             <div>
-              <Typography className="font-semibold text-xl">
-                Epherome Beta
-              </Typography>
-              <Typography>
+              <p className="font-semibold text-xl">Epherome Beta</p>
+              <p>
                 {t("version")} {ephVersion}
-              </Typography>
+              </p>
             </div>
           </Card>
           <Card>
             <div>
-              <Typography>
+              <p>
                 {t("os")}: {os.platform()} {os.arch()} {os.release()}
-              </Typography>
+              </p>
             </div>
             <div>
-              <Typography>Electron: {process.versions.electron}</Typography>
-              <Typography>Chrome: {process.versions.chrome}</Typography>
-              <Typography>Node.js: {process.versions.node}</Typography>
-              <Typography>V8: {process.versions.v8}</Typography>
+              <p>Electron: {process.versions.electron}</p>
+              <p>Chrome: {process.versions.chrome}</p>
+              <p>Node.js: {process.versions.node}</p>
+              <p>V8: {process.versions.v8}</p>
             </div>
             <div>
-              <Typography>{t("settings.configFilePath")}:</Typography>
+              <p>{t("settings.configFilePath")}:</p>
               <Link href={configFilename} type="file">
                 {configFilename}
               </Link>
-              <Typography>{t("settings.minecraftDownloadPath")}:</Typography>
+              <p>{t("settings.minecraftDownloadPath")}:</p>
               <Link href={minecraftDownloadPath} type="file">
                 {minecraftDownloadPath}
               </Link>
             </div>
           </Card>
           <Card>
-            <Typography>
+            <p>
               {t("settings.officialSite")}:{" "}
               <Link href="https://epherome.com">https://epherome.com</Link>
-            </Typography>
-            <Typography>
+            </p>
+            <p>
               GitHub:{" "}
               <Link href="https://github.com/ResetPower/Epherome">
                 https://github.com/ResetPower/Epherome
               </Link>
-            </Typography>
-            <Typography>Copyright © 2021 ResetPower.</Typography>
-            <Typography>
+            </p>
+            <p>Copyright © 2021 ResetPower.</p>
+            <p>
               {t("settings.openSourceSoftware")} | GNU General Public License
               3.0
-            </Typography>
+            </p>
           </Card>
         </div>
       </TabBody>

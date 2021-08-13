@@ -1,4 +1,3 @@
-import { Typography } from "../components/layouts";
 import { ListItem } from "../components/lists";
 import { t } from "../intl";
 import fs from "fs";
@@ -139,17 +138,15 @@ const ProcessesPage = observer(() => {
             onClick={() => processStore.select(-1)}
             className="rounded-lg m-3 p-3 items-center overflow-x-hidden"
           >
-            <Typography className="flex items-center">
+            <p className="flex items-center">
               <FaLayerGroup className="mx-1 text-contrast" size="1em" />
               {t("epherome")}
-            </Typography>
+            </p>
           </ListItem>
         </div>
         {minecraftProcesses.length === 0 ? (
           <div className="flex justify-center p-3">
-            <Typography className="text-shallow">
-              {t("processes.noMinecraft")}
-            </Typography>
+            <p className="text-shallow">{t("processes.noMinecraft")}</p>
           </div>
         ) : (
           minecraftProcesses.map((value, index) => (
@@ -159,14 +156,14 @@ const ProcessesPage = observer(() => {
               onClick={() => processStore.select(index)}
               key={index}
             >
-              <Typography
+              <p
                 className={`flex items-center ${
                   value.done ? "text-danger" : ""
                 }`}
               >
                 <GiStoneBlock className="mx-1 text-contrast" size="1em" />
                 {value.profile.name}
-              </Typography>
+              </p>
             </ListItem>
           ))
         )}
@@ -216,13 +213,11 @@ const ProcessesPage = observer(() => {
                 <div className="p-6">
                   {current
                     ? current.outputs.map((value, index) => (
-                        <Typography key={index}>{value}</Typography>
+                        <p key={index}>{value}</p>
                       ))
                     : processStore.messages
                         .split("\n")
-                        .map((value, index) => (
-                          <Typography key={index}>{value}</Typography>
-                        ))}
+                        .map((value, index) => <p key={index}>{value}</p>)}
                 </div>
               </div>
             </CSSTransition>
