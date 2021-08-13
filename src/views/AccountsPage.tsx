@@ -10,7 +10,13 @@ import { configStore, setConfig } from "../struct/config";
 import { MdCreate, MdDelete } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { showOverlay } from "../renderer/overlays";
-import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
+import {
+  TabBar,
+  TabBarItem,
+  TabBody,
+  TabContext,
+  TabController,
+} from "../components/tabs";
 import { useState } from "react";
 import { DefaultFn, unwrapFunction } from "../tools";
 import Spin from "../components/Spin";
@@ -18,6 +24,9 @@ import { t } from "../intl";
 import { _ } from "../tools/arrays";
 import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
+import { useEffect } from "react";
+import got from "got/dist/source";
+import { useRef } from "react";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -32,6 +41,51 @@ export function RemoveAccountDialog(props: {
       positiveClassName="text-danger"
       positiveText={t("remove")}
     />
+  );
+}
+
+export function AccountSkinFragment(props: {
+  current: MinecraftAccount;
+}): JSX.Element {
+  const [skin, setSkin] = useState<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    got(
+      `https://sessionserver.mojang.com/session/minecraft/profile/${props.current.uuid}`
+    )
+      .then((resp) => {
+        try {
+          const params = JSON.parse(resp.body);
+          for (const i of params.properties) {
+            if (i.name === "textures") {
+              const texture = JSON.parse(
+                Buffer.from(i.value, "base64").toString()
+              );
+              for (const k in texture.textures) {
+                const v = texture.textures[k];
+                if (k === "SKIN") {
+                  setSkin(v.url);
+                }
+              }
+            }
+          }
+        } catch {
+          setSkin(null);
+        }
+      })
+      .catch(() => setSkin(null));
+  }, [props]);
+
+  return (
+    <div className="flex">
+      {skin === null ? (
+        t("internetNotAvailable")
+      ) : skin === undefined ? (
+        <Spin />
+      ) : (
+        <img src={skin} alt="Skin" />
+      )}
+    </div>
   );
 }
 
@@ -129,6 +183,7 @@ export function ChangeAccountFragment(props: {
 }
 
 const AccountsPage = observer(() => {
+  const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
   const handleRemove = (selected: MinecraftAccount) =>
@@ -158,6 +213,7 @@ const AccountsPage = observer(() => {
                 i.selected
                   ? setConfig(() => _.deselect(accounts))
                   : setConfig(() => _.select(accounts, i));
+                tabRef.current?.setValue(0);
               }}
               key={id}
             >
@@ -170,7 +226,7 @@ const AccountsPage = observer(() => {
         {creating ? (
           <ChangeAccountFragment onDone={() => setCreating(false)} />
         ) : current ? (
-          <TabController orientation="horizontal">
+          <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>
               <TabBarItem value={0}>{t("general")}</TabBarItem>
               <TabBarItem value={1}>{t("account.skin")}</TabBarItem>
@@ -190,7 +246,11 @@ const AccountsPage = observer(() => {
                   </Button>
                 </div>
               </div>
-              <p>{t("notSupportedYet")}</p>
+              {current.mode === "mojang" ? (
+                <AccountSkinFragment current={current} />
+              ) : (
+                <p>{t("account.skin.notSupportedExcludeMojang")}</p>
+              )}
             </TabBody>
           </TabController>
         ) : (

@@ -55,6 +55,8 @@ const enUs: Language = {
     "account.clickToLogin":
       "Click 'Create' to log in to your Microsoft account.",
     "account.skin": "Skin",
+    "account.skin.notSupportedExcludeMojang":
+      "Only support to view the skin of Mojang account.",
     "profile.removing": "Remove Profile",
     "profile.notSelected": "No Profile Selected",
     "profile.openDirectory": "Open Directory",

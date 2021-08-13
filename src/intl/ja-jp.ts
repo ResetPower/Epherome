@@ -55,6 +55,8 @@ const jaJp: Language = {
     "account.clickToLogin":
       "「作成」をクリックして、Microsoft アカウントにログインします。",
     "account.skin": "スキン",
+    "account.skin.notSupportedExcludeMojang":
+      "Mojangアカウントのスキンの表示のみをサポート。",
     "profile.removing": "プロフィルを削除",
     "profile.notSelected": "プロフィルが選択だれていません",
     "profile.openDirectory": "パスを開けて",
