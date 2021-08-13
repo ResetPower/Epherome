@@ -51,6 +51,7 @@ export interface LanguageDefinition {
   "account.msAccNoMinecraft": string;
   "account.clickToLogin": string;
   "account.skin": string;
+  "account.skin.notSupportedExcludeMojang": string;
   "profile.removing": string;
   "profile.notSelected": string;
   "profile.openDirectory": string;
