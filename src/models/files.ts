@@ -2,8 +2,9 @@ import fs from "fs";
 import got from "got";
 import path from "path";
 import crypto from "crypto";
-import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
+import { adapt, DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
 import { MutableRefObject } from "react";
+import { shell } from "electron";
 
 export function createDirIfNotExist(p: string): void {
   try {
@@ -45,4 +46,45 @@ export function downloadFile(
 export function calculateHash(file: string, type: "sha1"): string {
   const data = fs.readFileSync(file);
   return crypto.createHash(type).update(data).digest("hex");
+}
+
+export type DirFileType = "folder" | "file" | "zip" | "modFile";
+
+export function readdir(filepath: string, ...type: DirFileType[]): string[] {
+  const act = (file: string, type: DirFileType): boolean => {
+    const stat = fs.lstatSync(file);
+    if (type === "folder") return stat.isDirectory();
+    if (type === "file") return stat.isFile();
+    if (type === "zip") return stat.isFile() && path.extname(file) === ".zip";
+    if (type === "modFile")
+      return (
+        stat.isFile() &&
+        adapt([".jar", ".litemod", ".zip", ".disabled"], path.extname(file))
+      );
+    return false;
+  };
+  try {
+    return fs.readdirSync(filepath).filter((val) => {
+      if (val === ".DS_Store") return false;
+      for (const i of type) {
+        if (act(path.join(filepath, val), i)) return true;
+      }
+      return false;
+    });
+  } catch {
+    return [];
+  }
+}
+
+export async function moveToTrash(filepath: string): Promise<void> {
+  return shell.trashItem(filepath);
+}
+
+export function basenameWithoutExt(filepath: string): string {
+  const filename = path.basename(filepath);
+  if (filename.indexOf(".") === -1) return filename;
+  if (filepath.endsWith(".disabled")) {
+    return basenameWithoutExt(filepath.slice(0, -9));
+  }
+  return filename.split(".").slice(0, -1).join(".");
 }

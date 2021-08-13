@@ -1,4 +1,10 @@
-import { Button, Link, Select, TextField } from "../components/inputs";
+import {
+  Button,
+  Checkbox,
+  Link,
+  Select,
+  TextField,
+} from "../components/inputs";
 import { Typography } from "../components/layouts";
 import {
   createProfile,
@@ -8,13 +14,18 @@ import {
 } from "../struct/profiles";
 import { configStore, setConfig } from "../struct/config";
 import {
+  MdClose,
   MdCreate,
   MdDelete,
+  MdExpandLess,
+  MdExpandMore,
   MdFileDownload,
   MdFolder,
+  MdFolderOpen,
   MdGamepad,
+  MdRefresh,
 } from "react-icons/md";
-import { List, ListItem } from "../components/lists";
+import { List, ListItem, ListItemText } from "../components/lists";
 import { showOverlay } from "../renderer/overlays";
 import {
   TabBar,
@@ -25,8 +36,6 @@ import {
 } from "../components/tabs";
 import { ipcRenderer } from "electron";
 import { DefaultFn, unwrapFunction } from "../tools";
-import fs from "fs";
-import path from "path";
 import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
@@ -35,6 +44,11 @@ import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
 import { FaTimes } from "react-icons/fa";
 import { useEffect } from "react";
+import { useMemo } from "react";
+import { MinecraftProfileManagerStore } from "../craft/manager";
+import { openPathInFinder } from "../models/open";
+import { BiImport } from "react-icons/bi";
+import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 
 export function RemoveProfileDialog(props: {
   onClose: DefaultFn;
@@ -58,6 +72,7 @@ export function ChangeProfileFragment(props: {
   current?: MinecraftProfile;
 }): JSX.Element {
   const flag = useRef(true);
+  const [more, setMore] = useState(false);
   const current = props.current;
   const [name, setName] = useState(current?.name ?? "");
   const [dir, setDir] = useState(current?.dir ?? "");
@@ -65,6 +80,9 @@ export function ChangeProfileFragment(props: {
   const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? "");
   const [resolution, setResolution] = useState(current?.resolution ?? {});
   const [java, setJava] = useState(current?.java ?? "");
+  const [gameDirIsolation, setGameDirIsolation] = useState(
+    current?.gameDirIsolation ?? false
+  );
 
   const handleCreate = () => {
     if (
@@ -76,6 +94,7 @@ export function ChangeProfileFragment(props: {
         jvmArgs,
         resolution,
         java,
+        gameDirIsolation,
       })
     ) {
       unwrapFunction(props.onDone)();
@@ -90,10 +109,21 @@ export function ChangeProfileFragment(props: {
         jvmArgs,
         resolution,
         java,
+        gameDirIsolation,
       });
       unwrapFunction(props.onDone)();
     }
-  }, [name, dir, ver, jvmArgs, resolution, java, props.onDone, current]);
+  }, [
+    name,
+    dir,
+    ver,
+    jvmArgs,
+    resolution,
+    java,
+    gameDirIsolation,
+    props.onDone,
+    current,
+  ]);
   const handleResolutionChange = (type: "width" | "height", ev: string) => {
     if (ev === "") {
       setResolution((prev) => ({ ...prev, [type]: undefined }));
@@ -144,42 +174,60 @@ export function ChangeProfileFragment(props: {
           onChange={setVer}
           required
         />
-        <div className="flex items-center space-x-3">
-          <TextField
-            className="flex-grow"
-            label={t("profile.jvmArgs")}
-            value={jvmArgs}
-            onChange={setJvmArgs}
-          />
-          <Select label="Java" value={java} onChange={setJava}>
-            <option value="default">{t("useDefault")}</option>
-            {configStore.javas.map((val) => (
-              <option value={val.nanoid} key={val.nanoid}>
-                {val.name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div>
-          <label className="eph-label">{t("profile.resolution")}</label>
-          <div className="flex items-center">
-            <TextField
-              placeholder={t("useDefault")}
-              value={`${resolution.width ?? ""}`}
-              onChange={(ev) => handleResolutionChange("width", ev)}
-              className="flex-grow"
-              noSpinButton
-            />
-            <FaTimes className="text-contrast m-3" />
-            <TextField
-              placeholder={t("useDefault")}
-              value={`${resolution.height ?? ""}`}
-              onChange={(ev) => handleResolutionChange("height", ev)}
-              className="flex-grow"
-              noSpinButton
-            />
-          </div>
-        </div>
+        {more && (
+          <>
+            <Checkbox
+              className="m-1"
+              checked={gameDirIsolation}
+              onChange={setGameDirIsolation}
+            >
+              {t("profile.gameDirIsolation")}
+            </Checkbox>
+            <div className="flex items-center space-x-3">
+              <TextField
+                className="flex-grow"
+                label={t("profile.jvmArgs")}
+                value={jvmArgs}
+                onChange={setJvmArgs}
+              />
+              <Select label="Java" value={java} onChange={setJava}>
+                <option value="default">{t("useDefault")}</option>
+                {configStore.javas.map((val) => (
+                  <option value={val.nanoid} key={val.nanoid}>
+                    {val.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <label className="eph-label">{t("profile.resolution")}</label>
+              <div className="flex items-center">
+                <TextField
+                  placeholder={t("useDefault")}
+                  value={`${resolution.width ?? ""}`}
+                  onChange={(ev) => handleResolutionChange("width", ev)}
+                  className="flex-grow"
+                  noSpinButton
+                />
+                <FaTimes className="text-contrast m-3" />
+                <TextField
+                  placeholder={t("useDefault")}
+                  value={`${resolution.height ?? ""}`}
+                  onChange={(ev) => handleResolutionChange("height", ev)}
+                  className="flex-grow"
+                  noSpinButton
+                />
+              </div>
+            </div>
+          </>
+        )}
+        <p
+          className="text-contrast inline-flex items-center m-1 pr-1 rounded-md select-none cursor-pointer bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 transition-colors"
+          onClick={() => setMore((prev) => !prev)}
+        >
+          {more ? <MdExpandLess /> : <MdExpandMore />}
+          {more ? t("collapse") : t("expand")}
+        </p>
       </div>
       <div className="flex">
         <Button onClick={handleOpenDirectory}>
@@ -215,17 +263,18 @@ const ProfilesPage = observer(() => {
     ));
   const profiles = configStore.profiles;
   const current = _.selected(profiles);
-  let mapsList: string[] = [];
-  let resourcePacksList: string[] = [];
-
-  if (current) {
-    try {
-      mapsList = fs.readdirSync(path.join(current.dir, "saves"));
-      resourcePacksList = fs.readdirSync(
-        path.join(current.dir, "resourcepacks")
-      );
-    } catch {}
-  }
+  const _key = current?.gameDirIsolation;
+  const manager = useMemo(() => {
+    _key;
+    return current ? new MinecraftProfileManagerStore(current) : undefined;
+  }, [_key, current]);
+  const [selections, setSelections] = useState({
+    save: "",
+    resourcePack: "",
+    mod: "",
+  });
+  const select = (type: "save" | "resourcePack" | "mod", value: string) =>
+    setSelections((prev) => ({ ...prev, [type]: value }));
 
   return (
     <div className="flex eph-h-full">
@@ -315,37 +364,138 @@ const ProfilesPage = observer(() => {
                 )}
               </div>
               <div>
-                {mapsList.map(
-                  (m, index) =>
-                    m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */
-                      <ListItem
-                        className="rounded-lg m-2 bg-card p-3"
-                        checked={true}
-                        key={index}
+                {manager && (
+                  <>
+                    <div className="flex">
+                      <Button onClick={manager.refresh}>
+                        <MdRefresh />
+                        {t("refresh")}
+                      </Button>
+                      <div className="flex-grow" />
+                      <Button
+                        onClick={() => openPathInFinder(manager.savesPath)}
                       >
-                        <Typography>{m}</Typography>
-                      </ListItem>
-                    )
+                        <MdFolderOpen />
+                        {t("profile.openDirectory")}
+                      </Button>
+                    </div>
+                    {_.mapOr(
+                      manager.saves,
+                      (i) => (
+                        <ListItem
+                          className="rounded-lg m-2 p-3"
+                          checked={selections.save === i.id}
+                          onClick={() => select("save", i.id)}
+                          key={i.id}
+                        >
+                          <Typography>{i.name}</Typography>
+                          <div className="flex-grow" />
+                          <MdClose onClick={() => manager.moveToTrash(i)} />
+                        </ListItem>
+                      ),
+                      <div className="flex text-shallow justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div>
-                {resourcePacksList.map(
-                  (m, index) =>
-                    m !== ".DS_Store" && (
-                      /* avoid useless .DS_Store file on macOS */
-                      <ListItem
-                        className="rounded-lg m-2 bg-card p-3"
-                        checked={true}
-                        key={index}
+                {manager && (
+                  <>
+                    <div className="flex">
+                      <Button onClick={manager.refresh}>
+                        <MdRefresh />
+                        {t("refresh")}
+                      </Button>
+                      <div className="flex-grow" />
+                      <Button
+                        onClick={() =>
+                          openPathInFinder(manager.resourcePacksPath)
+                        }
                       >
-                        <Typography>{m}</Typography>
-                      </ListItem>
-                    )
+                        <MdFolderOpen />
+                        {t("profile.openDirectory")}
+                      </Button>
+                    </div>
+                    {_.mapOr(
+                      manager.resourcePacks,
+                      (i) => (
+                        <ListItem
+                          className="rounded-lg m-2 p-3"
+                          checked={selections.resourcePack === i.id}
+                          onClick={() => select("resourcePack", i.id)}
+                          key={i.id}
+                        >
+                          <ListItemText
+                            primary={i.name}
+                            secondary={i.type}
+                            expand
+                          />
+                          <MdClose onClick={() => manager.moveToTrash(i)} />
+                        </ListItem>
+                      ),
+                      <div className="flex text-shallow items-center justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div>
-                <Typography>{t("notSupportedYet")}</Typography>
+                {manager && (
+                  <>
+                    <div className="flex">
+                      <Button onClick={manager.refresh}>
+                        <MdRefresh />
+                        {t("refresh")}
+                      </Button>
+                      <Button onClick={manager.importMod}>
+                        <BiImport />
+                        {t("profile.import")}
+                      </Button>
+                      <div className="flex-grow" />
+                      <Button onClick={() => manager.enableMod(selections.mod)}>
+                        <IoMdCheckmarkCircle />
+                        {t("profile.enable")}
+                      </Button>
+                      <Button
+                        onClick={() => manager.disableMod(selections.mod)}
+                      >
+                        <IoMdCloseCircle />
+                        {t("profile.disable")}
+                      </Button>
+                      <Button
+                        onClick={() => openPathInFinder(manager.modsPath)}
+                      >
+                        <MdFolderOpen />
+                        {t("profile.openDirectory")}
+                      </Button>
+                    </div>
+                    {_.mapOr(
+                      manager.mods,
+                      (i) => (
+                        <ListItem
+                          className="rounded-lg m-2 p-3"
+                          checked={selections.mod === i.id}
+                          onClick={() => select("mod", i.id)}
+                          key={i.id}
+                        >
+                          <Typography
+                            className={i.enabled ? "" : "text-shallow"}
+                          >
+                            {i.name}
+                          </Typography>
+                          <div className="flex-grow" />
+                          <MdClose onClick={() => manager.moveToTrash(i)} />
+                        </ListItem>
+                      ),
+                      <div className="flex text-shallow items-center justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </TabBody>
           </TabController>

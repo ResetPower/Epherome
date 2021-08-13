@@ -7,34 +7,26 @@ export interface MinecraftResolution {
   height?: number;
 }
 
+export type MinecraftProfileType = "create" | "download";
+
 export interface MinecraftProfile extends WithUnderline {
   name: string;
   dir: string;
   ver: string;
-  from?: "create" | "download";
+  from?: MinecraftProfileType;
   jvmArgs?: string;
   resolution?: MinecraftResolution;
   // nanoid of selected java instance
   java?: string;
+  gameDirIsolation?: boolean;
 }
 
 export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;
 
-export function createProfile({
-  name,
-  dir,
-  ver,
-  from,
-}: MinecraftProfile): boolean {
-  if (name === "" || dir === "" || ver === "") return false;
-  setConfig((cfg) =>
-    cfg.profiles.push({
-      name,
-      dir,
-      ver,
-      from,
-    })
-  );
+export function createProfile(profile: MinecraftProfile): boolean {
+  if (profile.name === "" || profile.dir === "" || profile.ver === "")
+    return false;
+  setConfig((cfg) => cfg.profiles.push(profile));
   logger.info(`Created profile named '${name}'`);
   return true;
 }

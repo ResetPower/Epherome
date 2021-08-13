@@ -25,10 +25,19 @@ ipcMain.on("get-version", (ev) => {
   ev.returnValue = version;
 });
 
-// deal open folder action
 ipcMain.handle("open-directory", async () => {
   const files = await dialog.showOpenDialog({
     properties: ["openDirectory"],
+  });
+  if (!files.canceled) {
+    return files.filePaths[0];
+  } else return undefined;
+});
+
+ipcMain.handle("import-mod", async () => {
+  const files = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [{ extensions: ["jar", "litemod", "zip"], name: "Minecraft Mod" }],
   });
   if (!files.canceled) {
     return files.filePaths[0];

@@ -6,13 +6,13 @@
     @apply cursor-not-allowed text-shallow;
   }
   .eph-button-contained {
-    @apply transition-colors duration-200 transform text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700;
+    @apply transition-colors text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700;
   }
   .eph-button-contained:disabled {
     @apply bg-blue-800 dark:bg-gray-700 text-gray-200;
   }
   .eph-button-text {
-    @apply transition-colors duration-200 transform bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10;
+    @apply transition-colors bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10;
   }
   .eph-button-text:disabled {
     @apply hover:bg-opacity-0;
@@ -20,7 +20,7 @@
 
   .eph-icon-button {
     @apply select-none rounded-full h-12 w-12 flex items-center justify-center
-      transition-colors duration-200 transform hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
+      transition-colors hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
   }
 
   .eph-select {

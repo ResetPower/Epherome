@@ -102,7 +102,7 @@ export function TabBody(props: {
         <SwitchTransition>
           <CSSTransition
             key={value}
-            timeout={300}
+            timeout={150}
             classNames={`tab-${orientation}`}
           >
             {props.children[value]}

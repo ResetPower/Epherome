@@ -1,4 +1,5 @@
 import { obj2form, StringMap } from "../tools";
+import crypto from "crypto";
 import got from "got";
 
 // official authentication server url
@@ -92,6 +93,7 @@ export async function validate(
 }
 
 // the meta part of a minecraft jwt
+// {"alg": "NONE", "type": "JWT"}
 const JWT_META_BASE64 = "eyJhbGciOiAiTk9ORSIsICJ0eXBlIjogIkpXVCJ9";
 
 // generate fake uuid for offline account
@@ -111,10 +113,10 @@ export function genOfflineToken(name: string): string {
   const payload = {
     name: encodeURIComponent(name),
   };
-  return `${JWT_META_BASE64}.${Buffer.from(
-    JSON.stringify(payload),
-    "base64"
-  )}.${Math.random()}`;
+  const data = `${JWT_META_BASE64}.${Buffer.from(
+    JSON.stringify(payload)
+  ).toString("base64")}`;
+  return `${data}.${crypto.createHash("sha256").update(data).digest("hex")}`;
 }
 
 // === MICROSOFT AUTHENTICATION PART === //

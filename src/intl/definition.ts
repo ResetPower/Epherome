@@ -34,6 +34,9 @@ export interface LanguageDefinition {
   add: string;
   tip: string;
   help: string;
+  refresh: string;
+  collapse: string;
+  expand: string;
   useDefault: string;
   "account.mojang": string;
   "account.microsoft": string;
@@ -55,6 +58,11 @@ export interface LanguageDefinition {
   "profile.resourcePacks": string;
   "profile.resolution": string;
   "profile.jvmArgs": string;
+  "profile.noContent": string;
+  "profile.disable": string;
+  "profile.enable": string;
+  "profile.import": string;
+  "profile.gameDirIsolation": string;
   "settings.configFilePath": string;
   "settings.minecraftDownloadPath": string;
   "settings.officialSite": string;
@@ -111,4 +119,6 @@ export interface LanguageDefinition {
   notSupportedYet: string;
   confirmRemoving: string;
   continueAnyway: string;
+  moveToTrash: string;
+  confirmMoveSomethingToTrash: string;
 }

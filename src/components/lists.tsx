@@ -21,7 +21,7 @@ export function ListItem(props: {
     <div
       className={`flex p-1 ${
         props.onClick
-          ? "select-none cursor-pointer transition-colors duration-200 transform bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20"
+          ? "select-none items-center cursor-pointer transition-colors bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20"
           : ""
       } ${props.className ?? ""} ${props.checked ? "bg-opacity-10" : ""}`}
       onClick={props.onClick}
@@ -36,9 +36,12 @@ export function ListItemText(props: {
   secondary?: string;
   className?: string;
   longSecondary?: boolean;
+  expand?: boolean;
 }): JSX.Element {
   return (
-    <div className={props.className ?? ""}>
+    <div
+      className={`${props.expand ? "flex-grow" : ""} ${props.className ?? ""}`}
+    >
       <Typography>{props.primary ?? ""}</Typography>
       <p
         className={`text-shallow ${
