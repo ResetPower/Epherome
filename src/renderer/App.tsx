@@ -7,7 +7,7 @@ import DownloadsPage from "../views/DownloadsPage";
 import { GlobalOverlay } from "./overlays";
 import { historyStore, LocationParams } from "./history";
 import { themeStore } from "./theme";
-import { MdArrowBack, MdMenu } from "react-icons/md";
+import { MdArrowBack, MdDeveloperBoard, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import { unwrapFunction } from "../tools";
 import ProcessesPage from "../views/ProcessesPage";
@@ -16,6 +16,11 @@ import { t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { observer } from "mobx-react";
 import { useLayoutEffect } from "react";
+import { configStore } from "../struct/config";
+import Popover from "../components/Popover";
+import { ListItem } from "../components/lists";
+import { VscDebugConsole } from "react-icons/vsc";
+import { ipcRenderer } from "electron";
 
 export interface RouteList {
   [key: string]: {
@@ -58,14 +63,27 @@ export const AppBar = observer(() => {
   const title = unwrapAccessible(route?.title);
   const isAtHome = title === "Epherome";
   return (
-    <div className="eph-appbar">
-      <IconButton
-        className="text-white"
-        onClick={isAtHome ? unwrapFunction() : historyStore.back}
-      >
+    <div className="eph-appbar text-white">
+      <IconButton onClick={isAtHome ? unwrapFunction() : historyStore.back}>
         {isAtHome ? <MdMenu /> : <MdArrowBack />}
       </IconButton>
-      <p className="eph-appbar-title">{title}</p>
+      <p className="eph-appbar-title flex-grow">{title}</p>
+      {configStore.developerMode && (
+        <Popover
+          popover={
+            <ListItem
+              className="m-2 rounded-lg bg-blue-900"
+              onClick={() => ipcRenderer.send("open-devtools")}
+            >
+              <VscDebugConsole /> Developer Tools
+            </ListItem>
+          }
+        >
+          <IconButton>
+            <MdDeveloperBoard />
+          </IconButton>
+        </Popover>
+      )}
     </div>
   );
 });

@@ -296,6 +296,14 @@ const SettingsPage = observer(() => {
             <FaJava /> {t("java.manage")}
           </Button>
           <Checkbox
+            checked={configStore.developerMode}
+            onChange={(checked) =>
+              setConfig((cfg) => (cfg.developerMode = checked))
+            }
+          >
+            Developer Mode
+          </Checkbox>
+          <Checkbox
             checked={configStore.hitokoto}
             onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
           >
