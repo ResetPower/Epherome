@@ -70,6 +70,7 @@ export class ConfigStore {
   @observable hitokoto = false;
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
+  @observable developerMode = false;
   constructor(preferred: Partial<EphConfig>) {
     extendObservable(this, preferred);
     // initialize java config

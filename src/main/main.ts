@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
   MOBX_DEVTOOLS,
@@ -36,6 +36,8 @@ function createWindow() {
   } else {
     win.loadURL("http://localhost:3000");
   }
+
+  ipcMain.on("open-devtools", () => win.webContents.openDevTools());
 }
 
 app.whenReady().then(createWindow);
