@@ -48,12 +48,12 @@ export const minecraftDownloadPath = path.join(
   userDataPath,
   os.platform() === "win32" ? ".minecraft" : "minecraft"
 );
-export const ephExtensionsPath = path.join(userDataPath, "extensions");
+export const ephExtPath = path.join(userDataPath, "ext");
 export const ephLogExportsPath = path.join(userDataPath, "logs");
 
 !fs.existsSync(configFilename) && fs.writeFileSync(configFilename, "{}");
 !fs.existsSync(minecraftDownloadPath) && fs.mkdirSync(minecraftDownloadPath);
-!fs.existsSync(ephExtensionsPath) && fs.mkdirSync(ephExtensionsPath);
+!fs.existsSync(ephExtPath) && fs.mkdirSync(ephExtPath);
 !fs.existsSync(ephLogExportsPath) && fs.mkdirSync(ephLogExportsPath);
 
 // read config

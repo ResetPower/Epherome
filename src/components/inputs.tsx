@@ -1,5 +1,9 @@
 import { ReactNode } from "react";
-import { openInBrowser, showItemInFinder } from "../models/open";
+import {
+  openInBrowser,
+  openPathInFinder,
+  showItemInFinder,
+} from "../models/open";
 import { unwrapFunction } from "../tools";
 import { DefaultFn } from "../tools";
 
@@ -183,13 +187,15 @@ export function Checkbox(props: {
 export function Link(props: {
   href?: string;
   className?: string;
-  type?: "url" | "file" | "clickable";
+  type?: "url" | "file" | "folder" | "clickable";
   onClick?: DefaultFn;
   children: string;
 }): JSX.Element {
   const handleClick = () => {
     if (props.type === "file") {
       showItemInFinder(props.href ?? "");
+    } else if (props.type === "folder") {
+      openPathInFinder(props.href ?? "");
     } else if (props.type === "clickable") {
       unwrapFunction(props.onClick)();
     } else {

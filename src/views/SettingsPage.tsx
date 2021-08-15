@@ -6,12 +6,7 @@ import {
   TextField,
   IconButton,
 } from "../components/inputs";
-import {
-  configFilename,
-  configStore,
-  minecraftDownloadPath,
-  setConfig,
-} from "../struct/config";
+import { configStore, setConfig, userDataPath } from "../struct/config";
 import { logger } from "../renderer/global";
 import { Card } from "../components/layouts";
 import EpheromeLogo from "../../assets/Epherome.png";
@@ -301,7 +296,7 @@ const SettingsPage = observer(() => {
               setConfig((cfg) => (cfg.developerMode = checked))
             }
           >
-            Developer Mode
+            {t("settings.devMode")}
           </Checkbox>
           <Checkbox
             checked={configStore.hitokoto}
@@ -365,13 +360,9 @@ const SettingsPage = observer(() => {
               <p>V8: {process.versions.v8}</p>
             </div>
             <div>
-              <p>{t("settings.configFilePath")}:</p>
-              <Link href={configFilename} type="file">
-                {configFilename}
-              </Link>
-              <p>{t("settings.minecraftDownloadPath")}:</p>
-              <Link href={minecraftDownloadPath} type="file">
-                {minecraftDownloadPath}
+              <p>{t("settings.epheromePath")}:</p>
+              <Link href={userDataPath} type="folder">
+                {userDataPath}
               </Link>
             </div>
           </Card>

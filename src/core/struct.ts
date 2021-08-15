@@ -67,8 +67,14 @@ export function mergeClientJson(
   inherit: ClientJson
 ): ClientJson {
   const ret = { ...inherit, ...parsed };
-  if (inherit.arguments) {
-    ret.arguments?.game.push(...inherit.arguments.game);
+  if (inherit.arguments && parsed.arguments && ret.arguments) {
+    if (!ret.arguments.jvm) {
+      ret.arguments.jvm = [];
+    }
+    if (inherit.arguments.jvm) {
+      ret.arguments.jvm?.push(...inherit.arguments.jvm);
+    }
+    ret.arguments.game.push(...inherit.arguments.game);
   } else if (inherit.minecraftArguments) {
     ret.minecraftArguments = [
       ret.minecraftArguments,

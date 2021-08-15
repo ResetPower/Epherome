@@ -6,15 +6,7 @@ on:
       tag:
         description: Tag of the release
         required: true
-        default: vx.x.x
-      title:
-        description: Title of the release
-        required: true
-        default: Epherome vX.X.X
-      content:
-        description: Content of the release
-        required: true
-        default: New version of epherome
+        default: vX.X.X
 
 jobs:
   release:
@@ -55,7 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.tag }}
-          name: ${{ github.event.inputs.title }}
+          name: Epherome ${{ github.event.inputs.tag }}
           body_path: docs/CHANGELOG.md
           prerelease: true
           files: |

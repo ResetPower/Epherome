@@ -15,6 +15,7 @@ import { downloadMinecraft } from "../craft/download";
 import { Downloader, DownloaderTask } from "../models/downloader";
 import { MinecraftUrlUtils } from "../craft/url";
 import { DefaultFn, unwrapFunction } from "../tools";
+import { ObjectWrapper } from "../tools/object";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -25,7 +26,9 @@ export function DownloadingFragment(props: {
   const canceller = useRef<DefaultFn>();
   const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
-  const [tasks, setTasks] = useState<DownloaderTask[]>([]);
+  const [tasks, setTasks] = useState<ObjectWrapper<DownloaderTask[]>>({
+    current: [],
+  });
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [name, setName] = useState(`Minecraft ${props.version.id}`);
 
@@ -54,7 +57,7 @@ export function DownloadingFragment(props: {
     downloadMinecraft(
       props.version,
       (tasks, totalPercentage) => {
-        setTasks(tasks.current);
+        setTasks(tasks);
         setTotalPercentage(totalPercentage);
       },
       onError,
@@ -92,11 +95,11 @@ export function DownloadingFragment(props: {
           <Alert severity="error">{t("errorOccurred")}</Alert>
         )}
         {status === "done" && <p>{t("done")}</p>}
-        {props.locking && tasks.length === 0 && (
+        {props.locking && tasks.current.length === 0 && (
           <p>{t("download.preparing")}</p>
         )}
         {props.locking &&
-          tasks.map((val, index) => (
+          tasks.current.map((val, index) => (
             <Fragment key={index}>
               <div className="flex text-sm">
                 <p className="flex-grow">

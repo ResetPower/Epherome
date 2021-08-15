@@ -65,8 +65,7 @@ export interface LanguageDefinition {
   "profile.enable": string;
   "profile.import": string;
   "profile.gameDirIsolation": string;
-  "settings.configFilePath": string;
-  "settings.minecraftDownloadPath": string;
+  "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;
   "settings.downloadProvider": string;
@@ -76,6 +75,7 @@ export interface LanguageDefinition {
   "settings.hitokoto.description": string;
   "settings.theme": string;
   "settings.theme.followOS": string;
+  "settings.devMode": string;
   "java.executablePath": string;
   "java.manage": string;
   "java.newPath": string;
