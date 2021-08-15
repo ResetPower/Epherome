@@ -70,9 +70,10 @@ export const AppBar = observer(() => {
       <p className="eph-appbar-title flex-grow">{title}</p>
       {configStore.developerMode && (
         <Popover
+          className="text-contrast p-2"
           popover={
             <ListItem
-              className="m-2 rounded-lg bg-blue-900"
+              className="rounded-lg bg-blue-500"
               onClick={() => ipcRenderer.send("open-devtools")}
             >
               <VscDebugConsole /> Developer Tools

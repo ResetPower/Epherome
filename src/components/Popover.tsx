@@ -4,6 +4,7 @@ import { ReactNode, useState, useRef } from "react";
 export default function Popover(props: {
   children: ReactNode;
   popover: ReactNode;
+  className?: string;
 }): JSX.Element {
   const [show, setShow] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
@@ -25,8 +26,8 @@ export default function Popover(props: {
             {props.children}
           </div>
           <div
-            className={`${
-              show ? "" : "hidden"
+            className={`${show ? "" : "hidden"} ${
+              props.className ?? ""
             } z-20 bg-card rounded-lg shadow-md`}
             ref={popover}
           >
