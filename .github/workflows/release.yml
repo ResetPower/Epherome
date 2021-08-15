@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Tag of the release
+        description: tag
         required: true
         default: vX.X.X
 
@@ -43,6 +43,8 @@ jobs:
         run: npm run package -- --windows
       - name: Run Post Release Script
         run: node scripts/post-release.js
+      - name: Update Data on Official Site
+        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/${{ github.event.inputs.tag }}
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
