@@ -17,10 +17,10 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { observer } from "mobx-react";
 import { useLayoutEffect } from "react";
 import { configStore } from "../struct/config";
+import { VscDebugConsole, VscExtensions } from "react-icons/vsc";
+import { ipcRenderer } from "electron";
 import Popover from "../components/Popover";
 import { ListItem } from "../components/lists";
-import { VscDebugConsole } from "react-icons/vsc";
-import { ipcRenderer } from "electron";
 
 export interface RouteList {
   [key: string]: {
@@ -62,27 +62,45 @@ export const AppBar = observer(() => {
   const route = routes[historyStore.pathname];
   const title = unwrapAccessible(route?.title);
   const isAtHome = title === "Epherome";
+
   return (
     <div className="eph-appbar text-white">
       <IconButton onClick={isAtHome ? unwrapFunction() : historyStore.back}>
         {isAtHome ? <MdMenu /> : <MdArrowBack />}
       </IconButton>
+
       <p className="eph-appbar-title flex-grow">{title}</p>
       {configStore.developerMode && (
         <Popover
-          className="text-contrast p-2"
-          popover={
-            <ListItem
-              className="rounded-lg bg-blue-500"
-              onClick={() => ipcRenderer.send("open-devtools")}
-            >
-              <VscDebugConsole /> Developer Tools
-            </ListItem>
-          }
+          className="bg-card rounded-lg p-2 shadow-lg text-contrast"
+          button={(trigger) => (
+            <IconButton onClick={trigger}>
+              <MdDeveloperBoard />
+            </IconButton>
+          )}
         >
-          <IconButton>
-            <MdDeveloperBoard />
-          </IconButton>
+          {[
+            {
+              icon: <VscDebugConsole />,
+              text: "Developer Tools",
+              click: () => ipcRenderer.send("open-devtools"),
+            },
+            {
+              icon: <VscExtensions />,
+              text: "Extensions",
+              click: () => {
+                /**/
+              },
+            },
+          ].map((val, index) => (
+            <ListItem
+              className="rounded-lg p-2 bg-blue-600 bg-opacity-0 hover:bg-opacity-30 active:bg-opacity-50"
+              key={index}
+              onClick={val.click}
+            >
+              {val.icon} {val.text}
+            </ListItem>
+          ))}
         </Popover>
       )}
     </div>

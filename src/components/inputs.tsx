@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { forwardRef, ForwardedRef, ReactNode, MouseEventHandler } from "react";
 import {
   openInBrowser,
   openPathInFinder,
@@ -50,20 +50,26 @@ export function TinyButton(props: {
   );
 }
 
-export function IconButton(props: {
-  children: ReactNode;
-  className?: string;
-  onClick?: DefaultFn;
-}): JSX.Element {
-  return (
-    <button
-      className={`eph-icon-button color-contrast ${props.className ?? ""}`}
-      onClick={props.onClick}
-    >
-      {props.children}
-    </button>
-  );
-}
+export const IconButton = forwardRef(
+  (
+    props: {
+      children: ReactNode;
+      className?: string;
+      onClick?: MouseEventHandler<HTMLButtonElement>;
+    },
+    ref: ForwardedRef<HTMLButtonElement>
+  ) => {
+    return (
+      <button
+        className={`eph-icon-button color-contrast ${props.className ?? ""}`}
+        onClick={props.onClick}
+        ref={ref}
+      >
+        {props.children}
+      </button>
+    );
+  }
+);
 
 export function Select(props: {
   value: string | number;

@@ -1,40 +1,32 @@
-import { createPopper } from "@popperjs/core";
-import { ReactNode, useState, useRef } from "react";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { ReactNode } from "react";
 
 export default function Popover(props: {
-  children: ReactNode;
-  popover: ReactNode;
+  button: (trigger: () => void) => ReactNode;
   className?: string;
+  children?: ReactNode;
 }): JSX.Element {
   const [show, setShow] = useState(false);
-  const trigger = useRef<HTMLDivElement>(null);
-  const popover = useRef<HTMLDivElement>(null);
-  const open = () => {
-    if (trigger.current && popover.current) {
-      createPopper(trigger.current, popover.current, {
-        placement: "bottom",
-      });
-      setShow(true);
-    }
-  };
-  const close = () => setShow(false);
+  const open = useCallback(() => setShow(true), []);
+  const close = useCallback(() => setShow(false), []);
+
+  useEffect(() =>
+    (show ? document.addEventListener : document.removeEventListener)(
+      "click",
+      close
+    )
+  );
+
   return (
-    <>
-      <div className="flex flex-wrap">
-        <div className="w-full text-center">
-          <div onClick={() => (show ? close() : open())} ref={trigger}>
-            {props.children}
-          </div>
-          <div
-            className={`${show ? "" : "hidden"} ${
-              props.className ?? ""
-            } z-20 bg-card rounded-lg shadow-md`}
-            ref={popover}
-          >
-            {props.popover}
-          </div>
+    <div>
+      {props.button(open)}
+      {show && (
+        <div className={`absolute right-1 ${props.className ?? ""}`}>
+          {props.children}
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
