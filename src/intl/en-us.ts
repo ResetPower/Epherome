@@ -40,6 +40,7 @@ const enUs: Language = {
     expand: "Expand",
     useDefault: "<Default>",
     haveNot: "Haven't yet",
+    export: "Export",
     "account.mojang": "Mojang",
     "account.microsoft": "Microsoft",
     "account.authlib": "Authlib Injector",
@@ -59,7 +60,7 @@ const enUs: Language = {
       "Only support to view the skin of Mojang account.",
     "profile.removing": "Remove Profile",
     "profile.notSelected": "No Profile Selected",
-    "profile.openDirectory": "Open Directory",
+    "profile.openDirectory": "Browse",
     "profile.usuallyDotMinecraftEtc":
       "Usually '.minecraft' on Windows and 'minecraft' on macOS and Linux.",
     "profile.maps": "Maps",
@@ -71,6 +72,11 @@ const enUs: Language = {
     "profile.enable": "Enable",
     "profile.import": "Import",
     "profile.gameDirIsolation": "Game Dir Isolation",
+    "profile.showEpherome": "Show Epherome",
+    "profile.gameDirIsolation.description":
+      "For different game versions, use different game directories.",
+    "profile.showEpherome.description":
+      'Display "Epherome" in the lower left corner of the Minecraft home page.',
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",
@@ -139,6 +145,7 @@ const enUs: Language = {
     moveToTrash: "Move To Trash",
     confirmMoveSomethingToTrash:
       "Are you sure you want to remove %s to trash? This operation is irreversible.",
+    exportedAt: "Export at: ",
   },
 };
 

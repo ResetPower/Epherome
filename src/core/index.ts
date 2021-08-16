@@ -9,7 +9,7 @@ import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
 import { createDirIfNotExist, downloadFile } from "../models/files";
-import { DefaultFn } from "../tools";
+import { adapt, DefaultFn } from "../tools";
 import {
   isJava16Required,
   isJava8Required,
@@ -218,7 +218,9 @@ export async function launchMinecraft(
     auth_access_token: account.token,
     user_type: "mojang",
     user_properties: `{}`,
-    version_type: parsed.type,
+    version_type: adapt([undefined, true], profile.showEpherome)
+      ? "Epherome"
+      : parsed.type,
     // jvm args
     natives_directory: nativeDir,
     launcher_name: "Epherome",
@@ -260,6 +262,7 @@ export async function launchMinecraft(
   };
 
   // jvm arguments
+  profile.jvmArgs && buff.push(...profile.jvmArgs.split(" "));
   if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {
@@ -275,7 +278,6 @@ export async function launchMinecraft(
       argumentsMap.classpath
     );
   }
-  profile.jvmArgs && buff.push(profile.jvmArgs);
   buff.push(parsed["mainClass"]);
 
   // game arguments

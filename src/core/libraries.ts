@@ -140,9 +140,6 @@ export async function analyzeAssets(
     await downloadFile(
       MinecraftUrlUtils.assetIndex(assetIndex),
       assetIndexPath,
-      (error) => {
-        throw error;
-      },
       cancellerWrapper
     );
   }

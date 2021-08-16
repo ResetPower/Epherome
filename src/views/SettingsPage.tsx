@@ -27,12 +27,7 @@ import { DefaultFn } from "../tools";
 import { FaJava } from "react-icons/fa";
 import Dialog from "../components/Dialog";
 import { List, ListItem, ListItemText } from "../components/lists";
-import {
-  checkJavaVersion,
-  createJava,
-  detectJava,
-  removeJava,
-} from "../struct/java";
+import { createJava, removeJava } from "../struct/java";
 import { useState } from "react";
 import { t, intlStore } from "../intl";
 import { _ } from "../tools/arrays";
@@ -41,6 +36,7 @@ import { observer } from "mobx-react";
 import { historyStore } from "../renderer/history";
 import { useReducer } from "react";
 import { MinecraftDownloadProvider } from "../craft/url";
+import { checkJavaVersion, detectJava } from "../craft/jvm";
 
 export function UpdateAvailableDialog(props: {
   version: string;
