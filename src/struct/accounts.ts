@@ -60,18 +60,23 @@ export async function createAccount(
     }
   } else if (mode === "microsoft") {
     // Microsoft OAuth Flow
-    const result = await ipcRenderer.invoke("ms-auth");
-    const split = result.split("&");
     let authCode = "";
-    for (const i of split) {
-      const j = i.split("=");
-      if (j[0] === "code") {
-        authCode = j[1];
+
+    try {
+      const result = await ipcRenderer.invoke("ms-auth");
+      const split = result.split("&");
+      for (const i of split) {
+        const j = i.split("=");
+        if (j[0] === "code") {
+          authCode = j[1];
+        }
       }
-    }
-    if (authCode === "") {
-      // unusable auth code
-      throw new Error("Unable to get auth code at microsoft authenticating");
+      if (authCode === "") {
+        // unusable auth code
+        throw new Error("Unable to get auth code at microsoft authenticating");
+      }
+    } catch {
+      return { success: false, message: "" };
     }
 
     // Authorization Code -> Authorization Token

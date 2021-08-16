@@ -16,6 +16,7 @@ import { Downloader, DownloaderTask } from "../models/downloader";
 import { MinecraftUrlUtils } from "../craft/url";
 import { DefaultFn, unwrapFunction } from "../tools";
 import { ObjectWrapper } from "../tools/object";
+import { defaultJvmArgs } from "../craft/jvm";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -67,6 +68,7 @@ export function DownloadingFragment(props: {
           dir: minecraftDownloadPath,
           ver: props.version.id,
           from: "download",
+          jvmArgs: defaultJvmArgs(),
         });
         setStatus("done");
         props.setLocking(false);

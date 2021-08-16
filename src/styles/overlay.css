@@ -4,6 +4,7 @@
   }
   .eph-dialog {
     min-width: 32rem;
+    max-width: 40rem;
     @apply shadow-xl rounded-xl bg-card p-6;
   }
   .eph-dialog-indent-bottom {

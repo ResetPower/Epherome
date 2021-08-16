@@ -40,6 +40,7 @@ const jaJp: Language = {
     expand: "展開する",
     useDefault: "<ディフォルト>",
     haveNot: "ありません",
+    export: "エクスポート",
     "account.mojang": "Mojang",
     "account.microsoft": "Microsoft",
     "account.authlib": "Authlib Injector",
@@ -59,7 +60,7 @@ const jaJp: Language = {
       "Mojangアカウントのスキンの表示のみをサポート。",
     "profile.removing": "プロフィルを削除",
     "profile.notSelected": "プロフィルが選択だれていません",
-    "profile.openDirectory": "パスを開けて",
+    "profile.openDirectory": "ブラウズ",
     "profile.usuallyDotMinecraftEtc":
       "通常、Windows では「.minecraft」、macOS および Linux では「minecraft」です。",
     "profile.maps": "マップ",
@@ -70,7 +71,12 @@ const jaJp: Language = {
     "profile.disable": "無効にする",
     "profile.enable": "有効にする",
     "profile.import": "インポート",
-    "profile.gameDirIsolation": "ゲームディレクトリの分離",
+    "profile.gameDirIsolation": "ゲームパスの分離",
+    "profile.showEpherome": "Epherome を表示",
+    "profile.gameDirIsolation.description":
+      "ゲームのバージョンが異なれば、異なるゲームパスを使用する。",
+    "profile.showEpherome.description":
+      "Minecraftホームページの左下隅に「Epherome」を表示します。",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",
@@ -139,6 +145,7 @@ const jaJp: Language = {
     moveToTrash: "ゴミ箱に移動",
     confirmMoveSomethingToTrash:
       "%s をゴミ箱に移動してもよろしいですか？操作は元に戻せません。",
+    exportedAt: "ここにエクスポートされました：",
   },
 };
 

@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { t } from "../intl";
+import { showOverlay } from "../renderer/overlays";
 import { DefaultFn, unwrapFunction } from "../tools";
-import { Button } from "./inputs";
+import { Button, Link } from "./inputs";
 
 export default function Dialog(props: {
   children: ReactNode;
@@ -21,7 +22,7 @@ export default function Dialog(props: {
 
 export function AlertDialog(props: {
   title: string;
-  message: string;
+  message: ReactNode;
   anyway?: string;
   onAnyway?: DefaultFn;
   close: DefaultFn;
@@ -29,9 +30,9 @@ export function AlertDialog(props: {
   return (
     <Dialog indentBottom>
       <p className="text-xl font-semibold">{props.title}</p>
-      {props.message.split("\n").map((val) => (
-        <p>{val}</p>
-      ))}
+      {typeof props.message === "string"
+        ? props.message.split("\n").map((val) => <p>{val}</p>)
+        : props.message}
       <div className="flex">
         {props.anyway && (
           <Button
@@ -54,7 +55,7 @@ export function AlertDialog(props: {
 
 export function ConfirmDialog(props: {
   title: string;
-  message: string;
+  message: ReactNode;
   action: DefaultFn;
   close: DefaultFn;
   positiveClassName?: string;
@@ -82,15 +83,56 @@ export function ConfirmDialog(props: {
   );
 }
 
+export function ExportedDialog(props: {
+  target: string;
+  close: DefaultFn;
+}): JSX.Element {
+  return (
+    <AlertDialog
+      title={t("tip")}
+      message={
+        <>
+          {t("exportedAt")}
+          <br />
+          <Link href={props.target} type="file">
+            {props.target}
+          </Link>
+        </>
+      }
+      close={props.close}
+    />
+  );
+}
+
 export function ErrorDialog(props: {
   stacktrace: string;
-  onClose: DefaultFn;
+  close: DefaultFn;
 }): JSX.Element {
   return (
     <AlertDialog
       title={t("errorOccurred")}
       message={props.stacktrace}
-      close={props.onClose}
+      close={props.close}
     />
   );
 }
+
+export const showInternetNotAvailableDialog = (): void => {
+  showOverlay((close) => (
+    <AlertDialog
+      title={t("tip")}
+      message={t("internetNotAvailable")}
+      close={close}
+    />
+  ));
+};
+
+export const showNotSupportedDialog = (): void => {
+  showOverlay((close) => (
+    <AlertDialog
+      title={t("tip")}
+      message={t("notSupportedYet")}
+      close={close}
+    />
+  ));
+};

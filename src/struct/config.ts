@@ -3,7 +3,7 @@ import os from "os";
 import path from "path";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
-import { createJava, detectJava, Java } from "./java";
+import { createJava, Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "../craft/url";
 import { ipcRenderer } from "electron";
@@ -11,6 +11,7 @@ import { logger } from "../renderer/global";
 import log4js from "log4js";
 import log4jsConfiguration from "../tools/logging";
 import { nanoid } from "nanoid";
+import { detectJava } from "../craft/jvm";
 
 export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
 

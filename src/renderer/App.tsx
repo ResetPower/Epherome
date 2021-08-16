@@ -130,6 +130,7 @@ export default function App(): JSX.Element {
     themeStore.updateTheme();
     historyStore.isEmpty && historyStore.push("home");
   }, []);
+
   return (
     <IconContext.Provider value={{ size: "1.5em" }}>
       <GlobalOverlay />

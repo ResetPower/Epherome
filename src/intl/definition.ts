@@ -39,6 +39,7 @@ export interface LanguageDefinition {
   expand: string;
   useDefault: string;
   haveNot: string;
+  export: string;
   "account.mojang": string;
   "account.microsoft": string;
   "account.authlib": string;
@@ -65,6 +66,9 @@ export interface LanguageDefinition {
   "profile.enable": string;
   "profile.import": string;
   "profile.gameDirIsolation": string;
+  "profile.showEpherome": string;
+  "profile.gameDirIsolation.description": string;
+  "profile.showEpherome.description": string;
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;
@@ -124,4 +128,5 @@ export interface LanguageDefinition {
   continueAnyway: string;
   moveToTrash: string;
   confirmMoveSomethingToTrash: string;
+  exportedAt: string;
 }

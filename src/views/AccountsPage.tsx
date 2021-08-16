@@ -7,7 +7,7 @@ import {
   removeAccount,
 } from "../struct/accounts";
 import { configStore, setConfig } from "../struct/config";
-import { MdCreate, MdDelete } from "react-icons/md";
+import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { showOverlay } from "../renderer/overlays";
 import {
@@ -18,15 +18,20 @@ import {
   TabController,
 } from "../components/tabs";
 import { useState } from "react";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { adapt, DefaultFn, unwrapFunction } from "../tools";
 import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "../tools/arrays";
-import { ConfirmDialog } from "../components/Dialog";
+import {
+  ConfirmDialog,
+  ExportedDialog,
+  showInternetNotAvailableDialog,
+  showNotSupportedDialog,
+} from "../components/Dialog";
 import { observer } from "mobx-react";
-import { useEffect } from "react";
-import got from "got/dist/source";
 import { useRef } from "react";
+import { Avatar, Body, downloadSkin, steveId } from "../craft/skin";
+import { BiExport } from "react-icons/bi";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -41,51 +46,6 @@ export function RemoveAccountDialog(props: {
       positiveClassName="text-danger"
       positiveText={t("remove")}
     />
-  );
-}
-
-export function AccountSkinFragment(props: {
-  current: MinecraftAccount;
-}): JSX.Element {
-  const [skin, setSkin] = useState<string | null | undefined>(undefined);
-
-  useEffect(() => {
-    got(
-      `https://sessionserver.mojang.com/session/minecraft/profile/${props.current.uuid}`
-    )
-      .then((resp) => {
-        try {
-          const params = JSON.parse(resp.body);
-          for (const i of params.properties) {
-            if (i.name === "textures") {
-              const texture = JSON.parse(
-                Buffer.from(i.value, "base64").toString()
-              );
-              for (const k in texture.textures) {
-                const v = texture.textures[k];
-                if (k === "SKIN") {
-                  setSkin(v.url);
-                }
-              }
-            }
-          }
-        } catch {
-          setSkin(null);
-        }
-      })
-      .catch(() => setSkin(null));
-  }, [props]);
-
-  return (
-    <div className="flex">
-      {skin === null ? (
-        t("internetNotAvailable")
-      ) : skin === undefined ? (
-        <Spin />
-      ) : (
-        <img src={skin} alt="Skin" />
-      )}
-    </div>
   );
 }
 
@@ -182,6 +142,43 @@ export function ChangeAccountFragment(props: {
   );
 }
 
+export function AccountSkinFragment(props: {
+  current: MinecraftAccount;
+}): JSX.Element {
+  const [exporting, setExporting] = useState(false);
+  const uuid = props.current.uuid;
+
+  const handleExport = () => {
+    setExporting(true);
+    downloadSkin(uuid)
+      .then((target) => {
+        setExporting(false);
+        showOverlay((close) => (
+          <ExportedDialog target={target} close={close} />
+        ));
+      })
+      .catch(() => {
+        setExporting(false);
+        showInternetNotAvailableDialog();
+      });
+  };
+  const handleEdit = showNotSupportedDialog;
+
+  return (
+    <div className="flex justify-center space-x-9">
+      <Body uuid={uuid} />
+      <div>
+        <Button disabled={exporting} onClick={handleExport}>
+          {exporting ? <Spin indent /> : <BiExport />} {t("export")}
+        </Button>
+        <Button onClick={handleEdit}>
+          <MdEdit /> {t("edit")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 const AccountsPage = observer(() => {
   const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
@@ -217,7 +214,12 @@ const AccountsPage = observer(() => {
               }}
               key={id}
             >
-              <p className="flex space-x-1">{i.name}</p>
+              {adapt(["mojang", "microsoft"], i.mode) ? (
+                <Avatar uuid={i.uuid} />
+              ) : (
+                i.mode === "offline" && <Avatar uuid={steveId} />
+              )}
+              <p className="flex px-1 space-x-1">{i.name}</p>
             </ListItem>
           ))}
         </List>

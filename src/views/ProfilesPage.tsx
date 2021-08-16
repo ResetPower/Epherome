@@ -20,7 +20,6 @@ import {
   MdExpandLess,
   MdExpandMore,
   MdFileDownload,
-  MdFolder,
   MdFolderOpen,
   MdGamepad,
   MdRefresh,
@@ -49,6 +48,7 @@ import { MinecraftProfileManagerStore } from "../craft/manager";
 import { openPathInFinder } from "../models/open";
 import { BiImport } from "react-icons/bi";
 import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
+import { defaultJvmArgs } from "../craft/jvm";
 
 export function RemoveProfileDialog(props: {
   onClose: DefaultFn;
@@ -77,9 +77,12 @@ export function ChangeProfileFragment(props: {
   const [name, setName] = useState(current?.name ?? "");
   const [dir, setDir] = useState(current?.dir ?? "");
   const [ver, setVer] = useState(current?.ver ?? "");
-  const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? "");
+  const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? defaultJvmArgs());
   const [resolution, setResolution] = useState(current?.resolution ?? {});
   const [java, setJava] = useState(current?.java ?? "");
+  const [showEpherome, setShowEpherome] = useState(
+    current?.showEpherome ?? true
+  );
   const [gameDirIsolation, setGameDirIsolation] = useState(
     current?.gameDirIsolation ?? false
   );
@@ -166,6 +169,11 @@ export function ChangeProfileFragment(props: {
           value={dir}
           onChange={setDir}
           helperText={t("profile.usuallyDotMinecraftEtc")}
+          trailing={
+            <Link type="clickable" onClick={handleOpenDirectory}>
+              {t("profile.openDirectory")}
+            </Link>
+          }
           required
         />
         <TextField
@@ -176,13 +184,29 @@ export function ChangeProfileFragment(props: {
         />
         {more && (
           <>
-            <Checkbox
-              className="m-1"
-              checked={gameDirIsolation}
-              onChange={setGameDirIsolation}
-            >
-              {t("profile.gameDirIsolation")}
-            </Checkbox>
+            <div className="flex">
+              <Checkbox
+                className="m-1"
+                checked={gameDirIsolation}
+                onChange={setGameDirIsolation}
+              >
+                {t("profile.gameDirIsolation")}
+              </Checkbox>
+              <div className="flex-grow" />
+              <Checkbox
+                className="m-1"
+                checked={showEpherome}
+                onChange={setShowEpherome}
+              >
+                {t("profile.showEpherome")}
+              </Checkbox>
+            </div>
+            <p className="eph-helper-text text-left">
+              {t("profile.gameDirIsolation.description")}
+            </p>
+            <p className="eph-helper-text text-right">
+              {t("profile.showEpherome.description")}
+            </p>
             <div className="flex items-center space-x-3">
               <TextField
                 className="flex-grow"
@@ -226,11 +250,7 @@ export function ChangeProfileFragment(props: {
           {more ? t("collapse") : t("expand")}
         </TinyButton>
       </div>
-      <div className="flex">
-        <Button onClick={handleOpenDirectory}>
-          <MdFolder /> {t("profile.openDirectory")}
-        </Button>
-        <div className="flex-grow" />
+      <div className="flex justify-end">
         {props.action === "create" ? (
           <>
             <Button className="text-shallow" onClick={props.onDone}>

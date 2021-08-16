@@ -40,6 +40,7 @@ const zhCn: Language = {
     expand: "展开",
     useDefault: "<默认>",
     haveNot: "无",
+    export: "导出",
     "account.mojang": "Mojang 账户",
     "account.microsoft": "微软账户",
     "account.authlib": "Authlib Injector",
@@ -55,7 +56,7 @@ const zhCn: Language = {
     "account.skin.notSupportedExcludeMojang": "仅支持查看 Mojang 账户的皮肤。",
     "profile.removing": "移除档案",
     "profile.notSelected": "未选择档案",
-    "profile.openDirectory": "打开路径",
+    "profile.openDirectory": "浏览",
     "profile.usuallyDotMinecraftEtc":
       "在 Windows 下通常是「.minecraft」，在 macOS 与 Linux 下通常是「minecraft」。",
     "profile.maps": "地图",
@@ -67,6 +68,11 @@ const zhCn: Language = {
     "profile.enable": "启用",
     "profile.import": "导入",
     "profile.gameDirIsolation": "版本隔离",
+    "profile.gameDirIsolation.description":
+      "对于不同的版本，使用不同的游戏文件夹。",
+    "profile.showEpherome": "展示 Epherome",
+    "profile.showEpherome.description":
+      "在 Minecraft 主页的左下角显示「Epherome」标识。",
     "settings.epheromePath": "Epherome 路径",
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",
@@ -131,6 +137,7 @@ const zhCn: Language = {
     continueAnyway: "仍然继续",
     moveToTrash: "移到废纸篓",
     confirmMoveSomethingToTrash: "您确定要将 %s 移到废纸篓吗？该操作不可逆。",
+    exportedAt: "已导出于此处：",
   },
 };
 

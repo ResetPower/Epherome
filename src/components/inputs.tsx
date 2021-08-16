@@ -111,6 +111,7 @@ export function TextField(props: {
   maxLength?: number;
   noSpinButton?: boolean;
   required?: boolean;
+  onEnter?: DefaultFn;
 }): JSX.Element {
   return (
     <div className={props.className}>
@@ -123,12 +124,22 @@ export function TextField(props: {
       <div className={`flex ${props.fieldClassName ?? ""}`}>
         {props.icon && <div className="eph-textfield-icon">{props.icon}</div>}
         <input
+          spellCheck="false"
           maxLength={props.maxLength}
           min={props.min}
           max={props.max}
           type={props.type}
           value={props.value}
           placeholder={props.placeholder}
+          onKeyDown={
+            props.onEnter
+              ? (event) => {
+                  if (event.key === "Enter") {
+                    unwrapFunction(props.onEnter)();
+                  }
+                }
+              : undefined
+          }
           onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
           className={`${
             props.icon && props.trailing

@@ -19,6 +19,7 @@ export interface MinecraftProfile extends WithUnderline {
   // nanoid of selected java instance
   java?: string;
   gameDirIsolation?: boolean;
+  showEpherome?: boolean;
 }
 
 export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;

@@ -28,9 +28,8 @@ export async function downloadMinecraft(
   await downloadFile(
     MinecraftUrlUtils.clientJson(version),
     jsonPath,
-    onError,
     cancellerWrapper
-  );
+  ).catch(onError);
 
   // read content from json file
   const data = fs.readFileSync(jsonPath).toString();

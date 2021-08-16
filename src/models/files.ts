@@ -2,7 +2,7 @@ import fs from "fs";
 import got from "got";
 import path from "path";
 import crypto from "crypto";
-import { adapt, DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
+import { adapt, DefaultFn } from "../tools";
 import { MutableRefObject } from "react";
 import { shell } from "electron";
 
@@ -22,15 +22,14 @@ export function createDirByPath(p: string): void {
 export function downloadFile(
   url: string,
   target: string,
-  onError?: ErrorHandler,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     createDirByPath(target);
     const downloadStream = got.stream(url);
     const fileStream = fs.createWriteStream(target);
-    downloadStream.on("error", unwrapFunction(onError));
-    fileStream.on("error", unwrapFunction(onError)).on("finish", resolve);
+    downloadStream.on("error", reject);
+    fileStream.on("error", reject).on("finish", resolve);
     cancellerWrapper &&
       (cancellerWrapper.current = () => {
         try {

@@ -59,6 +59,7 @@ export function RequestPasswordDialog(props: {
           type="password"
           helperText={props.again ? t("account.wrongPassword") : ""}
           error={props.again}
+          onEnter={handler}
         />
       </div>
       <div className="flex justify-end">
@@ -126,7 +127,6 @@ export const homePageStore = new HomePageStore();
 const HomePage = observer(() => {
   const account = useRef(_.selected(configStore.accounts));
   const profiles = configStore.profiles;
-  const username = account.current?.name;
   const isHitokotoEnabled = configStore.hitokoto;
   const [value, setValue] = useState<number | null>(
     _.selectedIndex(configStore.profiles) ?? null
@@ -169,7 +169,7 @@ const HomePage = observer(() => {
           }),
       }).catch((err: Error) => {
         showOverlay((close) => (
-          <ErrorDialog onClose={close} stacktrace={err.stack ?? " "} />
+          <ErrorDialog close={close} stacktrace={err.stack ?? " "} />
         ));
         homePageStore.setLaunching(false);
       });
@@ -198,7 +198,7 @@ const HomePage = observer(() => {
           <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
             <p className="text-2xl">
-              {username === undefined ? t("account.notSelected") : username}
+              {account.current?.name ?? t("account.notSelected")}
             </p>
             {isHitokotoEnabled && (
               <div>
