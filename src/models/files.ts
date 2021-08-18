@@ -58,7 +58,7 @@ export function readdir(filepath: string, ...type: DirFileType[]): string[] {
     if (type === "modFile")
       return (
         stat.isFile() &&
-        adapt([".jar", ".litemod", ".zip", ".disabled"], path.extname(file))
+        adapt(path.extname(file), ".jar", ".litemod", ".zip", ".disabled")
       );
     return false;
   };

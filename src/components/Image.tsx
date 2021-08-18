@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DefaultFn, LoadingStatus, unwrapFunction } from "../tools";
+import { call, DefaultFn, LoadingStatus } from "../tools";
 
 export default function Image(props: {
   src: string;
@@ -18,7 +18,7 @@ export default function Image(props: {
       onLoad={() => setStatus("done")}
       onError={() => {
         setStatus("error");
-        unwrapFunction(props.onError)();
+        call(props.onError);
       }}
     />
   );

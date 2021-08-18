@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { t } from "../intl";
-import { showOverlay } from "../renderer/overlays";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { useOverlayCloser } from "../renderer/overlays";
+import { call, DefaultFn } from "../tools";
 import { Button, Link } from "./inputs";
 
 export default function Dialog(props: {
@@ -25,27 +25,30 @@ export function AlertDialog(props: {
   message: ReactNode;
   anyway?: string;
   onAnyway?: DefaultFn;
-  close: DefaultFn;
 }): JSX.Element {
+  const close = useOverlayCloser();
+
   return (
     <Dialog indentBottom>
       <p className="text-xl font-semibold">{props.title}</p>
       {typeof props.message === "string"
-        ? props.message.split("\n").map((val) => <p>{val}</p>)
+        ? props.message
+            .split("\n")
+            .map((val, index) => <p key={index}>{val}</p>)
         : props.message}
       <div className="flex">
         {props.anyway && (
           <Button
             onClick={() => {
-              unwrapFunction(props.onAnyway)();
-              props.close();
+              call(props.onAnyway);
+              close();
             }}
           >
             {props.anyway}
           </Button>
         )}
         <div className="flex-grow" />
-        <Button className="text-secondary" onClick={props.close}>
+        <Button className="text-secondary" onClick={close}>
           {t("fine")}
         </Button>
       </div>
@@ -57,23 +60,24 @@ export function ConfirmDialog(props: {
   title: string;
   message: ReactNode;
   action: DefaultFn;
-  close: DefaultFn;
   positiveClassName?: string;
   positiveText?: string;
 }): JSX.Element {
+  const close = useOverlayCloser();
+
   return (
     <Dialog indentBottom>
       <p className="text-xl font-semibold">{props.title}</p>
       <p>{props.message}</p>
       <div className="flex justify-end">
-        <Button className="text-shallow" onClick={props.close}>
+        <Button className="text-shallow" onClick={close}>
           {t("cancel")}
         </Button>
         <Button
           className={props.positiveClassName ?? "text-secondary"}
           onClick={() => {
             props.action();
-            props.close();
+            close();
           }}
         >
           {props.positiveText ?? t("fine")}
@@ -83,10 +87,7 @@ export function ConfirmDialog(props: {
   );
 }
 
-export function ExportedDialog(props: {
-  target: string;
-  close: DefaultFn;
-}): JSX.Element {
+export function ExportedDialog(props: { target: string }): JSX.Element {
   return (
     <AlertDialog
       title={t("tip")}
@@ -99,40 +100,18 @@ export function ExportedDialog(props: {
           </Link>
         </>
       }
-      close={props.close}
     />
   );
 }
 
-export function ErrorDialog(props: {
-  stacktrace: string;
-  close: DefaultFn;
-}): JSX.Element {
-  return (
-    <AlertDialog
-      title={t("errorOccurred")}
-      message={props.stacktrace}
-      close={props.close}
-    />
-  );
+export function ErrorDialog(props: { stacktrace: string }): JSX.Element {
+  return <AlertDialog title={t("errorOccurred")} message={props.stacktrace} />;
 }
 
-export const showInternetNotAvailableDialog = (): void => {
-  showOverlay((close) => (
-    <AlertDialog
-      title={t("tip")}
-      message={t("internetNotAvailable")}
-      close={close}
-    />
-  ));
-};
+export function InternetNotAvailableDialog(): JSX.Element {
+  return <AlertDialog title={t("tip")} message={t("internetNotAvailable")} />;
+}
 
-export const showNotSupportedDialog = (): void => {
-  showOverlay((close) => (
-    <AlertDialog
-      title={t("tip")}
-      message={t("notSupportedYet")}
-      close={close}
-    />
-  ));
-};
+export function NotSupportedDialog(): JSX.Element {
+  return <AlertDialog title={t("tip")} message={t("notSupportedYet")} />;
+}

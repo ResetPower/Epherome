@@ -68,6 +68,7 @@ export class ConfigStore {
   @observable theme = "light";
   @observable themeFollowOs = false;
   @observable language = getSystemPreferredLanguage();
+  @observable news = false;
   @observable hitokoto = false;
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;

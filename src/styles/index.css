@@ -22,11 +22,18 @@
       `src/renderer/theme.ts` and `tailwind.config.js`
   */
   --eph-background-color: white;
+  --eph-shallow-color: gray;
   @apply text-contrast;
 }
 
 body {
+  font-family: Roboto, sans-serif;
   background: var(--eph-background-color);
+}
+
+img {
+  /* make all images not draggable */
+  @apply pointer-events-none;
 }
 
 ::-webkit-scrollbar {

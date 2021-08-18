@@ -23,7 +23,7 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
-import { showOverlay } from "../renderer/overlays";
+import { showOverlay, useOverlayCloser } from "../renderer/overlays";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
@@ -33,18 +33,18 @@ import { useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
 import ExtensionsView from "./ExtensionsView";
 import NewsView from "./NewsView";
-import { fetchNews, Oshirase } from "../struct/oshirase";
+import { fetchNews, NewItem } from "../struct/news";
 import { JavaManagementDialog } from "./SettingsPage";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
-  onClose: DefaultFn;
   onCancel: DefaultFn;
   callback: (password: string) => void;
 }): JSX.Element {
+  const close = useOverlayCloser();
   const [password, setPassword] = useState("");
   const handler = () => {
-    props.onClose();
+    close();
     props.callback(password);
   };
 
@@ -67,7 +67,7 @@ export function RequestPasswordDialog(props: {
           className="text-shallow"
           onClick={() => {
             props.onCancel();
-            props.onClose();
+            close();
           }}
         >
           {t("cancel")}
@@ -84,7 +84,7 @@ export class HomePageStore {
   @observable hitokoto: Hitokoto = { content: "", from: "" };
   @observable againRequestingPassword = false;
   // empty array: not loaded yet; null: loading; undefined: error occurred;
-  @observable news: Oshirase[] | null | undefined = [];
+  @observable news: NewItem[] | null | undefined = [];
   constructor() {
     makeObservable(this);
   }
@@ -131,6 +131,7 @@ const HomePage = observer(() => {
   const [value, setValue] = useState<number | null>(
     _.selectedIndex(configStore.profiles) ?? null
   );
+  const profile = value !== null && configStore.profiles[+value];
 
   const handleChange = (val: string) => {
     const newValue = +val;
@@ -140,7 +141,6 @@ const HomePage = observer(() => {
   const handleLaunch = () => {
     // value will be "" if not selected
     const current = account.current;
-    const profile = value !== null && configStore.profiles[+value];
     if (current && profile) {
       homePageStore.setLaunching(true);
       launchMinecraft({
@@ -156,31 +156,27 @@ const HomePage = observer(() => {
             if (again !== homePageStore.againRequestingPassword) {
               homePageStore.again();
             }
-            showOverlay((close) => (
+            showOverlay(
               <RequestPasswordDialog
-                onClose={close}
                 onCancel={() => homePageStore.setLaunching(false)}
                 again={homePageStore.againRequestingPassword}
                 callback={(password: string) => {
                   resolve(password);
                 }}
               />
-            ));
+            );
           }),
       }).catch((err: Error) => {
-        showOverlay((close) => (
-          <ErrorDialog close={close} stacktrace={err.stack ?? " "} />
-        ));
+        showOverlay(<ErrorDialog stacktrace={err.stack ?? " "} />);
         homePageStore.setLaunching(false);
       });
     } else {
-      showOverlay((close) => (
+      showOverlay(
         <AlertDialog
           title={t("warning")}
           message={t("launching.noAccOrProSelected")}
-          close={close}
         />
-      ));
+      );
     }
   };
 
@@ -215,11 +211,7 @@ const HomePage = observer(() => {
             </IconButton>
             <IconButton
               onClick={() => {
-                showOverlay(
-                  (close) => <ExtensionsView close={close} />,
-                  "sheet",
-                  "slide"
-                );
+                showOverlay(<ExtensionsView />, "sheet", "slide");
               }}
             >
               <MdApps />
@@ -246,41 +238,51 @@ const HomePage = observer(() => {
       </Card>
       <div className="flex space-x-6">
         <Card className="w-1/2 flex flex-col">
-          {value === null ? (
-            <p className="text-sm p-1 m-1">{t("profile.notSelected")}</p>
-          ) : (
-            <Select
-              value={value}
-              onChange={handleChange}
-              disabled={homePageStore.isLaunching}
-              className="overflow-ellipsis"
-            >
-              {_.map(profiles, (i, id) => (
-                <option key={id} value={id}>
-                  {i.name}
-                </option>
-              ))}
-            </Select>
-          )}
-          <div>
-            <Button onClick={handleLaunch} disabled={homePageStore.isLaunching}>
-              <MdPlayArrow />
-              {homePageStore.isLaunching ? t("launching") : t("launch")}
-            </Button>
+          <div className="flex flex-grow flex-col justify-center">
+            {profile && value !== null ? (
+              <>
+                <Select
+                  value={value}
+                  onChange={handleChange}
+                  disabled={homePageStore.isLaunching}
+                  className="overflow-ellipsis"
+                >
+                  {_.map(profiles, (i, id) => (
+                    <option key={id} value={id}>
+                      {i.name}
+                    </option>
+                  ))}
+                </Select>
+                <div className="flex space-x-3 p-1">
+                  <p className="text-shallow">{t("version")}</p>
+                  <p>{profile.ver}</p>
+                </div>
+                <div>
+                  <Button
+                    onClick={handleLaunch}
+                    disabled={homePageStore.isLaunching}
+                  >
+                    <MdPlayArrow />
+                    {homePageStore.isLaunching ? t("launching") : t("launch")}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <p className="p-1 m-auto text-shallow">
+                {t("profile.notSelected")}
+              </p>
+            )}
+            {homePageStore.isLaunching && (
+              <>
+                <p className="text-sm">{homePageStore.launchingHelper}</p>
+                <ProgressBar unlimited />
+              </>
+            )}
           </div>
-          {homePageStore.isLaunching && (
-            <>
-              <p className="text-sm">{homePageStore.launchingHelper}</p>
-              <ProgressBar unlimited />
-            </>
-          )}
-          <div className="flex-grow" />
           <div className="border-t border-divider text-contrast flex">
             <TinyButton
               className="px-1"
-              onClick={() =>
-                showOverlay((close) => <JavaManagementDialog close={close} />)
-              }
+              onClick={() => showOverlay(<JavaManagementDialog />)}
             >
               {t("java.manage")}
             </TinyButton>
@@ -312,13 +314,7 @@ const HomePage = observer(() => {
           )}
           <div>
             <TinyButton
-              onClick={() =>
-                showOverlay(
-                  (close) => <NewsView close={close} />,
-                  "sheet",
-                  "slide"
-                )
-              }
+              onClick={() => showOverlay(<NewsView />, "sheet", "slide")}
               paddingRight
             >
               <MdMoreHoriz /> {t("expand")}

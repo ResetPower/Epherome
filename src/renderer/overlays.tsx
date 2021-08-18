@@ -1,15 +1,14 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
-import { DefaultFn } from "../tools";
 import { Transition } from "react-transition-group";
 import { useRef } from "react";
 
 export type OverlayType = "dialog" | "sheet";
 
 export interface Overlay {
-  type: OverlayType;
-  animationClass: string;
   element: JSX.Element;
+  type: OverlayType;
+  animationClassName: string;
 }
 
 export class OverlayStore {
@@ -21,30 +20,36 @@ export class OverlayStore {
   }
   @action
   show = (
-    render: (close: DefaultFn) => JSX.Element,
+    element: JSX.Element,
     type: OverlayType = "dialog",
-    animationClass = "zoom"
+    animationClassName = "zoom"
   ): void => {
-    const index = this.stack.length;
-    this.stack[index] = {
+    this.stack[this.stack.length] = {
       type,
-      animationClass,
-      element: render(() => this.remove(index)),
+      animationClassName,
+      element,
     };
   };
+  close = (): void => {
+    this.remove(overlayStore.stack.length - 1);
+  };
   @action
-  remove = (id: number): void => {
-    this.stack.splice(id, 1);
+  remove = (index: number): void => {
+    this.stack.splice(index, 1);
   };
   @computed
   get current(): Overlay | undefined {
-    return [...this.stack].pop();
+    return this.stack.slice().pop();
   }
 }
 
 export const overlayStore = new OverlayStore();
 
 export const showOverlay = overlayStore.show;
+
+export function useOverlayCloser(): () => unknown {
+  return overlayStore.close;
+}
 
 // global dialog manager component
 export const GlobalOverlay = observer(() => {
@@ -62,7 +67,7 @@ export const GlobalOverlay = observer(() => {
               previous.current?.type === "dialog"
                 ? "m-auto"
                 : "flex-grow flex flex-col items-center"
-            } ${previous.current?.animationClass}-${state}`}
+            } ${previous.current?.animationClassName}-${state}`}
           >
             {previous.current?.element}
           </div>

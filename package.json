@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
@@ -93,6 +93,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@fontsource/roboto": "^4.5.0",
     "find-java-home": "^1.2.1",
     "got": "^11.8.2",
     "log4js": "^6.3.0",

@@ -5,7 +5,7 @@ import { basenameWithoutExt, readdir } from "../models/files";
 import { shortid } from "../models/ids";
 import { action, makeObservable, observable } from "mobx";
 import { ipcRenderer } from "electron";
-import { showMoveToTrashAlert } from "../components/alerts";
+import { showMoveToTrashAlert } from "../models/alerts";
 
 export interface WithPath {
   path: string;

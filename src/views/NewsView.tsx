@@ -2,13 +2,15 @@ import { MdArrowDownward } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
 import { t } from "../intl";
 import { openInBrowser } from "../models/open";
-import { DefaultFn } from "../tools";
 import { homePageStore } from "./HomePage";
+import { useOverlayCloser } from "../renderer/overlays";
+import { BottomSheet } from "../components/BottomSheet";
 
-export default function NewsView(props: { close: DefaultFn }): JSX.Element {
+export default function NewsView(): JSX.Element {
+  const close = useOverlayCloser();
+
   return (
-    <>
-      <div className="flex-grow" />
+    <BottomSheet>
       <div
         className="w-11/12 bg-card rounded-t-xl overflow-y-auto"
         style={{ height: "calc(100vh * 0.833333)" }}
@@ -17,7 +19,7 @@ export default function NewsView(props: { close: DefaultFn }): JSX.Element {
           <p className="font-semibold text-xl flex-grow">{t("news")}</p>
           <MdArrowDownward
             className="text-contrast cursor-pointer"
-            onClick={props.close}
+            onClick={close}
           />
         </div>
         <List className="p-6">
@@ -37,6 +39,6 @@ export default function NewsView(props: { close: DefaultFn }): JSX.Element {
           ))}
         </List>
       </div>
-    </>
+    </BottomSheet>
   );
 }

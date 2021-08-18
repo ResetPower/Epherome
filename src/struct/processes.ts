@@ -1,5 +1,5 @@
 import { ChildProcessWithoutNullStreams } from "child_process";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { call, DefaultFn } from "../tools";
 import { MinecraftProfile } from "./profiles";
 
 export type ProcessOutputListener = (chunk: string) => unknown;
@@ -19,11 +19,11 @@ export class Process {
   constructor(profile: MinecraftProfile, raw: ChildProcessWithoutNullStreams) {
     this.profile = profile;
     this.raw = raw;
-    raw.on("exit", unwrapFunction(this.onExit));
+    this.onExit && raw.on("exit", this.onExit);
     raw.stdout.on("data", (d) => this.output(d.toString()));
     raw.stderr.on("data", (d) => this.output(d.toString()));
   }
   output(chunk: string): void {
-    unwrapFunction(this.onOutput)(chunk);
+    call(this.onOutput, chunk);
   }
 }

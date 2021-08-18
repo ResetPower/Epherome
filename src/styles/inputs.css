@@ -19,12 +19,28 @@
   }
 
   .eph-icon-button {
-    @apply select-none rounded-full h-12 w-12 flex items-center justify-center
+    @apply select-none rounded-full h-12 w-12 flex justify-center items-center
       transition-colors hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
   }
 
   .eph-select {
-    @apply block py-2 px-3 bg-card text-contrast rounded-lg border border-divider shadow-sm focus:outline-none;
+    @apply block bg-card border border-divider rounded-lg shadow-sm appearance-none focus:outline-none;
+    padding: 0.5em 3.5em 0.5em 1em;
+    background-image: linear-gradient(
+        45deg,
+        transparent 50%,
+        var(--eph-shallow-color) 50%
+      ),
+      linear-gradient(135deg, var(--eph-shallow-color) 50%, transparent 50%),
+      linear-gradient(
+        to right,
+        var(--eph-shallow-color),
+        var(--eph-shallow-color)
+      );
+    background-position: calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px), calc(100% - 2.5em) 0.5em;
+    background-size: 5px 5px, 5px 5px, 1px 1.5em;
+    background-repeat: no-repeat;
   }
 
   .eph-label {
@@ -35,13 +51,16 @@
   }
 
   .eph-textfield {
-    @apply flex-1 appearance-none border border-divider w-full py-2 px-4 bg-card text-gray-700 dark:text-gray-50 placeholder-gray-400 shadow-sm text-base focus:outline-none;
+    @apply flex-1 appearance-none border border-divider w-full py-2 px-4 bg-card
+      text-gray-700 dark:text-gray-50 placeholder-gray-400 shadow-sm text-base focus:outline-none;
   }
   .eph-textfield-icon {
-    @apply rounded-l-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-l border-b border-divider text-shallow shadow-sm;
+    @apply rounded-l-lg inline-flex items-center px-3
+      border-t bg-white dark:bg-gray-700 border-l border-b border-divider text-shallow shadow-sm;
   }
   .eph-textfield-trailing {
-    @apply rounded-r-lg inline-flex items-center px-3 border-t bg-white dark:bg-gray-700 border-r border-b border-divider text-shallow shadow-sm;
+    @apply rounded-r-lg inline-flex items-center px-3
+      border-t bg-white dark:bg-gray-700 border-r border-b border-divider text-shallow shadow-sm;
   }
 
   .eph-helper-text {
@@ -52,7 +71,8 @@
   }
 
   .eph-checkbox {
-    @apply bg-card border rounded-md border-divider w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500;
+    @apply bg-card border rounded-md border-divider w-5 h-5
+      flex justify-center items-center mr-2 focus-within:border-blue-500 shadow-none hover:shadow-sm;
   }
   .eph-checkbox-svg {
     @apply fill-current w-3 h-3 text-blue-500 pointer-events-none;

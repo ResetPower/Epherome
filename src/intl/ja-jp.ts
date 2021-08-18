@@ -89,6 +89,10 @@ const jaJp: Language = {
     "settings.theme": "テーマ",
     "settings.theme.followOS": "システムをフォロー",
     "settings.devMode": "デベロッパーモード",
+    "settings.downloadProvider.description":
+      "公式ソースが遅い場合は、それを置き換えることを試みることができます。",
+    "settings.downloadCurrency.description":
+      "同時にダウンロードできるファイルの数。",
     "java.executablePath": "Java パス",
     "java.manage": "Java を管理",
     "java.newPath": "新しいパス",
@@ -146,6 +150,7 @@ const jaJp: Language = {
     confirmMoveSomethingToTrash:
       "%s をゴミ箱に移動してもよろしいですか？操作は元に戻せません。",
     exportedAt: "ここにエクスポートされました：",
+    versionOfSomething: "%s バージョン",
   },
 };
 

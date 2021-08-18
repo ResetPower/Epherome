@@ -80,6 +80,8 @@ export interface LanguageDefinition {
   "settings.theme": string;
   "settings.theme.followOS": string;
   "settings.devMode": string;
+  "settings.downloadProvider.description": string;
+  "settings.downloadCurrency.description": string;
   "java.executablePath": string;
   "java.manage": string;
   "java.newPath": string;
@@ -129,4 +131,5 @@ export interface LanguageDefinition {
   moveToTrash: string;
   confirmMoveSomethingToTrash: string;
   exportedAt: string;
+  versionOfSomething: string;
 }

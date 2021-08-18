@@ -1,17 +1,12 @@
-export function unwrapFunction<P extends unknown[] = []>(
-  fn?: ((...args: P) => void) | null
-): (...args: P) => void {
-  return (
-    fn ??
-    (() => {
-      // empty function
-    })
-  );
+export interface StringMap {
+  [key: string]: string;
 }
 
-export function throwNotInitError(): unknown {
-  throw new Error("This function is not initialized");
-}
+export type DefaultFn = () => unknown;
+
+export type ErrorHandler = (error: Error) => unknown;
+
+export type LoadingStatus = "pending" | "error" | "done";
 
 // simple toolkit to transfer object to form
 // for example:
@@ -28,6 +23,9 @@ export function obj2form(data: StringMap): string {
   return urlEncodedDataPairs.join("&").replace(/%20/g, "+");
 }
 
+// value or a function returns value (with or without parameters)
+export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
+
 export function unwrapAccessible<T, P extends unknown[] = []>(
   accessible: Accessible<T, P>,
   ...args: P
@@ -39,22 +37,20 @@ export function unwrapAccessible<T, P extends unknown[] = []>(
   }
 }
 
-export function adapt<T>(keys: T[], value: T): boolean {
+export function call<P extends unknown[], R>(
+  fn: ((...args: P) => R) | undefined,
+  ...args: P
+): R | undefined {
+  if (fn) {
+    return fn(...args);
+  } else {
+    return undefined;
+  }
+}
+
+export function adapt<T>(value: T, ...keys: T[]): boolean {
   for (const i of keys) {
     if (i === value) return true;
   }
   return false;
 }
-
-export interface StringMap {
-  [key: string]: string;
-}
-
-// value or a function returns value (with or without parameters)
-export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
-
-export type DefaultFn = () => unknown;
-
-export type ErrorHandler = (error: Error) => unknown;
-
-export type LoadingStatus = "pending" | "error" | "done";

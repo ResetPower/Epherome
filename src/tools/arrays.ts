@@ -54,27 +54,4 @@ export const _ = {
       }
     }
   },
-  // non-WithUnderline-required tool functions below
-  mapOr<T, U, F>(
-    arr: T[],
-    cb: (value: T, index: number, array: T[]) => U,
-    fb: F
-  ): U[] | F {
-    if (arr.length === 0) return fb;
-    const results: U[] = [];
-    for (const k in arr) {
-      const v = arr[k];
-      results.push(cb(v, +k, arr));
-    }
-    return results;
-  },
-  modify<T>(arr: T[], item: T, modifier: (source: T) => T): void {
-    for (const k in arr) {
-      const v = arr[k];
-      if (v === item) {
-        arr[k] = modifier(v);
-        break;
-      }
-    }
-  },
 };

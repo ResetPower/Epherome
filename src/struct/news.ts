@@ -1,29 +1,26 @@
 import got from "got";
 import parser from "node-html-parser";
 
-// Note that "oshirase" means "news"
-// use this because "new" is a reserved word
-
 // Note that all the news is from MCBBS (A Chinese Minecraft Forum)
 // So we will not support English/Japanese/OtherLanguages' news until we find other news API to replace it
 // Or you can tell me in the issues if you know some news API (If you have read this line of code)
 
-export interface Oshirase {
+export interface NewItem {
   title: string;
   author: string;
   time: string;
   url: string;
 }
 
-export async function fetchNews(): Promise<Oshirase[]> {
-  const list: Oshirase[] = [];
+export async function fetchNews(): Promise<NewItem[]> {
+  const list: NewItem[] = [];
   const result = await got("https://www.mcbbs.net/forum-news-1.html");
   const doc = parser(result.body);
   const news = doc.querySelectorAll("#threadlisttableid > tbody");
   for (const i of news) {
     if (i.id.startsWith("normalthread_")) {
       const threadId = i.id.substring(13);
-      const osrs: Oshirase = {
+      const osrs: NewItem = {
         title: "",
         author: i.querySelector("tr > .by > cite > a")?.innerHTML ?? "",
         time: (

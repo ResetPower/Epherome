@@ -5,7 +5,6 @@ import {
   useState,
   MutableRefObject,
 } from "react";
-import { unwrapFunction } from "../tools";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 export interface TabContext {
@@ -19,7 +18,9 @@ export const TabContext = createContext<TabContext>({
   value: 0,
   orientation: "vertical",
   animate: true,
-  setValue: unwrapFunction(),
+  setValue: () => {
+    /**/
+  },
 });
 
 export function TabController(props: {

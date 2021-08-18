@@ -44,7 +44,7 @@ export function ListItemText(props: {
       <p>{props.primary ?? ""}</p>
       <p
         className={`text-shallow ${
-          props.longSecondary ? "overflow-ellipsis" : ""
+          props.longSecondary ? "overflow-ellipsis break-all" : ""
         }`}
         title={props.longSecondary ? props.secondary : undefined}
       >

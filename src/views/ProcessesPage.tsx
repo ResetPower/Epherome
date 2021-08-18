@@ -100,28 +100,26 @@ const ProcessesPage = observer(() => {
       );
       fs.writeFileSync(logFile, current.outputs.join("\n"));
       showItemInFinder(logFile);
-      showOverlay((close) => (
+      showOverlay(
         <AlertDialog
           title={t("tip")}
           message={t("processes.logExported", logFile)}
-          close={close}
         />
-      ));
+      );
     }
   };
   const handleTerminate = () => {
-    showOverlay((close) => (
+    showOverlay(
       <ConfirmDialog
         title={t("processes.terminate")}
         message={t("processes.terminateIrreversible")}
         positiveText={t("continueAnyway")}
         positiveClassName="text-danger"
-        close={close}
         action={() => {
           current.raw.kill();
         }}
       />
-    ));
+    );
   };
   const handleRemove = () => processStore.remove(current);
   const handleOpenProfile = () => {

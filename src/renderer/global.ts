@@ -11,7 +11,7 @@ export const lightTheme = defineTheme({
     background: colors.gray["100"],
     primary: colors.blue["500"],
     secondary: colors.pink["500"],
-    shallow: colors.gray["500"],
+    shallow: colors.gray["400"],
     divider: colors.gray["200"],
     card: colors.white,
     contrast: colors.black,

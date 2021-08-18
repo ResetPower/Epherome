@@ -18,31 +18,30 @@ import {
   TabController,
 } from "../components/tabs";
 import { useState } from "react";
-import { adapt, DefaultFn, unwrapFunction } from "../tools";
+import { adapt, call, DefaultFn } from "../tools";
 import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "../tools/arrays";
 import {
   ConfirmDialog,
   ExportedDialog,
-  showInternetNotAvailableDialog,
-  showNotSupportedDialog,
+  InternetNotAvailableDialog,
+  NotSupportedDialog,
 } from "../components/Dialog";
 import { observer } from "mobx-react";
 import { useRef } from "react";
 import { Avatar, Body, downloadSkin, steveId } from "../craft/skin";
 import { BiExport } from "react-icons/bi";
+import { Center } from "../components/fragments";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
-  onClose: DefaultFn;
 }): JSX.Element {
   return (
     <ConfirmDialog
       title={t("account.removing")}
       message={t("confirmRemoving")}
       action={() => removeAccount(props.account)}
-      close={props.onClose}
       positiveClassName="text-danger"
       positiveText={t("remove")}
     />
@@ -68,7 +67,7 @@ export function ChangeAccountFragment(props: {
       (value: CreateAccountImplResult) => {
         setLoading(false);
         if (value.success) {
-          unwrapFunction(props.onDone)();
+          call(props.onDone);
         } else {
           if (value.message === "msAccNoMinecraft") {
             setMsAccNoMcAlert(true);
@@ -142,27 +141,53 @@ export function ChangeAccountFragment(props: {
   );
 }
 
+export function AccountGeneralFragment(props: {
+  current: MinecraftAccount;
+}): JSX.Element {
+  const handleRemove = (selected: MinecraftAccount) =>
+    showOverlay(<RemoveAccountDialog account={selected} />);
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex-grow">
+        <p>{props.current?.name}</p>
+        <p>{props.current && t(`account.${props.current.mode}`)}</p>
+      </div>
+      <div className="flex justify-end">
+        <Button
+          className="text-danger"
+          onClick={() => props.current && handleRemove(props.current)}
+        >
+          <MdDelete /> {t("remove")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function AccountSkinFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const uuid = props.current.uuid;
+  const uuid = adapt(props.current.mode, "microsoft", "mojang")
+    ? props.current.uuid
+    : steveId;
 
   const handleExport = () => {
     setExporting(true);
     downloadSkin(uuid)
       .then((target) => {
         setExporting(false);
-        showOverlay((close) => (
-          <ExportedDialog target={target} close={close} />
-        ));
+        showOverlay(<ExportedDialog target={target} />);
       })
       .catch(() => {
         setExporting(false);
-        showInternetNotAvailableDialog();
+        showOverlay(<InternetNotAvailableDialog />);
       });
   };
-  const handleEdit = showNotSupportedDialog;
+  const handleEdit = () => {
+    showOverlay(<NotSupportedDialog />);
+  };
 
   return (
     <div className="flex justify-center space-x-9">
@@ -183,10 +208,6 @@ const AccountsPage = observer(() => {
   const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
-  const handleRemove = (selected: MinecraftAccount) =>
-    showOverlay((close) => (
-      <RemoveAccountDialog onClose={close} account={selected} />
-    ));
 
   const accounts = configStore.accounts;
   const current = _.selected(accounts);
@@ -214,7 +235,7 @@ const AccountsPage = observer(() => {
               }}
               key={id}
             >
-              {adapt(["mojang", "microsoft"], i.mode) ? (
+              {adapt(i.mode, "mojang", "microsoft") ? (
                 <Avatar uuid={i.uuid} />
               ) : (
                 i.mode === "offline" && <Avatar uuid={steveId} />
@@ -234,31 +255,14 @@ const AccountsPage = observer(() => {
               <TabBarItem value={1}>{t("account.skin")}</TabBarItem>
             </TabBar>
             <TabBody>
-              <div className="flex flex-col">
-                <div className="flex-grow">
-                  <p>{current?.name}</p>
-                  <p>{current && t(`account.${current.mode}`)}</p>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    className="text-danger"
-                    onClick={() => current && handleRemove(current)}
-                  >
-                    <MdDelete /> {t("remove")}
-                  </Button>
-                </div>
-              </div>
-              {current.mode === "mojang" ? (
-                <AccountSkinFragment current={current} />
-              ) : (
-                <p>{t("account.skin.notSupportedExcludeMojang")}</p>
-              )}
+              <AccountGeneralFragment current={current} />
+              <AccountSkinFragment current={current} />
             </TabBody>
           </TabController>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <Center hFull>
             <p className="text-shallow">{t("account.notSelected")}</p>
-          </div>
+          </Center>
         )}
       </div>
     </div>

@@ -14,9 +14,10 @@ import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "../craft/download";
 import { Downloader, DownloaderTask } from "../models/downloader";
 import { MinecraftUrlUtils } from "../craft/url";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { call, DefaultFn } from "../tools";
 import { ObjectWrapper } from "../tools/object";
 import { defaultJvmArgs } from "../craft/jvm";
+import { Center } from "../components/fragments";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -47,7 +48,7 @@ export function DownloadingFragment(props: {
 
   const handleCancel = () => {
     logger.info("Download cancelled");
-    unwrapFunction(canceller.current)();
+    call(canceller.current);
     downloader.current?.cancel();
     props.setLocking(false);
     setStatus(null);
@@ -234,9 +235,9 @@ export default function DownloadsPage(): JSX.Element {
             setLocking={setLocking}
           />
         ) : (
-          <div className="flex h-full text-shallow items-center justify-center">
-            {t("download.notSelected")}
-          </div>
+          <Center hFull>
+            <p className="text-shallow">{t("download.notSelected")}</p>
+          </Center>
         )}
       </div>
     </div>

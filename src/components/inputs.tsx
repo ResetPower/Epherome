@@ -1,11 +1,10 @@
-import { forwardRef, ForwardedRef, ReactNode, MouseEventHandler } from "react";
+import { ReactNode, MouseEventHandler } from "react";
 import {
   openInBrowser,
   openPathInFinder,
   showItemInFinder,
 } from "../models/open";
-import { unwrapFunction } from "../tools";
-import { DefaultFn } from "../tools";
+import { call, DefaultFn } from "../tools";
 
 export function Button(props: {
   children: ReactNode;
@@ -50,26 +49,20 @@ export function TinyButton(props: {
   );
 }
 
-export const IconButton = forwardRef(
-  (
-    props: {
-      children: ReactNode;
-      className?: string;
-      onClick?: MouseEventHandler<HTMLButtonElement>;
-    },
-    ref: ForwardedRef<HTMLButtonElement>
-  ) => {
-    return (
-      <button
-        className={`eph-icon-button color-contrast ${props.className ?? ""}`}
-        onClick={props.onClick}
-        ref={ref}
-      >
-        {props.children}
-      </button>
-    );
-  }
-);
+export function IconButton(props: {
+  children: ReactNode;
+  className?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+}): JSX.Element {
+  return (
+    <button
+      className={`eph-icon-button color-contrast ${props.className ?? ""}`}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  );
+}
 
 export function Select(props: {
   value: string | number;
@@ -84,7 +77,7 @@ export function Select(props: {
       {props.label && <label className="eph-label">{props.label}</label>}
       <select
         value={props.value}
-        onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
+        onChange={(ev) => call(props.onChange, ev.target.value)}
         className={`eph-select ${props.className ?? ""}`}
         disabled={props.disabled}
       >
@@ -135,12 +128,12 @@ export function TextField(props: {
             props.onEnter
               ? (event) => {
                   if (event.key === "Enter") {
-                    unwrapFunction(props.onEnter)();
+                    call(props.onEnter);
                   }
                 }
               : undefined
           }
-          onChange={(ev) => unwrapFunction(props.onChange)(ev.target.value)}
+          onChange={(ev) => call(props.onChange, ev.target.value)}
           className={`${
             props.icon && props.trailing
               ? "rounded-none"
@@ -185,9 +178,7 @@ export function Checkbox(props: {
           type="checkbox"
           className="opacity-0 absolute"
           checked={props.checked}
-          onChange={(ev) =>
-            unwrapFunction(props.onChange)(ev.currentTarget.checked)
-          }
+          onChange={(ev) => call(props.onChange, ev.currentTarget.checked)}
         />
         <svg
           className={`eph-checkbox-svg ${props.checked ? "" : "hidden"}`}
@@ -207,6 +198,7 @@ export function Link(props: {
   type?: "url" | "file" | "folder" | "clickable";
   onClick?: DefaultFn;
   children: string;
+  paddingX?: boolean;
 }): JSX.Element {
   const handleClick = () => {
     if (props.type === "file") {
@@ -214,13 +206,18 @@ export function Link(props: {
     } else if (props.type === "folder") {
       openPathInFinder(props.href ?? "");
     } else if (props.type === "clickable") {
-      unwrapFunction(props.onClick)();
+      call(props.onClick);
     } else {
       openInBrowser(props.href ?? "");
     }
   };
   return (
-    <span className={`eph-link ${props.className ?? ""}`} onClick={handleClick}>
+    <span
+      className={`eph-link ${props.paddingX && "px-2"} ${
+        props.className ?? ""
+      }`}
+      onClick={handleClick}
+    >
       {props.children}
     </span>
   );

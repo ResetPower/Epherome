@@ -9,7 +9,6 @@ import { historyStore, LocationParams } from "./history";
 import { themeStore } from "./theme";
 import { MdArrowBack, MdDeveloperBoard, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
-import { unwrapFunction } from "../tools";
 import ProcessesPage from "../views/ProcessesPage";
 import { IconButton } from "../components/inputs";
 import { t } from "../intl";
@@ -65,7 +64,7 @@ export const AppBar = observer(() => {
 
   return (
     <div className="eph-appbar text-white">
-      <IconButton onClick={isAtHome ? unwrapFunction() : historyStore.back}>
+      <IconButton onClick={isAtHome ? undefined : historyStore.back}>
         {isAtHome ? <MdMenu /> : <MdArrowBack />}
       </IconButton>
 
@@ -132,7 +131,7 @@ export default function App(): JSX.Element {
   }, []);
 
   return (
-    <IconContext.Provider value={{ size: "1.5em" }}>
+    <IconContext.Provider value={{ size: "1.5em", className: "mx-0.5" }}>
       <GlobalOverlay />
       <AppBar />
       <RouterView />

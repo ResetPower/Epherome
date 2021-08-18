@@ -1,24 +1,23 @@
 import path from "path";
 import { t } from "../intl";
-import { moveToTrash } from "../models/files";
+import { moveToTrash } from "./files";
 import { showOverlay } from "../renderer/overlays";
 import { DefaultFn } from "../tools";
-import { ConfirmDialog } from "./Dialog";
+import { ConfirmDialog } from "../components/Dialog";
 
 export function showMoveToTrashAlert(
   filepath: string,
   updater: DefaultFn
 ): void {
   const filename = path.basename(filepath);
-  showOverlay((close) => (
+
+  showOverlay(
     <ConfirmDialog
       title={t("moveToTrash")}
       message={t("confirmMoveSomethingToTrash", filename)}
       action={() => {
-        moveToTrash(filepath);
-        updater();
+        moveToTrash(filepath).then(updater);
       }}
-      close={close}
     />
-  ));
+  );
 }

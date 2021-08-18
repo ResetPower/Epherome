@@ -85,6 +85,8 @@ const zhCn: Language = {
     "settings.theme": "主题",
     "settings.theme.followOS": "跟随操作系统",
     "settings.devMode": "开发者模式",
+    "settings.downloadProvider.description": "如果官方源缓慢，可以尝试更换。",
+    "settings.downloadCurrency.description": "可同时下载的最大文件数量。",
     "java.executablePath": "Java 路径",
     "java.manage": "管理 Java",
     "java.newPath": "新路径",
@@ -138,6 +140,7 @@ const zhCn: Language = {
     moveToTrash: "移到废纸篓",
     confirmMoveSomethingToTrash: "您确定要将 %s 移到废纸篓吗？该操作不可逆。",
     exportedAt: "已导出于此处：",
+    versionOfSomething: "%s 版本",
   },
 };
 

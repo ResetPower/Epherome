@@ -89,6 +89,10 @@ const enUs: Language = {
     "settings.theme": "Theme",
     "settings.theme.followOS": "Follow OS",
     "settings.devMode": "Developer Mode",
+    "settings.downloadProvider.description":
+      "If the official source is slow, you can try to replace it.",
+    "settings.downloadCurrency.description":
+      "The number of files that can be downloaded at the same time.",
     "java.executablePath": "Java Executable Path",
     "java.manage": "Manage Java",
     "java.newPath": "New Path",
@@ -146,6 +150,7 @@ const enUs: Language = {
     confirmMoveSomethingToTrash:
       "Are you sure you want to remove %s to trash? This operation is irreversible.",
     exportedAt: "Export at: ",
+    versionOfSomething: "%s Version",
   },
 };
 

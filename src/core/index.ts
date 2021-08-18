@@ -218,7 +218,7 @@ export async function launchMinecraft(
     auth_access_token: account.token,
     user_type: "mojang",
     user_properties: `{}`,
-    version_type: adapt([undefined, true], profile.showEpherome)
+    version_type: adapt(profile.showEpherome, undefined, true)
       ? "Epherome"
       : parsed.type,
     // jvm args

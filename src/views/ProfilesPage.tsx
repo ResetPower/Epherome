@@ -34,7 +34,7 @@ import {
   TabController,
 } from "../components/tabs";
 import { ipcRenderer } from "electron";
-import { DefaultFn, unwrapFunction } from "../tools";
+import { call, DefaultFn } from "../tools";
 import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
@@ -51,7 +51,6 @@ import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import { defaultJvmArgs } from "../craft/jvm";
 
 export function RemoveProfileDialog(props: {
-  onClose: DefaultFn;
   profile: MinecraftProfile;
 }): JSX.Element {
   return (
@@ -59,7 +58,6 @@ export function RemoveProfileDialog(props: {
       title={t("profile.removing")}
       message={t("confirmRemoving")}
       action={() => removeProfile(props.profile)}
-      close={props.onClose}
       positiveClassName="text-danger"
       positiveText={t("remove")}
     />
@@ -100,7 +98,7 @@ export function ChangeProfileFragment(props: {
         gameDirIsolation,
       })
     ) {
-      unwrapFunction(props.onDone)();
+      call(props.onDone);
     }
   };
   const handleEdit = useCallback(() => {
@@ -114,7 +112,7 @@ export function ChangeProfileFragment(props: {
         java,
         gameDirIsolation,
       });
-      unwrapFunction(props.onDone)();
+      call(props.onDone);
     }
   }, [
     name,
@@ -275,9 +273,7 @@ const ProfilesPage = observer(() => {
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
   const handleRemove = (selected: MinecraftProfile) =>
-    showOverlay((close) => (
-      <RemoveProfileDialog onClose={close} profile={selected} />
-    ));
+    showOverlay(<RemoveProfileDialog profile={selected} />);
   const profiles = configStore.profiles;
   const current = _.selected(profiles);
   const _key = current?.gameDirIsolation;
@@ -396,9 +392,12 @@ const ProfilesPage = observer(() => {
                         {t("profile.openDirectory")}
                       </Button>
                     </div>
-                    {_.mapOr(
-                      manager.saves,
-                      (i) => (
+                    {manager.saves.length === 0 ? (
+                      <div className="flex text-shallow justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    ) : (
+                      manager.saves.map((i) => (
                         <ListItem
                           className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.save === i.id}
@@ -409,10 +408,7 @@ const ProfilesPage = observer(() => {
                           <div className="flex-grow" />
                           <MdClose onClick={() => manager.moveToTrash(i)} />
                         </ListItem>
-                      ),
-                      <div className="flex text-shallow justify-center">
-                        {t("profile.noContent")}
-                      </div>
+                      ))
                     )}
                   </>
                 )}
@@ -435,9 +431,12 @@ const ProfilesPage = observer(() => {
                         {t("profile.openDirectory")}
                       </Button>
                     </div>
-                    {_.mapOr(
-                      manager.resourcePacks,
-                      (i) => (
+                    {manager.resourcePacks.length === 0 ? (
+                      <div className="flex text-shallow items-center justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    ) : (
+                      manager.resourcePacks.map((i) => (
                         <ListItem
                           className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.resourcePack === i.id}
@@ -451,10 +450,7 @@ const ProfilesPage = observer(() => {
                           />
                           <MdClose onClick={() => manager.moveToTrash(i)} />
                         </ListItem>
-                      ),
-                      <div className="flex text-shallow items-center justify-center">
-                        {t("profile.noContent")}
-                      </div>
+                      ))
                     )}
                   </>
                 )}
@@ -489,9 +485,12 @@ const ProfilesPage = observer(() => {
                         {t("profile.openDirectory")}
                       </Button>
                     </div>
-                    {_.mapOr(
-                      manager.mods,
-                      (i) => (
+                    {manager.mods.length === 0 ? (
+                      <div className="flex text-shallow items-center justify-center">
+                        {t("profile.noContent")}
+                      </div>
+                    ) : (
+                      manager.mods.map((i) => (
                         <ListItem
                           className="rounded-lg m-2 p-3 text-contrast"
                           checked={selections.mod === i.id}
@@ -504,10 +503,7 @@ const ProfilesPage = observer(() => {
                           <div className="flex-grow" />
                           <MdClose onClick={() => manager.moveToTrash(i)} />
                         </ListItem>
-                      ),
-                      <div className="flex text-shallow items-center justify-center">
-                        {t("profile.noContent")}
-                      </div>
+                      ))
                     )}
                   </>
                 )}

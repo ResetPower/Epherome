@@ -1,7 +1,7 @@
 import got from "got";
 import path from "path";
 import fs, { WriteStream } from "fs";
-import { DefaultFn, ErrorHandler, unwrapFunction } from "../tools";
+import { call, DefaultFn, ErrorHandler } from "../tools";
 import { createDirByPath } from "../models/files";
 import { pipeline } from "stream";
 import { ObjectWrapper } from "../tools/object";
@@ -86,9 +86,9 @@ export class Downloader {
   tasks: DownloaderTask[] = [];
   errors: DownloaderTask[] = [];
   taskOptions: DownloaderTaskOptions[] = [];
-  onDetailsChange: DownloaderDetailsListener = unwrapFunction();
-  onError: ErrorHandler = unwrapFunction();
-  onDone: DefaultFn = unwrapFunction();
+  onDetailsChange?: DownloaderDetailsListener;
+  onError?: ErrorHandler;
+  onDone?: DefaultFn;
   constructor(options: DownloaderOptions) {
     if (options.taskOptions.length === 0) {
       options.onDone();
@@ -106,7 +106,11 @@ export class Downloader {
       (this.tasks.map((task) => task.percentage).reduce((a, b) => a + b, 0) +
         this.finishedTasks * 100) /
       this.taskOptions.length;
-    this.onDetailsChange(new ObjectWrapper(this.tasks), Math.floor(percentage));
+    call(
+      this.onDetailsChange,
+      new ObjectWrapper(this.tasks),
+      Math.floor(percentage)
+    );
   };
   finishOne = (task: DownloaderTask, _error = false): void => {
     // remove finished tasks
@@ -115,7 +119,7 @@ export class Downloader {
     this.updateDetails();
     // check if tasks are all completed
     if (this.tasks.length === 0) {
-      this.onDone();
+      call(this.onDone);
     } else {
       // add new task to the task list
       this.start();
