@@ -10,22 +10,16 @@ import {
   createProfile,
   editProfile,
   MinecraftProfile,
-  removeProfile,
 } from "../struct/profiles";
 import { configStore, setConfig } from "../struct/config";
 import {
-  MdClose,
   MdCreate,
-  MdDelete,
   MdExpandLess,
   MdExpandMore,
   MdFileDownload,
-  MdFolderOpen,
   MdGamepad,
-  MdRefresh,
 } from "react-icons/md";
-import { List, ListItem, ListItemText } from "../components/lists";
-import { showOverlay } from "../renderer/overlays";
+import { List, ListItem } from "../components/lists";
 import {
   TabBar,
   TabBarItem,
@@ -39,30 +33,18 @@ import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
 import { historyStore } from "../renderer/history";
 import { _ } from "../tools/arrays";
-import { ConfirmDialog } from "../components/Dialog";
 import { observer } from "mobx-react";
 import { FaTimes } from "react-icons/fa";
 import { useEffect } from "react";
 import { useMemo } from "react";
 import { MinecraftProfileManagerStore } from "../craft/manager";
-import { openPathInFinder } from "../models/open";
-import { BiImport } from "react-icons/bi";
-import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import { defaultJvmArgs } from "../craft/jvm";
-
-export function RemoveProfileDialog(props: {
-  profile: MinecraftProfile;
-}): JSX.Element {
-  return (
-    <ConfirmDialog
-      title={t("profile.removing")}
-      message={t("confirmRemoving")}
-      action={() => removeProfile(props.profile)}
-      positiveClassName="text-danger"
-      positiveText={t("remove")}
-    />
-  );
-}
+import {
+  ProfileModsFragment,
+  ProfileResourcePacksFragment,
+  ProfileSavesFragment,
+} from "./ProfileManagers";
+import { Center } from "../components/fragments";
 
 export function ChangeProfileFragment(props: {
   onDone?: DefaultFn;
@@ -272,8 +254,6 @@ const ProfilesPage = observer(() => {
   const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
   const handleCreate = () => setCreating(true);
-  const handleRemove = (selected: MinecraftProfile) =>
-    showOverlay(<RemoveProfileDialog profile={selected} />);
   const profiles = configStore.profiles;
   const current = _.selected(profiles);
   const _key = current?.gameDirIsolation;
@@ -281,13 +261,6 @@ const ProfilesPage = observer(() => {
     _key;
     return current ? new MinecraftProfileManagerStore(current) : undefined;
   }, [_key, current]);
-  const [selections, setSelections] = useState({
-    save: "",
-    resourcePack: "",
-    mod: "",
-  });
-  const select = (type: "save" | "resourcePack" | "mod", value: string) =>
-    setSelections((prev) => ({ ...prev, [type]: value }));
 
   return (
     <div className="flex eph-h-full">
@@ -336,7 +309,7 @@ const ProfilesPage = observer(() => {
             action="create"
             onDone={() => setCreating(false)}
           />
-        ) : current ? (
+        ) : current && manager ? (
           <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>
               <TabBarItem value={0}>{t("general")}</TabBarItem>
@@ -346,174 +319,18 @@ const ProfilesPage = observer(() => {
               <TabBarItem value={4}>Mods</TabBarItem>
             </TabBar>
             <TabBody>
-              <div className="flex flex-col">
-                <div className="flex-grow">
-                  <p>
-                    {t("name")}: {current?.name}
-                  </p>
-                  <p>
-                    {t("directory")}:{" "}
-                    <Link type="file" href={current?.dir}>
-                      {current?.dir}
-                    </Link>
-                  </p>
-                  <p>
-                    {t("version")}: {current?.ver}
-                  </p>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    className="text-danger"
-                    onClick={() => current && handleRemove(current)}
-                  >
-                    <MdDelete />
-                    {t("remove")}
-                  </Button>
-                </div>
-              </div>
               <div>
-                {current && (
-                  <ChangeProfileFragment action="edit" current={current} />
-                )}
+                <ChangeProfileFragment action="edit" current={current} />
               </div>
-              <div>
-                {manager && (
-                  <>
-                    <div className="flex">
-                      <Button onClick={manager.refresh}>
-                        <MdRefresh />
-                        {t("refresh")}
-                      </Button>
-                      <div className="flex-grow" />
-                      <Button
-                        onClick={() => openPathInFinder(manager.savesPath)}
-                      >
-                        <MdFolderOpen />
-                        {t("profile.openDirectory")}
-                      </Button>
-                    </div>
-                    {manager.saves.length === 0 ? (
-                      <div className="flex text-shallow justify-center">
-                        {t("profile.noContent")}
-                      </div>
-                    ) : (
-                      manager.saves.map((i) => (
-                        <ListItem
-                          className="rounded-lg m-2 p-3 text-contrast"
-                          checked={selections.save === i.id}
-                          onClick={() => select("save", i.id)}
-                          key={i.id}
-                        >
-                          <p>{i.name}</p>
-                          <div className="flex-grow" />
-                          <MdClose onClick={() => manager.moveToTrash(i)} />
-                        </ListItem>
-                      ))
-                    )}
-                  </>
-                )}
-              </div>
-              <div>
-                {manager && (
-                  <>
-                    <div className="flex">
-                      <Button onClick={manager.refresh}>
-                        <MdRefresh />
-                        {t("refresh")}
-                      </Button>
-                      <div className="flex-grow" />
-                      <Button
-                        onClick={() =>
-                          openPathInFinder(manager.resourcePacksPath)
-                        }
-                      >
-                        <MdFolderOpen />
-                        {t("profile.openDirectory")}
-                      </Button>
-                    </div>
-                    {manager.resourcePacks.length === 0 ? (
-                      <div className="flex text-shallow items-center justify-center">
-                        {t("profile.noContent")}
-                      </div>
-                    ) : (
-                      manager.resourcePacks.map((i) => (
-                        <ListItem
-                          className="rounded-lg m-2 p-3 text-contrast"
-                          checked={selections.resourcePack === i.id}
-                          onClick={() => select("resourcePack", i.id)}
-                          key={i.id}
-                        >
-                          <ListItemText
-                            primary={i.name}
-                            secondary={i.type}
-                            expand
-                          />
-                          <MdClose onClick={() => manager.moveToTrash(i)} />
-                        </ListItem>
-                      ))
-                    )}
-                  </>
-                )}
-              </div>
-              <div>
-                {manager && (
-                  <>
-                    <div className="flex">
-                      <Button onClick={manager.refresh}>
-                        <MdRefresh />
-                        {t("refresh")}
-                      </Button>
-                      <Button onClick={manager.importMod}>
-                        <BiImport />
-                        {t("profile.import")}
-                      </Button>
-                      <div className="flex-grow" />
-                      <Button onClick={() => manager.enableMod(selections.mod)}>
-                        <IoMdCheckmarkCircle />
-                        {t("profile.enable")}
-                      </Button>
-                      <Button
-                        onClick={() => manager.disableMod(selections.mod)}
-                      >
-                        <IoMdCloseCircle />
-                        {t("profile.disable")}
-                      </Button>
-                      <Button
-                        onClick={() => openPathInFinder(manager.modsPath)}
-                      >
-                        <MdFolderOpen />
-                        {t("profile.openDirectory")}
-                      </Button>
-                    </div>
-                    {manager.mods.length === 0 ? (
-                      <div className="flex text-shallow items-center justify-center">
-                        {t("profile.noContent")}
-                      </div>
-                    ) : (
-                      manager.mods.map((i) => (
-                        <ListItem
-                          className="rounded-lg m-2 p-3 text-contrast"
-                          checked={selections.mod === i.id}
-                          onClick={() => select("mod", i.id)}
-                          key={i.id}
-                        >
-                          <p className={i.enabled ? "" : "text-shallow"}>
-                            {i.name}
-                          </p>
-                          <div className="flex-grow" />
-                          <MdClose onClick={() => manager.moveToTrash(i)} />
-                        </ListItem>
-                      ))
-                    )}
-                  </>
-                )}
-              </div>
+              <ProfileSavesFragment manager={manager} />
+              <ProfileResourcePacksFragment manager={manager} />
+              <ProfileModsFragment manager={manager} />
             </TabBody>
           </TabController>
         ) : (
-          <div className="flex justify-center items-center h-full">
+          <Center hFull>
             <p className="text-shallow">{t("profile.notSelected")}</p>
-          </div>
+          </Center>
         )}
       </div>
     </div>

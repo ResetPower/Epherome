@@ -46,6 +46,12 @@ export class MinecraftProfileManagerStore {
   resourcePacks: MinecraftResourcePack[] = [];
   @observable
   mods: MinecraftMod[] = [];
+  @observable
+  selections = {
+    save: "",
+    resourcePack: "",
+    mod: "",
+  };
   constructor(profile: MinecraftProfile) {
     this.profile = profile;
     this.gameDir = this.profile.gameDirIsolation
@@ -89,6 +95,10 @@ export class MinecraftProfileManagerStore {
       fs.renameSync(mod.path, newPath);
       mod.path = newPath;
     }
+  };
+  @action
+  select = (type: "save" | "resourcePack" | "mod", value: string): void => {
+    this.selections = { ...this.selections, [type]: value };
   };
   @action
   refresh = (): void => {
