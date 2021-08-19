@@ -7,11 +7,11 @@ import { createJava, Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "core/down/url";
 import { ipcRenderer } from "electron";
-import { logger } from "eph/renderer/global";
 import log4js from "log4js";
 import log4jsConfiguration from "common/utils/logging";
 import { nanoid } from "nanoid";
 import { detectJava } from "core/java";
+import { commonLogger } from "common/loggers";
 
 export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
 
@@ -93,7 +93,7 @@ export class ConfigStore {
     this.save();
   };
   save(): void {
-    logger.info("Saving config");
+    commonLogger.info("Saving config");
     fs.writeFileSync(configFilename, JSON.stringify(toJS(this)));
   }
 }

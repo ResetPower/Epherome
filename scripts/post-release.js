@@ -1,10 +1,10 @@
-const package = require("../package.json");
+const pkg = require("../package.json");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
 function calculateHash(ext) {
-  const filename = `Epherome-v${package.version}.${ext}`;
+  const filename = `Epherome-v${pkg.version}.${ext}`;
   const file = path.resolve(`package/${filename}`);
   const data = fs.readFileSync(file);
   const md5 = crypto.createHash("md5").update(data).digest("hex");

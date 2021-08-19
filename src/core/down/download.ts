@@ -10,7 +10,7 @@ import {
   createDirByPath,
   downloadFile,
 } from "common/utils/files";
-import { logger } from "eph/renderer/global";
+import { coreLogger } from "common/loggers";
 import { Downloader, DownloaderDetailsListener } from "core/down/downloader";
 import { MinecraftUrlUtils } from "core/down/url";
 import { MutableRefObject } from "react";
@@ -23,7 +23,9 @@ export async function downloadMinecraft(
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<Downloader> {
   const versionDir = path.join(minecraftDownloadPath, "versions", version.id);
-  logger.info(`Start downloading Minecraft ${version.id} to "${versionDir}"`);
+  coreLogger.info(
+    `Start downloading Minecraft ${version.id} to "${versionDir}"`
+  );
 
   const jsonFilename = `${version.id}.json`;
   const jsonPath = path.join(versionDir, jsonFilename);
@@ -37,7 +39,7 @@ export async function downloadMinecraft(
 
   // read content from json file
   const data = fs.readFileSync(jsonPath).toString();
-  logger.info(`"${jsonFilename}" fetched`);
+  coreLogger.info(`"${jsonFilename}" fetched`);
 
   // parse libraries
   const parsed: ClientJson = JSON.parse(data);
@@ -53,7 +55,7 @@ export async function downloadMinecraft(
     cancellerWrapper
   );
 
-  logger.info(`Download requirements in "${jsonFilename}" parsed`);
+  coreLogger.info(`Download requirements in "${jsonFilename}" parsed`);
 
   // resolve jar
   const client = parsed.downloads.client;

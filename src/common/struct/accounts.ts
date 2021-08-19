@@ -11,8 +11,8 @@ import {
   XSTSToken2MinecraftToken,
 } from "core/auth";
 import { setConfig } from "./config";
-import { logger } from "eph/renderer/global";
 import { WithUnderline, _ } from "../utils/arrays";
+import { commonLogger } from "common/loggers";
 
 export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
 
@@ -32,7 +32,7 @@ export interface CreateAccountImplResult {
 
 function appendAccount(account: MinecraftAccount) {
   setConfig((cfg) => cfg.accounts.push(account));
-  logger.info(`Created new ${account.mode} account`);
+  commonLogger.info(`Created new ${account.mode} account`);
 }
 
 export async function createAccount(
@@ -75,8 +75,8 @@ export async function createAccount(
         // unusable auth code
         throw new Error("Unable to get auth code at microsoft authenticating");
       }
-    } catch {
-      return { success: false, message: "" };
+    } catch (e) {
+      return { success: false, message: e.message };
     }
 
     // Authorization Code -> Authorization Token
@@ -172,7 +172,7 @@ export async function createAccount(
 
 export function removeAccount(account: MinecraftAccount): void {
   setConfig((cfg) => _.remove(cfg.accounts, account));
-  logger.info(`Removed account`);
+  commonLogger.info(`Removed account`);
 }
 
 export function updateAccountToken(
@@ -184,5 +184,5 @@ export function updateAccountToken(
       value === account && (value.token = newToken);
     })
   );
-  logger.info(`Updated account access token`);
+  commonLogger.info(`Updated account access token`);
 }

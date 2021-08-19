@@ -86,7 +86,7 @@ export const MinecraftUrlUtils = {
         case "mcbbs":
           return "https://download.mcbbs.net/maven/com/mumfrey/liteloader/versions.json";
         default:
-          return "http://dl.liteloader.com/versions/versions.json";
+          return "https://dl.liteloader.com/versions/versions.json";
       }
     },
   },

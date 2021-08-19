@@ -48,7 +48,7 @@ const routes: RouteList = {
       params.profile ? (
         <ProfileInstallPage profile={params.profile as MinecraftProfile} />
       ) : (
-        <div></div>
+        <div />
       ),
     title: () => t("profile.install"),
   },

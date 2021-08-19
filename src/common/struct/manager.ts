@@ -5,11 +5,6 @@ import { basenameWithoutExt, readdir } from "common/utils/files";
 import { shortid } from "common/utils/ids";
 import { action, makeObservable, observable } from "mobx";
 import { ipcRenderer } from "electron";
-import { showMoveToTrashAlert } from "eph/renderer/alerts";
-
-export interface WithPath {
-  path: string;
-}
 
 export interface MinecraftSave {
   id: string;
@@ -64,10 +59,6 @@ export class MinecraftProfileManagerStore {
     this.refresh();
     makeObservable(this);
   }
-  @action
-  moveToTrash = (item: WithPath): void => {
-    showMoveToTrashAlert(item.path, this.refresh);
-  };
   @action
   importMod = (): void => {
     ipcRenderer.invoke("import-mod").then((value) => {

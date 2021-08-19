@@ -1,5 +1,5 @@
 import got from "got";
-import { logger } from "eph/renderer/global";
+import { commonLogger } from "common/loggers";
 
 export interface Hitokoto {
   content: string;
@@ -7,17 +7,17 @@ export interface Hitokoto {
 }
 
 export async function fetchHitokoto(): Promise<Hitokoto | null> {
-  logger.info("Fetching hitokoto ...");
+  commonLogger.info("Fetching hitokoto ...");
   try {
     const resp = await got.get("https://epherome.com/api/hitokoto");
     const parsed = JSON.parse(resp.body);
-    logger.info("Fetched hitokoto");
+    commonLogger.info("Fetched hitokoto");
     return {
       content: parsed.content,
       from: `——${parsed.from}`,
     };
   } catch (e) {
-    logger.warn("Unable to fetch hitokoto");
+    commonLogger.warn("Unable to fetch hitokoto");
     return null;
   }
 }

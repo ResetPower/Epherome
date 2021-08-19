@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { coreLogger } from ".";
+import { coreLogger } from "common/loggers";
 import { MinecraftProfile } from "common/struct/profiles";
 import { DefaultFn } from "common/utils";
 import { processStore } from "eph/views/ProcessesPage";

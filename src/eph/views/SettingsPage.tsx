@@ -7,7 +7,7 @@ import {
   IconButton,
 } from "../components/inputs";
 import { configStore, setConfig, userDataPath } from "common/struct/config";
-import { logger } from "../renderer/global";
+import { rendererLogger } from "common/loggers";
 import { Card } from "../components/layouts";
 import {
   MdClose,
@@ -190,7 +190,7 @@ export const SettingsGeneralFragment = observer(
       });
     };
     const handleChangeLanguage = (ev: string) => {
-      logger.info(`Changing language to ${ev}'`);
+      rendererLogger.info(`Changing language to ${ev}'`);
       intlStore.setLanguage(ev);
       setConfig((cfg) => (cfg.language = ev));
       historyStore.dispatch(ev);
@@ -283,12 +283,12 @@ export const SettingsGeneralFragment = observer(
 
 export const SettingsAppearanceFragment = observer(() => {
   const handleChangeTheme = (ev: string) => {
-    logger.info(`Changing theme to '${ev}'`);
+    rendererLogger.info(`Changing theme to '${ev}'`);
     setConfig((cfg) => (cfg.theme = ev));
     themeStore.updateTheme();
   };
   const handleThemeFollowOs = (checked: boolean) => {
-    logger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
+    rendererLogger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
     setConfig((cfg) => (cfg.themeFollowOs = checked));
     themeStore.updateTheme();
   };

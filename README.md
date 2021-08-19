@@ -18,7 +18,7 @@ _Epherome, which shocks the world, always surprises you by bringing you appallin
 
 We will provide an extension API in the future. Once it's available, this line of text will be replaced with entrances of extension API documents.
 
-We encourages people contribute to this project by developing extensions.
+We encourage people contribute to this project by developing extensions.
 
 ## Contribution
 

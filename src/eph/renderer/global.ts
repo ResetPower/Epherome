@@ -2,7 +2,7 @@ import { ipcRenderer } from "electron";
 import { defineTheme } from "./theme";
 import colors from "./colors";
 import { historyStore } from "./history";
-import log4js from "log4js";
+import { rendererLogger } from "common/loggers";
 
 // global themes
 export const lightTheme = defineTheme({
@@ -33,16 +33,13 @@ export const darkTheme = defineTheme({
   },
 });
 
-// renderer process logger
-export const logger = log4js.getLogger("renderer");
-
 // response main-process calls
 ipcRenderer.on("nav-back", historyStore.back);
 ipcRenderer.on("nav-home", () => historyStore.push("home"));
 
 // catch global errors
 window.addEventListener("error", (event) => {
-  logger.error(
+  rendererLogger.error(
     `Renderer Process Error: ${event.error} (at ${event.filename}:${event.lineno}:${event.colno})`
   );
 });

@@ -46,7 +46,7 @@ export class DownloaderTask {
     });
     const fileStream = fs.createWriteStream(this.target);
     // pipe streams to start download
-    const stream = pipeline(downloadStream, fileStream, (error) => {
+    this.stream = pipeline(downloadStream, fileStream, (error) => {
       if (error) {
         // destroy download task on error
         // in order to avoid unexpected things
@@ -59,7 +59,6 @@ export class DownloaderTask {
         finishCallback(this);
       }
     });
-    this.stream = stream;
   }
   // cancel download in just this task
   destroy(): void {

@@ -1,6 +1,6 @@
 import { Button, Checkbox, TextField } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "core/launch/versions";
-import { logger } from "../renderer/global";
+import { rendererLogger } from "common/loggers";
 import Spin from "../components/Spin";
 import got from "got";
 import { Alert } from "../components/layouts";
@@ -47,7 +47,7 @@ export function DownloadingFragment(props: {
   };
 
   const handleCancel = () => {
-    logger.info("Download cancelled");
+    rendererLogger.info("Download cancelled");
     call(canceller.current);
     downloader.current?.cancel();
     props.setLocking(false);
@@ -163,15 +163,15 @@ export default function DownloadsPage(): JSX.Element {
     // copy the ref here in order to satisfy eslint-plugin-react-hooks
     const downloaderRef = downloader;
 
-    logger.info("Fetching Minecraft launcher meta...");
+    rendererLogger.info("Fetching Minecraft launcher meta...");
     got(MinecraftUrlUtils.versionManifest())
       .then((resp) => {
         const parsed = JSON.parse(resp.body);
         setVersions(parsed.versions);
-        logger.info("Fetched Minecraft launcher meta");
+        rendererLogger.info("Fetched Minecraft launcher meta");
       })
       .catch(() => {
-        logger.warn("Unable to fetch Minecraft launcher meta");
+        rendererLogger.warn("Unable to fetch Minecraft launcher meta");
         setVersions(null);
       });
     return () => {

@@ -13,6 +13,7 @@ import { showOverlay } from "../renderer/overlays";
 import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
 import { historyStore } from "../renderer/history";
+import { showMoveToTrashAlert } from "eph/renderer/alerts";
 
 export function RemoveProfileDialog(props: {
   profile: MinecraftProfile;
@@ -94,7 +95,11 @@ export const ProfileSavesFragment = observer(
           >
             <p>{i.name}</p>
             <div className="flex-grow" />
-            <MdClose onClick={() => manager.moveToTrash(i)} />
+            <MdClose
+              onClick={() => {
+                showMoveToTrashAlert(i.path, manager.refresh);
+              }}
+            />
           </ListItem>
         ))
       )}
@@ -129,7 +134,11 @@ export const ProfileResourcePacksFragment = observer(
             key={i.id}
           >
             <ListItemText primary={i.name} secondary={i.type} expand />
-            <MdClose onClick={() => manager.moveToTrash(i)} />
+            <MdClose
+              onClick={() => {
+                showMoveToTrashAlert(i.path, manager.refresh);
+              }}
+            />
           </ListItem>
         ))
       )}
@@ -177,7 +186,11 @@ export const ProfileModsFragment = observer(
           >
             <p className={i.enabled ? "" : "text-shallow"}>{i.name}</p>
             <div className="flex-grow" />
-            <MdClose onClick={() => manager.moveToTrash(i)} />
+            <MdClose
+              onClick={() => {
+                showMoveToTrashAlert(i.path, manager.refresh);
+              }}
+            />
           </ListItem>
         ))
       )}

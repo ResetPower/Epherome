@@ -19,13 +19,10 @@ import { Java } from "common/struct/java";
 import { t } from "eph/intl";
 import { ephVersion } from "eph/renderer/updater";
 import { configStore, userDataPath } from "common/struct/config";
-import log4js from "log4js";
 import { MinecraftUrlUtils } from "core/down/url";
 import { Downloader } from "core/down/downloader";
 import { parseJson } from "./parser";
-
-// logger for minecraft launch core
-export const coreLogger = log4js.getLogger("core");
+import { coreLogger } from "common/loggers";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;

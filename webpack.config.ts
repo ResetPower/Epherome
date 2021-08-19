@@ -29,11 +29,10 @@ function resolveTsconfigPathsToAlias() {
   const aliases: { [key: string]: string } = {};
   Object.keys(paths).forEach((item) => {
     const key = item.replace("/*", "");
-    const value = path.resolve(
+    aliases[key] = path.resolve(
       baseUrl,
       paths[item][0].replace("/*", "").replace("*", "")
     );
-    aliases[key] = value;
   });
   return aliases;
 }

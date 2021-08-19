@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { isCompliant, equalOS } from "./rules";
-import { coreLogger } from ".";
+import { coreLogger } from "common/loggers";
 import {
   ClientAnalyzedAsset,
   ClientAnalyzedLibrary,

@@ -1,6 +1,6 @@
 import { setConfig } from "./config";
-import { logger } from "eph/renderer/global";
 import { WithUnderline, _ } from "common/utils/arrays";
+import { commonLogger } from "common/loggers";
 
 export interface MinecraftResolution {
   width?: number;
@@ -28,7 +28,7 @@ export function createProfile(profile: MinecraftProfile): boolean {
   if (profile.name === "" || profile.dir === "" || profile.ver === "")
     return false;
   setConfig((cfg) => cfg.profiles.push(profile));
-  logger.info(`Created profile named '${name}'`);
+  commonLogger.info(`Created profile named '${profile.name}'`);
   return true;
 }
 
@@ -37,11 +37,11 @@ export function editProfile(
   profile: MinecraftProfileEditablePart
 ): boolean {
   setConfig(() => Object.assign(former, profile));
-  logger.info(`Update profile`);
+  commonLogger.info(`Update profile`);
   return true;
 }
 
 export function removeProfile(profile: MinecraftProfile): void {
   setConfig((cfg) => _.remove(cfg.profiles, profile));
-  logger.info(`Removed profile.`);
+  commonLogger.info(`Removed profile.`);
 }
