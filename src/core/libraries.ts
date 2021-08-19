@@ -100,15 +100,17 @@ export async function analyzeLibrary(
 
       if (!fs.existsSync(p)) {
         coreLogger.warn(`Library file ${p} not exists`);
-
         if (url) {
-          const urlObject = new URL(url);
-          urlObject.pathname = `${name[0].split(".").join("/")}/${name[1]}/${
-            name[2]
-          }/${name[1]}-${name[2]}.jar`;
+          let urlObject = url;
+          if (!urlObject.endsWith("/")) {
+            urlObject += "/";
+          }
+          urlObject += `${name[0].split(".").join("/")}/${name[1]}/${name[2]}/${
+            name[1]
+          }-${name[2]}.jar`;
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
-            url: MinecraftUrlUtils.library(urlObject.href),
+            url: MinecraftUrlUtils.library(urlObject),
             path: p,
           });
         }

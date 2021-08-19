@@ -40,6 +40,7 @@ import { useMemo } from "react";
 import { MinecraftProfileManagerStore } from "../craft/manager";
 import { defaultJvmArgs } from "../craft/jvm";
 import {
+  ProfileGeneralFragment,
   ProfileModsFragment,
   ProfileResourcePacksFragment,
   ProfileSavesFragment,
@@ -319,9 +320,8 @@ const ProfilesPage = observer(() => {
               <TabBarItem value={4}>Mods</TabBarItem>
             </TabBar>
             <TabBody>
-              <div>
-                <ChangeProfileFragment action="edit" current={current} />
-              </div>
+              <ProfileGeneralFragment current={current} />
+              <ChangeProfileFragment action="edit" current={current} />
               <ProfileSavesFragment manager={manager} />
               <ProfileResourcePacksFragment manager={manager} />
               <ProfileModsFragment manager={manager} />

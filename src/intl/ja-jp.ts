@@ -76,7 +76,7 @@ const jaJp: Language = {
     "profile.gameDirIsolation.description":
       "ゲームのバージョンが異なれば、異なるゲームパスを使用する。",
     "profile.showEpherome.description":
-      "Minecraftホームページの左下隅に「Epherome」を表示します。",
+      "Minecraftホームページの左下隅に「Epherome」を表示します。","profile.install": "インストール",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",

@@ -34,8 +34,8 @@
       linear-gradient(135deg, var(--eph-shallow-color) 50%, transparent 50%),
       linear-gradient(
         to right,
-        var(--eph-shallow-color),
-        var(--eph-shallow-color)
+        var(--eph-divider-color),
+        var(--eph-divider-color)
       );
     background-position: calc(100% - 20px) calc(1em + 2px),
       calc(100% - 15px) calc(1em + 2px), calc(100% - 2.5em) 0.5em;

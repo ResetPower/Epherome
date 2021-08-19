@@ -11,6 +11,8 @@ import { t } from "../intl";
 import { openPathInFinder } from "../models/open";
 import { showOverlay } from "../renderer/overlays";
 import { MinecraftProfile, removeProfile } from "../struct/profiles";
+import { VscPackage } from "react-icons/vsc";
+import { historyStore } from "../renderer/history";
 
 export function RemoveProfileDialog(props: {
   profile: MinecraftProfile;
@@ -46,6 +48,14 @@ export function ProfileGeneralFragment({
         <Info title={t("version")}>{current.ver}</Info>
       </div>
       <div className="flex">
+        <Button
+          variant="contained"
+          onClick={() =>
+            historyStore.push("profiles/install", { profile: current })
+          }
+        >
+          <VscPackage /> {t("profile.install")}
+        </Button>
         <div className="flex-grow" />
         <Button className="text-danger" onClick={handleRemove}>
           <MdDelete />

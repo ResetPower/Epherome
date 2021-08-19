@@ -69,6 +69,7 @@ export interface LanguageDefinition {
   "profile.showEpherome": string;
   "profile.gameDirIsolation.description": string;
   "profile.showEpherome.description": string;
+  "profile.install": string,
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;

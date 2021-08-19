@@ -22,6 +22,7 @@
       `src/renderer/theme.ts` and `tailwind.config.js`
   */
   --eph-background-color: white;
+  --eph-divider-color: grey;
   --eph-shallow-color: gray;
   @apply text-contrast;
 }

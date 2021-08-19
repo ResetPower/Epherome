@@ -73,6 +73,7 @@ const zhCn: Language = {
     "profile.showEpherome": "展示 Epherome",
     "profile.showEpherome.description":
       "在 Minecraft 主页的左下角显示「Epherome」标识。",
+      "profile.install": "安装",
     "settings.epheromePath": "Epherome 路径",
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",

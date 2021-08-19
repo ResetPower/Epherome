@@ -4,7 +4,7 @@ import { MinecraftProfile } from "../struct/profiles";
 import { MinecraftAccount, updateAccountToken } from "../struct/accounts";
 import { authenticate, refresh, validate } from "../craft/auth";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
-import { ClientJson, ClientJsonArguments, mergeClientJson } from "./struct";
+import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { unzipNatives } from "./unzip";
 import { runMinecraft } from "./runner";
@@ -27,6 +27,7 @@ import { configStore, userDataPath } from "../struct/config";
 import log4js from "log4js";
 import { MinecraftUrlUtils } from "../craft/url";
 import { Downloader } from "../models/downloader";
+import { parseJson } from "../craft/parser";
 
 // logger for minecraft launch core
 export const coreLogger = log4js.getLogger("core");
@@ -63,7 +64,6 @@ export async function launchMinecraft(
   const customResolution = profile.resolution;
 
   const buff: string[] = [];
-  const dir = path.resolve(profile.dir);
 
   setHelper(defaultHelper);
 
@@ -101,24 +101,8 @@ export async function launchMinecraft(
   }
 
   // === parsing json file ===
-  const jsonFile = path.join(
-    dir,
-    "versions",
-    profile.ver,
-    `${profile.ver}.json`
-  );
-  let parsed: ClientJson = JSON.parse(fs.readFileSync(jsonFile).toString());
-  if (parsed.inheritsFrom) {
-    const inheritsFrom = parsed.inheritsFrom;
-    const inherit: ClientJson = JSON.parse(
-      fs
-        .readFileSync(
-          path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.json`)
-        )
-        .toString()
-    );
-    parsed = mergeClientJson(parsed, inherit);
-  }
+  const dir = path.resolve(profile.dir);
+  const parsed = parseJson(profile);
 
   const clientJar = parsed.jar // use jar file in json if it has
     ? path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)

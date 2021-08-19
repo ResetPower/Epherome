@@ -20,6 +20,8 @@ import { VscDebugConsole, VscExtensions } from "react-icons/vsc";
 import { ipcRenderer } from "electron";
 import Popover from "../components/Popover";
 import { ListItem } from "../components/lists";
+import ProfileInstallPage from "../views/ProfileInstallPage";
+import { MinecraftProfile } from "../struct/profiles";
 
 export interface RouteList {
   [key: string]: {
@@ -31,27 +33,36 @@ export interface RouteList {
 const routes: RouteList = {
   home: {
     component: <HomePage />,
-    title: (): string => t("epherome"),
+    title: () => t("epherome"),
   },
   accounts: {
     component: <AccountsPage />,
-    title: (): string => t("accounts"),
+    title: () => t("accounts"),
   },
   profiles: {
     component: <ProfilesPage />,
-    title: (): string => t("profiles"),
+    title: () => t("profiles"),
+  },
+  "profiles/install": {
+    component: (params) =>
+      params.profile ? (
+        <ProfileInstallPage profile={params.profile as MinecraftProfile} />
+      ) : (
+        <div></div>
+      ),
+    title: () => t("profile.install"),
   },
   settings: {
     component: <SettingsPage />,
-    title: (): string => t("settings"),
+    title: () => t("settings"),
   },
   downloads: {
     component: <DownloadsPage />,
-    title: (): string => t("download"),
+    title: () => t("download"),
   },
   processes: {
     component: <ProcessesPage />,
-    title: (): string => t("processes"),
+    title: () => t("processes"),
   },
 };
 

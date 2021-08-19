@@ -54,3 +54,7 @@ export function adapt<T>(value: T, ...keys: T[]): boolean {
   }
   return false;
 }
+
+export function normalizeArray<T>(arr: T | T[]): T[] {
+  return Array.isArray(arr) ? arr : [arr];
+}

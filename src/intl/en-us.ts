@@ -76,7 +76,7 @@ const enUs: Language = {
     "profile.gameDirIsolation.description":
       "For different game versions, use different game directories.",
     "profile.showEpherome.description":
-      'Display "Epherome" in the lower left corner of the Minecraft home page.',
+      'Display "Epherome" in the lower left corner of the Minecraft home page.',"profile.install": "Installs",
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",

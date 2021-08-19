@@ -6,6 +6,20 @@ import HtmlPlugin from "html-webpack-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import ReactRefreshPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 
+const templateContent = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Epherome</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src *;">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+`;
+
 interface Config extends Configuration {
   devServer?: WebpackDevServerConfiguration;
 }
@@ -77,8 +91,7 @@ export default (env: { [key: string]: string }): Config[] => {
     },
     plugins: [
       new HtmlPlugin({
-        title: "Epherome",
-        template: "./assets/template.txt",
+        templateContent,
         inject: "body",
       }),
       new MiniCssExtractPlugin(),

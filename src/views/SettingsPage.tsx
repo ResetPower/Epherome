@@ -9,7 +9,7 @@ import {
 import { configStore, setConfig, userDataPath } from "../struct/config";
 import { logger } from "../renderer/global";
 import { Card } from "../components/layouts";
-import EpheromeLogo from "../../assets/Epherome.png";
+import EpheromeLogo from "../assets/Epherome.png";
 import {
   MdClose,
   MdInfo,

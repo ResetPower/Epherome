@@ -78,6 +78,21 @@ export const MinecraftUrlUtils = {
         return bmclapi.replace("bmclapi2.bangbang93.com", "download.mcbbs.net");
     }
   },
+  LiteLoader: {
+    versions(): string {
+      switch (MinecraftUrlUtils._provider) {
+        case "bmclapi":
+          return "https://bmclapi.bangbang93.com/maven/com/mumfrey/liteloader/versions.json";
+        case "mcbbs":
+          return "https://download.mcbbs.net/maven/com/mumfrey/liteloader/versions.json";
+        default:
+          return "http://dl.liteloader.com/versions/versions.json";
+      }
+    },
+  },
+  Fabric: {},
+  Forge: {},
+  Optifine: {},
 };
 
 export function replaceHost(source: string, host: string): string {
