@@ -24,6 +24,20 @@ interface Config extends Configuration {
   devServer?: WebpackDevServerConfiguration;
 }
 
+function resolveTsconfigPathsToAlias() {
+  const { paths, baseUrl } = require("./tsconfig.json").compilerOptions;
+  const aliases: { [key: string]: string } = {};
+  Object.keys(paths).forEach((item) => {
+    const key = item.replace("/*", "");
+    const value = path.resolve(
+      baseUrl,
+      paths[item][0].replace("/*", "").replace("*", "")
+    );
+    aliases[key] = value;
+  });
+  return aliases;
+}
+
 export default (env: { [key: string]: string }): Config[] => {
   // build environment
   const dev = env.dev;
@@ -37,7 +51,7 @@ export default (env: { [key: string]: string }): Config[] => {
       exprContextCritical: false,
       rules: [
         {
-          test: /\.(js|ts|tsx)?$/,
+          test: /\.(ts|tsx)?$/,
           exclude: /node_modules/,
           use: "ts-loader",
         },
@@ -53,6 +67,7 @@ export default (env: { [key: string]: string }): Config[] => {
     },
     resolve: {
       extensions: [".js", ".ts", ".tsx"],
+      alias: resolveTsconfigPathsToAlias(),
     },
     output: {
       path: path.join(__dirname, "./dist"),
@@ -63,7 +78,7 @@ export default (env: { [key: string]: string }): Config[] => {
   // main process
   const main: Config = {
     entry: {
-      main: "./src/main/main",
+      main: "./src/main",
     },
     target: "electron-main",
   };
@@ -71,7 +86,7 @@ export default (env: { [key: string]: string }): Config[] => {
   // renderer process
   const renderer: Config = {
     entry: {
-      app: "./src/renderer/index",
+      app: "./src/eph",
     },
     target: "electron-renderer",
     optimization: {

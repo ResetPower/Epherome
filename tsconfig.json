@@ -12,7 +12,15 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "baseUrl": "./src",
+    "paths": {
+      "eph/*": ["eph/*"],
+      "core/*": ["core/*"],
+      "assets/*": ["assets/*"],
+      "styles/*": ["styles/*"],
+      "common/*": ["common/*"]
+    }
   },
   "include": ["./src"]
 }
