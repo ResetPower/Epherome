@@ -11,7 +11,7 @@ import {
   XSTSToken2MinecraftToken,
 } from "core/auth";
 import { setConfig } from "./config";
-import { logger } from "../../eph/renderer/global";
+import { logger } from "eph/renderer/global";
 import { WithUnderline, _ } from "../utils/arrays";
 
 export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
