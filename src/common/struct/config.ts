@@ -77,9 +77,7 @@ export class ConfigStore {
     extendObservable(this, preferred);
     // initialize java config
     if (this.javas.length === 0) {
-      detectJava().then((java) => {
-        java && createJava(java);
-      });
+      detectJava().then((javas) => javas.forEach((java) => createJava(java)));
     }
     // process java instances of old epherome
     for (const i of this.javas) {

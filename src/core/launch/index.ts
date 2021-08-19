@@ -23,6 +23,7 @@ import { MinecraftUrlUtils } from "core/down/url";
 import { Downloader } from "core/down/downloader";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
+import { parseJvmArgs } from "core/java";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -239,7 +240,7 @@ export async function launchMinecraft(
   };
 
   // jvm arguments
-  profile.jvmArgs && buff.push(...profile.jvmArgs.split(" "));
+  profile.jvmArgs && buff.push(...parseJvmArgs(profile.jvmArgs));
   if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {

@@ -96,9 +96,7 @@ export const ProfileSavesFragment = observer(
             <p>{i.name}</p>
             <div className="flex-grow" />
             <MdClose
-              onClick={() => {
-                showMoveToTrashAlert(i.path, manager.refresh);
-              }}
+              onClick={() => showMoveToTrashAlert(i.path).then(manager.refresh)}
             />
           </ListItem>
         ))
@@ -135,9 +133,7 @@ export const ProfileResourcePacksFragment = observer(
           >
             <ListItemText primary={i.name} secondary={i.type} expand />
             <MdClose
-              onClick={() => {
-                showMoveToTrashAlert(i.path, manager.refresh);
-              }}
+              onClick={() => showMoveToTrashAlert(i.path).then(manager.refresh)}
             />
           </ListItem>
         ))
@@ -187,9 +183,7 @@ export const ProfileModsFragment = observer(
             <p className={i.enabled ? "" : "text-shallow"}>{i.name}</p>
             <div className="flex-grow" />
             <MdClose
-              onClick={() => {
-                showMoveToTrashAlert(i.path, manager.refresh);
-              }}
+              onClick={() => showMoveToTrashAlert(i.path).then(manager.refresh)}
             />
           </ListItem>
         ))

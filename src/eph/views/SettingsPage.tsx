@@ -151,10 +151,10 @@ export const JavaManagementDialog = observer(() => {
       <div className="flex">
         <Button
           onClick={() =>
-            detectJava().then((result) => {
-              if (result) {
-                if (checkDuplicate(result.dir)) return;
-                createJava(result);
+            detectJava().then((javas) => {
+              for (const i of javas) {
+                if (checkDuplicate(i.dir)) continue;
+                createJava(i);
               }
             })
           }

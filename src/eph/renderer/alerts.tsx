@@ -5,21 +5,21 @@ import { showOverlay } from "./overlays";
 import { DefaultFn } from "common/utils";
 import { AlertDialog, ConfirmDialog } from "../components/Dialog";
 
-export function showMoveToTrashAlert(
-  filepath: string,
-  updater: DefaultFn
-): void {
-  const filename = path.basename(filepath);
+export function showMoveToTrashAlert(filepath: string): Promise<void> {
+  return new Promise((resolve) => {
+    const filename = path.basename(filepath);
 
-  showOverlay(
-    <ConfirmDialog
-      title={t("moveToTrash")}
-      message={t("confirmMoveSomethingToTrash", filename)}
-      action={() => {
-        moveToTrash(filepath).then(updater);
-      }}
-    />
-  );
+    showOverlay(
+      <ConfirmDialog
+        title={t("moveToTrash")}
+        message={t("confirmMoveSomethingToTrash", filename)}
+        action={() => {
+          moveToTrash(filepath);
+          resolve();
+        }}
+      />
+    );
+  });
 }
 
 export function showJava16RequiredDialog(finallyRun: DefaultFn): void {

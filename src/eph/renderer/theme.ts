@@ -21,8 +21,6 @@ export interface EphTheme {
   palette: EphThemePalette;
 }
 
-export const defineTheme = (theme: EphTheme): EphTheme => theme;
-
 export class ThemeStore {
   constructor() {
     // listen to system theme changes

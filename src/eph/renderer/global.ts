@@ -1,11 +1,11 @@
 import { ipcRenderer } from "electron";
-import { defineTheme } from "./theme";
 import colors from "./colors";
 import { historyStore } from "./history";
 import { rendererLogger } from "common/loggers";
+import { EphTheme } from "./theme";
 
 // global themes
-export const lightTheme = defineTheme({
+export const lightTheme: EphTheme = {
   type: "light",
   palette: {
     background: colors.gray["100"],
@@ -17,9 +17,9 @@ export const lightTheme = defineTheme({
     contrast: colors.black,
     danger: colors.red["500"],
   },
-});
+};
 
-export const darkTheme = defineTheme({
+export const darkTheme: EphTheme = {
   type: "dark",
   palette: {
     background: colors.gray["800"],
@@ -31,7 +31,7 @@ export const darkTheme = defineTheme({
     contrast: colors.white,
     danger: colors.red["400"],
   },
-});
+};
 
 // response main-process calls
 ipcRenderer.on("nav-back", historyStore.back);

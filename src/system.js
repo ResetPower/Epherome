@@ -44,6 +44,10 @@ ipcMain.handle("import-mod", async () => {
   } else return undefined;
 });
 
+ipcMain.on("get-java-home", (ev) => {
+  ev.returnValue = process.env.JAVA_HOME;
+});
+
 ipcMain.on("quit", () => {
   app.quit();
 });
