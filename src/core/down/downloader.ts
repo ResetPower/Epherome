@@ -21,7 +21,7 @@ export class DownloaderTask {
   target: string;
   filename: string;
   percentage = 0;
-  error = false;
+  error?: Error;
   finished = false;
   private stream: WriteStream;
   constructor(
@@ -29,31 +29,37 @@ export class DownloaderTask {
     updateDetails: DefaultFn,
     finishCallback: (task: DownloaderTask, error?: boolean) => void
   ) {
+    const handleError = (error: Error) => {
+      console.log("err");
+      // destroy download task on error
+      // in order to avoid unexpected things
+      this.destroy();
+      this.error = error;
+      // have to "finish"
+      finishCallback(this);
+    };
     this.url = options.url;
     this.target = options.target;
     // prepare files
-    ensureDir(this.target);
+    ensureDir(path.dirname(this.target));
     this.filename = path.basename(this.target);
     // initialize streams
     const downloadStream = got.stream(this.url);
-    downloadStream.on("downloadProgress", ({ percent }) => {
-      const newPercentage = Math.round(percent * 100);
-      // don't repeat updating to keep performance
-      if (this.percentage !== newPercentage) {
-        this.percentage = newPercentage;
-        updateDetails();
-      }
-    });
+    downloadStream
+      .on("downloadProgress", ({ percent }) => {
+        const newPercentage = Math.round(percent * 100);
+        // don't repeat updating to keep performance
+        if (this.percentage !== newPercentage) {
+          this.percentage = newPercentage;
+          updateDetails();
+        }
+      })
+      .on("error", handleError);
     const fileStream = fs.createWriteStream(this.target);
     // pipe streams to start download
     this.stream = pipeline(downloadStream, fileStream, (error) => {
       if (error) {
-        // destroy download task on error
-        // in order to avoid unexpected things
-        this.destroy();
-        this.error = true;
-        // have to finish
-        finishCallback(this, true);
+        handleError(error);
       } else {
         this.finished = true;
         finishCallback(this);
@@ -76,6 +82,7 @@ export interface DownloaderOptions {
   onDetailsChange: DownloaderDetailsListener;
   onError: ErrorHandler;
   onDone: DefaultFn;
+  stopOnError?: boolean;
 }
 
 export class Downloader {
@@ -88,6 +95,7 @@ export class Downloader {
   onDetailsChange?: DownloaderDetailsListener;
   onError?: ErrorHandler;
   onDone?: DefaultFn;
+  stopOnError = false;
   constructor(options: DownloaderOptions) {
     if (options.taskOptions.length === 0) {
       options.onDone();
@@ -97,6 +105,7 @@ export class Downloader {
       this.onDetailsChange = options.onDetailsChange;
       this.onError = options.onError;
       this.onDone = options.onDone;
+      this.stopOnError = options.stopOnError ?? false;
     }
   }
   updateDetails = (): void => {
@@ -111,7 +120,11 @@ export class Downloader {
       Math.floor(percentage)
     );
   };
-  finishOne = (task: DownloaderTask, _error = false): void => {
+  finishOne = (task: DownloaderTask): void => {
+    if (task.error && this.stopOnError) {
+      this.cancel();
+      call(this.onError, task.error);
+    }
     // remove finished tasks
     this.tasks.splice(this.tasks.indexOf(task), 1);
     this.finishedTasks++;

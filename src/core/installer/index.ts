@@ -7,7 +7,7 @@ import { MinecraftInstall } from "eph/views/ProfileInstallPage";
 import { MinecraftUrlUtils } from "../down/url";
 import { createDirByPath } from "common/utils/files";
 
-export type Installer = (profile: MinecraftProfile) => void;
+export type Installer = (profile: MinecraftProfile) => Promise<void>;
 
 export interface InstallVersion {
   name: string;
@@ -22,9 +22,6 @@ export interface LiteLoaderVersionMeta {
 }
 
 export interface LiteLoaderVersion {
-  repo: {
-    url: string;
-  };
   snapshots: {
     libraries: ClientJsonLibraries;
     "com.mumfrey:liteloader": {
@@ -38,6 +35,17 @@ export interface LiteLoaderVersion {
   };
 }
 
+function processLib(libraries: ClientJsonLibraries): ClientJsonLibraries {
+  for (const i of libraries) {
+    if (!i.url && i.name) {
+      if (i.name.startsWith("org.ow2.asm")) {
+        i.url = "https://files.minecraftforge.net/maven/";
+      }
+    }
+  }
+  return libraries;
+}
+
 export async function getInstallVersions(
   mc: string,
   type: MinecraftInstall
@@ -47,27 +55,35 @@ export async function getInstallVersions(
     const parsed: { versions: { [key: string]: LiteLoaderVersion } } =
       JSON.parse(result.body);
     const version = parsed.versions[mc];
-    const defaultUrl = "https://libraries.minecraft.net/";
-    const meta = (version.artefacts ?? version.snapshots)[
-      "com.mumfrey:liteloader"
-    ].latest;
-    const time = new Date(+meta.timestamp * 1000).toISOString();
-    return [
-      {
-        name: `${mc}-${meta.stream}`,
-        install: (profile) => {
-          const versionName = `${mc}-LiteLoader${mc}`;
-          const versionDir = path.join(profile.dir, "versions", versionName);
-          const jsonFile = path.join(versionDir, `${versionName}.json`);
+    const latests = [
+      ...(version.artefacts
+        ? [version.artefacts["com.mumfrey:liteloader"].latest]
+        : []),
+      version.snapshots["com.mumfrey:liteloader"].latest,
+    ];
+    return latests.map((latest) => {
+      const stream = latest.stream;
+      const time = new Date(+latest.timestamp * 1000).toISOString();
+      return {
+        name: `${mc}-${stream}`,
+        install: async (profile) => {
+          const versionDir = path.join(profile.dir, "versions", profile.ver);
+          const jsonFile = path.join(versionDir, `${profile.ver}.json`);
           createDirByPath(jsonFile);
           const jsonContent = {
-            id: versionName,
+            id: mc,
+            jar: mc,
             type: "release",
-            minecraftArguments: `--tweakClass ${meta.tweakClass}`,
-            libraries: meta.libraries.map((val) => ({
-              name: val.name,
-              url: val.url ?? defaultUrl,
-            })),
+            minecraftArguments: `--tweakClass ${latest.tweakClass}`,
+            libraries: [
+              {
+                name: `com.mumfrey:liteloader:${mc}${
+                  stream === "SNAPSHOT" ? "-SNAPSHOT" : ""
+                }`,
+                url: "https://dl.liteloader.com/versions",
+              },
+              ...processLib(latest.libraries),
+            ],
             mainClass: "net.minecraft.launchwrapper.Launch",
             inheritsFrom: mc,
             releaseTime: time,
@@ -75,8 +91,8 @@ export async function getInstallVersions(
           };
           fs.writeFileSync(jsonFile, JSON.stringify(jsonContent));
         },
-      },
-    ];
+      };
+    });
   } else {
     return [];
   }

@@ -76,7 +76,13 @@ const enUs: Language = {
     "profile.gameDirIsolation.description":
       "For different game versions, use different game directories.",
     "profile.showEpherome.description":
-      'Display "Epherome" in the lower left corner of the Minecraft home page.',"profile.install": "Installs",
+      'Display "Epherome" in the lower left corner of the Minecraft home page.',
+    "profile.install": "Installs",
+    "profile.installing": "Installing",
+    "profile.installForMinecraft": "Install for Minecraft {0}",
+    "profile.selectInstallContent": "Choose what you want to install.",
+    "profile.installerAdaptToSomething": "{1} for Minecraft {0}",
+    "profile.noInstallerAdaptToSomething": "No {1} for Minecraft {0} found",
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",
@@ -99,11 +105,11 @@ const enUs: Language = {
     "java.invalidPath": "Invalid Path",
     "java.duplicatePath": "Duplicate Path",
     "java.detect": "Detect",
-    "java.bitNumber": "%s-Bit",
+    "java.bitNumber": "{0}-Bit",
     "java.default": "Default Java",
     download: "Download",
     downloading: "Downloading",
-    downloadingSomething: "Downloading %s",
+    downloadingSomething: "Downloading {0}",
     "download.profileName": "Profile Name",
     "download.preparing": "Preparing",
     "download.notSelected": "No Version Selected",
@@ -114,7 +120,7 @@ const enUs: Language = {
     "version.old_beta": "Old Beta",
     processes: "Processes",
     "processes.noMinecraft": "No Minecraft Processes",
-    "processes.logExported": "Log Exported at\n%s",
+    "processes.logExported": "Log Exported at\n{0}",
     "processes.terminate": "Terminate",
     "processes.terminateIrreversible":
       "Forcibly terminating the process may cause you to lose some important data. Do you want to continue?",
@@ -125,7 +131,7 @@ const enUs: Language = {
     extensions: "Extensions",
     epheromeUpdate: "Epherome Update",
     "epheromeUpdate.check": "Check Update",
-    "epheromeUpdate.available": "New version %s is available.",
+    "epheromeUpdate.available": "New version {0} is available.",
     "epheromeUpdate.availableMessage":
       "Please go to Epherome official website to download the latest version.",
     "epheromeUpdate.needNot": "Epherome is the latest version.",
@@ -148,9 +154,9 @@ const enUs: Language = {
     continueAnyway: "Continue Anyway",
     moveToTrash: "Move To Trash",
     confirmMoveSomethingToTrash:
-      "Are you sure you want to remove %s to trash? This operation is irreversible.",
+      "Are you sure you want to remove {0} to trash? This operation is irreversible.",
     exportedAt: "Export at: ",
-    versionOfSomething: "%s Version",
+    versionOfSomething: "{0} Version",
   },
 };
 

@@ -58,3 +58,10 @@ export function adapt<T>(value: T, ...keys: T[]): boolean {
 export function normalizeArray<T>(arr: T | T[]): T[] {
   return Array.isArray(arr) ? arr : [arr];
 }
+
+export function format(source: string, ...params: string[]): string {
+  params.forEach((param, index) => {
+    source = source.replace(`{${index}}`, param);
+  });
+  return source;
+}

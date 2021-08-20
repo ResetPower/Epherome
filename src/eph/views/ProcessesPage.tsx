@@ -10,7 +10,6 @@ import { Button } from "../components/inputs";
 import { BiExport } from "react-icons/bi";
 import { MdGamepad, MdRemoveCircle, MdStop } from "react-icons/md";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react";
 import { showOverlay } from "../renderer/overlays";
 import { AlertDialog, ConfirmDialog } from "../components/Dialog";
@@ -18,77 +17,15 @@ import { FaLayerGroup } from "react-icons/fa";
 import { GiStoneBlock } from "react-icons/gi";
 import { useCallback } from "react";
 import path from "path";
-import { MinecraftProfile } from "common/struct/profiles";
-import { ChildProcessWithoutNullStreams } from "child_process";
 import { historyStore } from "../renderer/history";
 import { _ } from "common/utils/arrays";
 import { showItemInFinder } from "common/utils/open";
-
-export interface Process {
-  profile: MinecraftProfile;
-  raw: ChildProcessWithoutNullStreams;
-  outputs: string[];
-  done: boolean;
-}
-
-export class ProcessStore {
-  @observable
-  messages = "";
-  @observable
-  processes: Process[] = [];
-  @observable
-  value = -1;
-  constructor() {
-    makeObservable(this);
-    fs.watch(logFilename, { encoding: "utf-8" }, () => {
-      const newMessages = fs.readFileSync(logFilename).toString();
-      runInAction(() => (this.messages = newMessages));
-    });
-  }
-  @action
-  register(
-    profile: MinecraftProfile,
-    raw: ChildProcessWithoutNullStreams
-  ): void {
-    const proc: Process = {
-      profile,
-      raw,
-      outputs: [],
-      done: false,
-    };
-    const index = this.processes.length;
-    this.processes[index] = proc;
-    raw.on("exit", () =>
-      runInAction(() => (this.processes[index].done = true))
-    );
-    raw.stdout.on("data", (d) =>
-      runInAction(() => this.processes[index].outputs.push(d))
-    );
-    raw.stderr.on("data", (d) =>
-      runInAction(() => this.processes[index].outputs.push(d))
-    );
-  }
-  @action
-  remove(process: Process): void {
-    for (const k in this.processes) {
-      if (this.processes[k] === process) {
-        this.processes.splice(+k, 1);
-        break;
-      }
-    }
-  }
-  @action
-  select(value: number): void {
-    this.value = value;
-  }
-}
-
-export const processStore = new ProcessStore();
+import { Process, processStore } from "common/stores/process";
 
 const ProcessesPage = observer(() => {
   const minecraftProcesses = processStore.processes;
   const selected = processStore.value;
-  const current: Process | undefined = minecraftProcesses[selected];
+  const current: Process = minecraftProcesses[selected];
 
   const onScrollPaneLoaded = useCallback((node: HTMLDivElement | null) => {
     node && (node.scrollTop = node.scrollHeight);

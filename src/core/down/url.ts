@@ -72,10 +72,10 @@ export const MinecraftUrlUtils = {
         "https://bmclapi2.bangbang93.com/maven"
       );
     switch (this._provider) {
-      case "bmclapi":
-        return bmclapi;
       case "mcbbs":
         return bmclapi.replace("bmclapi2.bangbang93.com", "download.mcbbs.net");
+      default:
+        return bmclapi;
     }
   },
   LiteLoader: {

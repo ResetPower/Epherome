@@ -98,7 +98,7 @@ export async function launchMinecraft(
   const dir = path.resolve(profile.dir);
   const parsed = parseJson(profile);
 
-  const clientJar = parsed.jar // use jar file in json if it has
+  let clientJar = parsed.jar // use jar file in json if it has
     ? path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)
     : path.join(dir, "versions", profile.ver, `${profile.ver}.jar`);
   const nativeDir = path.join(
@@ -109,6 +109,11 @@ export async function launchMinecraft(
   );
   ensureDir(nativeDir);
 
+  if (!fs.existsSync(clientJar) && parsed.inheritsFrom) {
+    const inheritsFrom = parsed.inheritsFrom;
+    clientJar = path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.jar`);
+  }
+
   // === analyzing library & assets ===
   const analyzedLibrary = await analyzeLibrary(dir, parsed.libraries);
   const assetIndex = parsed.assetIndex;
@@ -118,7 +123,7 @@ export async function launchMinecraft(
 
   // download missing libraries
   setHelper(`${t("launching.downloadingLib")} (0%)`);
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
     const downloader = new Downloader({
       taskOptions: analyzedLibrary.missing.map((val) => ({
         url: val.url,
@@ -127,20 +132,21 @@ export async function launchMinecraft(
       onDetailsChange: (_, totalPercentage) => {
         setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
       },
-      onError: (error: Error) => {
-        throw error;
-      },
+      onError: reject,
       onDone: resolve,
       concurrency: configStore.downloadConcurrency,
+      stopOnError: true,
     });
     downloader.start();
+  }).catch((reason) => {
+    throw reason;
   });
 
   const analyzedAssets = await analyzeAssets(dir, assetIndex);
 
   // download missing libraries
   setHelper(`${t("launching.downloadingAsset")} (0%)`);
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
     const downloader = new Downloader({
       taskOptions: analyzedAssets.missing.map((val) => ({
         url: val.url,
@@ -149,13 +155,14 @@ export async function launchMinecraft(
       onDetailsChange: (_, totalPercentage) => {
         setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
       },
-      onError: (error: Error) => {
-        throw error;
-      },
+      onError: reject,
       onDone: resolve,
       concurrency: configStore.downloadConcurrency,
+      stopOnError: true,
     });
     downloader.start();
+  }).catch((reason) => {
+    throw reason;
   });
 
   setHelper(defaultHelper);

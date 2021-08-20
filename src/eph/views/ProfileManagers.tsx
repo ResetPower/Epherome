@@ -39,7 +39,7 @@ export function ProfileGeneralFragment({
 
   return (
     <div>
-      <div className="flex-grow">
+      <div className="flex-grow space-y-1 pb-3">
         <Info title={t("name")}>{current.name}</Info>
         <Info title={t("directory")}>
           <Link type="file" href={current.dir}>

@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import { coreLogger } from "common/loggers";
 import { MinecraftProfile } from "common/struct/profiles";
 import { DefaultFn } from "common/utils";
-import { processStore } from "eph/views/ProcessesPage";
+import { Process, processStore } from "common/stores/process";
 
 export function runMinecraft(
   java: string,
@@ -30,5 +30,5 @@ export function runMinecraft(
   raw.on("exit", () => {
     !done && onDone();
   });
-  processStore.register(profile, raw);
+  processStore.register(new Process(profile, raw));
 }

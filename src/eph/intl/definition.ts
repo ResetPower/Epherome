@@ -69,7 +69,12 @@ export interface LanguageDefinition {
   "profile.showEpherome": string;
   "profile.gameDirIsolation.description": string;
   "profile.showEpherome.description": string;
-  "profile.install": string,
+  "profile.install": string;
+  "profile.installing": string;
+  "profile.installForMinecraft": string;
+  "profile.selectInstallContent": string;
+  "profile.installerAdaptToSomething": string;
+  "profile.noInstallerAdaptToSomething": string;
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;

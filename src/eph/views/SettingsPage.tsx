@@ -31,12 +31,9 @@ import { t, intlStore } from "../intl";
 import { _ } from "common/utils/arrays";
 import os from "os";
 import { observer } from "mobx-react";
-import { historyStore } from "../renderer/history";
-import { useReducer } from "react";
 import { MinecraftDownloadProvider } from "core/down/url";
 import { checkJavaVersion, detectJava } from "core/java";
 import { Info, WithHelper } from "../components/fragments";
-import { DefaultFn } from "common/utils";
 import EpheromeLogo from "assets/Epherome.png";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
@@ -170,116 +167,111 @@ export const JavaManagementDialog = observer(() => {
   );
 });
 
-export const SettingsGeneralFragment = observer(
-  (props: { forceUpdate: DefaultFn }) => {
-    const [result, setResult] = useState<string | null>("");
+export const SettingsGeneralFragment = observer(() => {
+  const [result, setResult] = useState<string | null>("");
 
-    const handleUpdateCheck = () => {
-      setResult(null);
-      checkEphUpdate().then((result) => {
-        if (result) {
-          if (result.need) {
-            setResult(t("epheromeUpdate.available", result.name));
-            showOverlay(<UpdateAvailableDialog version={result.name} />);
-          } else {
-            setResult(t("epheromeUpdate.needNot"));
-          }
+  const handleUpdateCheck = () => {
+    setResult(null);
+    checkEphUpdate().then((result) => {
+      if (result) {
+        if (result.need) {
+          setResult(t("epheromeUpdate.available", result.name));
+          showOverlay(<UpdateAvailableDialog version={result.name} />);
         } else {
-          setResult(t("internetNotAvailable"));
+          setResult(t("epheromeUpdate.needNot"));
         }
-      });
-    };
-    const handleChangeLanguage = (ev: string) => {
-      rendererLogger.info(`Changing language to ${ev}'`);
-      intlStore.setLanguage(ev);
-      setConfig((cfg) => (cfg.language = ev));
-      historyStore.dispatch(ev);
-      setResult("");
-      props.forceUpdate();
-    };
-    const handleManageJava = () => {
-      showOverlay(<JavaManagementDialog />);
-    };
+      } else {
+        setResult(t("internetNotAvailable"));
+      }
+    });
+  };
+  const handleChangeLanguage = (ev: string) => {
+    rendererLogger.info(`Changing language to ${ev}'`);
+    intlStore.setLanguage(ev);
+    setResult("");
+  };
+  const handleManageJava = () => {
+    showOverlay(<JavaManagementDialog />);
+  };
 
-    return (
-      <div className="space-y-2">
+  return (
+    <div className="space-y-2">
+      <Select
+        value={intlStore.language?.name ?? ""}
+        label={t("language")}
+        onChange={handleChangeLanguage}
+      >
+        {intlStore.languages.map((lang, index) => (
+          <option value={lang.name} key={index}>
+            {lang.nativeName}
+          </option>
+        ))}
+      </Select>
+      <WithHelper helper={t("settings.downloadProvider.description")}>
         <Select
-          value={intlStore.language?.name ?? ""}
-          label={t("language")}
-          onChange={handleChangeLanguage}
-        >
-          {intlStore.languages.map((lang, index) => (
-            <option value={lang.name} key={index}>
-              {lang.nativeName}
-            </option>
-          ))}
-        </Select>
-        <WithHelper helper={t("settings.downloadProvider.description")}>
-          <Select
-            value={configStore.downloadProvider}
-            label={t("settings.downloadProvider")}
-            onChange={(provider) =>
-              setConfig(
-                (cfg) =>
-                  (cfg.downloadProvider = provider as MinecraftDownloadProvider)
-              )
-            }
-          >
-            <option value="official">
-              {t("settings.downloadProvider.official")}
-            </option>
-            <option value="bmclapi">BMCLAPI</option>
-            <option value="mcbbs">MCBBS</option>
-          </Select>
-        </WithHelper>
-        <TextField
-          min={1}
-          max={10}
-          value={configStore.downloadConcurrency.toString()}
-          type="number"
-          label={t("settings.downloadConcurrency")}
-          helperText={t("settings.downloadCurrency.description")}
-          fieldClassName="w-32"
-          onChange={(concurrency) => {
-            const value = +concurrency;
-            value > 0 &&
-              value < 11 &&
-              setConfig((cfg) => (cfg.downloadConcurrency = value));
-          }}
-        />
-        <Button onClick={handleManageJava}>
-          <FaJava /> {t("java.manage")}
-        </Button>
-        <Checkbox
-          checked={configStore.developerMode}
-          onChange={(checked) =>
-            setConfig((cfg) => (cfg.developerMode = checked))
+          value={configStore.downloadProvider}
+          label={t("settings.downloadProvider")}
+          onChange={(provider) =>
+            setConfig(
+              (cfg) =>
+                (cfg.downloadProvider = provider as MinecraftDownloadProvider)
+            )
           }
         >
-          {t("settings.devMode")}
+          <option value="official">
+            {t("settings.downloadProvider.official")}
+          </option>
+          <option value="bmclapi">BMCLAPI</option>
+          <option value="mcbbs">MCBBS</option>
+        </Select>
+      </WithHelper>
+      <TextField
+        min={1}
+        max={10}
+        value={configStore.downloadConcurrency.toString()}
+        type="number"
+        label={t("settings.downloadConcurrency")}
+        helperText={t("settings.downloadCurrency.description")}
+        fieldClassName="w-32"
+        onChange={(concurrency) => {
+          const value = +concurrency;
+          value > 0 &&
+            value < 11 &&
+            setConfig((cfg) => (cfg.downloadConcurrency = value));
+        }}
+      />
+      <Button onClick={handleManageJava}>
+        <FaJava /> {t("java.manage")}
+      </Button>
+      <Checkbox
+        checked={configStore.developerMode}
+        onChange={(checked) =>
+          setConfig((cfg) => (cfg.developerMode = checked))
+        }
+      >
+        {t("settings.devMode")}
+      </Checkbox>
+      <WithHelper helper={t("settings.hitokoto.description")}>
+        <Checkbox
+          checked={configStore.hitokoto}
+          onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
+        >
+          {t("settings.hitokoto")}
         </Checkbox>
-        <WithHelper helper={t("settings.hitokoto.description")}>
-          <Checkbox
-            checked={configStore.hitokoto}
-            onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
-          >
-            {t("settings.hitokoto")}
-          </Checkbox>
-        </WithHelper>
-        <div className="flex my-3 items-center space-x-3">
-          <Button
-            variant="contained"
-            onClick={handleUpdateCheck}
-            disabled={result === null}
-          >
-            {t("epheromeUpdate.check")}
-          </Button>
-          <p>{result !== null ? result : <Spin />}</p>
-        </div>
+      </WithHelper>
+      <div className="flex my-3 items-center space-x-3">
+        <Button
+          variant="contained"
+          onClick={handleUpdateCheck}
+          disabled={result === null}
+        >
+          {t("epheromeUpdate.check")}
+        </Button>
+        <p>{result !== null ? result : <Spin />}</p>
       </div>
-    );
-  }
-);
+    </div>
+  );
+});
 
 export const SettingsAppearanceFragment = observer(() => {
   const handleChangeTheme = (ev: string) => {
@@ -364,30 +356,35 @@ export const SettingsAboutFragment = (): JSX.Element => (
   </div>
 );
 
-export default function SettingsPage(): JSX.Element {
-  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+const SettingsPage = observer(() => {
+  {
+    // visit the key to update on it changes
+    intlStore.language;
 
-  return (
-    <TabController className="eph-h-full" orientation="vertical">
-      <TabBar className="shadow-md">
-        <TabBarItem value={0}>
-          <MdTune />
-          {t("general")}
-        </TabBarItem>
-        <TabBarItem value={1}>
-          <MdPalette />
-          {t("appearance")}
-        </TabBarItem>
-        <TabBarItem value={2}>
-          <MdInfo />
-          {t("about")}
-        </TabBarItem>
-      </TabBar>
-      <TabBody className="overflow-y-auto">
-        <SettingsGeneralFragment forceUpdate={forceUpdate} />
-        <SettingsAppearanceFragment />
-        <SettingsAboutFragment />
-      </TabBody>
-    </TabController>
-  );
-}
+    return (
+      <TabController className="eph-h-full" orientation="vertical">
+        <TabBar className="shadow-md">
+          <TabBarItem value={0}>
+            <MdTune />
+            {t("general")}
+          </TabBarItem>
+          <TabBarItem value={1}>
+            <MdPalette />
+            {t("appearance")}
+          </TabBarItem>
+          <TabBarItem value={2}>
+            <MdInfo />
+            {t("about")}
+          </TabBarItem>
+        </TabBar>
+        <TabBody className="overflow-y-auto">
+          <SettingsGeneralFragment />
+          <SettingsAppearanceFragment />
+          <SettingsAboutFragment />
+        </TabBody>
+      </TabController>
+    );
+  }
+});
+
+export default SettingsPage;

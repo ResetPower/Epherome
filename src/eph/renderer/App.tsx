@@ -11,7 +11,7 @@ import { MdArrowBack, MdDeveloperBoard, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
 import { IconButton } from "../components/inputs";
-import { t } from "../intl";
+import { intlStore, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { observer } from "mobx-react";
 import { useLayoutEffect } from "react";
@@ -68,7 +68,7 @@ const routes: RouteList = {
 
 export const AppBar = observer(() => {
   // visit the key in order to update title on language change correctly
-  historyStore.key;
+  intlStore.language;
   const route = routes[historyStore.pathname];
   const title = unwrapAccessible(route?.title);
   const isAtHome = title === "Epherome";

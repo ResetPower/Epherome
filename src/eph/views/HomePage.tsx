@@ -335,6 +335,7 @@ const HomePage = observer(() => {
               <MdMoreHoriz /> {t("expand")}
             </TinyButton>
           </div>
+          <div className="flex-grow" />
           <div className="flex border-t border-divider p-1">
             <MdRefresh
               className="cursor-pointer text-contrast"

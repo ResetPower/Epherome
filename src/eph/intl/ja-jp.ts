@@ -76,7 +76,14 @@ const jaJp: Language = {
     "profile.gameDirIsolation.description":
       "ゲームのバージョンが異なれば、異なるゲームパスを使用する。",
     "profile.showEpherome.description":
-      "Minecraftホームページの左下隅に「Epherome」を表示します。","profile.install": "インストール",
+      "Minecraftホームページの左下隅に「Epherome」を表示します。",
+    "profile.install": "インストール",
+    "profile.installing": "インストール中",
+    "profile.installForMinecraft": "Minecraft {0} にインストール",
+    "profile.selectInstallContent": "インストールするものを選択してください。",
+    "profile.installerAdaptToSomething": "Minecraft {0} の {1}",
+    "profile.noInstallerAdaptToSomething":
+      "Minecraft {0} の {1} が見つかりません",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",
@@ -99,11 +106,11 @@ const jaJp: Language = {
     "java.invalidPath": "間違ったパス",
     "java.duplicatePath": "重複するパス",
     "java.detect": "検出する",
-    "java.bitNumber": "%s ビット",
+    "java.bitNumber": "{0} ビット",
     "java.default": "デフォルト Java",
     download: "ダウンロード",
     downloading: "ダウンロード中",
-    downloadingSomething: "%s をダウンロード中",
+    downloadingSomething: "{0} をダウンロード中",
     "download.profileName": "プロフィル名前",
     "download.preparing": "準備中",
     "download.notSelected": "バージョンが選択だれていません",
@@ -114,7 +121,7 @@ const jaJp: Language = {
     "version.old_beta": "古い Beta",
     processes: "プロセス",
     "processes.noMinecraft": "Minecraft プロセスはありません",
-    "processes.logExported": "ログは\n%s\nにエクスポートされました。",
+    "processes.logExported": "ログは\n{0}\nにエクスポートされました。",
     "processes.terminate": "強制終了",
     "processes.terminateIrreversible":
       "プロセスを強制的に終了すると、いくつかの重要なデータが失われる可能性があります。続行しますか？",
@@ -125,7 +132,7 @@ const jaJp: Language = {
     extensions: "拡張",
     epheromeUpdate: "Epherome 更新",
     "epheromeUpdate.check": "更新を確認する",
-    "epheromeUpdate.available": "新しいバージョン %s が利用可能です。",
+    "epheromeUpdate.available": "新しいバージョン {0} が利用可能です。",
     "epheromeUpdate.availableMessage":
       "Epherome の公式ウェブサイトにアクセスして最新バージョンをダウンロードしてください。",
     "epheromeUpdate.needNot": "Epherome は最新バージョンです。",
@@ -148,9 +155,9 @@ const jaJp: Language = {
     continueAnyway: "とにかく続け",
     moveToTrash: "ゴミ箱に移動",
     confirmMoveSomethingToTrash:
-      "%s をゴミ箱に移動してもよろしいですか？操作は元に戻せません。",
+      "{0} をゴミ箱に移動してもよろしいですか？操作は元に戻せません。",
     exportedAt: "ここにエクスポートされました：",
-    versionOfSomething: "%s バージョン",
+    versionOfSomething: "{0} バージョン",
   },
 };
 

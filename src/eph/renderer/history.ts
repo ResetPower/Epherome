@@ -10,10 +10,6 @@ export interface Location {
 export class HistoryStore {
   @observable
   private locations: Location[] = [];
-  // useless observable
-  // in order to help to update title on language change correctly
-  @observable
-  key = "";
   constructor() {
     makeObservable(this);
   }
@@ -27,10 +23,6 @@ export class HistoryStore {
   @action
   back = (): void => {
     this.locations.length > 1 && this.locations.pop();
-  };
-  @action
-  dispatch = (action: string): void => {
-    this.key = action;
   };
   @computed
   get isEmpty(): boolean {

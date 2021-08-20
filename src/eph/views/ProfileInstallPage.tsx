@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { MdArrowForward, MdClose, MdFileDownload } from "react-icons/md";
+import {
+  MdArrowForward,
+  MdClose,
+  MdFileDownload,
+  MdGamepad,
+} from "react-icons/md";
 import { parseJson } from "core/launch/parser";
-import { MinecraftProfile } from "common/struct/profiles";
+import { createProfile, MinecraftProfile } from "common/struct/profiles";
 import Fabric from "assets/Fabric.png";
 import Forge from "assets/Forge.png";
 import Optifine from "assets/Optifine.png";
@@ -10,11 +15,9 @@ import { getInstallVersions, InstallVersion } from "core/installer";
 import { List, ListItem } from "../components/lists";
 import Spin from "../components/Spin";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { DefaultFn } from "common/utils";
-import { Button } from "../components/inputs";
+import { Button, TextField } from "../components/inputs";
 import { t } from "../intl";
-import { showOverlay } from "../renderer/overlays";
-import { NotSupportedDialog } from "../components/Dialog";
+import { useRef } from "react";
 
 export type MinecraftInstall = "Fabric" | "Forge" | "Optifine" | "LiteLoader";
 
@@ -28,13 +31,11 @@ export function InstallerView({
   type,
   selection,
   select,
-  back,
 }: {
   version: string;
   type: MinecraftInstall;
   selection: InstallSelection;
   select: (type: MinecraftInstall, current?: InstallVersion) => void;
-  back: DefaultFn;
 }): JSX.Element {
   const current = selection.current;
   const [versions, setVersions] = useState<InstallVersion[] | undefined | null>(
@@ -50,7 +51,7 @@ export function InstallerView({
   return (
     <div className="p-9">
       <p className="text-xl font-semibold py-3">
-        适用于 Minecraft {version} 的 {type}
+        {t("profile.installerAdaptToSomething", version, type)}
       </p>
       <div
         className="overflow-y-auto"
@@ -62,10 +63,7 @@ export function InstallerView({
               <ListItem
                 key={index}
                 className="rounded-lg p-3"
-                onClick={() => {
-                  select(type, val);
-                  back();
-                }}
+                onClick={() => select(type, val)}
                 checked={current === val}
               >
                 <p>{val.name}</p>
@@ -76,17 +74,12 @@ export function InstallerView({
           <Spin />
         ) : (
           <p className="text-shallow">
-            没有适用于 {version} 的 {type}
+            {t("profile.noInstallerAdaptToSomething", version, type)}
           </p>
         )}
       </div>
       <div className="flex">
-        <Button
-          onClick={() => {
-            select(type);
-            back();
-          }}
-        >
+        <Button onClick={() => select(type)}>
           <MdClose /> {t("cancel")}
         </Button>
       </div>
@@ -99,13 +92,46 @@ export default function ProfileInstallPage({
 }: {
   profile: MinecraftProfile;
 }): JSX.Element {
+  const pNameEdited = useRef(false);
+  const [helper, setHelper] = useState<string | null>(null);
   const [selection, setSelection] = useState<InstallSelection>({});
   const [stage, setStage] = useState<MinecraftInstall | null>(null);
+  const [pName, setPName] = useState(`${profile.name} (Modified)`);
   const versionId = useMemo(() => parseJson(profile, true).id, [profile]);
 
-  const handleInstall = () => {
-    showOverlay(<NotSupportedDialog />);
+  const select = (type: MinecraftInstall, current?: InstallVersion) => {
+    !helper && setSelection({ type, current });
+    setStage(null);
   };
+  const inputPName = (str: string) => {
+    !helper && setPName(str);
+    !pNameEdited.current && (pNameEdited.current = true);
+  };
+  const handleInstall = () => {
+    setHelper("Installing...");
+    const iVer = selection.current;
+    if (iVer) {
+      const newProfile: MinecraftProfile = {
+        name: pName,
+        dir: profile.dir,
+        ver: `${profile.ver}-${selection.type}${iVer.name}`,
+        from: profile.from,
+      };
+      createProfile(newProfile);
+      iVer?.install(newProfile).then(() => {
+        setHelper(t("done"));
+      });
+    }
+  };
+
+  useEffect(() => {
+    !pNameEdited.current &&
+      setPName(
+        `${profile.name} (${
+          selection.type && selection.current ? selection.type : "Modified"
+        })`
+      );
+  }, [profile.name, selection]);
 
   return (
     <SwitchTransition>
@@ -113,18 +139,24 @@ export default function ProfileInstallPage({
         {stage ? (
           <InstallerView
             type={stage}
-            select={(type, current) => setSelection({ type, current })}
+            select={select}
             selection={selection}
             version={versionId}
-            back={() => setStage(null)}
           />
         ) : (
           <div className="p-9">
             <p className="text-xl font-semibold">
-              为 Minecraft {versionId} 安装
+              {t("profile.installForMinecraft", versionId)}
             </p>
-            <p className="text-shallow">选择一个你想要安装的内容。</p>
-            <div className="space-y-3 pt-9">
+            <p className="text-shallow">{t("profile.selectInstallContent")}</p>
+            <TextField
+              className="py-3"
+              icon={<MdGamepad />}
+              label={t("download.profileName")}
+              value={pName}
+              onChange={inputPName}
+            />
+            <div className="space-y-3">
               {["Fabric", "Forge", "Optifine", "LiteLoader"].map(
                 (val, index) => {
                   const i = val as MinecraftInstall;
@@ -132,12 +164,12 @@ export default function ProfileInstallPage({
                     selection.type === i ? selection.current : undefined;
                   return (
                     <div
-                      className="flex select-none cursor-pointer hover:shadow-md transition-shadow items-center p-3 shadow-sm rounded-lg bg-card"
+                      className="flex select-none cursor-pointer hover:shadow-md transition-shadow items-center p-2 shadow-sm rounded-lg bg-card"
                       onClick={() => setStage(i)}
                       key={index}
                     >
                       <img
-                        className="rounded-lg w-9 h-9 mr-3"
+                        className="rounded-lg w-7 h-7 mr-3"
                         src={[Fabric, Forge, Optifine, LiteLoader][index]}
                       />
                       <p className="flex-grow capitalize">{val}</p>
@@ -148,8 +180,13 @@ export default function ProfileInstallPage({
                 }
               )}
             </div>
-            <div className="flex py-3 justify-end">
-              <Button variant="contained" onClick={handleInstall}>
+            <div className="flex py-3">
+              <p className="flex-grow">{helper}</p>
+              <Button
+                variant="contained"
+                disabled={!!helper}
+                onClick={handleInstall}
+              >
                 <MdFileDownload /> {t("profile.install")}
               </Button>
             </div>

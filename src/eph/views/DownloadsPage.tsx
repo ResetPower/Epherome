@@ -11,7 +11,7 @@ import { createProfile } from "common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
-import { downloadMinecraft } from "core/down/download";
+import { downloadMinecraft } from "core/installer/minecraft";
 import { Downloader, DownloaderTask } from "core/down/downloader";
 import { MinecraftUrlUtils } from "core/down/url";
 import { call, DefaultFn } from "common/utils";

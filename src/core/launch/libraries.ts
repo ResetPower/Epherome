@@ -15,6 +15,14 @@ import { MinecraftUrlUtils } from "core/down/url";
 import { DefaultFn } from "common/utils";
 import { MutableRefObject } from "react";
 
+function existsAsFileSync(filepath: string): boolean {
+  return (
+    fs.existsSync(filepath) &&
+    fs.lstatSync(filepath).isFile() &&
+    fs.readFileSync(filepath).toString() !== ""
+  );
+}
+
 export async function analyzeLibrary(
   dir: string,
   libraries: ClientJsonLibraries
@@ -41,7 +49,7 @@ export async function analyzeLibrary(
               const nativeObj = classifiers[native];
               const file = `${dir}/libraries/${nativeObj.path}`;
               let miss = false;
-              if (fs.existsSync(file)) {
+              if (existsAsFileSync(file)) {
                 if (
                   nativeObj.sha1 &&
                   nativeObj.sha1 !== calculateHash(file, "sha1")
@@ -68,7 +76,7 @@ export async function analyzeLibrary(
         const ar = downloads.artifact;
         const file = `${dir}/libraries/${ar.path}`;
         let miss = false;
-        if (fs.existsSync(file)) {
+        if (existsAsFileSync(file)) {
           if (ar.sha1 && ar.sha1 !== calculateHash(file, "sha1")) {
             miss = true;
           }
@@ -88,7 +96,9 @@ export async function analyzeLibrary(
     } else if (lib.name) {
       // with only `name` and `url` key (It seems to be LiteLoader or Fabric)
       const name = lib.name.split(":");
-      const url = lib.url;
+      const url =
+        lib.url ??
+        MinecraftUrlUtils.library("https://libraries.minecraft.net/");
       const p = path.join(
         dir,
         "libraries",
@@ -98,7 +108,7 @@ export async function analyzeLibrary(
         `${name[1]}-${name[2]}.jar`
       );
 
-      if (!fs.existsSync(p)) {
+      if (!existsAsFileSync(p)) {
         coreLogger.warn(`Library file ${p} not exists`);
         if (url) {
           let urlObject = url;
