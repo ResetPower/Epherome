@@ -35,7 +35,7 @@
     },
     "asar": true,
     "compression": "maximum",
-    "icon": "assets/Epherome.png",
+    "icon": "src/assets/Epherome.png",
     "win": {
       "compression": "normal",
       "target": "portable"
