@@ -79,6 +79,7 @@ const zhCn: Language = {
     "profile.selectInstallContent": "请选择你要安装的内容。",
     "profile.installerAdaptToSomething": "适用于 Minecraft {0} 的 {1}",
     "profile.noInstallerAdaptToSomething": "没有适用于 Minecraft {0} 的 {1}",
+    "profile.canOnlyInstallOnVanilla": "「安装」只在 Minecraft 原版可用。",
     "settings.epheromePath": "Epherome 路径",
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",

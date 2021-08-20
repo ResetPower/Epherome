@@ -75,6 +75,7 @@ export interface LanguageDefinition {
   "profile.selectInstallContent": string;
   "profile.installerAdaptToSomething": string;
   "profile.noInstallerAdaptToSomething": string;
+  "profile.canOnlyInstallOnVanilla": string;
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;

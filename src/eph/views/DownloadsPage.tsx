@@ -28,9 +28,9 @@ export function DownloadingFragment(props: {
   const canceller = useRef<DefaultFn>();
   const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
-  const [tasks, setTasks] = useState<ObjectWrapper<DownloaderTask[]>>({
-    current: [],
-  });
+  const [tasks, setTasks] = useState<ObjectWrapper<DownloaderTask[]>>(
+    new ObjectWrapper([])
+  );
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [name, setName] = useState(`Minecraft ${props.version.id}`);
 

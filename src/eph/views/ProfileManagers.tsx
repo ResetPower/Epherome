@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import { BiImport } from "react-icons/bi";
 import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import { MdClose, MdDelete, MdFolderOpen, MdRefresh } from "react-icons/md";
-import { ConfirmDialog } from "../components/Dialog";
+import { AlertDialog, ConfirmDialog } from "../components/Dialog";
 import { Info } from "../components/fragments";
 import { Button, Link } from "../components/inputs";
 import { ListItem, ListItemText } from "../components/lists";
@@ -14,6 +14,8 @@ import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
 import { historyStore } from "../renderer/history";
 import { showMoveToTrashAlert } from "eph/renderer/alerts";
+import { parseJson } from "core/launch/parser";
+import { useMemo } from "react";
 
 export function RemoveProfileDialog(props: {
   profile: MinecraftProfile;
@@ -34,8 +36,21 @@ export function ProfileGeneralFragment({
 }: {
   current: MinecraftProfile;
 }): JSX.Element {
+  const parsed = useMemo(() => parseJson(current, true), [current]);
   const handleRemove = () =>
     showOverlay(<RemoveProfileDialog profile={current} />);
+  const handleGoToInstall = () => {
+    if (parsed.inheritsFrom) {
+      showOverlay(
+        <AlertDialog
+          title={t("tip")}
+          message={t("profile.canOnlyInstallOnVanilla")}
+        />
+      );
+    } else {
+      historyStore.push("profiles/install", { profile: current });
+    }
+  };
 
   return (
     <div>
@@ -49,12 +64,7 @@ export function ProfileGeneralFragment({
         <Info title={t("version")}>{current.ver}</Info>
       </div>
       <div className="flex">
-        <Button
-          variant="contained"
-          onClick={() =>
-            historyStore.push("profiles/install", { profile: current })
-          }
-        >
+        <Button variant="contained" onClick={handleGoToInstall}>
           <VscPackage /> {t("profile.install")}
         </Button>
         <div className="flex-grow" />

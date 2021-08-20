@@ -6,7 +6,7 @@ import { authenticate, refresh, validate } from "core/auth";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
-import { unzipNatives } from "./unzip";
+import { unzipNatives } from "../unzip";
 import { runMinecraft } from "./runner";
 import { ensureDir, downloadFile } from "common/utils/files";
 import { adapt, DefaultFn } from "common/utils";
@@ -24,6 +24,9 @@ import { Downloader } from "core/down/downloader";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "core/java";
+import { ObjectWrapper } from "common/utils/object";
+
+export type LaunchCanceller = () => boolean;
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -32,6 +35,7 @@ export interface MinecraftLaunchOptions {
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: DefaultFn;
+  cancellerWrapper: ObjectWrapper<LaunchCanceller>;
 }
 
 export async function launchMinecraft(
@@ -39,6 +43,12 @@ export async function launchMinecraft(
 ): Promise<
   ["j8Required" | "j16Required" | "jRequired" | null, DefaultFn | null]
 > {
+  const setCanceller = (act: DefaultFn) =>
+    (options.cancellerWrapper.current = () => {
+      act();
+      return true;
+    });
+  const restoreCanceller = options.cancellerWrapper.setToDefault;
   const java = options.java;
 
   if (!java) {
@@ -138,9 +148,11 @@ export async function launchMinecraft(
       stopOnError: true,
     });
     downloader.start();
+    setCanceller(downloader.cancel);
   }).catch((reason) => {
     throw reason;
   });
+  restoreCanceller();
 
   const analyzedAssets = await analyzeAssets(dir, assetIndex);
 
@@ -161,9 +173,11 @@ export async function launchMinecraft(
       stopOnError: true,
     });
     downloader.start();
+    setCanceller(downloader.cancel);
   }).catch((reason) => {
     throw reason;
   });
+  restoreCanceller();
 
   setHelper(defaultHelper);
 
@@ -183,7 +197,7 @@ export async function launchMinecraft(
   }
 
   // unzip native libraries
-  unzipNatives(nativeDir, analyzedLibrary.natives);
+  await unzipNatives(nativeDir, analyzedLibrary.natives);
 
   const gameDir = profile.gameDirIsolation
     ? path.join(dir, "versions", profile.ver)

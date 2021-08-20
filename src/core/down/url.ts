@@ -90,7 +90,31 @@ export const MinecraftUrlUtils = {
       }
     },
   },
-  Fabric: {},
+  Fabric: {
+    loaders(): string {
+      return `${this.meta()}/v2/versions/loader`;
+    },
+    games(): string {
+      return `${this.meta()}/v2/versions/game`;
+    },
+    json(mc: string, loader: string): string {
+      return `${this.meta()}/v2/versions/loader/${mc}/${loader}/profile/json`;
+    },
+    maven(): string {
+      switch (MinecraftUrlUtils._provider) {
+        case "bmclapi":
+          return "https://download.mcbbs.net/maven";
+        case "mcbbs":
+          return "https://bmclapi2.bangbang93.com/maven";
+        default:
+          return "https://maven.fabricmc.net";
+      }
+    },
+    meta(): string {
+      // bmclapi or mcbbs support is not available
+      return "https://meta.fabricmc.net";
+    },
+  },
   Forge: {},
   Optifine: {},
 };

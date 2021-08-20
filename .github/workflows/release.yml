@@ -50,7 +50,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.tag }}
           name: Epherome ${{ github.event.inputs.tag }}
-          body_path: docs/CHANGELOG.md
+          body_path: docs/RELEASE_NOTE.md
           prerelease: true
           files: |
             package/Epherome-${{ github.event.inputs.tag }}.exe

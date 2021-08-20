@@ -1,6 +1,6 @@
 ## New Features 🚀🚀🚀
 
-- Fixed a bunch of bugs 😢
+- Fixed a large bunch of bugs 😢
   - Too many to describe
 - Enhanced skin management
 - The new file is filled with Minecraft official JVM optimization parameters by default
@@ -13,7 +13,7 @@
 
 ## 新特性 🚀🚀🚀
 
-- 修复了一坨 Bug 😢
+- 修复了一大坨 Bug 😢
   - 多到无法描述
 - 增强了皮肤管理功能
 - 对新档案默认填充了 Minecraft 官方的 JVM 优化参数

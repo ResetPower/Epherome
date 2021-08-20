@@ -1,6 +1,8 @@
 export class ObjectWrapper<T> {
+  default: T;
   current: T;
   constructor(initial: T) {
-    this.current = initial;
+    this.default = this.current = initial;
   }
+  setToDefault = (): T => (this.current = this.default);
 }

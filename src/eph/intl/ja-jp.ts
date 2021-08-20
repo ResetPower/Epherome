@@ -84,6 +84,8 @@ const jaJp: Language = {
     "profile.installerAdaptToSomething": "Minecraft {0} の {1}",
     "profile.noInstallerAdaptToSomething":
       "Minecraft {0} の {1} が見つかりません",
+    "profile.canOnlyInstallOnVanilla":
+      "「インストール」は Minecraft のバニラバージョンのみをサポートしています。",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",

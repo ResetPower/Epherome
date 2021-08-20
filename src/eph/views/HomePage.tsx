@@ -8,7 +8,7 @@ import {
 } from "../components/inputs";
 import { useState } from "react";
 import { configStore, setConfig } from "common/struct/config";
-import { launchMinecraft } from "core/launch";
+import { LaunchCanceller, launchMinecraft } from "core/launch";
 import { DefaultFn } from "common/utils";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
 import { Card, Container } from "../components/layouts";
@@ -16,6 +16,7 @@ import Dialog, { AlertDialog, ErrorDialog } from "../components/Dialog";
 import {
   MdAccountCircle,
   MdApps,
+  MdClose,
   MdGamepad,
   MdMoreHoriz,
   MdPlayArrow,
@@ -40,6 +41,7 @@ import {
   showJava8RequiredDialog,
   showNoJavaDialog,
 } from "eph/renderer/alerts";
+import { ObjectWrapper } from "common/utils/object";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -90,6 +92,7 @@ export class HomePageStore {
   @observable againRequestingPassword = false;
   // empty array: not loaded yet; null: loading; undefined: error occurred;
   @observable news: NewItem[] | null | undefined = [];
+  canceller = new ObjectWrapper<LaunchCanceller>(() => false);
   constructor() {
     makeObservable(this);
   }
@@ -113,6 +116,10 @@ export class HomePageStore {
           })
       )
     );
+  };
+  @action
+  cancel = (): void => {
+    this.canceller.current() && this.setLaunching(false);
   };
   @action
   reloadNews = (): void => {
@@ -171,6 +178,7 @@ const HomePage = observer(() => {
               />
             );
           }),
+        cancellerWrapper: homePageStore.canceller,
       })
         .then(([stat, cb]) => {
           if (stat === "jRequired") {
@@ -273,13 +281,17 @@ const HomePage = observer(() => {
                   <p>{profile.ver}</p>
                 </div>
                 <div>
-                  <Button
-                    onClick={handleLaunch}
-                    disabled={homePageStore.isLaunching}
-                  >
-                    <MdPlayArrow />
-                    {homePageStore.isLaunching ? t("launching") : t("launch")}
-                  </Button>
+                  {homePageStore.isLaunching ? (
+                    <Button onClick={homePageStore.cancel}>
+                      <MdClose />
+                      {t("cancel")}
+                    </Button>
+                  ) : (
+                    <Button onClick={handleLaunch}>
+                      <MdPlayArrow />
+                      {t("launch")}
+                    </Button>
+                  )}
                 </div>
               </>
             ) : (

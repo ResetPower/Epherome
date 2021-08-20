@@ -11,15 +11,17 @@ import Fabric from "assets/Fabric.png";
 import Forge from "assets/Forge.png";
 import Optifine from "assets/Optifine.png";
 import LiteLoader from "assets/LiteLoader.png";
-import { getInstallVersions, InstallVersion } from "core/installer";
+import {
+  getInstallVersions,
+  InstallVersion,
+  MinecraftInstall,
+} from "core/installer";
 import { List, ListItem } from "../components/lists";
 import Spin from "../components/Spin";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, TextField } from "../components/inputs";
 import { t } from "../intl";
 import { useRef } from "react";
-
-export type MinecraftInstall = "Fabric" | "Forge" | "Optifine" | "LiteLoader";
 
 export type InstallSelection = {
   type?: MinecraftInstall;
@@ -57,7 +59,7 @@ export function InstallerView({
         className="overflow-y-auto"
         style={{ height: "calc(var(--eph-height) - 12rem)" }}
       >
-        {versions ? (
+        {versions && versions.length !== 0 ? (
           <List>
             {versions.map((val, index) => (
               <ListItem
@@ -93,6 +95,7 @@ export default function ProfileInstallPage({
   profile: MinecraftProfile;
 }): JSX.Element {
   const pNameEdited = useRef(false);
+  const [err, setErr] = useState(false);
   const [helper, setHelper] = useState<string | null>(null);
   const [selection, setSelection] = useState<InstallSelection>({});
   const [stage, setStage] = useState<MinecraftInstall | null>(null);
@@ -108,19 +111,25 @@ export default function ProfileInstallPage({
     !pNameEdited.current && (pNameEdited.current = true);
   };
   const handleInstall = () => {
-    setHelper("Installing...");
+    setHelper(t("profile.installing"));
     const iVer = selection.current;
     if (iVer) {
       const newProfile: MinecraftProfile = {
         name: pName,
         dir: profile.dir,
-        ver: `${profile.ver}-${selection.type}${iVer.name}`,
+        ver: "",
         from: profile.from,
       };
+      iVer
+        ?.install(newProfile)
+        .then(() => {
+          setHelper(t("done"));
+        })
+        .catch((reason) => {
+          setErr(true);
+          throw reason;
+        });
       createProfile(newProfile);
-      iVer?.install(newProfile).then(() => {
-        setHelper(t("done"));
-      });
     }
   };
 
@@ -180,8 +189,14 @@ export default function ProfileInstallPage({
                 }
               )}
             </div>
-            <div className="flex py-3">
-              <p className="flex-grow">{helper}</p>
+            <div className="flex items-center py-3">
+              <div className="flex-grow">
+                {err ? (
+                  <p className="text-danger">{t("errorOccurred")}</p>
+                ) : (
+                  <p>{helper}</p>
+                )}
+              </div>
               <Button
                 variant="contained"
                 disabled={!!helper}

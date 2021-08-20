@@ -83,6 +83,8 @@ const enUs: Language = {
     "profile.selectInstallContent": "Choose what you want to install.",
     "profile.installerAdaptToSomething": "{1} for Minecraft {0}",
     "profile.noInstallerAdaptToSomething": "No {1} for Minecraft {0} found",
+    "profile.canOnlyInstallOnVanilla":
+      '"Installs" is only available for vanilla Minecraft.',
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",
