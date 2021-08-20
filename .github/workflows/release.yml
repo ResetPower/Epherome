@@ -38,6 +38,9 @@ jobs:
       - name: Electron Build Package (Linux)
         run: npm run package -- --linux
       - name: Electron Build Package (macOS)
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: npm run package -- --macos
       - name: Electron Build Package (Windows)
         run: npm run package -- --windows
