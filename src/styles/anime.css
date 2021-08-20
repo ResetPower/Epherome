@@ -57,24 +57,23 @@
 }
 .fade-enter-active {
   opacity: 1;
-  transition: opacity 300ms;
+  transition-duration: 300ms;
 }
 .fade-exit {
   opacity: 1;
 }
 .fade-exit-active {
   opacity: 0.1;
-  transition: opacity 300ms;
+  transition-duration: 300ms;
 }
 
 .tab-vertical-enter {
-  opacity: 0;
+  opacity: 0.1;
   transform: translateY(50%);
 }
 .tab-vertical-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition-property: opacity;
   transition-duration: 150ms;
 }
 .tab-vertical-exit {
@@ -82,20 +81,18 @@
   transform: translateY(0);
 }
 .tab-vertical-exit-active {
-  opacity: 0;
+  opacity: 0.1;
   transform: translateY(-50%);
-  transition-property: opacity;
   transition-duration: 150ms;
 }
 
 .tab-horizontal-enter {
-  opacity: 0;
+  opacity: 0.1;
   transform: translateX(50%);
 }
 .tab-horizontal-enter-active {
   opacity: 1;
   transform: translateX(0);
-  transition-property: opacity;
   transition-duration: 150ms;
 }
 .tab-horizontal-exit {
@@ -103,8 +100,7 @@
   transform: translateX(0);
 }
 .tab-horizontal-exit-active {
-  opacity: 0;
+  opacity: 0.1;
   transform: translateX(-50%);
-  transition-property: opacity;
   transition-duration: 150ms;
 }
