@@ -266,7 +266,7 @@ const ProfilesPage = observer(() => {
   return (
     <div className="flex eph-h-full">
       <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
-        <div className="flex p-2 flex-wrap">
+        <div className="py-1 px-3">
           <Button
             className="whitespace-nowrap"
             variant="contained"

@@ -6,7 +6,8 @@ import { ipcRenderer } from "electron";
 
 const plat = process.platform;
 const isNTKernel = plat === "win32";
-const JAVA_HOME = ipcRenderer.sendSync("get-java-home");
+// Note that this file is required by mocha test, so ipcRenderer is possibly be undefined
+const JAVA_HOME = ipcRenderer?.sendSync("get-java-home");
 const javaFilename = "java" + (isNTKernel ? ".exe" : "");
 const jdkRegistryKeyPaths = [
   "\\SOFTWARE\\JavaSoft\\JDK",

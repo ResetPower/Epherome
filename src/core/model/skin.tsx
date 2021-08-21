@@ -3,9 +3,6 @@ import Image from "eph/components/Image";
 import { downloadFile } from "common/utils/files";
 import { userDataPath } from "common/struct/config";
 
-export const steveId = "MHF_Steve";
-export const alexId = "MHF_Alex";
-
 export function Avatar(props: { uuid: string }): JSX.Element {
   return (
     <Image

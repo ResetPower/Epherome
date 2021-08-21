@@ -23,6 +23,7 @@ export default function Dialog(props: {
 export function AlertDialog(props: {
   title: string;
   message: ReactNode;
+  action?: DefaultFn;
   anyway?: string;
   onAnyway?: DefaultFn;
 }): JSX.Element {
@@ -48,7 +49,13 @@ export function AlertDialog(props: {
           </Button>
         )}
         <div className="flex-grow" />
-        <Button className="text-secondary" onClick={close}>
+        <Button
+          className="text-secondary"
+          onClick={() => {
+            call(props.action);
+            close();
+          }}
+        >
           {t("fine")}
         </Button>
       </div>
@@ -114,4 +121,14 @@ export function InternetNotAvailableDialog(): JSX.Element {
 
 export function NotSupportedDialog(): JSX.Element {
   return <AlertDialog title={t("tip")} message={t("notSupportedYet")} />;
+}
+
+export function DoneDialog(props: { back?: DefaultFn }): JSX.Element {
+  return (
+    <AlertDialog
+      title={t("tip")}
+      message={t("doneMessage")}
+      action={props.back}
+    />
+  );
 }

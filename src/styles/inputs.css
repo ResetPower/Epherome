@@ -20,7 +20,10 @@
 
   .eph-icon-button {
     @apply select-none rounded-full h-12 w-12 flex justify-center items-center
-      transition-colors hover:bg-black hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
+      transition-colors bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
+  }
+  .eph-icon-button-active {
+    @apply bg-opacity-10;
   }
 
   .eph-select {

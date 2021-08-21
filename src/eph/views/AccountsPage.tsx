@@ -30,9 +30,9 @@ import {
 } from "../components/Dialog";
 import { observer } from "mobx-react";
 import { useRef } from "react";
-import { Avatar, Body, downloadSkin, steveId } from "core/model/skin";
+import { Avatar, Body, downloadSkin } from "core/model/skin";
 import { BiExport } from "react-icons/bi";
-import { Center } from "../components/fragments";
+import { Center, Info } from "../components/fragments";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -150,8 +150,10 @@ export function AccountGeneralFragment(props: {
   return (
     <div className="flex flex-col">
       <div className="flex-grow">
-        <p>{props.current?.name}</p>
-        <p>{props.current && t(`account.${props.current.mode}`)}</p>
+        <Info title={t("name")}>{props.current?.name}</Info>
+        <p className="text-shallow text-sm">
+          {props.current && t(`account.${props.current.mode}`)}
+        </p>
       </div>
       <div className="flex justify-end">
         <Button
@@ -169,10 +171,12 @@ export function AccountSkinFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
   const [exporting, setExporting] = useState(false);
-  const uuid = adapt(props.current.mode, "microsoft", "mojang")
-    ? props.current.uuid
-    : steveId;
 
+  if (!adapt(props.current.mode, "mojang", "microsoft")) {
+    return <p>{t("account.skin.notSupportedExcludeMojangMs")}</p>;
+  }
+
+  const uuid = props.current.uuid;
   const handleExport = () => {
     setExporting(true);
     downloadSkin(uuid)
@@ -215,7 +219,7 @@ const AccountsPage = observer(() => {
   return (
     <div className="flex eph-h-full">
       <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
-        <div className="flex p-2 flex-wrap">
+        <div className="py-1 px-3">
           <Button variant="contained" onClick={handleCreate}>
             <MdCreate />
             {t("create")}
@@ -238,7 +242,7 @@ const AccountsPage = observer(() => {
               {adapt(i.mode, "mojang", "microsoft") ? (
                 <Avatar uuid={i.uuid} />
               ) : (
-                i.mode === "offline" && <Avatar uuid={steveId} />
+                <Avatar uuid="MHF_Steve" />
               )}
               <p className="flex px-1 space-x-1">{i.name}</p>
             </ListItem>

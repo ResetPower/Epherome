@@ -56,8 +56,8 @@ const enUs: Language = {
     "account.clickToLogin":
       "Click 'Create' to log in to your Microsoft account.",
     "account.skin": "Skin",
-    "account.skin.notSupportedExcludeMojang":
-      "Only support to view the skin of Mojang account.",
+    "account.skin.notSupportedExcludeMojangMs":
+      "Only support to view the skin of Mojang or Microsoft account.",
     "profile.removing": "Remove Profile",
     "profile.notSelected": "No Profile Selected",
     "profile.openDirectory": "Browse",
@@ -158,6 +158,7 @@ const enUs: Language = {
       "Are you sure you want to remove {0} to trash? This operation is irreversible.",
     exportedAt: "Export at: ",
     versionOfSomething: "{0} Version",
+    doneMessage: "This task has been done.",
   },
 };
 

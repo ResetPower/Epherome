@@ -93,38 +93,42 @@ export class MinecraftProfileManagerStore {
   };
   @action
   refresh = (): void => {
-    this.saves = readdir(this.savesPath, "folder").map((val) => ({
-      id: shortid(),
-      name: basenameWithoutExt(val),
-      path: path.join(this.savesPath, val),
-    }));
-    this.resourcePacks = [
-      ...readdir(
-        this.resourcePacksPath,
-        "folder",
-        "zip"
-      ).map<MinecraftResourcePack>((val) => ({
+    try {
+      this.saves = readdir(this.savesPath, "folder").map((val) => ({
         id: shortid(),
-        type: "resourcePack",
         name: basenameWithoutExt(val),
-        path: path.join(this.resourcePacksPath, val),
-      })),
-      ...readdir(
-        this.shaderPacksPath,
-        "folder",
-        "zip"
-      ).map<MinecraftResourcePack>((val) => ({
+        path: path.join(this.savesPath, val),
+      }));
+      this.resourcePacks = [
+        ...readdir(
+          this.resourcePacksPath,
+          "folder",
+          "zip"
+        ).map<MinecraftResourcePack>((val) => ({
+          id: shortid(),
+          type: "resourcePack",
+          name: basenameWithoutExt(val),
+          path: path.join(this.resourcePacksPath, val),
+        })),
+        ...readdir(
+          this.shaderPacksPath,
+          "folder",
+          "zip"
+        ).map<MinecraftResourcePack>((val) => ({
+          id: shortid(),
+          type: "shaderPack",
+          name: basenameWithoutExt(val),
+          path: path.join(this.shaderPacksPath, val),
+        })),
+      ];
+      this.mods = readdir(this.modsPath, "modFile").map((val) => ({
         id: shortid(),
-        type: "shaderPack",
         name: basenameWithoutExt(val),
-        path: path.join(this.shaderPacksPath, val),
-      })),
-    ];
-    this.mods = readdir(this.modsPath, "modFile").map((val) => ({
-      id: shortid(),
-      name: basenameWithoutExt(val),
-      path: path.join(this.modsPath, val),
-      enabled: !val.endsWith(".disabled"),
-    }));
+        path: path.join(this.modsPath, val),
+        enabled: !val.endsWith(".disabled"),
+      }));
+    } catch {
+      this.saves = this.resourcePacks = this.mods = [];
+    }
   };
 }

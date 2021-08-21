@@ -11,7 +11,7 @@ import { configStore, setConfig } from "common/struct/config";
 import { LaunchCanceller, launchMinecraft } from "core/launch";
 import { DefaultFn } from "common/utils";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
-import { Card, Container } from "../components/layouts";
+import { Card } from "../components/layouts";
 import Dialog, { AlertDialog, ErrorDialog } from "../components/Dialog";
 import {
   MdAccountCircle,
@@ -211,8 +211,8 @@ const HomePage = observer(() => {
   }
 
   return (
-    <Container>
-      <Card className="my-3 p-6 shadow-sm">
+    <div className="px-5">
+      <Card className="my-3 p-9 shadow-sm">
         <div className="flex">
           <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
@@ -260,15 +260,15 @@ const HomePage = observer(() => {
         </div>
       </Card>
       <div className="flex space-x-6">
-        <Card className="w-1/2 flex flex-col">
-          <div className="flex flex-grow flex-col justify-center">
+        <Card className="w-1/2 flex flex-col p-3">
+          <div className="flex flex-col flex-grow justify-center">
             {profile && value !== null ? (
               <>
                 <Select
                   value={value}
                   onChange={handleChange}
                   disabled={homePageStore.isLaunching}
-                  className="overflow-ellipsis"
+                  className="overflow-ellipsis mb-1"
                 >
                   {_.map(profiles, (i, id) => (
                     <option key={id} value={id}>
@@ -320,8 +320,8 @@ const HomePage = observer(() => {
             </p>
           </div>
         </Card>
-        <Card className="w-1/2 flex flex-col">
-          <p className="text-xl font-semibold">{t("news")}</p>
+        <Card className="w-1/2 flex flex-col p-3">
+          <p className="text-xl font-semibold mb-1">{t("news")}</p>
           {homePageStore.news === null ? (
             <p>
               ...
@@ -358,7 +358,7 @@ const HomePage = observer(() => {
           </div>
         </Card>
       </div>
-    </Container>
+    </div>
   );
 });
 

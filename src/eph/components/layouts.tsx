@@ -27,17 +27,6 @@ export function Alert(props: {
   );
 }
 
-export function Container(props: {
-  children: ReactNode;
-  className?: string;
-}): JSX.Element {
-  return (
-    <div className={`eph-container ${props.className ?? ""}`}>
-      {props.children}
-    </div>
-  );
-}
-
 export function Card(props: {
   children: ReactNode;
   className?: string;

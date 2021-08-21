@@ -53,10 +53,13 @@ export function IconButton(props: {
   children: ReactNode;
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  active?: boolean;
 }): JSX.Element {
   return (
     <button
-      className={`eph-icon-button color-contrast ${props.className ?? ""}`}
+      className={`eph-icon-button ${
+        props.active && "eph-icon-button-active"
+      } color-contrast ${props.className ?? ""}`}
       onClick={props.onClick}
     >
       {props.children}

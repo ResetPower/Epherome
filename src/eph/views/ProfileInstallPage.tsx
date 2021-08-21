@@ -22,6 +22,8 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, TextField } from "../components/inputs";
 import { t } from "../intl";
 import { useRef } from "react";
+import { showOverlay } from "eph/renderer/overlays";
+import { DoneDialog } from "eph/components/Dialog";
 
 export type InstallSelection = {
   type?: MinecraftInstall;
@@ -124,6 +126,7 @@ export default function ProfileInstallPage({
         ?.install(newProfile)
         .then(() => {
           setHelper(t("done"));
+          showOverlay(<DoneDialog back={history.back} />);
         })
         .catch((reason) => {
           setErr(true);

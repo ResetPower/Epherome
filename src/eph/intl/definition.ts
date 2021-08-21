@@ -52,7 +52,7 @@ export interface LanguageDefinition {
   "account.msAccNoMinecraft": string;
   "account.clickToLogin": string;
   "account.skin": string;
-  "account.skin.notSupportedExcludeMojang": string;
+  "account.skin.notSupportedExcludeMojangMs": string;
   "profile.removing": string;
   "profile.notSelected": string;
   "profile.openDirectory": string;
@@ -138,4 +138,5 @@ export interface LanguageDefinition {
   confirmMoveSomethingToTrash: string;
   exportedAt: string;
   versionOfSomething: string;
+  doneMessage: string;
 }

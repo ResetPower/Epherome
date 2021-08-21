@@ -36,7 +36,13 @@ export function ProfileGeneralFragment({
 }: {
   current: MinecraftProfile;
 }): JSX.Element {
-  const parsed = useMemo(() => parseJson(current, true), [current]);
+  const parsed = useMemo(() => {
+    try {
+      return parseJson(current, true);
+    } catch {
+      return { inheritsFrom: true };
+    }
+  }, [current]);
   const handleRemove = () =>
     showOverlay(<RemoveProfileDialog profile={current} />);
   const handleGoToInstall = () => {

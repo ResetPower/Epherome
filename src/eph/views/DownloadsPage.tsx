@@ -18,6 +18,9 @@ import { call, DefaultFn } from "common/utils";
 import { ObjectWrapper } from "common/utils/object";
 import { defaultJvmArgs } from "core/java";
 import { Center } from "../components/fragments";
+import { showOverlay } from "eph/renderer/overlays";
+import { DoneDialog } from "eph/components/Dialog";
+import { historyStore } from "eph/renderer/history";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -73,6 +76,7 @@ export function DownloadingFragment(props: {
         });
         setStatus("done");
         props.setLocking(false);
+        showOverlay(<DoneDialog back={historyStore.back} />);
       },
       canceller
     ).then((result) => {

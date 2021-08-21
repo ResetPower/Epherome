@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ReactNode } from "react";
 
 export default function Popover(props: {
-  button: (trigger: () => void) => ReactNode;
+  button: (trigger: () => void, active: boolean) => ReactNode;
   className?: string;
   children?: ReactNode;
 }): JSX.Element {
@@ -21,7 +21,7 @@ export default function Popover(props: {
 
   return (
     <div>
-      {props.button(open)}
+      {props.button(open, show)}
       {show && (
         <div className={`absolute right-1 ${props.className ?? ""}`}>
           {props.children}

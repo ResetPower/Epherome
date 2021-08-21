@@ -56,8 +56,8 @@ const jaJp: Language = {
     "account.clickToLogin":
       "「作成」をクリックして、Microsoft アカウントにログインします。",
     "account.skin": "スキン",
-    "account.skin.notSupportedExcludeMojang":
-      "Mojangアカウントのスキンの表示のみをサポート。",
+    "account.skin.notSupportedExcludeMojangMs":
+      "Mojang アカウントまたは Microsoft アカウントのスキンの表示のみをサポート。",
     "profile.removing": "プロフィルを削除",
     "profile.notSelected": "プロフィルが選択だれていません",
     "profile.openDirectory": "ブラウズ",
@@ -159,6 +159,7 @@ const jaJp: Language = {
       "{0} をゴミ箱に移動してもよろしいですか？操作は元に戻せません。",
     exportedAt: "ここにエクスポートされました：",
     versionOfSomething: "{0} バージョン",
+    doneMessage: "タスクは完了しました。",
   },
 };
 

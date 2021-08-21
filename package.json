@@ -10,7 +10,7 @@
     "prettier": "prettier ./src ./test --ext .js,.ts,.tsx --write --no-error-on-unmatched-pattern",
     "serve": "webpack serve --env dev --env process=renderer",
     "electron": "webpack build --env dev --env process=main && electron . --remote-debugging-port=9222",
-    "dev": "concurrently -n wdm,ele 'npm:serve' 'npm:electron'",
+    "dev": "concurrently --kill-others -n wdm,ele 'npm:serve' 'npm:electron'",
     "prod": "webpack build --env prod --env process=all",
     "package": "electron-builder"
   },

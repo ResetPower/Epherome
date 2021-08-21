@@ -82,8 +82,8 @@ export const AppBar = observer(() => {
       {configStore.developerMode && (
         <Popover
           className="bg-card rounded-lg p-2 shadow-lg text-contrast"
-          button={(trigger) => (
-            <IconButton onClick={trigger}>
+          button={(trigger, active) => (
+            <IconButton onClick={trigger} active={active}>
               <MdDeveloperBoard />
             </IconButton>
           )}

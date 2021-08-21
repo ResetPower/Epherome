@@ -53,7 +53,8 @@ const zhCn: Language = {
     "account.msAccNoMinecraft": "您的 Microsoft 账户中没有 Minecraft",
     "account.clickToLogin": "点击「创建」以登入您的微软账户。",
     "account.skin": "皮肤",
-    "account.skin.notSupportedExcludeMojang": "仅支持查看 Mojang 账户的皮肤。",
+    "account.skin.notSupportedExcludeMojangMs":
+      "仅支持查看 Mojang 或微软账户的皮肤。",
     "profile.removing": "移除档案",
     "profile.notSelected": "未选择档案",
     "profile.openDirectory": "浏览",
@@ -147,6 +148,7 @@ const zhCn: Language = {
     confirmMoveSomethingToTrash: "您确定要将 {0} 移到废纸篓吗？该操作不可逆。",
     exportedAt: "已导出于此处：",
     versionOfSomething: "{0} 版本",
+    doneMessage: "该任务已完成。",
   },
 };
 
