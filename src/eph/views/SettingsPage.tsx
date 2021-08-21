@@ -32,7 +32,7 @@ import { _ } from "common/utils/arrays";
 import os from "os";
 import { observer } from "mobx-react";
 import { MinecraftDownloadProvider } from "core/down/url";
-import { checkJavaVersion, detectJava } from "core/java";
+import { checkJava, detectJava } from "core/java";
 import { Info, WithHelper } from "../components/fragments";
 import EpheromeLogo from "assets/Epherome.png";
 
@@ -125,7 +125,7 @@ export const JavaManagementDialog = observer(() => {
         error={!!err}
         helperText={err ?? undefined}
         icon={<FaJava />}
-        placeholder={t("java.newPath")}
+        placeholder={t("java.executablePath")}
         trailing={
           <Link
             type="clickable"
@@ -133,7 +133,7 @@ export const JavaManagementDialog = observer(() => {
               const val = newJavaPath;
               if (checkDuplicate(val)) return;
               setErr(null);
-              checkJavaVersion(val).then((result) => {
+              checkJava(val).then((result) => {
                 if (result) {
                   createJava(result);
                   setNewJavaPath("");

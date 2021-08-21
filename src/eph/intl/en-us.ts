@@ -103,7 +103,6 @@ const enUs: Language = {
       "The number of files that can be downloaded at the same time.",
     "java.executablePath": "Java Executable Path",
     "java.manage": "Manage Java",
-    "java.newPath": "New Path",
     "java.invalidPath": "Invalid Path",
     "java.duplicatePath": "Duplicate Path",
     "java.detect": "Detect",

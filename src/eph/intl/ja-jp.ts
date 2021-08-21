@@ -102,9 +102,8 @@ const jaJp: Language = {
       "公式ソースが遅い場合は、それを置き換えることを試みることができます。",
     "settings.downloadCurrency.description":
       "同時にダウンロードできるファイルの数。",
-    "java.executablePath": "Java パス",
+    "java.executablePath": "Java 実行可能ファイルパス",
     "java.manage": "Java を管理",
-    "java.newPath": "新しいパス",
     "java.invalidPath": "間違ったパス",
     "java.duplicatePath": "重複するパス",
     "java.detect": "検出する",

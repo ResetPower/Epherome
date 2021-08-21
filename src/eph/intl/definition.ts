@@ -91,7 +91,6 @@ export interface LanguageDefinition {
   "settings.downloadCurrency.description": string;
   "java.executablePath": string;
   "java.manage": string;
-  "java.newPath": string;
   "java.invalidPath": string;
   "java.duplicatePath": string;
   "java.detect": string;

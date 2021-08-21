@@ -6,8 +6,7 @@ import { ipcRenderer } from "electron";
 
 const plat = process.platform;
 const isNTKernel = plat === "win32";
-const JAVA_HOME =
-  ipcRenderer?.sendSync("get-java-home") ?? process.env.JAVA_HOME;
+const JAVA_HOME = ipcRenderer.sendSync("get-java-home");
 const javaFilename = "java" + (isNTKernel ? ".exe" : "");
 const jdkRegistryKeyPaths = [
   "\\SOFTWARE\\JavaSoft\\JDK",
@@ -17,6 +16,7 @@ const jreRegistryKeyPaths = ["\\SOFTWARE\\JavaSoft\\Java Runtime Environment"];
 const javaDefaultPaths = {
   darwin: ["/Library/Java/JavaVirtualMachines"],
   win32: ["C:\\Program Files\\Java\\", "C:\\Program Files (x86)\\Java"],
+  linux: ["/usr/lib/jvm"],
 };
 
 export type RegArch = "x64" | "x86";
@@ -26,7 +26,7 @@ export async function findJavaHome(): Promise<string[]> {
   const javas: string[] = [];
   // From JAVA_HOME
   if (JAVA_HOME && dirIsJavaHome(JAVA_HOME)) {
-    javas.push(JAVA_HOME);
+    javas.push(path.join(JAVA_HOME, "bin", javaFilename));
   }
   // From PATH
   const fromPath = await findInPath();
@@ -44,6 +44,8 @@ export async function findJavaHome(): Promise<string[]> {
     fromDefaultPaths = findInPaths(javaDefaultPaths.win32);
   } else if (plat === "darwin") {
     fromDefaultPaths = findInPaths(javaDefaultPaths.darwin, true);
+  } else if (plat === "linux") {
+    fromDefaultPaths = findInPaths(javaDefaultPaths.linux);
   }
   javas.push(...fromDefaultPaths);
   return Array.from(new Set(javas));
@@ -130,7 +132,7 @@ function findInPaths(paths: string[], withContentsHome = false): string[] {
         javas.push(dir);
       } else if (withContentsHome) {
         const dir = path.join(p, f, "Contents/Home");
-        dirIsJavaHome(dir) && javas.push(dir);
+        dirIsJavaHome(dir) && javas.push(path.join(dir, "bin", javaFilename));
       }
     });
   }

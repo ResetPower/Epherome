@@ -1,7 +1,6 @@
 import { spawnSync } from "child_process";
 import { findJavaHome } from "./finder";
 import { nanoid } from "nanoid";
-import path from "path";
 import { Java } from "common/struct/java";
 
 export function parseJvmArgs(args: string): string[] {
@@ -25,7 +24,7 @@ export function defaultJvmArgs(): string {
   return "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 }
 
-export function checkJavaVersion(dir: string): Promise<Java | null> {
+export function checkJava(dir: string): Promise<Java | null> {
   return new Promise((resolve) => {
     try {
       const proc = spawnSync(dir, ["-version"]);
@@ -55,7 +54,7 @@ export async function detectJava(): Promise<Java[]> {
   const javas = await findJavaHome();
   const arr: Java[] = [];
   for (const i of javas) {
-    const java = await checkJavaVersion(path.join(i, "bin/java"));
+    const java = await checkJava(i);
     java && arr.push(java);
   }
   return arr;

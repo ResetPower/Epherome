@@ -12,6 +12,7 @@ import log4jsConfiguration from "common/utils/logging";
 import { nanoid } from "nanoid";
 import { detectJava } from "core/java";
 import { commonLogger } from "common/loggers";
+import { _ } from "common/utils/arrays";
 
 export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
 
@@ -77,7 +78,10 @@ export class ConfigStore {
     extendObservable(this, preferred);
     // initialize java config
     if (this.javas.length === 0) {
-      detectJava().then((javas) => javas.forEach((java) => createJava(java)));
+      detectJava().then((javas) => javas.forEach(createJava));
+    }
+    if (_.selected(this.javas) === undefined) {
+      _.select(this.javas, this.javas[0]);
     }
     // process java instances of old epherome
     for (const i of this.javas) {
