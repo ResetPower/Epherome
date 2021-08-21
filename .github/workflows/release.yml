@@ -62,3 +62,9 @@ jobs:
             package/Epherome-${{ github.event.inputs.tag }}.dmg.hash
             package/Epherome-${{ github.event.inputs.tag }}.tar.gz
             package/Epherome-${{ github.event.inputs.tag }}.tar.gz.hash
+            package/Epherome-${{ github.event.inputs.tag }}.deb
+            package/Epherome-${{ github.event.inputs.tag }}.deb.hash
+            package/Epherome-${{ github.event.inputs.tag }}.rpm
+            package/Epherome-${{ github.event.inputs.tag }}.rpm.hash
+            package/Epherome-${{ github.event.inputs.tag }}.pacman
+            package/Epherome-${{ github.event.inputs.tag }}.pacman.hash

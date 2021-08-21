@@ -59,7 +59,7 @@ export default (env: { [key: string]: string }): Config[] => {
           use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         },
         {
-          test: /\.(png|jpe?g|gif)$/i,
+          test: /\.(png|jpe?g|gif|svg)$/i,
           use: "file-loader",
         },
       ],

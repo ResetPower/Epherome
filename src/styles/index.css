@@ -9,6 +9,7 @@
 @layer components {
   .eph-appbar {
     @apply bg-primary shadow-lg flex py-2 px-3 items-center z-30 top-0 h-16;
+    animation: slideAppBar 300ms;
   }
   .eph-appbar-title {
     @apply flex-grow pl-3 select-none text-xl;

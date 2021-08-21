@@ -52,6 +52,17 @@
   animation: slideOut 300ms;
 }
 
+@keyframes slideAppBar {
+  from {
+    opacity: 0.2;
+    transform: translate3d(0, -40%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .fade-enter {
   opacity: 0.1;
 }

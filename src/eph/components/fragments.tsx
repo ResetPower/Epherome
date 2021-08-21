@@ -19,9 +19,10 @@ export function Center(props: {
 export function Info(props: {
   title: string;
   children: ReactNode;
+  className?: string;
 }): JSX.Element {
   return (
-    <div>
+    <div className={props.className}>
       <p className="text-shallow text-md">{props.title}</p>
       {typeof props.children === "string" ? (
         <p>{props.children}</p>

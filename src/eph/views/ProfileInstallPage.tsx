@@ -166,28 +166,26 @@ export default function ProfileInstallPage({
               onChange={inputPName}
             />
             <div className="space-y-3">
-              {["Fabric", "Forge", "Optifine", "LiteLoader"].map(
-                (val, index) => {
-                  const i = val as MinecraftInstall;
-                  const selected =
-                    selection.type === i ? selection.current : undefined;
-                  return (
-                    <div
-                      className="flex select-none cursor-pointer hover:shadow-md transition-shadow items-center p-2 shadow-sm rounded-lg bg-card"
-                      onClick={() => setStage(i)}
-                      key={index}
-                    >
-                      <img
-                        className="rounded-lg w-7 h-7 mr-3"
-                        src={[Fabric, Forge, Optifine, LiteLoader][index]}
-                      />
-                      <p className="flex-grow capitalize">{val}</p>
-                      {selected && selected.name}
-                      <MdArrowForward />
-                    </div>
-                  );
-                }
-              )}
+              {["Fabric", "Forge", "LiteLoader"].map((val, index) => {
+                const i = val as MinecraftInstall;
+                const selected =
+                  selection.type === i ? selection.current : undefined;
+                return (
+                  <div
+                    className="flex select-none cursor-pointer hover:shadow-md transition-shadow items-center p-2 shadow-sm rounded-lg bg-card"
+                    onClick={() => setStage(i)}
+                    key={index}
+                  >
+                    <img
+                      className="rounded-lg w-7 h-7 mr-3"
+                      src={[Fabric, Forge, Optifine, LiteLoader][index]}
+                    />
+                    <p className="flex-grow capitalize">{val}</p>
+                    {selected && selected.name}
+                    <MdArrowForward />
+                  </div>
+                );
+              })}
             </div>
             <div className="flex items-center py-3">
               <div className="flex-grow">

@@ -6,7 +6,6 @@ import { Accessible, unwrapAccessible } from "common/utils";
 import DownloadsPage from "../views/DownloadsPage";
 import { GlobalOverlay } from "./overlays";
 import { historyStore, LocationParams } from "./history";
-import { themeStore } from "./theme";
 import { MdArrowBack, MdDeveloperBoard, MdMenu } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
@@ -137,7 +136,6 @@ export const RouterView = observer(() => {
 
 export default function App(): JSX.Element {
   useLayoutEffect(() => {
-    themeStore.updateTheme();
     historyStore.isEmpty && historyStore.push("home");
   }, []);
 

@@ -24,9 +24,6 @@
     "url": "https://github.com/ResetPower/epherome/issues"
   },
   "build": {
-    "extraMetadata": {
-      "name": "Epherome"
-    },
     "productName": "Epherome",
     "copyright": "Copyright (C) 2021 ResetPower.",
     "artifactName": "Epherome-v${version}.${ext}",
@@ -44,7 +41,12 @@
       "target": "dmg"
     },
     "linux": {
-      "target": "tar.gz"
+      "target": [
+        "deb",
+        "rpm",
+        "pacman",
+        "tar.gz"
+      ]
     },
     "files": [
       "dist/",

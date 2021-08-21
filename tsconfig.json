@@ -19,7 +19,8 @@
       "core/*": ["core/*"],
       "assets/*": ["assets/*"],
       "styles/*": ["styles/*"],
-      "common/*": ["common/*"]
+      "common/*": ["common/*"],
+      "ext/*": ["extension/*"]
     }
   },
   "include": ["./src"]

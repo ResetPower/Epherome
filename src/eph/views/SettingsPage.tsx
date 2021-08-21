@@ -318,7 +318,7 @@ export const SettingsAboutFragment = (): JSX.Element => (
       </div>
     </Card>
     <Card>
-      <Info title={t("os")}>
+      <Info className="capitalize" title={t("os")}>
         {os.platform()} {os.arch()} {os.release()}
       </Info>
       <Info title={t("versionOfSomething", "Electron")}>
