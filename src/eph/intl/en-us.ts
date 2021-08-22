@@ -146,6 +146,7 @@ const enUs: Language = {
       "Java not found on your computer. Please install one and add it through settings.",
     "launching.downloadingAsset": "Downloading Assets",
     "launching.downloadingLib": "Downloading Libraries",
+    "ext.apps": "Applications",
     internetNotAvailable:
       "The web is different for you, cannot connect to the Internet.",
     errorOccurred: "Error Occurred",

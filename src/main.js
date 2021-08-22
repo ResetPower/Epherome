@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { mainLogger, platform } = require("./system");
+require("./extension/loader");
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -37,7 +38,6 @@ function createWindow() {
       .then((name) => mainLogger.info(`Added Extension: ${name}`))
       .catch((err) => mainLogger.error(`An error occurred: ${err}`));
   }
-
   require("./ms-auth");
   ipcMain.on("open-devtools", () => win.webContents.openDevTools());
 }

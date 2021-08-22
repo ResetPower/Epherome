@@ -15,7 +15,7 @@ export async function checkEphUpdate(): Promise<EphUpdatableVersion | null> {
     coreLogger.info("Fetching latest version info...");
     const resp = await got.get("https://epherome.com/api/version");
     const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(resp.body);
-    const need = params.name !== ephVersion;
+    const need = params.name !== `v${ephVersion}`;
     coreLogger.info(
       `Fetched latest version: ${params.name}. Epherome ${
         need ? "isn't" : "is"

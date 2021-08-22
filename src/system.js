@@ -6,9 +6,9 @@ const log4js = require("log4js");
 const { default: log4jsConfiguration } = require("common/utils/logging");
 
 const version = app.getVersion();
-const dir = app.getPath("userData"); // config file and application data directory
+const userDataPath = app.getPath("userData"); // config file and application data directory
 
-const logFilename = path.join(dir, "latest.log");
+const logFilename = path.join(userDataPath, "latest.log");
 
 try {
   fs.writeFileSync(logFilename, "");
@@ -18,7 +18,7 @@ try {
 log4js.configure(log4jsConfiguration(logFilename));
 
 ipcMain.on("get-user-data-path", (ev) => {
-  ev.returnValue = dir;
+  ev.returnValue = userDataPath;
 });
 
 ipcMain.on("get-version", (ev) => {
@@ -68,6 +68,6 @@ mainLogger.info(`Node.js Version: ${process.versions.node}`);
 mainLogger.info(`V8 Version: ${process.versions.v8}`);
 mainLogger.info(`Chrome Version: ${process.versions.chrome}`);
 mainLogger.info(`Electron Version: ${process.versions.electron}`);
-mainLogger.info(`Epherome Directory: '${dir}'`);
+mainLogger.info(`Epherome Directory: '${userDataPath}'`);
 
-module.exports = { mainLogger, platform, arch, release };
+module.exports = { mainLogger, platform, arch, release, userDataPath };

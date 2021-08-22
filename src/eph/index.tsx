@@ -4,6 +4,8 @@ import { render } from "react-dom";
 import App from "./renderer/App";
 import EpheromeLogo from "assets/Epherome.png";
 import { themeStore } from "./renderer/theme";
+import { ipcRenderer } from "electron";
+import { EphExtension, extensionStore } from "common/stores/extension";
 
 console.log("Hello, World!");
 
@@ -24,5 +26,8 @@ const splash = `
 const root = document.getElementById("root");
 root && (root.innerHTML = splash);
 
-// mount application after render
-setTimeout(() => render(<App />, root), 1000);
+// mount application after extensions load done
+ipcRenderer.invoke("load-ext").then((extensions: EphExtension[]) => {
+  extensionStore.extensions = extensions;
+  render(<App />, root);
+});

@@ -12,7 +12,7 @@ const templateContent = `
   <head>
     <meta charset="utf-8" />
     <title>Epherome</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src *;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; img-src * data:;">
   </head>
   <body>
     <div id="root"></div>

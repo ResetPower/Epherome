@@ -148,6 +148,7 @@ const jaJp: Language = {
       "コンピュータにJavaが見つかりません。 インストールして、設定で追加してください。",
     "launching.downloadingAsset": "リソースをダウンロードしています",
     "launching.downloadingLib": "ライブラリをダウンロードしています",
+    "ext.apps": "アプリ",
     internetNotAvailable:
       "Web はあなたにとって異なる、インターネットに接続できません。",
     errorOccurred: "エラーが発生しました",

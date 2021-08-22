@@ -139,6 +139,7 @@ const zhCn: Language = {
       "在您的电脑上找不到 Java，请安装后在设置中添加。",
     "launching.downloadingAsset": "正在下载资源文件",
     "launching.downloadingLib": "正在下载库文件",
+    "ext.apps": "应用程序",
     internetNotAvailable: "Web 因你而不同，未能连接到互联网。",
     errorOccurred: "发生错误",
     notSupportedYet: "抱歉，该功能暂不支持。",
