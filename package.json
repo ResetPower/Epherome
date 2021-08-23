@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
@@ -44,7 +44,6 @@
       "target": [
         "deb",
         "rpm",
-        "pacman",
         "tar.gz"
       ]
     },
