@@ -1,7 +1,7 @@
-const { TouchBar } = require("electron");
+import { BrowserWindow, TouchBar } from "electron";
 const { TouchBarButton, TouchBarLabel } = TouchBar;
 
-module.exports = function getTouchBar(win) {
+export default function getTouchBar(win: BrowserWindow): TouchBar {
   return new TouchBar({
     items: [
       new TouchBarButton({
@@ -15,4 +15,4 @@ module.exports = function getTouchBar(win) {
       }),
     ],
   });
-};
+}

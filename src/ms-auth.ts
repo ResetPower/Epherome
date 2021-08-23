@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require("electron");
+import { BrowserWindow, ipcMain } from "electron";
 
 // handle microsoft minecraft account authentication
 ipcMain.handle(

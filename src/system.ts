@@ -1,12 +1,12 @@
-const { ipcMain, dialog, app } = require("electron");
-const os = require("os");
-const fs = require("fs");
-const path = require("path");
-const log4js = require("log4js");
-const { default: log4jsConfiguration } = require("common/utils/logging");
+import { ipcMain, dialog, app } from "electron";
+import os from "os";
+import fs from "fs";
+import path from "path";
+import log4js from "log4js";
+import { default as log4jsConfiguration } from "common/utils/logging";
 
 const version = app.getVersion();
-const userDataPath = app.getPath("userData"); // config file and application data directory
+export const userDataPath = app.getPath("userData"); // config file and application data directory
 
 const logFilename = path.join(userDataPath, "latest.log");
 
@@ -53,11 +53,11 @@ ipcMain.on("quit", () => {
 });
 
 // global main-process logger
-const mainLogger = log4js.getLogger("main");
+export const mainLogger = log4js.getLogger("main");
 
-const platform = os.platform();
-const arch = os.arch();
-const release = os.release();
+export const platform = os.platform();
+export const arch = os.arch();
+export const release = os.release();
 
 // output basic information
 mainLogger.info(`*** Epherome ${version} ***`);
@@ -69,5 +69,3 @@ mainLogger.info(`V8 Version: ${process.versions.v8}`);
 mainLogger.info(`Chrome Version: ${process.versions.chrome}`);
 mainLogger.info(`Electron Version: ${process.versions.electron}`);
 mainLogger.info(`Epherome Directory: '${userDataPath}'`);
-
-module.exports = { mainLogger, platform, arch, release, userDataPath };

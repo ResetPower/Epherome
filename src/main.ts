@@ -1,6 +1,12 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const { mainLogger, platform } = require("./system");
-require("./extension/loader");
+import { app, BrowserWindow, ipcMain } from "electron";
+import { mainLogger, platform } from "./system";
+import "./ms-auth";
+import "./extension/loader";
+import getTouchBar from "./touchbar";
+import installExtension, {
+  MOBX_DEVTOOLS,
+  REACT_DEVELOPER_TOOLS,
+} from "electron-devtools-installer";
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -20,7 +26,7 @@ function createWindow() {
   });
   if (platform === "darwin") {
     // is macos, set touch bar
-    win.setTouchBar(require("./touchbar")(win));
+    win.setTouchBar(getTouchBar(win));
     mainLogger.info("macOS Detected, set touch bar");
   }
   if (prod) {
@@ -29,16 +35,10 @@ function createWindow() {
     win.loadURL("http://localhost:3000");
   }
   if (!prod) {
-    const {
-      default: installExtension,
-      REACT_DEVELOPER_TOOLS,
-      MOBX_DEVTOOLS,
-    } = require("electron-devtools-installer");
     installExtension([REACT_DEVELOPER_TOOLS, MOBX_DEVTOOLS])
       .then((name) => mainLogger.info(`Added Extension: ${name}`))
       .catch((err) => mainLogger.error(`An error occurred: ${err}`));
   }
-  require("./ms-auth");
   ipcMain.on("open-devtools", () => win.webContents.openDevTools());
 }
 
