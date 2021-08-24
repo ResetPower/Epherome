@@ -14,8 +14,7 @@ export function showMoveToTrashAlert(filepath: string): Promise<void> {
         title={t("moveToTrash")}
         message={t("confirmMoveSomethingToTrash", filename)}
         action={() => {
-          moveToTrash(filepath);
-          resolve();
+          moveToTrash(filepath).then(resolve);
         }}
       />
     );
