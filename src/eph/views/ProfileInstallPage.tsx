@@ -24,6 +24,7 @@ import { t } from "../intl";
 import { useRef } from "react";
 import { showOverlay } from "eph/renderer/overlays";
 import { DoneDialog } from "eph/components/Dialog";
+import { historyStore } from "eph/renderer/history";
 
 export type InstallSelection = {
   type?: MinecraftInstall;
@@ -126,7 +127,7 @@ export default function ProfileInstallPage({
         ?.install(newProfile)
         .then(() => {
           setHelper(t("done"));
-          showOverlay(<DoneDialog back={history.back} />);
+          showOverlay(<DoneDialog back={historyStore.back} />);
         })
         .catch((reason) => {
           setErr(true);

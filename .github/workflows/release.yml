@@ -9,10 +9,13 @@ on:
         default: vX.X.X
 
 jobs:
-  build-on-macos:
+  build:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -36,57 +39,38 @@ jobs:
       - name: Webpack Build Production
         run: npm run prod
       - name: Build Electron (macOS)
+        if: matrix.os == 'macos-latest'
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: npm run package -- --macos
       - name: Build Electron (Windows)
+        if: matrix.os == 'macos-latest'
         run: npm run package -- --windows
-      - name: Upload Artifact
+      - name: Upload Artifact (Built on macOS)
+        if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v2
         with:
           name: art-built-on-macos
+          retention-days: 1
           path: |
             package/Epherome-${{ github.event.inputs.tag }}.dmg
             package/Epherome-${{ github.event.inputs.tag }}.exe
-  build-on-ubuntu:
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "14"
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: |
-            ~/.npm
-            **/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Install Dependencies
-        run: npm install
-      - name: Webpack Build Production
-        run: npm run prod
       - name: Build Electron (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: npm run package -- --linux
-      - name: Upload Artifact
+      - name: Upload Artifact (Built on Ubuntu)
         uses: actions/upload-artifact@v2
         with:
           name: art-built-on-ubuntu
+          retention-days: 1
           path: |
             package/Epherome-${{ github.event.inputs.tag }}.tar.gz
             package/Epherome-${{ github.event.inputs.tag }}.rpm
             package/Epherome-${{ github.event.inputs.tag }}.deb
+
   release:
-    needs: [build-on-macos, build-on-ubuntu]
+    needs: [build]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: macos-latest
@@ -107,8 +91,6 @@ jobs:
           path: package
       - name: Run Post Release Script
         run: node scripts/post-release.js
-      - name: Update Data on Official Site
-        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/${{ github.event.inputs.tag }}
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -127,3 +109,5 @@ jobs:
             package/Epherome-${{ github.event.inputs.tag }}.deb.hash
             package/Epherome-${{ github.event.inputs.tag }}.rpm
             package/Epherome-${{ github.event.inputs.tag }}.rpm.hash
+      - name: Update Data on Official Site
+        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/${{ github.event.inputs.tag }}
