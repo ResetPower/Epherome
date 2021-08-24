@@ -9,11 +9,11 @@ const isNTKernel = plat === "win32";
 // Note that this file is required by mocha test, so ipcRenderer is possibly be undefined
 const JAVA_HOME = ipcRenderer?.sendSync("get-java-home");
 const javaFilename = "java" + (isNTKernel ? ".exe" : "");
-const jdkRegistryKeyPaths = [
+const javaRegistryKeyPaths = [
   "\\SOFTWARE\\JavaSoft\\JDK",
   "\\SOFTWARE\\JavaSoft\\Java Development Kit",
+  "\\SOFTWARE\\JavaSoft\\Java Runtime Environment",
 ];
-const jreRegistryKeyPaths = ["\\SOFTWARE\\JavaSoft\\Java Runtime Environment"];
 const javaDefaultPaths = {
   darwin: ["/Library/Java/JavaVirtualMachines"],
   win32: ["C:\\Program Files\\Java\\", "C:\\Program Files (x86)\\Java"],
@@ -34,20 +34,14 @@ export async function findJavaHome(): Promise<string[]> {
   fromPath && javas.push(fromPath);
   // From Registry (NT Kernel Only)
   if (isNTKernel) {
-    const fromReg = await findInRegistry(
-      jdkRegistryKeyPaths.concat(jreRegistryKeyPaths)
-    );
+    const fromReg = await findInRegistry(javaRegistryKeyPaths);
     fromReg && javas.push(...fromReg);
   }
   // From Default Install Paths
-  let fromDefaultPaths: string[] = [];
-  if (plat === "win32") {
-    fromDefaultPaths = findInPaths(javaDefaultPaths.win32);
-  } else if (plat === "darwin") {
-    fromDefaultPaths = findInPaths(javaDefaultPaths.darwin, true);
-  } else if (plat === "linux") {
-    fromDefaultPaths = findInPaths(javaDefaultPaths.linux);
-  }
+  const fromDefaultPaths = findInPaths(
+    javaDefaultPaths[plat as keyof typeof javaDefaultPaths] ?? [],
+    plat === "darwin"
+  );
   javas.push(...fromDefaultPaths);
   return Array.from(new Set(javas));
 }
@@ -67,7 +61,6 @@ function findInPath() {
 
 async function findInRegistry(keyPaths: string[]): Promise<string[]> {
   const javas: string[] = [];
-
   if (!keyPaths.length) return javas;
   const promises = [];
   for (const arch of regArches) {
@@ -126,16 +119,18 @@ function findInRegKey(reg: Registry): Promise<string | null> {
 function findInPaths(paths: string[], withContentsHome = false): string[] {
   const javas: string[] = [];
   for (const p of paths) {
-    const files = fs.readdirSync(p);
-    files.forEach((f) => {
-      const dir = path.join(p, f);
-      if (dirIsJavaHome(dir)) {
-        javas.push(dir);
-      } else if (withContentsHome) {
-        const dir = path.join(p, f, "Contents/Home");
-        dirIsJavaHome(dir) && javas.push(path.join(dir, "bin", javaFilename));
-      }
-    });
+    try {
+      const files = fs.readdirSync(p);
+      files.forEach((f) => {
+        const dir = path.join(p, f);
+        if (dirIsJavaHome(dir)) {
+          javas.push(dir);
+        } else if (withContentsHome) {
+          const dir = path.join(p, f, "Contents/Home");
+          dirIsJavaHome(dir) && javas.push(path.join(dir, "bin", javaFilename));
+        }
+      });
+    } catch {}
   }
   return javas;
 }

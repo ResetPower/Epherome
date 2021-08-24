@@ -60,6 +60,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: npm run package -- --linux
       - name: Upload Artifact (Built on Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: art-built-on-ubuntu
