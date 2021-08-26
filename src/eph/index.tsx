@@ -6,6 +6,7 @@ import EpheromeLogo from "assets/Epherome.png";
 import { themeStore } from "./renderer/theme";
 import { ipcRenderer } from "electron";
 import { EphExtension, extensionStore } from "common/stores/extension";
+import { ephExtPath } from "common/struct/config";
 
 console.log("Hello, World!");
 
@@ -27,7 +28,9 @@ const root = document.getElementById("root");
 root && (root.innerHTML = splash);
 
 // mount application after extensions load done
-ipcRenderer.invoke("load-ext").then((extensions: EphExtension[]) => {
-  extensionStore.extensions = extensions;
-  render(<App />, root);
-});
+ipcRenderer
+  .invoke("load-ext", ephExtPath)
+  .then((extensions: EphExtension[]) => {
+    extensionStore.extensions = extensions;
+    render(<App />, root);
+  });

@@ -1,11 +1,23 @@
 import { intlStore, t } from "../intl";
-import { useOverlayCloser } from "../renderer/overlays";
+import { showOverlay, useOverlayCloser } from "../renderer/overlays";
 import { BottomSheet, BottomSheetTitle } from "../components/sheets";
 import {
   EphExtensionTranslations,
   extensionStore,
 } from "common/stores/extension";
 import { VscExtensions } from "react-icons/vsc";
+import { configStore } from "common/struct/config";
+import { Button } from "eph/components/inputs";
+import { MdDeveloperBoard, MdFolderOpen } from "react-icons/md";
+import { BiImport } from "react-icons/bi";
+import { ipcRenderer } from "electron";
+import path from "path";
+import fs from "fs";
+import { AlertDialog, ConfirmDialog } from "eph/components/Dialog";
+import { ephExtPath } from "common/struct/config";
+import { nanoid } from "nanoid";
+import { useCallback } from "react";
+import { openPathInFinder } from "common/utils/open";
 
 function Square(props: { children: string }): JSX.Element {
   return (
@@ -21,8 +33,55 @@ function Square(props: { children: string }): JSX.Element {
 }
 
 export default function ExtensionsView(): JSX.Element {
+  const dev = configStore.developerMode;
   const exts = extensionStore.extensions;
   const close = useOverlayCloser();
+
+  const handleImport = useCallback(
+    () =>
+      ipcRenderer.invoke("open-directory").then((dir) => {
+        if (!dir) return;
+        const name = path.basename(dir);
+        const sourceFiles = {
+          meta: path.join(dir, "ext.json"),
+          runnable: path.join(dir, "main.js"),
+        };
+        const target = path.join(ephExtPath, nanoid());
+        if (!fs.existsSync(target)) {
+          fs.mkdirSync(target);
+        }
+        const targetFiles = {
+          meta: path.join(target, "ext.json"),
+          runnable: path.join(target, "main.js"),
+        };
+        if (
+          fs.existsSync(sourceFiles.meta) &&
+          fs.existsSync(sourceFiles.runnable)
+        ) {
+          fs.copyFileSync(sourceFiles.meta, targetFiles.meta);
+          fs.copyFileSync(sourceFiles.runnable, targetFiles.runnable);
+          showOverlay(
+            <ConfirmDialog
+              title="Congrats🎉"
+              message={`Extension ${name} successfully imported. Reload Epherome to load this extension?`}
+              action={() => {
+                location.reload();
+              }}
+            />
+          );
+        } else {
+          showOverlay(
+            <AlertDialog
+              title="Warning"
+              message={
+                "You've chosen a wrong directory.\nA correct extension directory should contains a `main.js` and an `ext.json`"
+              }
+            />
+          );
+        }
+      }),
+    []
+  );
 
   return (
     <BottomSheet>
@@ -31,6 +90,21 @@ export default function ExtensionsView(): JSX.Element {
         style={{ height: "calc(100vh * 0.833333)" }}
       >
         <BottomSheetTitle close={close}>{t("extensions")}</BottomSheetTitle>
+        {dev && (
+          <div className="flex items-center mx-9">
+            <MdDeveloperBoard />
+            <p className="flex-grow px-1">Developer Mode: ON</p>
+            <Button
+              onClick={() => openPathInFinder(ephExtPath)}
+              variant="contained"
+            >
+              <MdFolderOpen /> Open
+            </Button>
+            <Button onClick={handleImport} variant="contained">
+              <BiImport /> Import
+            </Button>
+          </div>
+        )}
         <div className="grid grid-cols-5 px-9 py-3">
           {exts.length === 0 && <p>{t("profile.noContent")}</p>}
           {exts.map((ext) => {

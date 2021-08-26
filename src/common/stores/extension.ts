@@ -9,11 +9,11 @@ export type EphExtensionTranslations = "zh-cn" | "ja-jp" | "en-us";
 export interface EphExtensionMeta {
   name: string;
   translations: {
-    [key in EphExtensionTranslations]: string;
+    [key in EphExtensionTranslations]?: string;
   } & { default: string };
   version: string;
   apiVersion: string;
-  application: {
+  application?: {
     entrance: string;
   };
 }

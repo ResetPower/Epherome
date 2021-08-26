@@ -6,7 +6,7 @@ import log4js from "log4js";
 import { default as log4jsConfiguration } from "common/utils/logging";
 
 const version = app.getVersion();
-export const userDataPath = app.getPath("userData"); // config file and application data directory
+const userDataPath = app.getPath("userData"); // config file and application data directory
 
 const logFilename = path.join(userDataPath, "latest.log");
 
@@ -55,9 +55,9 @@ ipcMain.on("quit", () => {
 // global main-process logger
 export const mainLogger = log4js.getLogger("main");
 
-export const platform = os.platform();
-export const arch = os.arch();
-export const release = os.release();
+const platform = os.platform();
+const arch = os.arch();
+const release = os.release();
 
 // output basic information
 mainLogger.info(`*** Epherome ${version} ***`);

@@ -2,23 +2,28 @@ import fs from "fs";
 import path from "path";
 import { createContext, runInContext } from "vm";
 import { nanoid } from "nanoid";
-import { userDataPath } from "../system";
+import { mainLogger } from "../system";
 import { ipcMain } from "electron";
 import { EphExtension, EphExtensionMeta } from "common/stores/extension";
+import { Bridge } from "./bridge";
+import extSquare from "common/ext-square";
 
-const extPath = path.join(userDataPath, "ext");
-
-function loadExtension(ext: EphExtension) {
-  const vm = createContext({});
+function loadExtension(ext: EphExtension): boolean {
+  const vm = createContext({
+    bridge: new Bridge(ext),
+  });
   try {
     runInContext(ext.runnable, vm);
     return true;
-  } catch {
+  } catch (error) {
+    mainLogger.error(
+      `Error occurred loading extension@${ext.id}\n  Caused by: \n${error}`
+    );
     return false;
   }
 }
 
-ipcMain.handle("load-ext", async () => {
+ipcMain.handle("load-ext", async (_, extPath: string) => {
   const extensions: EphExtension[] = [];
   const files = fs.readdirSync(extPath);
   for (const i of files) {
@@ -39,10 +44,10 @@ ipcMain.handle("load-ext", async () => {
       }
       if (meta && runnable) {
         const extObj: EphExtension = { id: nanoid(), meta, runnable };
-        loadExtension(extObj);
-        extensions.push(extObj);
+        loadExtension(extObj) && extensions.push(extObj);
       }
     }
   }
+  loadExtension(extSquare) && extensions.push(extSquare);
   return extensions;
 });

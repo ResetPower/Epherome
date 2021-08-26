@@ -7,6 +7,6 @@ export class Bridge {
     this.ext = ext;
   }
   getLogger(): Logger {
-    return log4js.getLogger(`Ext@${this.ext.id}`);
+    return log4js.getLogger(`${this.ext.meta.name}`);
   }
 }

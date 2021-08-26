@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { mainLogger, platform } from "./system";
+import { mainLogger } from "./system";
 import "./ms-auth";
 import "./extension/loader";
 import getTouchBar from "./touchbar";
@@ -24,7 +24,7 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-  if (platform === "darwin") {
+  if (process.platform === "darwin") {
     // is macos, set touch bar
     win.setTouchBar(getTouchBar(win));
     mainLogger.info("macOS Detected, set touch bar");
