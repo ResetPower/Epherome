@@ -16,9 +16,14 @@ _Epherome, which shocks the world, always surprises you by bringing you appallin
 
 ## Extensions
 
-We will provide an extension API in the future. Once it's available, this line of text will be replaced with entrances of extension API documents.
+Extension is available at version 0.3.0 or higher. Docs [here](https://epherome.com/docs).
 
 We encourage people contribute to this project by developing extensions.
+
+## Related
+
+- [epherome-ext](https://github.com/ResetPower/epherome-ext) - Epherome extension API, CLI toolkit, and Scaffold
+- [eph-ext-square](https://github.com/ResetPower/eph-ext-square) - Installing, managing, and publishing Epherome extensions
 
 ## Contribution
 

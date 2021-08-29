@@ -16,9 +16,14 @@ _令世人大为震惊的 Epherome 总是出其不意地为你带来骇人听闻
 
 ## 扩展
 
-我们将在遥远的未来提供扩展 API。当扩展 API 可用时，这行文字将被扩展 API 文档的入口等代替。
+扩展将于 Epherome 0.3.0 开始可用。文档在 [此处](https://epherome.com/docs)。
 
-我们鼓励人们通过加入扩展的开发来为 Epherome 贡献。
+我们鼓励人们通过开发扩展来贡献这个项目。
+
+## 相关项目
+
+- [epherome-ext](https://github.com/ResetPower/epherome-ext) - Epherome 扩展 API、命令行工具和脚手架
+- [eph-ext-square](https://github.com/ResetPower/eph-ext-square) - 安装、管理与发布 Epherome 扩展
 
 ## 贡献
 
