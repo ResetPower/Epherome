@@ -96,6 +96,9 @@ const enUs: Language = {
       "Display a random line of text provided by Epherome on your homepage.",
     "settings.theme": "Theme",
     "settings.theme.followOS": "Follow OS",
+    "settings.titleBar": "Title Bar",
+    "settings.titleBar.message":
+      "Restart Epherome to apply the title bar settings.",
     "settings.devMode": "Developer Mode",
     "settings.downloadProvider.description":
       "If the official source is slow, you can try to replace it.",
@@ -160,6 +163,9 @@ const enUs: Language = {
     exportedAt: "Export at: ",
     versionOfSomething: "{0} Version",
     doneMessage: "This task has been done.",
+    minimize: "Minimize",
+    quit: "Quit",
+    confirmQuitting: "Are you sure you want to quit Epherome?",
   },
 };
 

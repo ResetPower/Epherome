@@ -91,9 +91,9 @@ export default function ExtensionsView(): JSX.Element {
       >
         <BottomSheetTitle close={close}>{t("extensions")}</BottomSheetTitle>
         {dev && (
-          <div className="flex items-center mx-9">
+          <div className="flex items-center p-1 mx-9 border-b border-opacity-5 border-black">
             <MdDeveloperBoard />
-            <p className="flex-grow px-1">Developer Mode: ON</p>
+            <div className="flex-grow" />
             <Button
               onClick={() => openPathInFinder(ephExtPath)}
               variant="contained"

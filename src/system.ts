@@ -6,8 +6,13 @@ import log4js from "log4js";
 import { default as log4jsConfiguration } from "common/utils/logging";
 
 const version = app.getVersion();
+const codeName = require("../product.json")["code-name"];
 const userDataPath = app.getPath("userData"); // config file and application data directory
+const configPath = path.join(userDataPath, "settings.json");
 
+!fs.existsSync(configPath) && fs.writeFileSync(configPath, "{}");
+
+export const parsed = JSON.parse(fs.readFileSync(configPath).toString());
 const logFilename = path.join(userDataPath, "latest.log");
 
 try {
@@ -17,13 +22,10 @@ try {
 // configure log4js
 log4js.configure(log4jsConfiguration(logFilename));
 
-ipcMain.on("get-user-data-path", (ev) => {
-  ev.returnValue = userDataPath;
-});
-
-ipcMain.on("get-version", (ev) => {
-  ev.returnValue = version;
-});
+ipcMain.on("get-user-data-path", (ev) => (ev.returnValue = userDataPath));
+ipcMain.on("get-code-name", (ev) => (ev.returnValue = codeName));
+ipcMain.on("get-version", (ev) => (ev.returnValue = version));
+ipcMain.on("get-config", (ev) => (ev.returnValue = { configPath, parsed }));
 
 ipcMain.handle("open-directory", async () => {
   const files = await dialog.showOpenDialog({
@@ -55,10 +57,6 @@ ipcMain.handle("import-mod", async () => {
 
 ipcMain.on("get-java-home", (ev) => {
   ev.returnValue = process.env.JAVA_HOME;
-});
-
-ipcMain.on("quit", () => {
-  app.quit();
 });
 
 // global main-process logger

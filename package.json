@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.3.0",
+  "version": "0.2.6",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/ResetPower/epherome#readme",
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.2",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.5",
     "@types/css-minimizer-webpack-plugin": "^3.0.2",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/mini-css-extract-plugin": "^2.2.0",
@@ -73,7 +73,7 @@
     "concurrently": "^6.2.1",
     "css-loader": "^6.2.0",
     "css-minimizer-webpack-plugin": "^3.0.2",
-    "electron": "^13.1.8",
+    "electron": "^13.2.3",
     "electron-builder": "^22.11.7",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^7.32.0",
@@ -102,7 +102,7 @@
     "log4js": "^6.3.0",
     "mobx": "^6.3.2",
     "mobx-react": "^7.2.0",
-    "nanoid": "^3.1.23",
+    "nanoid": "^3.1.25",
     "node-html-parser": "^4.1.3",
     "node-stream-zip": "^1.14.0",
     "react": "^17.0.2",

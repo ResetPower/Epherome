@@ -6,7 +6,13 @@ import {
   TextField,
   IconButton,
 } from "../components/inputs";
-import { configStore, setConfig, userDataPath } from "common/struct/config";
+import {
+  configStore,
+  ephCodeName,
+  setConfig,
+  TitleBarStyle,
+  userDataPath,
+} from "common/struct/config";
 import { rendererLogger } from "common/loggers";
 import { Card } from "../components/layouts";
 import {
@@ -24,7 +30,7 @@ import { checkEphUpdate, ephVersion } from "../renderer/updater";
 import Spin from "../components/Spin";
 import { showOverlay, useOverlayCloser } from "../renderer/overlays";
 import { FaJava } from "react-icons/fa";
-import Dialog from "../components/Dialog";
+import Dialog, { AlertDialog } from "../components/Dialog";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { createJava, removeJava } from "common/struct/java";
 import { useState } from "react";
@@ -299,24 +305,42 @@ export const SettingsAppearanceFragment = observer(() => {
     setConfig((cfg) => (cfg.themeFollowOs = checked));
     themeStore.updateTheme();
   };
+  const handleChangeTitleBarStyle = (ev: string) => {
+    setConfig((cfg) => (cfg.titleBarStyle = ev as TitleBarStyle));
+    showOverlay(
+      <AlertDialog title={t("tip")} message={t("settings.titleBar.message")} />
+    );
+  };
 
   return (
-    <div>
-      <Select
-        value={configStore.theme}
-        label={t("settings.theme")}
-        onChange={handleChangeTheme}
-        disabled={configStore.themeFollowOs}
-      >
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </Select>
-      <Checkbox
-        checked={configStore.themeFollowOs}
-        onChange={handleThemeFollowOs}
-      >
-        {t("settings.theme.followOS")}
-      </Checkbox>
+    <div className="space-y-3">
+      <div>
+        <Select
+          value={configStore.titleBarStyle}
+          label={t("settings.titleBar")}
+          onChange={handleChangeTitleBarStyle}
+        >
+          <option value="os">{t("os")}</option>
+          <option value="eph">{t("epherome")}</option>
+        </Select>
+      </div>
+      <div>
+        <Select
+          value={configStore.theme}
+          label={t("settings.theme")}
+          onChange={handleChangeTheme}
+          disabled={configStore.themeFollowOs}
+        >
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </Select>
+        <Checkbox
+          checked={configStore.themeFollowOs}
+          onChange={handleThemeFollowOs}
+        >
+          {t("settings.theme.followOS")}
+        </Checkbox>
+      </div>
     </div>
   );
 });
@@ -326,9 +350,13 @@ export const SettingsAboutFragment = (): JSX.Element => (
     <Card className="flex items-center space-x-3">
       <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
       <div>
-        <p className="font-semibold text-xl">Epherome Beta</p>
-        <p>
-          {t("version")} {ephVersion}
+        <p className="space-x-1 text-lg">
+          <span className="font-extrabold">Epherome</span>
+          <span>{ephCodeName ?? ""}</span>
+        </p>
+        <p className="space-x-1 text-sm">
+          <span>{t("version")}</span>
+          <span>Beta {ephVersion}</span>
         </p>
       </div>
     </Card>

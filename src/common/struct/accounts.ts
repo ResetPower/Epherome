@@ -62,21 +62,17 @@ export async function createAccount(
     // Microsoft OAuth Flow
     let authCode = "";
 
-    try {
-      const result = await ipcRenderer.invoke("ms-auth");
-      const split = result.split("&");
-      for (const i of split) {
-        const j = i.split("=");
-        if (j[0] === "code") {
-          authCode = j[1];
-        }
+    const result = await ipcRenderer.invoke("ms-auth");
+    const split = result.split("&");
+    for (const i of split) {
+      const j = i.split("=");
+      if (j[0] === "code") {
+        authCode = j[1];
       }
-      if (authCode === "") {
-        // unusable auth code
-        throw new Error("Unable to get auth code at microsoft authenticating");
-      }
-    } catch (e) {
-      return { success: false, message: e.message };
+    }
+    if (authCode === "") {
+      // unusable auth code
+      throw new Error("Unable to get auth code at microsoft authenticating");
     }
 
     // Authorization Code -> Authorization Token

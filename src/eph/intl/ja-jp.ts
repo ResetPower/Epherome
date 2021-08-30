@@ -97,6 +97,9 @@ const jaJp: Language = {
       "Epherome が提供するランダムなテキストをホームページに表示します。",
     "settings.theme": "テーマ",
     "settings.theme.followOS": "システムをフォロー",
+    "settings.titleBar": "タイトルバー",
+    "settings.titleBar.message":
+      "Epherome を再起動して、タイトルバーの設定を適用します。",
     "settings.devMode": "デベロッパーモード",
     "settings.downloadProvider.description":
       "公式ソースが遅い場合は、それを置き換えることを試みることができます。",
@@ -161,6 +164,9 @@ const jaJp: Language = {
     exportedAt: "ここにエクスポートされました：",
     versionOfSomething: "{0} バージョン",
     doneMessage: "タスクは完了しました。",
+    minimize: "最小化",
+    quit: "終了",
+    confirmQuitting: "Epherome を終了してもよろしいですか？",
   },
 };
 

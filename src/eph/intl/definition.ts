@@ -86,6 +86,8 @@ export interface LanguageDefinition {
   "settings.hitokoto.description": string;
   "settings.theme": string;
   "settings.theme.followOS": string;
+  "settings.titleBar": string;
+  "settings.titleBar.message": string;
   "settings.devMode": string;
   "settings.downloadProvider.description": string;
   "settings.downloadCurrency.description": string;
@@ -140,4 +142,7 @@ export interface LanguageDefinition {
   exportedAt: string;
   versionOfSomething: string;
   doneMessage: string;
+  minimize: string;
+  quit: string;
+  confirmQuitting: string;
 }

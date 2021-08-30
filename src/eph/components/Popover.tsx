@@ -7,6 +7,7 @@ export default function Popover(props: {
   button: (trigger: () => void, active: boolean) => ReactNode;
   className?: string;
   children?: ReactNode;
+  dock?: "left" | "right";
 }): JSX.Element {
   const [show, setShow] = useState(false);
   const open = useCallback(() => setShow(true), []);
@@ -23,7 +24,11 @@ export default function Popover(props: {
     <div>
       {props.button(open, show)}
       {show && (
-        <div className={`absolute right-1 ${props.className ?? ""}`}>
+        <div
+          className={`absolute ${
+            props.dock === "left" ? "left-1" : "right-1"
+          } ${props.className ?? ""}`}
+        >
           {props.children}
         </div>
       )}

@@ -4,9 +4,18 @@ import ProfilesPage from "../views/ProfilesPage";
 import SettingsPage from "../views/SettingsPage";
 import { Accessible, unwrapAccessible } from "common/utils";
 import DownloadsPage from "../views/DownloadsPage";
-import { GlobalOverlay } from "./overlays";
+import { GlobalOverlay, showOverlay } from "./overlays";
 import { historyStore, LocationParams } from "./history";
-import { MdArrowBack, MdDeveloperBoard, MdMenu } from "react-icons/md";
+import {
+  MdAccountCircle,
+  MdApps,
+  MdArrowBack,
+  MdDeveloperBoard,
+  MdGamepad,
+  MdMenu,
+  MdSettings,
+  MdViewCarousel,
+} from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
 import { IconButton } from "../components/inputs";
@@ -15,12 +24,19 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { observer } from "mobx-react";
 import { useLayoutEffect } from "react";
 import { configStore } from "common/struct/config";
-import { VscDebugConsole, VscExtensions } from "react-icons/vsc";
+import {
+  VscChromeMinimize,
+  VscClose,
+  VscDebugConsole,
+  VscExtensions,
+} from "react-icons/vsc";
 import { ipcRenderer } from "electron";
 import Popover from "../components/Popover";
 import { ListItem } from "../components/lists";
 import ProfileInstallPage from "../views/ProfileInstallPage";
 import { MinecraftProfile } from "common/struct/profiles";
+import ExtensionsView from "eph/views/ExtensionsView";
+import { ConfirmDialog } from "eph/components/Dialog";
 
 export interface RouteList {
   [key: string]: {
@@ -73,15 +89,64 @@ export const AppBar = observer(() => {
   const isAtHome = title === "Epherome";
 
   return (
-    <div className="eph-appbar text-white">
-      <IconButton onClick={isAtHome ? undefined : historyStore.back}>
-        {isAtHome ? <MdMenu /> : <MdArrowBack />}
-      </IconButton>
-
+    <div className="eph-appbar text-white eph-drag">
+      <div className="eph-no-drag">
+        {isAtHome ? (
+          <Popover
+            className="bg-card rounded-lg p-2 shadow-xl text-contrast"
+            dock="left"
+            button={(trigger, active) => (
+              <IconButton onClick={trigger} active={active}>
+                <MdMenu />
+              </IconButton>
+            )}
+          >
+            {[
+              {
+                icon: <MdAccountCircle />,
+                text: t("accounts"),
+                click: () => historyStore.push("accounts"),
+              },
+              {
+                icon: <MdGamepad />,
+                text: t("profiles"),
+                click: () => historyStore.push("profiles"),
+              },
+              {
+                icon: <MdViewCarousel />,
+                text: t("processes"),
+                click: () => historyStore.push("processes"),
+              },
+              {
+                icon: <MdApps />,
+                text: t("extensions"),
+                click: () => showOverlay(<ExtensionsView />, "sheet", "slide"),
+              },
+              {
+                icon: <MdSettings />,
+                text: t("settings"),
+                click: () => historyStore.push("settings"),
+              },
+            ].map((val, index) => (
+              <ListItem
+                className={`rounded-lg p-2 px-3 bg-blue-600 bg-opacity-0 hover:bg-opacity-30 active:bg-opacity-50`}
+                key={index}
+                onClick={val.click}
+              >
+                {val.icon} {val.text}
+              </ListItem>
+            ))}
+          </Popover>
+        ) : (
+          <IconButton onClick={isAtHome ? undefined : historyStore.back}>
+            {<MdArrowBack />}
+          </IconButton>
+        )}
+      </div>
       <p className="eph-appbar-title flex-grow">{title}</p>
       {configStore.developerMode && (
         <Popover
-          className="bg-card rounded-lg p-2 shadow-lg text-contrast"
+          className="bg-card rounded-lg p-2 shadow-lg text-contrast eph-no-drag"
           button={(trigger, active) => (
             <IconButton onClick={trigger} active={active}>
               <MdDeveloperBoard />
@@ -111,6 +176,26 @@ export const AppBar = observer(() => {
             </ListItem>
           ))}
         </Popover>
+      )}
+      {configStore.titleBarStyle === "eph" && (
+        <>
+          <IconButton onClick={() => ipcRenderer.send("minimize")}>
+            <VscChromeMinimize />
+          </IconButton>
+          <IconButton
+            onClick={() =>
+              showOverlay(
+                <ConfirmDialog
+                  title={t("warning")}
+                  message={t("confirmQuitting")}
+                  action={() => ipcRenderer.send("quit")}
+                />
+              )
+            }
+          >
+            <VscClose />
+          </IconButton>
+        </>
       )}
     </div>
   );

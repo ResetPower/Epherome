@@ -92,6 +92,8 @@ const zhCn: Language = {
       "在您的首页显示一条由 Epherome 提供的随机一行文本。",
     "settings.theme": "主题",
     "settings.theme.followOS": "跟随操作系统",
+    "settings.titleBar": "标题栏",
+    "settings.titleBar.message": "重新启动 Epherome 以应用标题栏设定。",
     "settings.devMode": "开发者模式",
     "settings.downloadProvider.description": "如果官方源缓慢，可以尝试更换。",
     "settings.downloadCurrency.description": "可同时下载的最大文件数量。",
@@ -150,6 +152,9 @@ const zhCn: Language = {
     exportedAt: "已导出于此处：",
     versionOfSomething: "{0} 版本",
     doneMessage: "该任务已完成。",
+    minimize: "最小化",
+    quit: "退出",
+    confirmQuitting: "你确定要退出 Epherome 吗？",
   },
 };
 

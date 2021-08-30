@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { mainLogger } from "./system";
+import { mainLogger, parsed } from "./system";
 import "./ms-auth";
 import "./extension/loader";
 import getTouchBar from "./touchbar";
@@ -19,6 +19,7 @@ function createWindow() {
     autoHideMenuBar: true,
     resizable: false,
     title: "Epherome",
+    frame: parsed.titleBarStyle !== "eph",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -39,6 +40,8 @@ function createWindow() {
       .then((name) => mainLogger.info(`Added Extension: ${name}`))
       .catch((err) => mainLogger.error(`An error occurred: ${err}`));
   }
+  ipcMain.on("quit", () => win.close());
+  ipcMain.on("minimize", () => win.minimize());
   ipcMain.on("open-devtools", () => win.webContents.openDevTools());
 }
 

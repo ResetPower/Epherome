@@ -14,7 +14,10 @@ import { detectJava } from "core/java";
 import { commonLogger } from "common/loggers";
 import { _ } from "common/utils/arrays";
 
+export type TitleBarStyle = "os" | "eph";
+
 export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
+export const ephCodeName = ipcRenderer.sendSync("get-code-name");
 
 export const logFilename = path.join(userDataPath, "latest.log");
 
@@ -32,20 +35,7 @@ export function getSystemPreferredLanguage(): string {
   }
 }
 
-export interface EphConfig {
-  accounts: MinecraftAccount[];
-  profiles: MinecraftProfile[];
-  javas: Java[];
-  theme: string;
-  themeFollowOs: boolean;
-  language: string;
-  hitokoto: boolean;
-  downloadProvider: MinecraftDownloadProvider;
-  downloadConcurrency: number;
-}
-
 // create files
-export const configFilename = path.join(userDataPath, "settings.json");
 export const minecraftDownloadPath = path.join(
   userDataPath,
   os.platform() === "win32" ? ".minecraft" : "minecraft"
@@ -53,14 +43,13 @@ export const minecraftDownloadPath = path.join(
 export const ephExtPath = path.join(userDataPath, "ext");
 export const ephLogExportsPath = path.join(userDataPath, "logs");
 
-!fs.existsSync(configFilename) && fs.writeFileSync(configFilename, "{}");
 !fs.existsSync(minecraftDownloadPath) && fs.mkdirSync(minecraftDownloadPath);
 !fs.existsSync(ephExtPath) && fs.mkdirSync(ephExtPath);
 !fs.existsSync(ephLogExportsPath) && fs.mkdirSync(ephLogExportsPath);
 
-// read config
+const { configPath, parsed } = ipcRenderer.sendSync("get-config");
 
-const parsed = JSON.parse(fs.readFileSync(configFilename).toString());
+// read config
 
 export class ConfigStore {
   @observable accounts: MinecraftAccount[] = [];
@@ -74,7 +63,8 @@ export class ConfigStore {
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
   @observable developerMode = false;
-  constructor(preferred: Partial<EphConfig>) {
+  @observable titleBarStyle: TitleBarStyle = "os";
+  constructor(preferred: Partial<unknown>) {
     extendObservable(this, preferred);
     // initialize java config
     if (this.javas.length === 0) {
@@ -96,7 +86,7 @@ export class ConfigStore {
   };
   save(): void {
     commonLogger.info("Saving config");
-    fs.writeFileSync(configFilename, JSON.stringify(toJS(this)));
+    fs.writeFileSync(configPath, JSON.stringify(toJS(this)));
   }
 }
 

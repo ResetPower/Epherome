@@ -9,7 +9,6 @@ import { parseJson } from "core/launch/parser";
 import { createProfile, MinecraftProfile } from "common/struct/profiles";
 import Fabric from "assets/Fabric.png";
 import Forge from "assets/Forge.png";
-import Optifine from "assets/Optifine.png";
 import LiteLoader from "assets/LiteLoader.png";
 import {
   getInstallVersions,
@@ -62,7 +61,9 @@ export function InstallerView({
         className="overflow-y-auto"
         style={{ height: "calc(var(--eph-height) - 12rem)" }}
       >
-        {versions && versions.length !== 0 ? (
+        {type === "Forge" ? (
+          <p className="text-shallow">{t("notSupportedYet")}</p>
+        ) : versions && versions.length !== 0 ? (
           <List>
             {versions.map((val, index) => (
               <ListItem
@@ -182,7 +183,7 @@ export default function ProfileInstallPage({
                   >
                     <img
                       className="rounded-lg w-7 h-7 mr-3"
-                      src={[Fabric, Forge, Optifine, LiteLoader][index]}
+                      src={[Fabric, Forge, LiteLoader][index]}
                     />
                     <p className="flex-grow capitalize">{val}</p>
                     {selected && selected.name}

@@ -60,6 +60,13 @@ img {
   max-height: var(--eph-height);
 }
 
+.eph-drag {
+  -webkit-app-region: drag;
+}
+.eph-no-drag {
+  -webkit-app-region: no-drag;
+}
+
 input[type="number"].no-spin-button::-webkit-outer-spin-button,
 input[type="number"].no-spin-button::-webkit-inner-spin-button {
   display: none;
