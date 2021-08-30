@@ -200,7 +200,7 @@ export function Link(props: {
   className?: string;
   type?: "url" | "file" | "folder" | "clickable";
   onClick?: DefaultFn;
-  children: string;
+  children: ReactNode;
   paddingX?: boolean;
 }): JSX.Element {
   const handleClick = () => {

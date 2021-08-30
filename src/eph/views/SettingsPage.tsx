@@ -11,6 +11,7 @@ import { rendererLogger } from "common/loggers";
 import { Card } from "../components/layouts";
 import {
   MdClose,
+  MdFolderOpen,
   MdInfo,
   MdPalette,
   MdRadioButtonChecked,
@@ -35,6 +36,8 @@ import { MinecraftDownloadProvider } from "core/down/url";
 import { checkJava, detectJava } from "core/java";
 import { Info, WithHelper } from "../components/fragments";
 import EpheromeLogo from "assets/Epherome.png";
+import { parseJavaExecutablePath } from "core/java/finder";
+import { ipcRenderer } from "electron";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
   const close = useOverlayCloser();
@@ -61,6 +64,7 @@ export const JavaManagementDialog = observer(() => {
   const [err, setErr] = useState<string | null>(null);
   const [newJavaPath, setNewJavaPath] = useState("");
   const javas = configStore.javas;
+
   const checkDuplicate = (dir: string) => {
     if (dir === "") {
       setErr(t("java.invalidPath"));
@@ -73,6 +77,17 @@ export const JavaManagementDialog = observer(() => {
       }
     }
     return false;
+  };
+  const handleAddJava = (value?: string) => {
+    const val = parseJavaExecutablePath(value ?? newJavaPath);
+    if (checkDuplicate(val)) return;
+    setErr(null);
+    checkJava(val).then((result) => {
+      if (result) {
+        createJava(result);
+        setNewJavaPath("");
+      } else setErr(t("java.invalidPath"));
+    });
   };
 
   return (
@@ -127,22 +142,22 @@ export const JavaManagementDialog = observer(() => {
         icon={<FaJava />}
         placeholder={t("java.executablePath")}
         trailing={
-          <Link
-            type="clickable"
-            onClick={() => {
-              const val = newJavaPath;
-              if (checkDuplicate(val)) return;
-              setErr(null);
-              checkJava(val).then((result) => {
-                if (result) {
-                  createJava(result);
-                  setNewJavaPath("");
-                } else setErr(t("java.invalidPath"));
-              });
-            }}
-          >
-            {t("add")}
-          </Link>
+          <>
+            <Link
+              className="border-r pr-3"
+              type="clickable"
+              onClick={() =>
+                ipcRenderer.invoke("open-java").then((value) => {
+                  value && handleAddJava(value);
+                })
+              }
+            >
+              <MdFolderOpen />
+            </Link>
+            <Link type="clickable" className="pl-3" onClick={handleAddJava}>
+              {t("add")}
+            </Link>
+          </>
         }
       />
       <div className="flex">

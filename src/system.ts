@@ -34,6 +34,15 @@ ipcMain.handle("open-directory", async () => {
   } else return undefined;
 });
 
+ipcMain.handle("open-java", async () => {
+  const files = await dialog.showOpenDialog({
+    properties: ["openDirectory", "openFile"],
+  });
+  if (!files.canceled) {
+    return files.filePaths[0];
+  } else return undefined;
+});
+
 ipcMain.handle("import-mod", async () => {
   const files = await dialog.showOpenDialog({
     properties: ["openFile"],

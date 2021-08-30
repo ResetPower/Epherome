@@ -142,3 +142,20 @@ function dirIsJavaHome(dir: string): boolean {
     fs.existsSync(path.resolve(dir, "bin", javaFilename))
   );
 }
+
+export function parseJavaExecutablePath(source: string): string {
+  if (path.basename(source) === javaFilename) {
+    return source;
+  }
+  for (const p of ["", "bin", "Home/bin", "Contents/Home/bin"]) {
+    const exe = path.join(source, p, javaFilename);
+    if (
+      fs.existsSync(exe) &&
+      fs.lstatSync(exe).isFile() &&
+      path.basename(exe) === javaFilename
+    ) {
+      return exe;
+    }
+  }
+  return source;
+}
