@@ -150,7 +150,7 @@ export const JavaManagementDialog = observer(() => {
         trailing={
           <>
             <Link
-              className="border-r pr-3"
+              className="border-r border-divider pr-3"
               type="clickable"
               onClick={() =>
                 ipcRenderer.invoke("open-java").then((value) => {

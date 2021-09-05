@@ -13,6 +13,7 @@ import {
   MdDeveloperBoard,
   MdGamepad,
   MdMenu,
+  MdRefresh,
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
@@ -22,7 +23,7 @@ import { IconButton } from "../components/inputs";
 import { intlStore, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { observer } from "mobx-react";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { configStore } from "common/struct/config";
 import {
   VscChromeMinimize,
@@ -32,11 +33,11 @@ import {
 } from "react-icons/vsc";
 import { ipcRenderer } from "electron";
 import Popover from "../components/Popover";
-import { ListItem } from "../components/lists";
 import ProfileInstallPage from "../views/ProfileInstallPage";
 import { MinecraftProfile } from "common/struct/profiles";
 import ExtensionsView from "eph/views/ExtensionsView";
 import { ConfirmDialog } from "eph/components/Dialog";
+import PopMenu from "eph/components/PopMenu";
 
 export interface RouteList {
   [key: string]: {
@@ -84,12 +85,14 @@ const routes: RouteList = {
 export const AppBar = observer(() => {
   // visit the key in order to update title on language change correctly
   intlStore.language;
+  // keep title bar style
+  const isTitleBarEph = useMemo(() => configStore.titleBarStyle === "eph", []);
   const route = routes[historyStore.pathname];
   const title = unwrapAccessible(route?.title);
   const isAtHome = title === "Epherome";
 
   return (
-    <div className="eph-appbar text-white eph-drag">
+    <div className={`eph-appbar text-white ${isTitleBarEph && "eph-drag"}`}>
       <div className="eph-no-drag">
         {isAtHome ? (
           <Popover
@@ -101,41 +104,36 @@ export const AppBar = observer(() => {
               </IconButton>
             )}
           >
-            {[
-              {
-                icon: <MdAccountCircle />,
-                text: t("accounts"),
-                click: () => historyStore.push("accounts"),
-              },
-              {
-                icon: <MdGamepad />,
-                text: t("profiles"),
-                click: () => historyStore.push("profiles"),
-              },
-              {
-                icon: <MdViewCarousel />,
-                text: t("processes"),
-                click: () => historyStore.push("processes"),
-              },
-              {
-                icon: <MdApps />,
-                text: t("extensions"),
-                click: () => showOverlay(<ExtensionsView />, "sheet", "slide"),
-              },
-              {
-                icon: <MdSettings />,
-                text: t("settings"),
-                click: () => historyStore.push("settings"),
-              },
-            ].map((val, index) => (
-              <ListItem
-                className={`rounded-lg p-2 px-3 bg-blue-600 bg-opacity-0 hover:bg-opacity-30 active:bg-opacity-50`}
-                key={index}
-                onClick={val.click}
-              >
-                {val.icon} {val.text}
-              </ListItem>
-            ))}
+            <PopMenu
+              items={[
+                {
+                  icon: <MdAccountCircle />,
+                  text: t("accounts"),
+                  onClick: () => historyStore.push("accounts"),
+                },
+                {
+                  icon: <MdGamepad />,
+                  text: t("profiles"),
+                  onClick: () => historyStore.push("profiles"),
+                },
+                {
+                  icon: <MdViewCarousel />,
+                  text: t("processes"),
+                  onClick: () => historyStore.push("processes"),
+                },
+                {
+                  icon: <MdApps />,
+                  text: t("extensions"),
+                  onClick: () =>
+                    showOverlay(<ExtensionsView />, "sheet", "slide"),
+                },
+                {
+                  icon: <MdSettings />,
+                  text: t("settings"),
+                  onClick: () => historyStore.push("settings"),
+                },
+              ]}
+            />
           </Popover>
         ) : (
           <IconButton onClick={isAtHome ? undefined : historyStore.back}>
@@ -144,59 +142,61 @@ export const AppBar = observer(() => {
         )}
       </div>
       <p className="eph-appbar-title flex-grow">{title}</p>
-      {configStore.developerMode && (
-        <Popover
-          className="bg-card rounded-lg p-2 shadow-lg text-contrast eph-no-drag"
-          button={(trigger, active) => (
-            <IconButton onClick={trigger} active={active}>
-              <MdDeveloperBoard />
-            </IconButton>
-          )}
-        >
-          {[
-            {
-              icon: <VscDebugConsole />,
-              text: "Developer Tools",
-              click: () => ipcRenderer.send("open-devtools"),
-            },
-            {
-              icon: <VscExtensions />,
-              text: "Extensions",
-              click: () => {
-                /**/
-              },
-            },
-          ].map((val, index) => (
-            <ListItem
-              className="rounded-lg p-2 bg-blue-600 bg-opacity-0 hover:bg-opacity-30 active:bg-opacity-50"
-              key={index}
-              onClick={val.click}
-            >
-              {val.icon} {val.text}
-            </ListItem>
-          ))}
-        </Popover>
-      )}
-      {configStore.titleBarStyle === "eph" && (
-        <>
-          <IconButton onClick={() => ipcRenderer.send("minimize")}>
-            <VscChromeMinimize />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              showOverlay(
-                <ConfirmDialog
-                  title={t("warning")}
-                  message={t("confirmQuitting")}
-                  action={() => ipcRenderer.send("quit")}
-                />
-              )
-            }
+      <div className="eph-no-drag flex">
+        {configStore.developerMode && (
+          <Popover
+            className="bg-card rounded-lg p-2 shadow-lg text-contrast eph-no-drag"
+            button={(trigger, active) => (
+              <IconButton onClick={trigger} active={active}>
+                <MdDeveloperBoard />
+              </IconButton>
+            )}
           >
-            <VscClose />
-          </IconButton>
-        </>
-      )}
+            <PopMenu
+              items={[
+                {
+                  icon: <VscDebugConsole />,
+                  text: "Developer Tools",
+                  onClick: () => ipcRenderer.send("open-devtools"),
+                },
+                {
+                  icon: <VscExtensions />,
+                  text: "Extensions",
+                  onClick: () => {
+                    // no actions now
+                  },
+                },
+                {
+                  icon: <MdRefresh />,
+                  text: "Reload Epherome",
+                  onClick: () => location.reload(),
+                },
+              ]}
+            />
+          </Popover>
+        )}
+        {isTitleBarEph && (
+          <>
+            <IconButton wrapped onClick={() => ipcRenderer.send("minimize")}>
+              <VscChromeMinimize />
+            </IconButton>
+            <IconButton
+              wrapped
+              onClick={() =>
+                showOverlay(
+                  <ConfirmDialog
+                    title={t("warning")}
+                    message={t("confirmQuitting")}
+                    action={() => ipcRenderer.send("quit")}
+                  />
+                )
+              }
+            >
+              <VscClose />
+            </IconButton>
+          </>
+        )}
+      </div>
     </div>
   );
 });

@@ -12,6 +12,8 @@ export class Process {
   raw: ChildProcessWithoutNullStreams;
   outputs: string[] = [];
   done = false;
+  crash = false;
+  crashReport: string[] = [];
   constructor(profile: MinecraftProfile, raw: ChildProcessWithoutNullStreams) {
     this.profile = profile;
     this.raw = raw;

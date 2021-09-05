@@ -115,6 +115,24 @@ export function ErrorDialog(props: { stacktrace: string }): JSX.Element {
   return <AlertDialog title={t("errorOccurred")} message={props.stacktrace} />;
 }
 
+export function CrashReportDialog(props: {
+  crashReport: string[];
+}): JSX.Element {
+  return (
+    <AlertDialog
+      title={t("launching.crashReport")}
+      message={
+        <>
+          <p className="text-sm">{t("launching.crashReport.helper")}</p>
+          {props.crashReport.map((val, index) => (
+            <p key={index}>{val}</p>
+          ))}
+        </>
+      }
+    />
+  );
+}
+
 export function InternetNotAvailableDialog(): JSX.Element {
   return <AlertDialog title={t("tip")} message={t("internetNotAvailable")} />;
 }

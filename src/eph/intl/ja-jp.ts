@@ -151,6 +151,9 @@ const jaJp: Language = {
       "コンピュータにJavaが見つかりません。 インストールして、設定で追加してください。",
     "launching.downloadingAsset": "リソースをダウンロードしています",
     "launching.downloadingLib": "ライブラリをダウンロードしています",
+    "launching.crashReport": "Minecraft がクラッシュしました！",
+    "launching.crashReport.helper":
+      "詳細については、「プロセス管理」ページを参照してください。",
     "ext.apps": "アプリ",
     internetNotAvailable:
       "Web はあなたにとって異なる、インターネットに接続できません。",

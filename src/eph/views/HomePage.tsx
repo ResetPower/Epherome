@@ -12,7 +12,11 @@ import { LaunchCanceller, launchMinecraft } from "core/launch";
 import { DefaultFn } from "common/utils";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
 import { Card } from "../components/layouts";
-import Dialog, { AlertDialog, ErrorDialog } from "../components/Dialog";
+import Dialog, {
+  AlertDialog,
+  CrashReportDialog,
+  ErrorDialog,
+} from "../components/Dialog";
 import {
   MdAccountCircle,
   MdApps,
@@ -162,7 +166,15 @@ const HomePage = observer(() => {
         java:
           configStore.javas.find((val) => val.nanoid === profile.java) ??
           _.selected(configStore.javas),
-        onDone: () => homePageStore.setLaunching(false),
+        onDone: (process) => {
+          homePageStore.setLaunching(false);
+          if (process && process.crash) {
+            // show crash report
+            showOverlay(
+              <CrashReportDialog crashReport={process.crashReport} />
+            );
+          }
+        },
         requestPassword: (again: boolean) =>
           new Promise((resolve) => {
             if (again !== homePageStore.againRequestingPassword) {

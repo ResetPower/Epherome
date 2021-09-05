@@ -141,6 +141,8 @@ const zhCn: Language = {
       "在您的电脑上找不到 Java，请安装后在设置中添加。",
     "launching.downloadingAsset": "正在下载资源文件",
     "launching.downloadingLib": "正在下载库文件",
+    "launching.crashReport": "Minecraft 崩溃了！",
+    "launching.crashReport.helper": "欲知详情，请见进程管理页。",
     "ext.apps": "应用程序",
     internetNotAvailable: "Web 因你而不同，未能连接到互联网。",
     errorOccurred: "发生错误",

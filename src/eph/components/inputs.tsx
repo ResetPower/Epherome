@@ -1,4 +1,4 @@
-import { ReactNode, MouseEventHandler } from "react";
+import { ReactNode } from "react";
 import {
   openInBrowser,
   openPathInFinder,
@@ -52,9 +52,18 @@ export function TinyButton(props: {
 export function IconButton(props: {
   children: ReactNode;
   className?: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: DefaultFn;
   active?: boolean;
+  wrapped?: boolean;
 }): JSX.Element {
+  if (props.wrapped) {
+    // wrap icon button with a div
+    return (
+      <div>
+        <IconButton {...props} wrapped={false} />
+      </div>
+    );
+  }
   return (
     <button
       className={`eph-icon-button ${

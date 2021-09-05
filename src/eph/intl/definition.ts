@@ -131,6 +131,8 @@ export interface LanguageDefinition {
   "launching.javaNotFoundMessage": string;
   "launching.downloadingAsset": string;
   "launching.downloadingLib": string;
+  "launching.crashReport": string;
+  "launching.crashReport.helper": string;
   "ext.apps": string;
   internetNotAvailable: string;
   errorOccurred: string;

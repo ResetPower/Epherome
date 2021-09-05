@@ -149,6 +149,9 @@ const enUs: Language = {
       "Java not found on your computer. Please install one and add it through settings.",
     "launching.downloadingAsset": "Downloading Assets",
     "launching.downloadingLib": "Downloading Libraries",
+    "launching.crashReport": "Minecraft Crashed!",
+    "launching.crashReport.helper":
+      "For more details, see Process Management page.",
     "ext.apps": "Applications",
     internetNotAvailable:
       "The web is different for you, cannot connect to the Internet.",

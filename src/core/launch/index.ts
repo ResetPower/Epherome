@@ -25,8 +25,11 @@ import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "core/java";
 import { ObjectWrapper } from "common/utils/object";
+import { Process } from "common/stores/process";
 
 export type LaunchCanceller = () => boolean;
+
+export type LaunchOnDone = (process: Process | null) => void;
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -34,7 +37,7 @@ export interface MinecraftLaunchOptions {
   java?: Java;
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
-  onDone: DefaultFn;
+  onDone: LaunchOnDone;
   cancellerWrapper: ObjectWrapper<LaunchCanceller>;
 }
 
@@ -52,7 +55,7 @@ export async function launchMinecraft(
   const java = options.java;
 
   if (!java) {
-    options.onDone();
+    options.onDone(null);
     return ["jRequired", null];
   }
 
@@ -297,13 +300,13 @@ export async function launchMinecraft(
     coreLogger.warn(
       `Minecraft version is higher than 1.17 but is using a java version under 16`
     );
-    options.onDone();
+    options.onDone(null);
     return ["j16Required", finallyRun];
   } else if (isJava8Required(versionDetail) && javaVersion && +javaMajor > 8) {
     coreLogger.warn(
       `Minecraft version is lower than 1.6 but is using a java version higher than 8`
     );
-    options.onDone();
+    options.onDone(null);
     return ["j8Required", finallyRun];
   } else {
     finallyRun();
