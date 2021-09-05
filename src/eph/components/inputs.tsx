@@ -1,10 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import {
   openInBrowser,
   openPathInFinder,
   showItemInFinder,
 } from "common/utils/open";
 import { call, DefaultFn } from "common/utils";
+import { AppBarContext } from "eph/renderer/App";
 
 export function Button(props: {
   children: ReactNode;
@@ -16,7 +17,6 @@ export function Button(props: {
   return (
     <button
       disabled={props.disabled ?? false}
-      type="button"
       className={`eph-button ${
         props.variant === "contained"
           ? "eph-button-contained"
@@ -36,16 +36,16 @@ export function TinyButton(props: {
   onClick?: DefaultFn;
 }): JSX.Element {
   return (
-    <button
+    <div
       className={`text-contrast inline-flex items-center m-1 ${
         props.paddingRight ? "pr-1" : ""
-      } rounded-md bg-black bg-opacity-0 hover:bg-opacity-5 active:bg-opacity-10 transition-colors ${
-        props.className ?? ""
+      } rounded-md bg-black bg-opacity-0 hover:bg-opacity-5 cursor-pointer active:bg-opacity-10 transition-colors ${
+        props.className
       }`}
       onClick={props.onClick}
     >
       {props.children}
-    </button>
+    </div>
   );
 }
 
@@ -54,25 +54,17 @@ export function IconButton(props: {
   className?: string;
   onClick?: DefaultFn;
   active?: boolean;
-  wrapped?: boolean;
 }): JSX.Element {
-  if (props.wrapped) {
-    // wrap icon button with a div
-    return (
-      <div>
-        <IconButton {...props} wrapped={false} />
-      </div>
-    );
-  }
+  const { cursorDefault } = useContext(AppBarContext);
   return (
-    <button
-      className={`eph-icon-button ${
+    <div
+      className={`eph-icon-button ${cursorDefault && "cursor-default"} ${
         props.active && "eph-icon-button-active"
-      } color-contrast ${props.className ?? ""}`}
+      } color-contrast ${props.className}`}
       onClick={props.onClick}
     >
       {props.children}
-    </button>
+    </div>
   );
 }
 

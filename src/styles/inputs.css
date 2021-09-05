@@ -1,6 +1,6 @@
 @layer components {
   .eph-button {
-    @apply select-none flex items-center px-4 py-2 m-1 rounded-lg text-sm font-medium focus:outline-none text-contrast;
+    @apply select-none flex items-center px-4 py-2 m-1 rounded-lg text-sm font-medium text-contrast focus:outline-none;
   }
   .eph-button:disabled {
     @apply cursor-not-allowed text-shallow;
@@ -19,8 +19,8 @@
   }
 
   .eph-icon-button {
-    @apply select-none rounded-full h-12 w-12 flex justify-center items-center
-      transition-colors bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 focus:outline-none;
+    @apply select-none cursor-pointer rounded-full h-12 w-12 flex justify-center items-center
+      transition-colors bg-black bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20;
   }
   .eph-icon-button-active {
     @apply bg-opacity-10;

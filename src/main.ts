@@ -12,6 +12,8 @@ const prod = process.env.NODE_ENV === "production";
 
 app.setName("Epherome");
 
+const isTitleBarEph = parsed.titleBarStyle === "eph";
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
@@ -19,7 +21,8 @@ function createWindow() {
     autoHideMenuBar: true,
     resizable: false,
     title: "Epherome",
-    frame: parsed.titleBarStyle !== "eph",
+    frame: !isTitleBarEph,
+    transparent: isTitleBarEph,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
