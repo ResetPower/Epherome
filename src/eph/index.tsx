@@ -10,6 +10,8 @@ import { ephExtPath } from "common/struct/config";
 
 console.log("Hello, World!");
 
+console.log(window.native.hello());
+
 // load theme before splash
 themeStore.updateTheme();
 

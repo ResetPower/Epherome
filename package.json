@@ -1,15 +1,17 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.2.7",
+  "version": "0.2.8-rc.1",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
     "test": "mocha --require ts-node/register test/**/*.ts",
     "serve": "webpack serve --env dev --env process=renderer",
     "electron": "webpack build --env dev --env process=main && electron . --remote-debugging-port=9222 --inspect=9223",
-    "dev": "concurrently --kill-others -n wdm,ele 'npm:serve' 'npm:electron'",
-    "prod": "webpack build --env prod --env process=all",
+    "build-native": "cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics && electron-rebuild index.node",
+    "build-native-prod": "cargo-cp-artifact -nc index.node -- cargo build --release --message-format=json-render-diagnostics && electron-rebuild index.node",
+    "dev": "npm run build-native && concurrently --kill-others -n wdm,ele 'npm:serve' 'npm:electron'",
+    "prod": "npm run build-native-prod && webpack build --env prod --env process=all",
     "eslint": "eslint ./src ./test --ext .js,.ts,.tsx --no-error-on-unmatched-pattern",
     "prettier": "prettier ./src ./test --ext .js,.ts,.tsx --write --no-error-on-unmatched-pattern",
     "package": "electron-builder"
@@ -44,7 +46,8 @@
       "target": [
         "deb",
         "rpm",
-        "tar.gz"
+        "tar.gz",
+        "snap"
       ]
     },
     "files": [
@@ -76,6 +79,7 @@
     "electron": "^14.0.0",
     "electron-builder": "^22.11.7",
     "electron-devtools-installer": "^3.2.0",
+    "electron-rebuild": "^3.2.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -83,6 +87,7 @@
     "html-webpack-plugin": "^5.3.2",
     "mini-css-extract-plugin": "^2.2.0",
     "mocha": "^9.0.3",
+    "node-loader": "^2.0.0",
     "postcss": "^8.3.6",
     "postcss-import": "^14.0.2",
     "postcss-loader": "^6.1.1",

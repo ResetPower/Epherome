@@ -59,13 +59,17 @@ export default (env: { [key: string]: string }): Config[] => {
           use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
         },
         {
+          test: /\.node$/,
+          use: "node-loader",
+        },
+        {
           test: /\.(png|jpe?g|gif|svg)$/i,
           use: "file-loader",
         },
       ],
     },
     resolve: {
-      extensions: [".js", ".ts", ".tsx"],
+      extensions: [".js", ".ts", ".tsx", ".node"],
       alias: resolveTsconfigPathsToAlias(),
     },
     output: {
@@ -80,6 +84,14 @@ export default (env: { [key: string]: string }): Config[] => {
       main: "./src/main",
     },
     target: "electron-main",
+  };
+
+  // preload process
+  const preload: Config = {
+    entry: {
+      preload: "./src/preload",
+    },
+    target: "electron-preload",
   };
 
   // renderer process
@@ -117,11 +129,11 @@ export default (env: { [key: string]: string }): Config[] => {
 
   let ret: Config[] = [];
   if (env.process === "main") {
-    ret = [main];
+    ret = [main, preload];
   } else if (env.process === "renderer") {
     ret = [renderer];
   } else if (env.process === "all") {
-    ret = [main, renderer];
+    ret = [main, preload, renderer];
   } else {
     throw new Error("env.process should be 'main', 'renderer' or 'all'");
   }

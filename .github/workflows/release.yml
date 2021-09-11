@@ -2,11 +2,7 @@ name: release
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: tag
-        required: true
-        default: vX.X.X
+    branches: [main]
 
 jobs:
   build:
@@ -15,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -36,79 +32,87 @@ jobs:
             ${{ runner.os }}-
       - name: Install Dependencies
         run: npm install
+      - name: Extract version
+        id: ver
+        uses: Saionaro/extract-package-version@v1.0.6
       - name: Webpack Build Production
         run: npm run prod
-      - name: Build Electron (macOS)
+      - name: Build Electron for Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run package -- --windows
+      - name: Build Electron for macOS
         if: matrix.os == 'macos-latest'
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: npm run package -- --macos
-      - name: Build Electron (Windows)
-        if: matrix.os == 'macos-latest'
-        run: npm run package -- --windows
-      - name: Upload Artifact (Built on macOS)
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v2
-        with:
-          name: art-built-on-macos
-          retention-days: 1
-          path: |
-            package/Epherome-${{ github.event.inputs.tag }}.dmg
-            package/Epherome-${{ github.event.inputs.tag }}.exe
-      - name: Build Electron (Linux)
+      - name: Build Electron for Linux
         if: matrix.os == 'ubuntu-latest'
         run: npm run package -- --linux
-      - name: Upload Artifact (Built on Ubuntu)
+      - name: Upload Artifact
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: art
+          retention-days: 1
+          path: package/Epherome-v${{ steps.ver.outputs.version }}.exe
+      - name: Upload Artifact
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: art
+          retention-days: 1
+          path: package/Epherome-v${{ steps.ver.outputs.version }}.dmg
+      - name: Upload Artifact
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
-          name: art-built-on-ubuntu
+          name: art
           retention-days: 1
           path: |
-            package/Epherome-${{ github.event.inputs.tag }}.tar.gz
-            package/Epherome-${{ github.event.inputs.tag }}.rpm
-            package/Epherome-${{ github.event.inputs.tag }}.deb
-
+            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz
+            package/Epherome-v${{ steps.ver.outputs.version }}.deb
+            package/Epherome-v${{ steps.ver.outputs.version }}.rpm
+            package/Epherome-v${{ steps.ver.outputs.version }}.snap
   release:
     needs: [build]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: "14"
-      - name: Get Artifacts (Built on macOS)
+      - name: Get Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: art-built-on-macos
+          name: art
           path: package
-      - name: Get Artifacts (Built on Ubuntu)
-        uses: actions/download-artifact@v2
-        with:
-          name: art-built-on-ubuntu
-          path: package
+      - name: Extract version
+        id: ver
+        uses: Saionaro/extract-package-version@v1.0.6
       - name: Run Post Release Script
         run: node scripts/post-release.js
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          name: Epherome ${{ github.event.inputs.tag }}
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Epherome v${{ steps.ver.outputs.version }}
           body_path: docs/RELEASE_NOTE.md
           prerelease: true
           files: |
-            package/Epherome-${{ github.event.inputs.tag }}.exe
-            package/Epherome-${{ github.event.inputs.tag }}.exe.hash
-            package/Epherome-${{ github.event.inputs.tag }}.dmg
-            package/Epherome-${{ github.event.inputs.tag }}.dmg.hash
-            package/Epherome-${{ github.event.inputs.tag }}.tar.gz
-            package/Epherome-${{ github.event.inputs.tag }}.tar.gz.hash
-            package/Epherome-${{ github.event.inputs.tag }}.deb
-            package/Epherome-${{ github.event.inputs.tag }}.deb.hash
-            package/Epherome-${{ github.event.inputs.tag }}.rpm
-            package/Epherome-${{ github.event.inputs.tag }}.rpm.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.exe
+            package/Epherome-v${{ steps.ver.outputs.version }}.exe.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.dmg
+            package/Epherome-v${{ steps.ver.outputs.version }}.dmg.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz
+            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.deb
+            package/Epherome-v${{ steps.ver.outputs.version }}.deb.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.rpm
+            package/Epherome-v${{ steps.ver.outputs.version }}.rpm.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.snap
+            package/Epherome-v${{ steps.ver.outputs.version }}.snap.hash
       - name: Update Data on Official Site
-        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/${{ github.event.inputs.tag }}
+        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/v${{ steps.ver.outputs.version }}

@@ -7,6 +7,7 @@ import installExtension, {
   MOBX_DEVTOOLS,
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
+import path from "path";
 
 const prod = process.env.NODE_ENV === "production";
 
@@ -24,6 +25,7 @@ function createWindow() {
     frame: !isTitleBarEph,
     transparent: isTitleBarEph,
     webPreferences: {
+      preload: path.join(app.getAppPath(), "dist/preload.js"),
       nodeIntegration: true,
       contextIsolation: false,
     },
