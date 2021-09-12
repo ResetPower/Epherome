@@ -1,7 +1,7 @@
-import { spawnSync } from "child_process";
-import { findJavaHome } from "./finder";
-import { nanoid } from "nanoid";
-import { Java } from "common/struct/java";
+import path from "path";
+import fs from "fs";
+
+const javaFilename = process.platform === "win32" ? "java.exe" : "java";
 
 export function parseJvmArgs(args: string): string[] {
   const arr: string[] = [];
@@ -24,38 +24,19 @@ export function defaultJvmArgs(): string {
   return "-Xmx2G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M";
 }
 
-export function checkJava(dir: string): Promise<Java | null> {
-  return new Promise((resolve) => {
-    try {
-      const proc = spawnSync(dir, ["-version"]);
-      if (proc.error) {
-        resolve(null);
-      } else {
-        const data = proc.stderr.toString();
-        const name = data.match(/"(.*?)"/)?.pop();
-        if (name) {
-          resolve({
-            nanoid: nanoid(),
-            dir,
-            name,
-            is64Bit: data.toLowerCase().includes("64-bit"),
-          });
-        } else {
-          resolve(null);
-        }
-      }
-    } catch {
-      resolve(null);
-    }
-  });
-}
-
-export async function detectJava(): Promise<Java[]> {
-  const javas = await findJavaHome();
-  const arr: Java[] = [];
-  for (const i of javas) {
-    const java = await checkJava(i);
-    java && arr.push(java);
+export function parseJavaExecutablePath(source: string): string {
+  if (path.basename(source) === javaFilename) {
+    return source;
   }
-  return arr;
+  for (const p of ["", "bin", "Home/bin", "Contents/Home/bin"]) {
+    const exe = path.join(source, p, javaFilename);
+    if (
+      fs.existsSync(exe) &&
+      fs.lstatSync(exe).isFile() &&
+      path.basename(exe) === javaFilename
+    ) {
+      return exe;
+    }
+  }
+  return source;
 }

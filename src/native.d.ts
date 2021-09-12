@@ -1,7 +1,13 @@
-interface Native {
+import { JavaWithoutNanoid } from "common/struct/java";
+
+export interface Native {
   hello(): string;
+  findJavas(): ?string[];
+  checkJava(pathname: string): ?JavaWithoutNanoid;
 }
 
-interface Window {
-  native: Native;
+declare global {
+  export interface Window {
+    native: Native;
+  }
 }

@@ -39,10 +39,9 @@ import { _ } from "common/utils/arrays";
 import os from "os";
 import { observer } from "mobx-react";
 import { MinecraftDownloadProvider } from "core/down/url";
-import { checkJava, detectJava } from "core/java";
+import { parseJavaExecutablePath } from "core/java";
 import { Info, WithHelper } from "../components/fragments";
 import EpheromeLogo from "assets/Epherome.png";
-import { parseJavaExecutablePath } from "core/java/finder";
 import { ipcRenderer } from "electron";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
@@ -88,12 +87,11 @@ export const JavaManagementDialog = observer(() => {
     const val = parseJavaExecutablePath(value ?? newJavaPath);
     if (checkDuplicate(val)) return;
     setErr(null);
-    checkJava(val).then((result) => {
-      if (result) {
-        createJava(result);
-        setNewJavaPath("");
-      } else setErr(t("java.invalidPath"));
-    });
+    const java = window.native.checkJava(val);
+    if (java) {
+      createJava(java);
+      setNewJavaPath("");
+    } else setErr(t("java.invalidPath"));
   };
 
   return (
@@ -168,14 +166,20 @@ export const JavaManagementDialog = observer(() => {
       />
       <div className="flex">
         <Button
-          onClick={() =>
-            detectJava().then((javas) => {
-              for (const i of javas) {
-                if (checkDuplicate(i.dir)) continue;
-                createJava(i);
-              }
-            })
-          }
+          onClick={() => {
+            const javas = window.native.findJavas();
+            if (javas) {
+              javas.forEach((i) => {
+                if (!checkDuplicate(i)) {
+                  try {
+                    const java = window.native.checkJava(i);
+                    java && createJava(java, false);
+                  } catch {}
+                }
+              });
+              configStore.save();
+            }
+          }}
         >
           {t("java.detect")}
         </Button>

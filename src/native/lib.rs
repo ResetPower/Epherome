@@ -1,3 +1,6 @@
+mod java;
+mod tool;
+
 use neon::prelude::*;
 
 fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
@@ -5,7 +8,9 @@ fn hello(mut cx: FunctionContext) -> JsResult<JsString> {
 }
 
 #[neon::main]
-fn main(mut cx: ModuleContext) -> NeonResult<()> {
-    cx.export_function("hello", hello)?;
+fn main(mut c: ModuleContext) -> NeonResult<()> {
+    c.export_function("hello", hello)?;
+    c.export_function("findJavas", java::finder::find_javas)?;
+    c.export_function("checkJava", java::checker::check_java)?;
     Ok(())
 }

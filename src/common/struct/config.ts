@@ -3,14 +3,12 @@ import os from "os";
 import path from "path";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
-import { createJava, Java } from "./java";
+import { Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "core/down/url";
 import { ipcRenderer } from "electron";
 import log4js from "log4js";
 import log4jsConfiguration from "common/utils/logging";
-import { nanoid } from "nanoid";
-import { detectJava } from "core/java";
 import { commonLogger } from "common/loggers";
 import { _ } from "common/utils/arrays";
 
@@ -66,23 +64,10 @@ export class ConfigStore {
   @observable titleBarStyle: TitleBarStyle = "os";
   constructor(preferred: Partial<unknown>) {
     extendObservable(this, preferred);
-    // initialize java config
-    if (this.javas.length === 0) {
-      detectJava().then((javas) => javas.forEach(createJava));
-    }
-    if (_.selected(this.javas) === undefined) {
-      _.select(this.javas, this.javas[0]);
-    }
-    // process java instances of old epherome
-    for (const i of this.javas) {
-      if (!i.nanoid) {
-        i.nanoid = nanoid();
-      }
-    }
   }
-  setConfig = (cb: (store: ConfigStore) => unknown): void => {
+  setConfig = (cb: (store: ConfigStore) => unknown, save = true): void => {
     runInAction(() => cb(this));
-    this.save();
+    save && this.save();
   };
   save(): void {
     commonLogger.info("Saving config");

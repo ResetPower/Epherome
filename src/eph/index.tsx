@@ -17,7 +17,7 @@ themeStore.updateTheme();
 
 const splash = `
 <div class="flex flex-col justify-center items-center h-full">
-  <img src=${EpheromeLogo} width="100" height="100" />
+  <img src="${EpheromeLogo}" width="100" height="100" />
   <p class="text-2xl font-semibold p-6">Epherome</p>
   <svg class="animate-spin h-7 w-7 text-gray-700 dark:text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
