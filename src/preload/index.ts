@@ -1,1 +1,1 @@
-window.native = require("../../index.node");
+window.native = require("./native.node");

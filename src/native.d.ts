@@ -2,8 +2,8 @@ import { JavaWithoutNanoid } from "common/struct/java";
 
 export interface Native {
   hello(): string;
-  findJavas(): ?string[];
-  checkJava(pathname: string): ?JavaWithoutNanoid;
+  findJavas(): string[] | undefined;
+  checkJava(pathname: string): JavaWithoutNanoid | undefined;
 }
 
 declare global {
