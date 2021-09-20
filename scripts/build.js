@@ -11,6 +11,10 @@ const proc = args[1];
 const watch = args[2] === "watch";
 const dev = mode === "dev";
 
+if (!dev) {
+  process.env.NODE_ENV = "production";
+}
+
 function adapt(src, ...items) {
   for (const i of items) {
     if (i === src) {
@@ -77,7 +81,7 @@ const buildOptions = {
     ".woff2": "file",
   },
   minify: !dev,
-  sourcemap: dev,
+  sourcemap: dev ? "inline" : false,
   bundle: true,
   outdir: "dist",
   format: "cjs",
@@ -104,6 +108,9 @@ if (watch) {
       buildOptions
     )
     .then(() => {
+      try {
+        fs.mkdirSync("dist");
+      } catch {}
       if (adapt(proc, "renderer", "all")) {
         // emit html file
         fs.writeFileSync("dist/index.html", templateContent);

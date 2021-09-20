@@ -6,7 +6,7 @@ import log4js from "log4js";
 import { default as log4jsConfiguration } from "common/utils/logging";
 
 const version = app.getVersion();
-const codeName = require("../product.json")["code-name"];
+const codeName = "Binary Tree";
 const userDataPath = app.getPath("userData"); // config file and application data directory
 const configPath = path.join(userDataPath, "settings.json");
 

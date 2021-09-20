@@ -6,7 +6,7 @@ edition = "2018"
 exclude = ["index.node"]
 
 [lib]
-path = "src/native/lib.rs"
+path = "src/rust/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
