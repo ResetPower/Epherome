@@ -5,9 +5,14 @@ use winreg::RegKey;
 //get java run environment version
 fn get_jre_ver() -> Vec<String>{
     let mut java_list:Vec<String> = Vec::new();
-    for i in RegKey::predef(HKEY_LOCAL_MACHINE)
-    .open_subkey_with_flags("SOFTWARE\\JavaSoft\\Java Runtime Environment", KEY_READ)
-    .unwrap()
+    let subkey = RegKey::predef(HKEY_LOCAL_MACHINE)
+    .open_subkey_with_flags("SOFTWARE\\JavaSoft\\Java Runtime Environment", KEY_READ);
+    let key:RegKey;
+    match subkey {
+        Ok(rkey) => key = rkey,
+        Err(_) => return Vec::new(),
+    };
+    for i in key
     .enum_keys().map(|x| x.unwrap())
     .filter(|x| x.starts_with(""))
     {
@@ -19,9 +24,14 @@ fn get_jre_ver() -> Vec<String>{
 //get java develop kit version
 fn get_jdk_ver() -> Vec<String>{
     let mut java_list:Vec<String> = Vec::new();
-    for i in RegKey::predef(HKEY_LOCAL_MACHINE)
-    .open_subkey_with_flags("SOFTWARE\\JavaSoft\\JDK", KEY_READ)
-    .unwrap()
+    let subkey = RegKey::predef(HKEY_LOCAL_MACHINE)
+    .open_subkey_with_flags("SOFTWARE\\JavaSoft\\JDK", KEY_READ);
+    let key:RegKey;
+    match subkey {
+        Ok(rkey) => key = rkey,
+        Err(_) => return Vec::new(),
+    };
+    for i in key
     .enum_keys().map(|x| x.unwrap())
     .filter(|x| x.starts_with(""))
     {
@@ -34,6 +44,9 @@ fn get_jdk_ver() -> Vec<String>{
 fn get_jre_path() -> Vec<String>{
     let reg_key = RegKey::predef(HKEY_LOCAL_MACHINE);
     let java_list = get_jre_ver();
+    if java_list.is_empty(){
+        return Vec::new();
+    }
     let mut path_list:Vec<String> = Vec::new();
     for i in &java_list{
         let mut reg_path = String::from("SOFTWARE\\JavaSoft\\Java Runtime Environment\\");
@@ -49,6 +62,9 @@ fn get_jre_path() -> Vec<String>{
 fn get_jdk_path() -> Vec<String>{
     let reg_key = RegKey::predef(HKEY_LOCAL_MACHINE);
     let java_list = get_jdk_ver();
+    if java_list.is_empty(){
+        return Vec::new();
+    }
     let mut path_list:Vec<String> = Vec::new();
     for i in &java_list{
         let mut reg_path = String::from("SOFTWARE\\JavaSoft\\JDK\\");
