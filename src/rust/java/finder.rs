@@ -1,4 +1,3 @@
-
 use neon::prelude::*;
 
 use crate::tool::deduplicate;
@@ -7,10 +6,12 @@ use once_cell::sync::Lazy;
 use std::path::Path;
 use std::{env, fs};
 use which::which;
+
+#[cfg(target_os = "windows")]
 use super::reg_finder;
 
-static IS_WINDOWS: Lazy<bool> = Lazy::new(|| OS == "windows");
-static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| if *IS_WINDOWS { "java.exe" } else { "java" });
+static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| if OS == "windows" { "java.exe" } else { "java" });
+
 // Possible java installation paths.
 // If you know more possible installation paths,
 // please tell us in the issues
@@ -37,11 +38,10 @@ pub fn find_javas(mut c: FunctionContext) -> JsResult<JsArray> {
     }
     // find in paths
     find_in_paths(&mut javas);
+    // find in reg
+    #[cfg(target_os = "windows")]
+    reg_finder::find_javas_in_reg(&mut javas);
 
-    //find in reg
-    if IS_WINDOWS {
-        reg_finder::find_javas_in_reg(&mut javas);
-    }
     deduplicate(&mut javas);
     let arr = JsArray::new(&mut c, javas.len() as u32 + 1);
     for (i, pathname) in javas.iter().enumerate() {
