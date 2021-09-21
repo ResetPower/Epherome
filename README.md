@@ -27,12 +27,8 @@ We encourage people contribute to this project by developing extensions.
 
 ## Contribution
 
-If you really want to send a pull request, here's some required information:
-
-- `npm run dev` to launch Epherome in development mode
-- `npm run prettier` to auto prettify your code
-- `npm run eslint` to lint your code
-- `npm test` to test
+If you want to contribute code to Epherome, please follow some of the guidelines provided by Epherome.
+They are in [Wiki](https://github.com/ResetPower/Epherome/wiki)!
 
 ## CI
 

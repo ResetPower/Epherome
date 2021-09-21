@@ -27,12 +27,8 @@ _令世人大为震惊的 Epherome 总是出其不意地为你带来骇人听闻
 
 ## 贡献
 
-如果你真的想要发一个 Pull Request，这里是一些你需要的信息：
-
-- `npm run dev` 用开发模式启动 Epherome
-- `npm run prettier` 自动美化您的代码
-- `npm run eslint` 检查您的代码
-- `npm test` 测试
+如果你想要为 Epherome 贡献代码，请遵循 Epherome 为你提供的一些指南。
+它们在 [Wiki](https://github.com/ResetPower/Epherome/wiki) 里！
 
 ## CI
 
