@@ -12,7 +12,7 @@
     animation: slideAppBar 300ms;
   }
   .eph-appbar-title {
-    @apply flex-grow pl-3 select-none text-xl;
+    @apply flex-grow pl-3 text-xl;
   }
 }
 

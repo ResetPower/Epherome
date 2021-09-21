@@ -60,6 +60,15 @@ const templateContent = `<!DOCTYPE html>
   </body>
 </html>
 `;
+
+function emitHtml() {
+  try {
+    fs.mkdirSync("dist");
+  } catch { }
+  // emit html file
+  fs.writeFileSync("dist/index.html", templateContent);
+}
+
 const main = "./src/main";
 const renderer = "./src/eph";
 const preload = "./src/preload";
@@ -69,10 +78,10 @@ const buildOptions = {
     proc === "main"
       ? { main, preload }
       : proc === "renderer"
-      ? { renderer }
-      : proc === "all"
-      ? { main, preload, renderer }
-      : {},
+        ? { renderer }
+        : proc === "all"
+          ? { main, preload, renderer }
+          : {},
   platform: "node",
   external: ["electron", "*.node"],
   loader: {
@@ -108,29 +117,25 @@ if (watch) {
       buildOptions
     )
     .then(() => {
-      try {
-        fs.mkdirSync("dist");
-      } catch {}
       if (adapt(proc, "renderer", "all")) {
-        // emit html file
-        fs.writeFileSync("dist/index.html", templateContent);
+        emitHtml();
       }
     });
 } else {
   esbuild.build(buildOptions).then(() => {
     if (adapt(proc, "renderer", "all")) {
-      // emit html file
-      fs.writeFileSync("dist/index.html", templateContent);
+      emitHtml();
     }
     if (adapt(proc, "main", "all")) {
-      // compile rust
-      cp.execSync(
-        `npx cargo-cp-artifact -nc dist/native.node -- cargo build ${
-          mode === "dev" ? "" : "--release"
-        } --message-format=json-render-diagnostics`,
-        { stdio: "ignore" }
-      );
-      cp.execSync("npx electron-rebuild dist/native.node", { stdio: "ignore" });
+      setTimeout(() => {
+        console.log("[build-native] Compiling Rust code, this may take some time...");
+        // compile rust
+        cp.execSync(
+          `npm run build-native ${mode === "dev" ? "" : "-- --release"
+          }`
+        );
+        cp.execSync("npm run electron-rebuild");
+      });
     }
   });
 }

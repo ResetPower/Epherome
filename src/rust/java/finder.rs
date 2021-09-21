@@ -10,7 +10,13 @@ use which::which;
 #[cfg(target_os = "windows")]
 use super::reg_finder;
 
-static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| if OS == "windows" { "java.exe" } else { "java" });
+static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| {
+    if OS == "windows" {
+        "java.exe"
+    } else {
+        "java"
+    }
+});
 
 // Possible java installation paths.
 // If you know more possible installation paths,
@@ -38,10 +44,9 @@ pub fn find_javas(mut c: FunctionContext) -> JsResult<JsArray> {
     }
     // find in paths
     find_in_paths(&mut javas);
-    // find in reg
+    // find in registry (Windows only)
     #[cfg(target_os = "windows")]
     reg_finder::find_javas_in_reg(&mut javas);
-
     deduplicate(&mut javas);
     let arr = JsArray::new(&mut c, javas.len() as u32 + 1);
     for (i, pathname) in javas.iter().enumerate() {

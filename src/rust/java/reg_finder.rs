@@ -1,69 +1,38 @@
 use winreg::enums::*;
 use winreg::RegKey;
 
-fn get_jre_ver() -> Vec<String> {
-    let mut java_list: Vec<String> = Vec::new();
-    for i in RegKey::predef(HKEY_LOCAL_MACHINE)
-        .open_subkey_with_flags("SOFTWARE\\JavaSoft\\Java Runtime Environment", KEY_READ)
-        .unwrap()
-        .enum_keys()
-        .map(|x| x.unwrap())
-        .filter(|x| x.starts_with(""))
-    {
-        java_list.push(i);
+fn get_java_vers() -> Vec<(String, bool)> {
+    let mut vers: Vec<(String, bool)> = Vec::new();
+    for i in [
+        "SOFTWARE\\JavaSoft\\Java Runtime Environment",
+        "SOFTWARE\\JavaSoft\\JDK",
+    ] {
+        if let Ok(subkey) = RegKey::predef(HKEY_LOCAL_MACHINE).open_subkey_with_flags(i, KEY_READ) {
+            let is_jdk = i.ends_with("JDK");
+            for j in subkey.enum_keys() {
+                if let Ok(j) = j {
+                    vers.push((j, is_jdk));
+                }
+            }
+        }
     }
-    return java_list;
-}
-
-fn get_jdk_ver() -> Vec<String> {
-    let mut java_list: Vec<String> = Vec::new();
-    for i in RegKey::predef(HKEY_LOCAL_MACHINE)
-        .open_subkey_with_flags("SOFTWARE\\JavaSoft\\JDK", KEY_READ)
-        .unwrap()
-        .enum_keys()
-        .map(|x| x.unwrap())
-        .filter(|x| x.starts_with(""))
-    {
-        java_list.push(i);
-    }
-    return java_list;
-}
-
-fn find_jre() -> Vec<String> {
-    let reg_key = RegKey::predef(HKEY_LOCAL_MACHINE);
-    let java_list = get_jre_ver();
-    let mut path_list: Vec<String> = Vec::new();
-    for i in &java_list {
-        let mut reg_path = String::from("SOFTWARE\\JavaSoft\\Java Runtime Environment\\");
-        reg_path.push_str(&i.to_string()[..]);
-        let cur_ver = reg_key.open_subkey(&reg_path.to_string()[..]).unwrap();
-        let path: String = cur_ver.get_value("JavaHome").unwrap();
-        path_list.push(path);
-    }
-    return path_list;
-}
-
-fn find_jdk() -> Vec<String> {
-    let reg_key = RegKey::predef(HKEY_LOCAL_MACHINE);
-    let java_list = get_jdk_ver();
-    let mut path_list: Vec<String> = Vec::new();
-    for i in &java_list {
-        let mut reg_path = String::from("SOFTWARE\\JavaSoft\\JDK\\");
-        reg_path.push_str(&i.to_string()[..]);
-        let cur_ver = reg_key.open_subkey(&reg_path.to_string()[..]).unwrap();
-        let path: String = cur_ver.get_value("JavaHome").unwrap();
-        path_list.push(path);
-    }
-    return path_list;
+    return vers;
 }
 
 pub fn find_javas_in_reg(javas: &mut Vec<String>) {
-    let jre_path = find_jre();
-    let jdk_path = find_jdk();
-    for i in jre_path {
-        javas.push(i);
-    }
-    for i in jdk_path {
-        javas.push(i);
+    let reg_key = RegKey::predef(HKEY_LOCAL_MACHINE);
+    let java_vers = get_java_vers();
+    for i in &java_vers {
+        let mut reg_path = String::from(if i.1 {
+            "SOFTWARE\\JavaSoft\\JDK\\"
+        } else {
+            "SOFTWARE\\JavaSoft\\Java Runtime Environment\\"
+        });
+        reg_path.push_str(&i.0.to_string()[..]);
+        if let Ok(cur_ver) = reg_key.open_subkey(&reg_path.to_string()[..]) {
+            if let Ok(path) = cur_ver.get_value("JavaHome") {
+                javas.push(path);
+            }
+        }
     }
 }

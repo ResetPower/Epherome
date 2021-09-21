@@ -6,6 +6,8 @@
   "main": "dist/main.js",
   "scripts": {
     "test": "mocha --require ts-node/register test/**/*.ts",
+    "build-native": "cargo-cp-artifact -nc dist/native.node -- cargo build --message-format=json-render-diagnostics",
+    "electron-rebuild": "electron-rebuild dist/native.node",
     "serve": "node --unhandled-rejections=strict scripts/build.js dev renderer watch",
     "electron": "node --unhandled-rejections=strict scripts/build.js dev main && electron . --remote-debugging-port=9222 --inspect=9223",
     "dev": "concurrently --kill-others -n esbuild,electron 'npm:serve' 'npm:electron'",
