@@ -1,4 +1,5 @@
 use neon::prelude::*;
+use neon::result::Throw;
 
 use crate::tool::deduplicate;
 use env::consts::OS;
@@ -10,13 +11,7 @@ use which::which;
 #[cfg(target_os = "windows")]
 use super::reg_finder;
 
-static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| {
-    if OS == "windows" {
-        "java.exe"
-    } else {
-        "java"
-    }
-});
+static JAVA_FILENAME: Lazy<&str> = Lazy::new(|| if OS == "windows" { "java.exe" } else { "java" });
 
 // Possible java installation paths.
 // If you know more possible installation paths,
@@ -32,7 +27,7 @@ pub fn find_javas(mut c: FunctionContext) -> JsResult<JsArray> {
     let mut javas: Vec<String> = vec![];
     // find in JAVA_HOME env var
     if let Ok(java_home) = env::var("JAVA_HOME") {
-        if let Some(value) = find_java_executable(Path::new(&java_home)) {
+        if let Some(value) = find_java_executable_impl(Path::new(&java_home)) {
             javas.push(value)
         }
     }
@@ -66,14 +61,24 @@ fn find_in_paths(javas: &mut Vec<String>) {
             if dir.is_err() {
                 continue;
             }
-            if let Some(value) = find_java_executable(dir.unwrap().path().as_path()) {
+            if let Some(value) = find_java_executable_impl(dir.unwrap().path().as_path()) {
                 javas.push(value)
             }
         }
     }
 }
 
-pub fn find_java_executable(path: &Path) -> Option<String> {
+pub fn find_java_executable(mut c: FunctionContext) -> JsResult<JsString> {
+    let pathname = c.argument::<JsString>(0)?;
+    let pathname = pathname.value(&mut c);
+    let exec_path = find_java_executable_impl(Path::new(&pathname));
+    if let Some(exec_path) = exec_path {
+        return Ok(c.string(exec_path));
+    }
+    Err(Throw)
+}
+
+fn find_java_executable_impl(path: &Path) -> Option<String> {
     // the pathname is an java executable
     if let Some(value) = resolve_java_executable(&path) {
         return Some(String::from(value));

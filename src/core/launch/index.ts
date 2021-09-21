@@ -6,7 +6,6 @@ import { authenticate, refresh, validate } from "core/auth";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
-import { unzipNatives } from "../unzip";
 import { runMinecraft } from "./runner";
 import { ensureDir, downloadFile } from "common/utils/files";
 import { adapt, DefaultFn } from "common/utils";
@@ -200,7 +199,10 @@ export async function launchMinecraft(
   }
 
   // unzip native libraries
-  await unzipNatives(nativeDir, analyzedLibrary.natives);
+  for (const i of analyzedLibrary.natives) {
+    // 借助 Rust 神力解压，法力无边。
+    window.native.extractZip(i, nativeDir);
+  }
 
   const gameDir = profile.gameDirIsolation
     ? path.join(dir, "versions", profile.ver)
