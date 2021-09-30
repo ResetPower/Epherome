@@ -4,6 +4,10 @@ export interface StringMap {
 
 export type DefaultFn = () => unknown;
 
+export type Nullable<T> = T | null;
+
+export type DefaultCb<E, T> = (err: Nullable<E>, data: Nullable<T>) => unknown;
+
 export type ErrorHandler = (error: Error) => unknown;
 
 export type LoadingStatus = "pending" | "error" | "done";

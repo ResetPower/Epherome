@@ -5,6 +5,7 @@ import { call, DefaultFn, ErrorHandler } from "common/utils";
 import { ensureDir } from "common/utils/files";
 import { pipeline } from "stream";
 import { ObjectWrapper } from "common/utils/object";
+import { coreLogger } from "common/loggers";
 
 export type DownloaderDetailsListener = (
   details: ObjectWrapper<DownloaderTask[]>,
@@ -30,7 +31,7 @@ export class DownloaderTask {
     finishCallback: (task: DownloaderTask, error?: boolean) => void
   ) {
     const handleError = (error: Error) => {
-      console.log("err");
+      coreLogger.error("Error occurred during download");
       // destroy download task on error
       // in order to avoid unexpected things
       this.destroy();

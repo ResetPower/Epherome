@@ -13,7 +13,8 @@
     "dev": "concurrently --kill-others -n esbuild,electron 'npm:serve' 'npm:electron'",
     "prod": "node --unhandled-rejections=strict scripts/build.js prod all",
     "eslint": "eslint ./src ./test --ext .js,.ts,.tsx --no-error-on-unmatched-pattern",
-    "prettier": "prettier ./src ./test --ext .js,.ts,.tsx --write --no-error-on-unmatched-pattern",
+    "prettier": "prettier ./src ./test --write --no-error-on-unmatched-pattern",
+    "check": "npm run eslint && npm run prettier && tsc --noEmit && cargo check",
     "package": "electron-builder"
   },
   "repository": {
@@ -36,8 +37,7 @@
     "compression": "maximum",
     "icon": "src/assets/Epherome.png",
     "win": {
-      "compression": "normal",
-      "target": "portable"
+      "target": "msi"
     },
     "mac": {
       "target": "dmg"

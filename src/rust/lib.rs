@@ -1,3 +1,4 @@
+mod data;
 mod java;
 mod tool;
 mod unzip;
@@ -15,5 +16,7 @@ fn main(mut c: ModuleContext) -> NeonResult<()> {
     c.export_function("findJavaExecutable", java::finder::find_java_executable)?;
     c.export_function("checkJava", java::checker::check_java)?;
     c.export_function("extractZip", unzip::extract_zip)?;
+    c.export_function("fetchHitokoto", data::hitokoto::fetch_hitokoto)?;
+    c.export_function("fetchNews", data::news::fetch_news)?;
     Ok(())
 }
