@@ -6,3 +6,13 @@ export class ObjectWrapper<T> {
   }
   setToDefault = (): T => (this.current = this.default);
 }
+
+export class Counter {
+  private inner = 0;
+  load(): number {
+    return this.inner;
+  }
+  count(): number {
+    return this.inner++;
+  }
+}

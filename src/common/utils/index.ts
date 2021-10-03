@@ -17,7 +17,7 @@ export type LoadingStatus = "pending" | "error" | "done";
 // { a: 'a', b: 'b' }
 // will transferred into
 // a=a&b=b
-export function obj2form(data: StringMap): string {
+export function form(data: StringMap): string {
   const urlEncodedDataPairs = [];
   for (const name in data) {
     urlEncodedDataPairs.push(

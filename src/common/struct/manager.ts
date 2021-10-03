@@ -7,7 +7,7 @@ import { action, makeObservable, observable } from "mobx";
 import { ipcRenderer } from "electron";
 
 export interface MinecraftSave {
-  id: string;
+  id: number;
   name: string;
   path: string;
 }
@@ -15,14 +15,14 @@ export interface MinecraftSave {
 export type MinecraftResourcePackType = "resourcePack" | "shaderPack";
 
 export interface MinecraftResourcePack {
-  id: string;
+  id: number;
   type: MinecraftResourcePackType;
   name: string;
   path: string;
 }
 
 export interface MinecraftMod {
-  id: string;
+  id: number;
   name: string;
   path: string;
   enabled: boolean;
@@ -43,9 +43,9 @@ export class MinecraftProfileManagerStore {
   mods: MinecraftMod[] = [];
   @observable
   selections = {
-    save: "",
-    resourcePack: "",
-    mod: "",
+    save: -1,
+    resourcePack: -1,
+    mod: -1,
   };
   constructor(profile: MinecraftProfile) {
     this.profile = profile;
@@ -68,7 +68,7 @@ export class MinecraftProfileManagerStore {
     });
   };
   @action
-  enableMod = (id: string): void => {
+  enableMod = (id: number): void => {
     const mod = this.mods.find((val) => val.id === id);
     if (mod && !mod.enabled && mod.path.endsWith(".disabled")) {
       mod.enabled = true;
@@ -78,7 +78,7 @@ export class MinecraftProfileManagerStore {
     }
   };
   @action
-  disableMod = (id: string): void => {
+  disableMod = (id: number): void => {
     const mod = this.mods.find((val) => val.id === id);
     if (mod && mod.enabled && !mod.path.endsWith(".disabled")) {
       mod.enabled = false;
@@ -88,7 +88,7 @@ export class MinecraftProfileManagerStore {
     }
   };
   @action
-  select = (type: "save" | "resourcePack" | "mod", value: string): void => {
+  select = (type: "save" | "resourcePack" | "mod", value: number): void => {
     this.selections = { ...this.selections, [type]: value };
   };
   @action

@@ -1,7 +1,7 @@
 import assert, { equal } from "assert";
 import {
   Accessible,
-  obj2form,
+  form,
   unwrapAccessible,
   normalizeArray,
   adapt,
@@ -9,13 +9,13 @@ import {
 } from "../../../src/common/utils";
 
 describe("common/utils", function () {
-  describe("#obj2form", function () {
+  describe("#form", function () {
     it("transfers obj to form", function () {
       const obj = {
         a: "a",
         b: "b",
       };
-      equal(obj2form(obj), "a=a&b=b");
+      equal(form(obj), "a=a&b=b");
     });
   });
   describe("#unwrapAccessible", function () {

@@ -1,3 +1,6 @@
+import { commonLogger } from "common/loggers";
+import { promisify } from "util";
+
 export interface NewItem {
   title: string;
   author: string;
@@ -5,14 +8,14 @@ export interface NewItem {
   url: string;
 }
 
-export function fetchNews(): Promise<NewItem[]> {
-  return new Promise((resolve, reject) =>
-    window.native.fetchNews((err, news) => {
-      if (err) {
-        reject("Unable to fetch news");
-      } else {
-        resolve(news ?? []);
-      }
-    })
-  );
+export async function fetchNews(): Promise<NewItem[] | null> {
+  commonLogger.info("Fetching news...");
+  try {
+    const result = await promisify(window.native.fetchNews)();
+    commonLogger.info("Fetched news");
+    return result ?? [];
+  } catch {
+    commonLogger.warn("Unable to fetch news");
+    return null;
+  }
 }

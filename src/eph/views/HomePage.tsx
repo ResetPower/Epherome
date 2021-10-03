@@ -112,13 +112,12 @@ export class HomePageStore {
   reloadHitokoto = (): void => {
     this.hitokoto = { content: "...", from: "..." };
     fetchHitokoto().then((hk) =>
-      runInAction(
-        () =>
-          (this.hitokoto = hk ?? {
-            content: t("internetNotAvailable"),
-            from: "",
-          })
-      )
+      runInAction(() => {
+        this.hitokoto = hk ?? {
+          content: t("internetNotAvailable"),
+          from: "",
+        };
+      })
     );
   };
   @action
@@ -128,9 +127,9 @@ export class HomePageStore {
   @action
   reloadNews = (): void => {
     this.news = null;
-    fetchNews()
-      .then((news) => runInAction(() => (this.news = news)))
-      .catch(() => runInAction(() => (this.news = undefined)));
+    fetchNews().then((news) =>
+      runInAction(() => (this.news = news ?? undefined))
+    );
   };
   @action
   again = (): void => {

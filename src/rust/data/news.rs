@@ -1,5 +1,9 @@
 use neon::prelude::*;
+use reqwest::Response;
 use scraper::{ElementRef, Html, Selector};
+use tokio::runtime::Runtime;
+
+use crate::tool::{my_err, MyError};
 
 // Note that all the news is from MCBBS (A Chinese Minecraft Forum)
 // So we will not support English/Japanese/OtherLanguages' news until we find other news API to replace it
@@ -47,15 +51,23 @@ pub fn fetch_news(mut c: FunctionContext) -> JsResult<JsUndefined> {
     let callback = c.argument::<JsFunction>(0)?.root(&mut c);
     let channel = c.channel();
     std::thread::spawn(move || {
-        let resp = reqwest::blocking::get("https://www.mcbbs.net/forum-news-1.html");
+        let result = (|| -> Result<(Runtime, Response), MyError> {
+            let rt = Runtime::new().or(my_err("Error occurred creating tokio runtime"))?;
+            let resp = rt
+                .block_on(async { reqwest::get("https://www.mcbbs.net/forum-news-1.html").await })
+                .or(my_err("Error occurred requesting"))?;
+            Ok((rt, resp))
+        })();
         channel.send(move |mut c| {
             let callback = callback.into_inner(&mut c);
             let this = c.undefined();
             let arr = c.empty_array();
             let mut msg = "";
             let selector = Selector::parse("#threadlisttableid > tbody");
-            if let Ok(resp) = resp {
-                if let (Ok(content), Ok(thread_body_selector)) = (resp.text(), selector) {
+            if let Ok((rt, resp)) = result {
+                if let (Ok(content), Ok(thread_body_selector)) =
+                    (rt.block_on(async { resp.text().await }), selector)
+                {
                     let document = Html::parse_document(&content);
                     for element in document.select(&thread_body_selector) {
                         let element_value = element.value();

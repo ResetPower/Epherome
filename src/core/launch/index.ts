@@ -7,7 +7,7 @@ import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { runMinecraft } from "./runner";
-import { ensureDir, downloadFile } from "common/utils/files";
+import { ensureDir, downloadFile, parallelDownload } from "common/utils/files";
 import { adapt, DefaultFn } from "common/utils";
 import {
   isJava16Required,
@@ -19,7 +19,6 @@ import { t } from "eph/intl";
 import { ephVersion } from "eph/renderer/updater";
 import { configStore, userDataPath } from "common/struct/config";
 import { MinecraftUrlUtils } from "core/down/url";
-import { Downloader } from "core/down/downloader";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "core/java";
@@ -45,12 +44,8 @@ export async function launchMinecraft(
 ): Promise<
   ["j8Required" | "j16Required" | "jRequired" | null, DefaultFn | null]
 > {
-  const setCanceller = (act: DefaultFn) =>
-    (options.cancellerWrapper.current = () => {
-      act();
-      return true;
-    });
-  const restoreCanceller = options.cancellerWrapper.setToDefault;
+  const cancellerWrapper = options.cancellerWrapper;
+  const restoreCanceller = cancellerWrapper.setToDefault;
   const java = options.java;
 
   if (!java) {
@@ -135,50 +130,40 @@ export async function launchMinecraft(
 
   // download missing libraries
   setHelper(`${t("launching.downloadingLib")} (0%)`);
-  await new Promise<void>((resolve, reject) => {
-    const downloader = new Downloader({
-      taskOptions: analyzedLibrary.missing.map((val) => ({
-        url: val.url,
-        target: val.path,
-      })),
-      onDetailsChange: (_, totalPercentage) => {
-        setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
-      },
-      onError: reject,
-      onDone: resolve,
-      concurrency: configStore.downloadConcurrency,
-      stopOnError: true,
-    });
-    downloader.start();
-    setCanceller(downloader.cancel);
-  }).catch((reason) => {
-    throw reason;
-  });
+  await parallelDownload(
+    analyzedLibrary.missing.map((val) => ({
+      url: val.url,
+      target: val.path,
+    })),
+    (_, totalPercentage) => {
+      setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
+    },
+    (err) => {
+      throw err;
+    },
+    configStore.downloadConcurrency,
+    cancellerWrapper
+  );
   restoreCanceller();
 
   const analyzedAssets = await analyzeAssets(dir, assetIndex);
 
   // download missing libraries
   setHelper(`${t("launching.downloadingAsset")} (0%)`);
-  await new Promise<void>((resolve, reject) => {
-    const downloader = new Downloader({
-      taskOptions: analyzedAssets.missing.map((val) => ({
-        url: val.url,
-        target: val.path,
-      })),
-      onDetailsChange: (_, totalPercentage) => {
-        setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
-      },
-      onError: reject,
-      onDone: resolve,
-      concurrency: configStore.downloadConcurrency,
-      stopOnError: true,
-    });
-    downloader.start();
-    setCanceller(downloader.cancel);
-  }).catch((reason) => {
-    throw reason;
-  });
+  await parallelDownload(
+    analyzedAssets.missing.map((val) => ({
+      url: val.url,
+      target: val.path,
+    })),
+    (_, totalPercentage) => {
+      setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
+    },
+    (err) => {
+      throw err;
+    },
+    configStore.downloadConcurrency,
+    cancellerWrapper
+  );
   restoreCanceller();
 
   setHelper(defaultHelper);

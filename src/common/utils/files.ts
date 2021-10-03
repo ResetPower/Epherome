@@ -1,10 +1,23 @@
 import fs from "fs";
-import got from "got";
 import path from "path";
 import crypto from "crypto";
-import { adapt, DefaultFn } from ".";
+import { adapt, DefaultFn, ErrorHandler } from ".";
 import { MutableRefObject } from "react";
 import { shell } from "electron";
+import { shortid } from "./ids";
+import { Counter, ObjectWrapper } from "./object";
+import { DownloaderDetailsListener } from "core/down/downloader";
+
+export interface ParallelDownloadItem {
+  unique: number;
+  url: string;
+  target: string;
+}
+
+export type ParallelDownloadItemWithoutUnique = Omit<
+  ParallelDownloadItem,
+  "unique"
+>;
 
 export function ensureDir(p: string): void {
   try {
@@ -24,21 +37,67 @@ export function downloadFile(
   target: string,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
+  const id = shortid();
   return new Promise((resolve, reject) => {
-    createDirByPath(target);
-    const downloadStream = got.stream(url);
-    const fileStream = fs.createWriteStream(target);
-    downloadStream.on("error", reject);
-    fileStream.on("error", reject).on("finish", resolve);
     cancellerWrapper &&
-      (cancellerWrapper.current = () => {
-        try {
-          downloadStream.destroy();
-          fileStream.destroy();
-          fs.rmSync(target);
-        } catch {}
-      });
-    downloadStream.pipe(fileStream);
+      (cancellerWrapper.current = () => window.native.task.cancel(id));
+    window.native.downloadFile(
+      url,
+      target,
+      (err) => (err ? reject(err) : resolve()),
+      id,
+      false,
+      true
+    );
+  });
+}
+
+export async function parallelDownload(
+  itemList: ParallelDownloadItemWithoutUnique[],
+  onDetailsChange: DownloaderDetailsListener,
+  onError: ErrorHandler,
+  concurrency: number,
+  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
+): Promise<void> {
+  const id = shortid();
+  const counter = new Counter();
+  const items = itemList.map((i) => ({ ...i, unique: counter.count() }));
+  const details = items.map((i) => ({
+    ...i,
+    filename: path.basename(i.target),
+    percentage: 0,
+    inProgress: false,
+  }));
+  return new Promise((resolve) => {
+    window.exchange.listen(`parallel-download-${id}-err`, (msg) =>
+      onError(new Error(msg))
+    );
+    window.exchange.listen(`parallel-download-${id}-done`, () => {
+      resolve();
+    });
+    window.exchange.listen(`parallel-download-${id}-progress`, (arg) => {
+      const [unique, progress] = arg.split("-");
+      const [uInt, pInt] = [+unique, +progress];
+      const detail = details.find((i) => i.unique === uInt);
+      if (detail) {
+        if (pInt === 100) {
+          detail.inProgress = false;
+        } else if (pInt >= 0) {
+          detail.inProgress = true;
+        }
+        detail.percentage = pInt;
+      }
+      onDetailsChange(
+        new ObjectWrapper(details),
+        Math.floor(
+          details.map((i) => i.percentage).reduce((a, b) => a + b) /
+            details.length
+        )
+      );
+    });
+    window.native.parallelDownload(items, concurrency, id);
+    cancellerWrapper &&
+      (cancellerWrapper.current = () => window.native.task.cancel(id));
   });
 }
 

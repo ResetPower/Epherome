@@ -33,6 +33,7 @@ import { useRef } from "react";
 import { Avatar, Body, downloadSkin } from "core/model/skin";
 import { BiExport } from "react-icons/bi";
 import { Center, Info } from "../components/fragments";
+import { commonLogger } from "common/loggers";
 
 export function RemoveAccountDialog(props: {
   account: MinecraftAccount;
@@ -184,7 +185,8 @@ export function AccountSkinFragment(props: {
         setExporting(false);
         showOverlay(<ExportedDialog target={target} />);
       })
-      .catch(() => {
+      .catch((err) => {
+        commonLogger.warn("Error occurred downloading skin: " + err);
         setExporting(false);
         showOverlay(<InternetNotAvailableDialog />);
       });

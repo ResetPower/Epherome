@@ -1,7 +1,7 @@
 import { MinecraftProfile } from "common/struct/profiles";
 import { downloadFile } from "common/utils/files";
 import { MinecraftUrlUtils } from "core/down/url";
-import got from "got";
+import { nativeRequestAsync } from "core/net";
 import path from "path";
 import { InstallVersion } from ".";
 
@@ -37,10 +37,16 @@ async function installFabric(
 export async function getFabricInstallVersions(
   mc: string
 ): Promise<InstallVersion[]> {
-  const rLoaders = await got(MinecraftUrlUtils.Fabric.loaders());
-  const rGames = await got(MinecraftUrlUtils.Fabric.games());
-  const loaders: FabricLoaderVersion[] = JSON.parse(rLoaders.body);
-  const games: FabricGameVersion[] = JSON.parse(rGames.body);
+  const [, rLoaders] = await nativeRequestAsync(
+    "get",
+    MinecraftUrlUtils.Fabric.loaders()
+  );
+  const [, rGames] = await nativeRequestAsync(
+    "get",
+    MinecraftUrlUtils.Fabric.games()
+  );
+  const loaders: FabricLoaderVersion[] = JSON.parse(rLoaders);
+  const games: FabricGameVersion[] = JSON.parse(rGames);
   if (!games.find((val) => val.version === mc)) {
     return [];
   }

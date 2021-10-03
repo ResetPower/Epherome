@@ -9,9 +9,10 @@ import {
   calculateHash,
   createDirByPath,
   downloadFile,
+  parallelDownload,
 } from "common/utils/files";
 import { coreLogger } from "common/loggers";
-import { Downloader, DownloaderDetailsListener } from "core/down/downloader";
+import { DownloaderDetailsListener } from "core/down/downloader";
 import { MinecraftUrlUtils } from "core/down/url";
 import { MutableRefObject } from "react";
 
@@ -21,7 +22,7 @@ export async function downloadMinecraft(
   onError: ErrorHandler,
   onDone: DefaultFn,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
-): Promise<Downloader> {
+): Promise<void> {
   const versionDir = path.join(minecraftDownloadPath, "versions", version.id);
   coreLogger.info(
     `Start downloading Minecraft ${version.id} to "${versionDir}"`
@@ -63,22 +64,28 @@ export async function downloadMinecraft(
   const noNeedToDownloadJar =
     fs.existsSync(jarPath) && client.sha1 === calculateHash(jarPath, "sha1");
 
-  return new Downloader({
-    taskOptions: [
+  parallelDownload(
+    [
       ...(noNeedToDownloadJar
         ? []
         : [
             {
               url: client.url,
-              path: jarPath,
+              target: jarPath,
             },
           ]),
-      ...libraries.missing,
-      ...assets.missing,
-    ].map((val) => ({ url: val.url, target: val.path })),
-    concurrency: configStore.downloadConcurrency,
+      ...libraries.missing.map((i) => ({
+        url: i.url,
+        target: i.path,
+      })),
+      ...assets.missing.map((i) => ({
+        url: i.url,
+        target: i.path,
+      })),
+    ],
     onDetailsChange,
     onError,
-    onDone,
-  });
+    configStore.downloadConcurrency,
+    cancellerWrapper
+  ).then(onDone);
 }

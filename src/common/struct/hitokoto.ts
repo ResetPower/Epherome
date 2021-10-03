@@ -1,20 +1,22 @@
 import { commonLogger } from "common/loggers";
+import { nativeRequestAsync } from "core/net";
 
 export interface Hitokoto {
   content: string;
   from: string;
 }
 
-export function fetchHitokoto(): Promise<Hitokoto | null> {
-  return new Promise((resolve) => {
-    commonLogger.info("Fetching hitokoto ...");
-    window.native.fetchHitokoto((err, data) => {
-      if (err) {
-        commonLogger.warn("Unable to fetch hitokoto");
-      } else {
-        commonLogger.info("Fetched hitokoto");
-      }
-      resolve(data);
-    });
-  });
+export async function fetchHitokoto(): Promise<Hitokoto | null> {
+  commonLogger.info("Fetching hitokoto...");
+  try {
+    const [, body] = await nativeRequestAsync(
+      "get",
+      "https://epherome.com/api/hitokoto"
+    );
+    commonLogger.info("Fetched hitokoto");
+    return JSON.parse(body);
+  } catch {
+    commonLogger.warn("Unable to fetch hitokoto");
+    return null;
+  }
 }

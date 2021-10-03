@@ -64,7 +64,7 @@ const templateContent = `<!DOCTYPE html>
 function emitHtml() {
   try {
     fs.mkdirSync("dist");
-  } catch { }
+  } catch {}
   // emit html file
   fs.writeFileSync("dist/index.html", templateContent);
 }
@@ -78,10 +78,10 @@ const buildOptions = {
     proc === "main"
       ? { main, preload }
       : proc === "renderer"
-        ? { renderer }
-        : proc === "all"
-          ? { main, preload, renderer }
-          : {},
+      ? { renderer }
+      : proc === "all"
+      ? { main, preload, renderer }
+      : {},
   platform: "node",
   external: ["electron", "*.node"],
   loader: {
@@ -95,11 +95,12 @@ const buildOptions = {
   outdir: "dist",
   format: "cjs",
   logLevel: "info",
+  inject: ["./scripts/react-shim.js"],
   define: {
     "process.env.NODE_ENV": dev ? `"development"` : `"production"`,
     this: "undefined",
   },
-  plugins: [postcss(), jsxReact17Plugin],
+  plugins: [postcss(), ...(dev ? [] : [jsxReact17Plugin])],
 };
 
 if (watch) {
@@ -107,7 +108,7 @@ if (watch) {
     .serve(
       {
         port: 3000,
-        servedir: "dist",
+        servedir: ".",
         onRequest: (args) => {
           if (args.path === "/") {
             console.log(`👌 Rebuilt successful in ${args.timeInMS}ms!`);
@@ -128,11 +129,12 @@ if (watch) {
     }
     if (adapt(proc, "main", "all")) {
       setTimeout(() => {
-        console.log("[build-native] Compiling Rust code, this may take some time...");
+        console.log(
+          "[build-native] Compiling Rust code, this may take some time..."
+        );
         // compile rust
         cp.execSync(
-          `npm run build-native ${mode === "dev" ? "" : "-- --release"
-          }`
+          `npm run build-native ${mode === "dev" ? "" : "-- --release"}`
         );
         cp.execSync("npm run electron-rebuild");
       });

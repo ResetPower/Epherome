@@ -38,7 +38,7 @@ function createWindow() {
   if (prod) {
     win.loadFile("dist/index.html");
   } else {
-    win.loadURL("http://localhost:3000");
+    win.loadURL("http://localhost:3000/dist");
   }
   if (!prod) {
     installExtension([REACT_DEVELOPER_TOOLS, MOBX_DEVTOOLS])

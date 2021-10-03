@@ -2,17 +2,15 @@ import { Button, Checkbox, TextField } from "../components/inputs";
 import { MinecraftVersion, MinecraftVersionType } from "core/launch/versions";
 import { rendererLogger } from "common/loggers";
 import Spin from "../components/Spin";
-import got from "got";
 import { Alert } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
-import { useState, useEffect, useRef, Fragment, MutableRefObject } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { minecraftDownloadPath } from "common/struct/config";
 import { createProfile } from "common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "core/installer/minecraft";
-import { Downloader, DownloaderTask } from "core/down/downloader";
 import { MinecraftUrlUtils } from "core/down/url";
 import { call, DefaultFn } from "common/utils";
 import { ObjectWrapper } from "common/utils/object";
@@ -21,17 +19,17 @@ import { Center } from "../components/fragments";
 import { showOverlay } from "eph/renderer/overlays";
 import { DoneDialog } from "eph/components/Dialog";
 import { historyStore } from "eph/renderer/history";
+import { DownloadDetail } from "core/down/downloader";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
   locking: boolean;
-  downloader: MutableRefObject<Downloader | undefined>;
+  canceller: ObjectWrapper<DefaultFn>;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
   const canceller = useRef<DefaultFn>();
-  const downloader = props.downloader;
   const [status, setStatus] = useState<null | "error" | "done">(null);
-  const [tasks, setTasks] = useState<ObjectWrapper<DownloaderTask[]>>(
+  const [tasks, setTasks] = useState<ObjectWrapper<DownloadDetail[]>>(
     new ObjectWrapper([])
   );
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
@@ -52,7 +50,6 @@ export function DownloadingFragment(props: {
   const handleCancel = () => {
     rendererLogger.info("Download cancelled");
     call(canceller.current);
-    downloader.current?.cancel();
     props.setLocking(false);
     setStatus(null);
   };
@@ -79,10 +76,7 @@ export function DownloadingFragment(props: {
         showOverlay(<DoneDialog back={historyStore.back} />);
       },
       canceller
-    ).then((result) => {
-      downloader.current = result;
-      downloader.current?.start();
-    });
+    );
   };
 
   return (
@@ -106,22 +100,20 @@ export function DownloadingFragment(props: {
           <p>{t("download.preparing")}</p>
         )}
         {props.locking &&
-          tasks.current.map((val, index) => (
-            <Fragment key={index}>
-              <div className="flex text-sm">
-                <p className="flex-grow">
-                  {t("downloadingSomething", val.filename)}
-                </p>
-                {val.error && (
-                  <p className="text-danger">{t("errorOccurred")}</p>
-                )}
-                {!val.error && (
-                  <p className="text-shallow">({val.percentage}%)</p>
-                )}
-              </div>
-              <ProgressBar percentage={val.percentage} />
-            </Fragment>
-          ))}
+          tasks.current.map(
+            (val, index) =>
+              val.inProgress && (
+                <Fragment key={index}>
+                  <div className="flex text-sm">
+                    <p className="flex-grow">
+                      {t("downloadingSomething", val.filename)}
+                    </p>
+                    <p className="text-shallow">({val.percentage}%)</p>
+                  </div>
+                  <ProgressBar percentage={val.percentage} />
+                </Fragment>
+              )
+          )}
       </div>
       <div className="flex items-center">
         {props.locking && <p className="text-shallow">{totalPercentage}%</p>}
@@ -143,7 +135,11 @@ export function DownloadingFragment(props: {
 }
 
 export default function DownloadsPage(): JSX.Element {
-  const downloader = useRef<Downloader>();
+  const canceller = useRef<ObjectWrapper<DefaultFn>>(
+    new ObjectWrapper<DefaultFn>(() => {
+      /**/
+    })
+  );
   const [locking, setLocking] = useState(false);
   const [release, setRelease] = useState(true);
   const [snapshot, setSnapshot] = useState(false);
@@ -165,21 +161,26 @@ export default function DownloadsPage(): JSX.Element {
 
   useEffect(() => {
     // copy the ref here in order to satisfy eslint-plugin-react-hooks
-    const downloaderRef = downloader;
+    const cancellerRef = canceller;
 
     rendererLogger.info("Fetching Minecraft launcher meta...");
-    got(MinecraftUrlUtils.versionManifest())
-      .then((resp) => {
-        const parsed = JSON.parse(resp.body);
-        setVersions(parsed.versions);
-        rendererLogger.info("Fetched Minecraft launcher meta");
-      })
-      .catch(() => {
-        rendererLogger.warn("Unable to fetch Minecraft launcher meta");
-        setVersions(null);
-      });
+    window.native.request(
+      "get",
+      MinecraftUrlUtils.versionManifest(),
+      (err, data) => {
+        if (err || !data) {
+          rendererLogger.warn("Unable to fetch Minecraft launcher meta");
+          setVersions(null);
+        } else {
+          const [_, body] = data;
+          const parsed = JSON.parse(body);
+          setVersions(parsed.versions);
+          rendererLogger.info("Fetched Minecraft launcher meta");
+        }
+      }
+    );
     return () => {
-      downloaderRef.current?.cancel();
+      call(cancellerRef.current?.current);
     };
   }, []);
 
@@ -233,7 +234,7 @@ export default function DownloadsPage(): JSX.Element {
       <div className="w-3/4">
         {current ? (
           <DownloadingFragment
-            downloader={downloader}
+            canceller={canceller.current}
             version={current}
             locking={locking}
             setLocking={setLocking}

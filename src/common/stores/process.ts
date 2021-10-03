@@ -7,7 +7,7 @@ import { _ } from "common/utils/arrays";
 import { shortid } from "common/utils/ids";
 
 export class Process {
-  id: string;
+  id: number;
   profile: MinecraftProfile;
   raw: ChildProcessWithoutNullStreams;
   outputs: string[] = [];
@@ -35,13 +35,13 @@ export class ProcessStore {
       runInAction(() => (this.messages = newMessages));
     });
   }
-  done(id: string): void {
+  done(id: number): void {
     this.modify(id, (proc) => {
       proc.done = true;
       return { ...proc };
     });
   }
-  output(id: string, chunk: string): void {
+  output(id: number, chunk: string): void {
     this.modify(id, (proc) => {
       proc.outputs.push(chunk);
       return { ...proc };
@@ -69,7 +69,7 @@ export class ProcessStore {
     }
   }
   @action
-  modify(id: string, modifier: (source: Process) => Process): void {
+  modify(id: number, modifier: (source: Process) => Process): void {
     for (const k in this.processes) {
       const v = this.processes[+k];
       if (v.id === id) {
