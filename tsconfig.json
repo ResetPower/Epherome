@@ -1,4 +1,7 @@
 {
+  "ts-node": {
+    "files": true
+  },
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
