@@ -14,22 +14,21 @@ use crate::{
     tool::{my_err, send_exchange, MyError},
 };
 
-pub fn download_file_impl<T>(
+pub async fn download_file_impl_async<T>(
     url: String,
     target: String,
     recursive: bool,
     id: i64,
     enable_show_progress: bool,
     show_progress: T,
+    done_task_on_done: bool,
 ) -> Result<(), MyError>
 where
     T: Fn(i64) -> (),
 {
-    // setup tokio runtime
-    let rt = Runtime::new().or(my_err("Error occurred creating tokio runtime"))?;
     // setup reqwest
-    let resp = rt
-        .block_on(reqwest::get(&url))
+    let resp = reqwest::get(&url)
+        .await
         .or(my_err("Error occurred requesting"))?;
     let total = resp.content_length().unwrap_or(0);
     // occur error if total length is zero
@@ -54,9 +53,7 @@ where
     let mut stream = resp.bytes_stream();
     let mut last_percent = -1;
     let mut cancelled = false;
-    while let Ok(Some(chunk)) =
-        rt.block_on(async { tokio::time::timeout(Duration::from_secs(5), stream.next()).await })
-    {
+    while let Ok(Some(chunk)) = tokio::time::timeout(Duration::from_secs(5), stream.next()).await {
         if !should_task_continue(id) {
             cancelled = true;
             break;
@@ -72,7 +69,11 @@ where
         last_percent = percent;
     }
     if downloaded == total {
-        match done_task(id) {
+        match if done_task_on_done {
+            done_task(id)
+        } else {
+            Ok(())
+        } {
             _ => Ok(()),
         }
     } else {
@@ -86,6 +87,30 @@ where
             }
         }
     }
+}
+
+pub fn download_file_impl<T>(
+    url: String,
+    target: String,
+    recursive: bool,
+    id: i64,
+    enable_show_progress: bool,
+    show_progress: T,
+) -> Result<(), MyError>
+where
+    T: Fn(i64) -> (),
+{
+    // setup tokio runtime
+    let rt = Runtime::new().or(my_err("Error occurred creating tokio runtime"))?;
+    rt.block_on(download_file_impl_async(
+        url,
+        target,
+        recursive,
+        id,
+        enable_show_progress,
+        show_progress,
+        true,
+    ))
 }
 
 pub fn download_file(mut c: FunctionContext) -> JsResult<JsUndefined> {

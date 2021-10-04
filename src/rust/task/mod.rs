@@ -19,13 +19,16 @@ pub struct Task {
 
 pub fn register_task(id: i64) -> Result<(), Box<dyn Error>> {
     let tasks = &mut *TASKS.lock()?;
-    tasks.insert(
-        id,
-        Task {
+    let task = tasks.get(&id);
+    if let None = task {
+        tasks.insert(
             id,
-            status: TaskStatus::RUNNING,
-        },
-    );
+            Task {
+                id,
+                status: TaskStatus::RUNNING,
+            },
+        );
+    }
     Ok(())
 }
 
