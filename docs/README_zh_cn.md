@@ -6,7 +6,7 @@
 
 简体中文 | [English](../README.md)
 
-[官方网站](https://epherome.com) · [更新日志](CHANGELOG.md) · [文档](https://epherome.com/docs)
+[官方网站](https://epherome.com) · [更新日志](RELEASE_NOTE.md) · [文档](https://epherome.com/docs)
 
 ## 简介
 

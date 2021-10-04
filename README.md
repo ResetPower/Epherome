@@ -6,7 +6,7 @@ Powerful Minecraft launcher
 
 [简体中文](docs/README_zh_cn.md) | English
 
-[Official Site](https://epherome.com) · [CHANGELOG](docs/CHANGELOG.md) · [Documents](https://epherome.com/docs)
+[Official Site](https://epherome.com) · [RELEASE NOTE](docs/RELEASE_NOTE.md) · [Documents](https://epherome.com/docs)
 
 ## Brief
 
@@ -27,7 +27,7 @@ We encourage people contribute to this project by developing extensions.
 
 ## Contribution
 
-If you want to contribute code to Epherome, please follow some of the guidelines provided by Epherome.
+If you want to contribute code to Epherome, please follow the guidelines provided by Epherome.
 They are in [Wiki](https://github.com/ResetPower/Epherome/wiki)!
 
 ## CI
