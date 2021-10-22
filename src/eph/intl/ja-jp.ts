@@ -117,7 +117,7 @@ const jaJp: Language = {
     downloadingSomething: "{0} をダウンロード中",
     "download.profileName": "プロフィル名前",
     "download.preparing": "準備中",
-    "download.notSelected": "バージョンが選択だれていません",
+    "download.notSelected": "バージョンが選択されていません",
     "version.release": "リリース",
     "version.snapshot": "スナップショット",
     "version.old": "古い",
