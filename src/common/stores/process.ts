@@ -1,10 +1,9 @@
 import { ChildProcessWithoutNullStreams } from "child_process";
-import { MinecraftProfile } from "common/struct/profiles";
+import { MinecraftProfile } from "../struct/profiles";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import fs from "fs";
-import { logFilename } from "common/struct/config";
-import { _ } from "common/utils/arrays";
-import { shortid } from "common/utils/ids";
+import { shortid } from "../utils/ids";
+import { ephLatestLog } from "../utils/info";
 
 export class Process {
   id: number;
@@ -30,8 +29,8 @@ export class ProcessStore {
   value = -1;
   constructor() {
     makeObservable(this);
-    fs.watch(logFilename, { encoding: "utf-8" }, () => {
-      const newMessages = fs.readFileSync(logFilename).toString();
+    fs.watch(ephLatestLog, { encoding: "utf-8" }, () => {
+      const newMessages = fs.readFileSync(ephLatestLog).toString();
       runInAction(() => (this.messages = newMessages));
     });
   }

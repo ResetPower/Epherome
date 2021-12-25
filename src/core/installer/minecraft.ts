@@ -1,7 +1,7 @@
 import { MinecraftVersion } from "core/launch/versions";
 import path from "path";
 import fs from "fs";
-import { configStore, minecraftDownloadPath } from "common/struct/config";
+import { configStore } from "common/struct/config";
 import { DefaultFn, ErrorHandler } from "common/utils";
 import { ClientJson } from "core/launch/struct";
 import { analyzeAssets, analyzeLibrary } from "core/launch/libraries";
@@ -12,9 +12,10 @@ import {
   parallelDownload,
 } from "common/utils/files";
 import { coreLogger } from "common/loggers";
-import { DownloaderDetailsListener } from "core/down/downloader";
-import { MinecraftUrlUtils } from "core/down/url";
+import { DownloaderDetailsListener } from "common/utils/files";
 import { MutableRefObject } from "react";
+import { MinecraftUrlUtil } from "core/url";
+import { ephDefaultDotMinecraft } from "common/utils/info";
 
 export async function downloadMinecraft(
   version: MinecraftVersion,
@@ -23,7 +24,9 @@ export async function downloadMinecraft(
   onDone: DefaultFn,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
-  const versionDir = path.join(minecraftDownloadPath, "versions", version.id);
+  const urlUtil = MinecraftUrlUtil.fromDefault();
+
+  const versionDir = path.join(ephDefaultDotMinecraft, "versions", version.id);
   coreLogger.info(
     `Start downloading Minecraft ${version.id} to "${versionDir}"`
   );
@@ -33,7 +36,7 @@ export async function downloadMinecraft(
   createDirByPath(jsonPath);
 
   await downloadFile(
-    MinecraftUrlUtils.clientJson(version),
+    urlUtil.clientJson(version),
     jsonPath,
     cancellerWrapper
   ).catch(onError);
@@ -45,13 +48,13 @@ export async function downloadMinecraft(
   // parse libraries
   const parsed: ClientJson = JSON.parse(data);
   const libraries = await analyzeLibrary(
-    minecraftDownloadPath,
+    ephDefaultDotMinecraft,
     parsed.libraries
   );
 
   // parse assets
   const assets = await analyzeAssets(
-    minecraftDownloadPath,
+    ephDefaultDotMinecraft,
     parsed.assetIndex,
     cancellerWrapper
   );

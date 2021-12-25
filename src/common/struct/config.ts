@@ -1,26 +1,27 @@
-import fs from "fs";
-import os from "os";
-import path from "path";
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { Java } from "./java";
 import { extendObservable, observable, runInAction, toJS } from "mobx";
-import { MinecraftDownloadProvider } from "core/down/url";
-import { ipcRenderer } from "electron";
+import { MinecraftDownloadProvider } from "core/url";
 import log4js from "log4js";
 import log4jsConfiguration from "common/utils/logging";
 import { commonLogger } from "common/loggers";
-import { _ } from "common/utils/arrays";
+import {
+  configPath,
+  ephDefaultDotMinecraft,
+  ephLatestLog,
+  ephLogs,
+  parsedConfig,
+} from "common/utils/info";
+import fs from "fs";
+import { ensureDir } from "common/utils/files";
 
 export type TitleBarStyle = "os" | "eph";
 
-export const userDataPath = ipcRenderer.sendSync("get-user-data-path");
-export const ephCodeName = ipcRenderer.sendSync("get-code-name");
-
-export const logFilename = path.join(userDataPath, "latest.log");
+[ephDefaultDotMinecraft, ephLogs].forEach(ensureDir);
 
 // configure log4js
-log4js.configure(log4jsConfiguration(logFilename));
+log4js.configure(log4jsConfiguration(ephLatestLog));
 
 export function getSystemPreferredLanguage(): string {
   const lang = navigator.language.toLowerCase();
@@ -32,20 +33,6 @@ export function getSystemPreferredLanguage(): string {
     return "en-us";
   }
 }
-
-// create files
-export const minecraftDownloadPath = path.join(
-  userDataPath,
-  os.platform() === "win32" ? ".minecraft" : "minecraft"
-);
-export const ephExtPath = path.join(userDataPath, "ext");
-export const ephLogExportsPath = path.join(userDataPath, "logs");
-
-!fs.existsSync(minecraftDownloadPath) && fs.mkdirSync(minecraftDownloadPath);
-!fs.existsSync(ephExtPath) && fs.mkdirSync(ephExtPath);
-!fs.existsSync(ephLogExportsPath) && fs.mkdirSync(ephLogExportsPath);
-
-const { configPath, parsed } = ipcRenderer.sendSync("get-config");
 
 // read config
 
@@ -75,6 +62,6 @@ export class ConfigStore {
   }
 }
 
-export const configStore = new ConfigStore(parsed);
+export const configStore = new ConfigStore(parsedConfig);
 
 export const setConfig = configStore.setConfig;

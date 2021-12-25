@@ -1,8 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "common/struct/profiles";
-import { MinecraftAccount, updateAccountToken } from "common/struct/accounts";
-import { authenticate, refresh, validate } from "core/auth";
+import { MinecraftAccount } from "common/struct/accounts";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
@@ -16,12 +15,12 @@ import {
 } from "./versions";
 import { Java } from "common/struct/java";
 import { t } from "eph/intl";
-import { ephVersion } from "eph/renderer/updater";
-import { configStore, userDataPath } from "common/struct/config";
-import { MinecraftUrlUtils } from "core/down/url";
+import { ephVersion, userDataPath } from "common/utils/info";
+import { configStore } from "common/struct/config";
+import { MinecraftDownloadProvider, MinecraftUrlUtil } from "core/url";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
-import { parseJvmArgs } from "core/java";
+import { parseJvmArgs } from "common/struct/java";
 import { ObjectWrapper } from "common/utils/object";
 import { Process } from "common/stores/process";
 
@@ -37,6 +36,7 @@ export interface MinecraftLaunchOptions {
   requestPassword: (again: boolean) => Promise<string>;
   onDone: LaunchOnDone;
   cancellerWrapper: ObjectWrapper<LaunchCanceller>;
+  provider: MinecraftDownloadProvider;
 }
 
 export async function launchMinecraft(
@@ -44,6 +44,7 @@ export async function launchMinecraft(
 ): Promise<
   ["j8Required" | "j16Required" | "jRequired" | null, DefaultFn | null]
 > {
+  const urlUtil = new MinecraftUrlUtil(options.provider);
   const cancellerWrapper = options.cancellerWrapper;
   const restoreCanceller = cancellerWrapper.setToDefault;
   const java = options.java;
@@ -67,39 +68,6 @@ export async function launchMinecraft(
   const buff: string[] = [];
 
   setHelper(defaultHelper);
-
-  // === authenticating ===
-  if (navigator.onLine) {
-    if (account.mode === "mojang" || account.mode === "authlib") {
-      const server = account.mode === "mojang" ? undefined : account.authserver;
-      coreLogger.info("Validating account token");
-      const valid = await validate(account.token, server);
-      if (!valid) {
-        coreLogger.info("Account token is not valid, refreshing");
-        const refreshed = await refresh(account.token, server);
-        if (refreshed.err) {
-          const act = async (again: boolean) => {
-            const password = await options.requestPassword(again);
-            const result = await authenticate(account.email, password, server);
-            if (result.err) {
-              coreLogger.warn("Password wrong, requesting for password again");
-              await act(true);
-            } else {
-              updateAccountToken(account, result.token);
-            }
-          };
-          coreLogger.warn("Failed to refresh token, requesting for password");
-          await act(false);
-        } else {
-          updateAccountToken(account, refreshed.token);
-        }
-      }
-    } else if (account.mode === "microsoft") {
-      // TODO Validate Microsoft Account Token
-    }
-  } else {
-    coreLogger.info("Network not available, account validating skipped");
-  }
 
   // === parsing json file ===
   const dir = path.resolve(profile.dir);
@@ -175,10 +143,7 @@ export async function launchMinecraft(
     } catch (e) {
       setHelper(`${t("downloading")}: authlib-injector`);
       // TODO Need to optimize more here
-      await downloadFile(
-        MinecraftUrlUtils.authlibInjector(),
-        authlibInjectorPath
-      );
+      await downloadFile(urlUtil.authlibInjector(), authlibInjectorPath);
     }
     buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);
   }

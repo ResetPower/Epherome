@@ -2,10 +2,8 @@ import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/ProfilesPage";
 import SettingsPage from "../views/SettingsPage";
-import { Accessible, unwrapAccessible } from "common/utils";
 import DownloadsPage from "../views/DownloadsPage";
-import { GlobalOverlay, showOverlay } from "./overlays";
-import { historyStore, LocationParams } from "./history";
+import { showOverlay } from "../overlay";
 import {
   MdAccountCircle,
   MdApps,
@@ -20,10 +18,9 @@ import {
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
 import { IconButton } from "../components/inputs";
-import { intlStore, t } from "../intl";
+import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { observer } from "mobx-react";
-import { createContext, useLayoutEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { configStore } from "common/struct/config";
 import {
   VscChromeMinimize,
@@ -31,70 +28,57 @@ import {
   VscDebugConsole,
   VscExtensions,
 } from "react-icons/vsc";
-import { ipcRenderer } from "electron";
 import Popover from "../components/Popover";
 import ProfileInstallPage from "../views/ProfileInstallPage";
-import { MinecraftProfile } from "common/struct/profiles";
-import ExtensionsView from "eph/views/ExtensionsView";
-import { ConfirmDialog } from "eph/components/Dialog";
 import PopMenu from "eph/components/PopMenu";
+import { rendererLogger } from "common/loggers";
+import { ipcRenderer } from "electron";
+import { pushToHistory } from "./history";
+import { observer } from "mobx-react-lite";
+import { GlobalOverlay } from "eph/overlay";
 
-export const AppBarContext = createContext({ cursorDefault: false });
+export const AppBar = observer(
+  (props: { pathname: KeyOfLanguageDefinition }) => {
+    // visit the key
+    // in order to update title on language change correctly
+    intlStore.language;
+    // keep title bar style
+    const isTitleBarEph = useMemo(
+      () => configStore.titleBarStyle === "eph",
+      []
+    );
+    const title = t(props.pathname);
+    const isAtHome = props.pathname === "home";
 
-export interface RouteList {
-  [key: string]: {
-    component: Accessible<JSX.Element, [LocationParams]>;
-    title: Accessible<string>;
-  };
-}
+    const popMenuItems = [
+      {
+        icon: <MdAccountCircle />,
+        text: t("accounts"),
+        onClick: () => pushToHistory("accounts"),
+      },
+      {
+        icon: <MdGamepad />,
+        text: t("profiles"),
+        onClick: () => pushToHistory("profiles"),
+      },
+      {
+        icon: <MdViewCarousel />,
+        text: t("processes"),
+        onClick: () => pushToHistory("processes"),
+      },
+      {
+        icon: <MdApps />,
+        text: t("extensions"),
+        onClick: () => rendererLogger.warn("Extensions is not available"),
+      },
+      {
+        icon: <MdSettings />,
+        text: t("settings"),
+        onClick: () => pushToHistory("settings"),
+      },
+    ];
 
-const routes: RouteList = {
-  home: {
-    component: <HomePage />,
-    title: () => t("epherome"),
-  },
-  accounts: {
-    component: <AccountsPage />,
-    title: () => t("accounts"),
-  },
-  profiles: {
-    component: <ProfilesPage />,
-    title: () => t("profiles"),
-  },
-  "profiles/install": {
-    component: (params) =>
-      params.profile ? (
-        <ProfileInstallPage profile={params.profile as MinecraftProfile} />
-      ) : (
-        <div />
-      ),
-    title: () => t("profile.install"),
-  },
-  settings: {
-    component: <SettingsPage />,
-    title: () => t("settings"),
-  },
-  downloads: {
-    component: <DownloadsPage />,
-    title: () => t("download"),
-  },
-  processes: {
-    component: <ProcessesPage />,
-    title: () => t("processes"),
-  },
-};
-
-export const AppBar = observer(() => {
-  // visit the key in order to update title on language change correctly
-  intlStore.language;
-  // keep title bar style
-  const isTitleBarEph = useMemo(() => configStore.titleBarStyle === "eph", []);
-  const route = routes[historyStore.pathname];
-  const title = unwrapAccessible(route?.title);
-  const isAtHome = title === "Epherome";
-
-  return (
-    <AppBarContext.Provider value={{ cursorDefault: isTitleBarEph }}>
+    return (
       <div className={`eph-appbar text-white ${isTitleBarEph && "eph-drag"}`}>
         <div className="eph-no-drag">
           {isAtHome ? (
@@ -107,39 +91,10 @@ export const AppBar = observer(() => {
                 </IconButton>
               )}
             >
-              <PopMenu
-                items={[
-                  {
-                    icon: <MdAccountCircle />,
-                    text: t("accounts"),
-                    onClick: () => historyStore.push("accounts"),
-                  },
-                  {
-                    icon: <MdGamepad />,
-                    text: t("profiles"),
-                    onClick: () => historyStore.push("profiles"),
-                  },
-                  {
-                    icon: <MdViewCarousel />,
-                    text: t("processes"),
-                    onClick: () => historyStore.push("processes"),
-                  },
-                  {
-                    icon: <MdApps />,
-                    text: t("extensions"),
-                    onClick: () =>
-                      showOverlay(<ExtensionsView />, "sheet", "slide"),
-                  },
-                  {
-                    icon: <MdSettings />,
-                    text: t("settings"),
-                    onClick: () => historyStore.push("settings"),
-                  },
-                ]}
-              />
+              <PopMenu items={popMenuItems} />
             </Popover>
           ) : (
-            <IconButton onClick={isAtHome ? undefined : historyStore.back}>
+            <IconButton onClick={isAtHome ? undefined : () => history.back()}>
               {<MdArrowBack />}
             </IconButton>
           )}
@@ -185,13 +140,11 @@ export const AppBar = observer(() => {
               </IconButton>
               <IconButton
                 onClick={() =>
-                  showOverlay(
-                    <ConfirmDialog
-                      title={t("warning")}
-                      message={t("confirmQuitting")}
-                      action={() => ipcRenderer.send("quit")}
-                    />
-                  )
+                  showOverlay({
+                    title: t("warning"),
+                    message: t("confirmQuitting"),
+                    action: () => ipcRenderer.send("quit"),
+                  })
                 }
               >
                 <VscClose />
@@ -200,38 +153,66 @@ export const AppBar = observer(() => {
           )}
         </div>
       </div>
-    </AppBarContext.Provider>
-  );
-});
+    );
+  }
+);
 
-export const RouterView = observer(() => {
-  const route = routes[historyStore.pathname];
+export function RouterView({
+  pathname,
+  params,
+}: {
+  pathname: KeyOfLanguageDefinition;
+  params: string;
+}) {
   return (
     <SwitchTransition mode="out-in">
-      <CSSTransition
-        key={historyStore.current?.pathname}
-        timeout={120}
-        classNames="fade"
-      >
-        {unwrapAccessible(
-          route?.component,
-          historyStore.current?.params ?? {}
-        ) ?? <></>}
+      <CSSTransition key={pathname} timeout={120} classNames="fade">
+        {pathname === "home" ? (
+          <HomePage />
+        ) : pathname === "accounts" ? (
+          <AccountsPage />
+        ) : pathname === "profiles" ? (
+          <ProfilesPage />
+        ) : pathname === "profile.install" ? (
+          params ? (
+            <ProfileInstallPage profile={{ name: "", dir: "", ver: "" }} />
+          ) : (
+            <div />
+          )
+        ) : pathname === "settings" ? (
+          <SettingsPage />
+        ) : pathname === "download" ? (
+          <DownloadsPage />
+        ) : pathname === "processes" ? (
+          <ProcessesPage />
+        ) : (
+          <></>
+        )}
       </CSSTransition>
     </SwitchTransition>
   );
-});
+}
 
 export default function App(): JSX.Element {
-  useLayoutEffect(() => {
-    historyStore.isEmpty && historyStore.push("home");
-  }, []);
+  const [route, setRoute] = useState("home");
+  const [pathname, params] = route.split("?");
 
+  // response route change
+  useEffect(
+    () =>
+      window.addEventListener("hashchange", () => {
+        const hash = location.hash.slice(1);
+        setRoute(hash === "" ? "home" : hash);
+      }),
+    []
+  );
+
+  const pn = pathname as KeyOfLanguageDefinition;
   return (
     <IconContext.Provider value={{ size: "1.5em", className: "mx-0.5" }}>
       <GlobalOverlay />
-      <AppBar />
-      <RouterView />
+      <AppBar pathname={pn} />
+      <RouterView pathname={pn} params={params} />
     </IconContext.Provider>
   );
 }

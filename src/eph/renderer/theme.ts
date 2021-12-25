@@ -1,5 +1,5 @@
 import { configStore, setConfig } from "common/struct/config";
-import { darkTheme, lightTheme } from "./global";
+import colors from "./colors";
 
 const ss = document.documentElement.style;
 const html = document.querySelector("html");
@@ -54,3 +54,33 @@ export class ThemeStore {
 }
 
 export const themeStore = new ThemeStore();
+
+// Default Themes
+
+export const lightTheme: EphTheme = {
+  type: "light",
+  palette: {
+    background: colors.gray["100"],
+    primary: colors.blue["500"],
+    secondary: colors.pink["500"],
+    shallow: colors.gray["400"],
+    divider: colors.gray["200"],
+    card: colors.white,
+    contrast: colors.black,
+    danger: colors.red["500"],
+  },
+};
+
+export const darkTheme: EphTheme = {
+  type: "dark",
+  palette: {
+    background: colors.gray["800"],
+    primary: colors.indigo["600"],
+    secondary: colors.pink["400"],
+    shallow: colors.coolGray["400"],
+    divider: colors.gray["600"],
+    card: colors.gray["700"],
+    contrast: colors.white,
+    danger: colors.red["400"],
+  },
+};

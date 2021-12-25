@@ -5,6 +5,7 @@ const zhCn: Language = {
   nativeName: "中文简体",
   definition: {
     hello: "你好！",
+    home: "主页",
     epherome: "Epherome",
     accounts: "账户",
     profiles: "档案",

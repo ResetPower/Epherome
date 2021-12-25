@@ -1,15 +1,9 @@
-import { BrowserWindow, TouchBar } from "electron";
-const { TouchBarButton, TouchBarLabel } = TouchBar;
+import { TouchBar } from "electron";
+const { TouchBarLabel } = TouchBar;
 
-export default function getTouchBar(win: BrowserWindow): TouchBar {
+export default function getTouchBar(): TouchBar {
   return new TouchBar({
     items: [
-      new TouchBarButton({
-        label: "Back",
-        click: () => {
-          win.webContents.send("nav-back");
-        },
-      }),
       new TouchBarLabel({
         label: "Welcome to Epherome!",
       }),

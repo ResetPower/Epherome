@@ -3,27 +3,29 @@
     "files": true
   },
   "compilerOptions": {
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "rootDir": "./src",
-    "outDir": "./out",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
+    "noImplicitAny": true,
     "sourceMap": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "target": "ESNext",
-    "baseUrl": "./src",
     "paths": {
-      "eph/*": ["eph/*"],
-      "core/*": ["core/*"],
-      "assets/*": ["assets/*"],
-      "styles/*": ["styles/*"],
-      "common/*": ["common/*"],
-      "ext/*": ["extension/*"]
+      "*": ["node_modules/*"],
+      "assets/*": ["src/assets/*"],
+      "common/*": ["src/common/*"],
+      "core/*": ["src/core/*"],
+      "eph/*": ["src/eph/*"]
     }
   },
-  "include": ["./src"]
+  "include": ["src/**/*"]
 }

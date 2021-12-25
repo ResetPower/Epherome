@@ -5,6 +5,7 @@ const enUs: Language = {
   nativeName: "English",
   definition: {
     hello: "Hello",
+    home: "Home",
     epherome: "Epherome",
     accounts: "Accounts",
     profiles: "Profiles",

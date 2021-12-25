@@ -1,5 +1,5 @@
-import { commonLogger } from "common/loggers";
-import { nativeRequestAsync } from "core/net";
+import { rendererLogger } from "common/loggers";
+import got from "got";
 
 export interface Hitokoto {
   content: string;
@@ -7,16 +7,13 @@ export interface Hitokoto {
 }
 
 export async function fetchHitokoto(): Promise<Hitokoto | null> {
-  commonLogger.info("Fetching hitokoto...");
+  rendererLogger.info("Fetching hitokoto...");
   try {
-    const [, body] = await nativeRequestAsync(
-      "get",
-      "https://epherome.com/api/hitokoto"
-    );
-    commonLogger.info("Fetched hitokoto");
+    const { body } = await got("https://epherome.com/api/hitokoto");
+    rendererLogger.info("Fetched hitokoto");
     return JSON.parse(body);
   } catch {
-    commonLogger.warn("Unable to fetch hitokoto");
+    rendererLogger.warn("Unable to fetch hitokoto");
     return null;
   }
 }

@@ -1,21 +1,16 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { mainLogger, parsed } from "./system";
 import "./ms-auth";
-import "./extension/loader";
 import getTouchBar from "./touchbar";
-import installExtension, {
-  MOBX_DEVTOOLS,
-  REACT_DEVELOPER_TOOLS,
-} from "electron-devtools-installer";
 import path from "path";
 
-const prod = process.env.NODE_ENV === "production";
+// Prevent Electron Security Warning (Insecure Content-Security-Policy)
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
 app.setName("Epherome");
 
-const isTitleBarEph = parsed.titleBarStyle === "eph";
-
 function createWindow() {
+  const isTitleBarEph = parsed.titleBarStyle === "eph";
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -25,26 +20,25 @@ function createWindow() {
     frame: !isTitleBarEph,
     transparent: isTitleBarEph,
     webPreferences: {
-      preload: path.join(app.getAppPath(), "dist/preload.js"),
       nodeIntegration: true,
       contextIsolation: false,
+      preload: path.join(app.getAppPath(), "dist/preload.js"),
     },
   });
+
   if (process.platform === "darwin") {
     // is macos, set touch bar
-    win.setTouchBar(getTouchBar(win));
+    win.setTouchBar(getTouchBar());
     mainLogger.info("macOS Detected, set touch bar");
+    mainLogger.info("Wish your Mac has a touch bar...");
   }
-  if (prod) {
-    win.loadFile("dist/index.html");
-  } else {
-    win.loadURL("http://localhost:3000/dist");
-  }
-  if (!prod) {
-    installExtension([REACT_DEVELOPER_TOOLS, MOBX_DEVTOOLS])
-      .then((name) => mainLogger.info(`Added Extension: ${name}`))
-      .catch((err) => mainLogger.error(`An error occurred: ${err}`));
-  }
+
+  win.loadURL(
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "dist/index.html"
+  );
+
   ipcMain.on("quit", () => win.close());
   ipcMain.on("minimize", () => win.minimize());
   ipcMain.on("open-devtools", () => win.webContents.openDevTools());
@@ -59,3 +53,8 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+// prevent redirection
+app.on("web-contents-created", (_, contents) =>
+  contents.on("will-navigate", (event) => event.preventDefault())
+);

@@ -1,15 +1,21 @@
-import "@fontsource/roboto";
-import "styles/index.css";
+import "@fontsource/inter";
+import "../styles/index.css";
 import { render } from "react-dom";
 import App from "./renderer/App";
 import EpheromeLogo from "assets/Epherome.png";
 import { themeStore } from "./renderer/theme";
-import { ipcRenderer } from "electron";
-import { EphExtension, extensionStore } from "common/stores/extension";
-import { ephExtPath } from "common/struct/config";
+import { rendererLogger } from "common/loggers";
 
 console.log("Hello, World!");
 
+// catch global errors
+window.addEventListener("error", (event) => {
+  rendererLogger.error(
+    `Renderer Process Error: ${event.error} (at ${event.filename}:${event.lineno}:${event.colno})`
+  );
+});
+
+// To see if Rust addon works well.
 console.log(window.native.hello());
 
 // load theme before splash
@@ -26,13 +32,9 @@ const splash = `
 </div>
 `;
 
+// show splash
 const root = document.getElementById("root");
 root && (root.innerHTML = splash);
 
-// mount application after extensions load done
-ipcRenderer
-  .invoke("load-ext", ephExtPath)
-  .then((extensions: EphExtension[]) => {
-    extensionStore.extensions = extensions;
-    render(<App />, root);
-  });
+// render app
+render(<App />, root);

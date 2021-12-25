@@ -24,17 +24,27 @@ module.exports = {
     {
       files: ["*.ts", "*.tsx"],
       parser: "@typescript-eslint/parser",
-      plugins: ["@typescript-eslint", "react-hooks"],
+      settings: {
+        react: {
+          version: "detect",
+        },
+      },
+      plugins: ["@typescript-eslint", "react", "react-hooks"],
       extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:import/electron",
+        "plugin:import/typescript",
+        "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "prettier",
       ],
       rules: {
-        "@typescript-eslint/no-unused-vars": 0,
-        "@typescript-eslint/no-unused-vars-experimental": 1,
         "@typescript-eslint/no-empty-function": 1,
-        "@typescript-eslint/no-var-requires": 0,
+        "@typescript-eslint/no-unused-vars": ["warn", { args: "after-used" }],
+        "react/react-in-jsx-scope": 0,
         eqeqeq: ["error", "always"],
       },
     },

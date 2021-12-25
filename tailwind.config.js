@@ -1,12 +1,7 @@
 module.exports = {
   darkMode: "class",
-  purge: ["./src/**/*.tsx"],
-  variants: {
-    extend: {
-      backgroundColor: ["active"],
-      backgroundOpacity: ["active"],
-    },
-  },
+  mode: "jit",
+  content: ["./src/**/*.tsx"],
   theme: {
     extend: {
       colors: {

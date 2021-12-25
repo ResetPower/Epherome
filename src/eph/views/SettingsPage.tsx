@@ -8,11 +8,9 @@ import {
 } from "../components/inputs";
 import {
   configStore,
-  ephCodeName,
   setConfig,
   TitleBarStyle,
-  userDataPath,
-} from "common/struct/config";
+} from "../../common/struct/config";
 import { rendererLogger } from "common/loggers";
 import { Card } from "../components/layouts";
 import {
@@ -26,45 +24,36 @@ import {
 } from "react-icons/md";
 import { themeStore } from "../renderer/theme";
 import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
-import { checkEphUpdate, ephVersion } from "../renderer/updater";
+import { checkEphUpdate } from "../renderer/updater";
 import Spin from "../components/Spin";
-import { showOverlay, useOverlayCloser } from "../renderer/overlays";
 import { FaJava } from "react-icons/fa";
-import Dialog, { AlertDialog } from "../components/Dialog";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { createJava, removeJava } from "common/struct/java";
 import { useState } from "react";
 import { t, intlStore } from "../intl";
 import { _ } from "common/utils/arrays";
 import os from "os";
-import { observer } from "mobx-react";
-import { MinecraftDownloadProvider } from "core/down/url";
+import { observer } from "mobx-react-lite";
+import { MinecraftDownloadProvider } from "core/url";
 import { Info, WithHelper } from "../components/fragments";
 import EpheromeLogo from "assets/Epherome.png";
 import { ipcRenderer } from "electron";
+import { codeName, ephVersion, userDataPath } from "common/utils/info";
+import { showOverlay } from "eph/overlay";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
-  const close = useOverlayCloser();
-
   return (
-    <Dialog indentBottom>
-      <p className="text-xl font-semibold">{t("epheromeUpdate")}</p>
+    <>
       <p>{t("epheromeUpdate.available", props.version)}</p>
       <p>{t("epheromeUpdate.availableMessage")}</p>
       <Link type="url" href="https://epherome.com/download">
         https://epherome.com/download
       </Link>
-      <div className="flex justify-end">
-        <Button className="text-secondary" onClick={close}>
-          {t("fine")}
-        </Button>
-      </div>
-    </Dialog>
+    </>
   );
 }
 
-export const JavaManagementDialog = observer(() => {
-  const close = useOverlayCloser();
+export const JavaManagementSheet = observer(() => {
   const [err, setErr] = useState<string | null>(null);
   const [newJavaPath, setNewJavaPath] = useState("");
   const javas = configStore.javas;
@@ -97,14 +86,10 @@ export const JavaManagementDialog = observer(() => {
   };
 
   return (
-    <Dialog
-      className="eph-max-h-full flex flex-col overflow-hidden"
-      indentBottom
-    >
-      <p className="font-semibold text-xl">{t("java.manage")}</p>
-      <List className="overflow-y-auto">
+    <div className="flex flex-col overflow-hidden px-9 m-1">
+      <List className="overflow-y-auto flex-grow">
         {javas.map((value, index) => (
-          <ListItem className="items-center" key={index}>
+          <ListItem className="items-center space-x-2" key={index}>
             <div
               className="text-pink-400 hover:text-pink-500 cursor-pointer"
               onClick={() => setConfig(() => _.select(javas, value))}
@@ -137,54 +122,55 @@ export const JavaManagementDialog = observer(() => {
           </ListItem>
         ))}
       </List>
-      <TextField
-        value={newJavaPath}
-        onChange={(ev) => {
-          setNewJavaPath(ev);
-          setErr("");
-        }}
-        error={!!err}
-        helperText={err ?? undefined}
-        icon={<FaJava />}
-        placeholder={t("java.executablePath")}
-        trailing={
-          <>
-            <Link
-              className="border-r border-divider pr-3"
-              type="clickable"
-              onClick={() =>
-                ipcRenderer.invoke("open-java").then((value) => {
-                  value && handleAddJava(value);
-                })
-              }
-            >
-              <MdFolderOpen />
-            </Link>
-            <Link type="clickable" className="pl-3" onClick={handleAddJava}>
-              {t("add")}
-            </Link>
-          </>
-        }
-      />
-      <div className="flex">
-        <Button
-          onClick={() => {
-            try {
-              window.native.findJavas().forEach((i) => handleAddJava(i, false));
-              configStore.save();
-            } catch {
-              setErr(t("java.invalidPath"));
-            }
+      <div>
+        <TextField
+          value={newJavaPath}
+          onChange={(ev) => {
+            setNewJavaPath(ev);
+            setErr("");
           }}
-        >
-          {t("java.detect")}
-        </Button>
-        <div className="flex-grow" />
-        <Button className="text-secondary" onClick={close}>
-          {t("done")}
-        </Button>
+          error={!!err}
+          helperText={err ?? undefined}
+          icon={<FaJava />}
+          placeholder={t("java.executablePath")}
+          trailing={
+            <>
+              <Link
+                className="border-r border-divider pr-3"
+                type="clickable"
+                onClick={() =>
+                  ipcRenderer.invoke("open-java").then((value) => {
+                    value && handleAddJava(value);
+                  })
+                }
+              >
+                <MdFolderOpen />
+              </Link>
+              <Link type="clickable" className="pl-3" onClick={handleAddJava}>
+                {t("add")}
+              </Link>
+            </>
+          }
+        />
+        <div className="flex">
+          <Button
+            onClick={() => {
+              try {
+                window.native
+                  .findJavas()
+                  .forEach((i) => handleAddJava(i, false));
+                configStore.save();
+              } catch {
+                setErr(t("java.invalidPath"));
+              }
+            }}
+          >
+            {t("java.detect")}
+          </Button>
+          <div className="flex-grow" />
+        </div>
       </div>
-    </Dialog>
+    </div>
   );
 });
 
@@ -197,7 +183,13 @@ export const SettingsGeneralFragment = observer(() => {
       if (result) {
         if (result.need) {
           setResult(t("epheromeUpdate.available", result.name));
-          showOverlay(<UpdateAvailableDialog version={result.name} />);
+          showOverlay({
+            title: t("epheromeUpdate"),
+            content: UpdateAvailableDialog,
+            params: {
+              version: result.name,
+            },
+          });
         } else {
           setResult(t("epheromeUpdate.needNot"));
         }
@@ -212,7 +204,11 @@ export const SettingsGeneralFragment = observer(() => {
     setResult("");
   };
   const handleManageJava = () => {
-    showOverlay(<JavaManagementDialog />);
+    showOverlay({
+      type: "sheet",
+      title: t("java.manage"),
+      content: JavaManagementSheet,
+    });
   };
 
   return (
@@ -307,9 +303,7 @@ export const SettingsAppearanceFragment = observer(() => {
   };
   const handleChangeTitleBarStyle = (ev: string) => {
     setConfig((cfg) => (cfg.titleBarStyle = ev as TitleBarStyle));
-    showOverlay(
-      <AlertDialog title={t("tip")} message={t("settings.titleBar.message")} />
-    );
+    showOverlay({ message: t("settings.titleBar.message") });
   };
 
   return (
@@ -352,7 +346,7 @@ export const SettingsAboutFragment = (): JSX.Element => (
       <div>
         <p className="space-x-1 text-lg">
           <span className="font-extrabold">Epherome</span>
-          <span>{ephCodeName ?? ""}</span>
+          <span>{codeName ?? ""}</span>
         </p>
         <p className="space-x-1 text-sm">
           <span>{t("version")}</span>
@@ -400,34 +394,32 @@ export const SettingsAboutFragment = (): JSX.Element => (
 );
 
 const SettingsPage = observer(() => {
-  {
-    // visit the key to update on it changes
-    intlStore.language;
+  // visit the key to update on it changes
+  intlStore.language;
 
-    return (
-      <TabController className="eph-h-full" orientation="vertical">
-        <TabBar className="shadow-md">
-          <TabBarItem value={0}>
-            <MdTune />
-            {t("general")}
-          </TabBarItem>
-          <TabBarItem value={1}>
-            <MdPalette />
-            {t("appearance")}
-          </TabBarItem>
-          <TabBarItem value={2}>
-            <MdInfo />
-            {t("about")}
-          </TabBarItem>
-        </TabBar>
-        <TabBody className="overflow-y-auto">
-          <SettingsGeneralFragment />
-          <SettingsAppearanceFragment />
-          <SettingsAboutFragment />
-        </TabBody>
-      </TabController>
-    );
-  }
+  return (
+    <TabController className="eph-h-full" orientation="vertical">
+      <TabBar className="shadow-md">
+        <TabBarItem value={0}>
+          <MdTune />
+          {t("general")}
+        </TabBarItem>
+        <TabBarItem value={1}>
+          <MdPalette />
+          {t("appearance")}
+        </TabBarItem>
+        <TabBarItem value={2}>
+          <MdInfo />
+          {t("about")}
+        </TabBarItem>
+      </TabBar>
+      <TabBody className="overflow-y-auto">
+        <SettingsGeneralFragment />
+        <SettingsAppearanceFragment />
+        <SettingsAboutFragment />
+      </TabBody>
+    </TabController>
+  );
 });
 
 export default SettingsPage;

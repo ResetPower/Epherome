@@ -1,26 +1,22 @@
 import { ListItem } from "../components/lists";
 import { t } from "../intl";
-import fs from "fs";
-import {
-  ephLogExportsPath,
-  logFilename,
-  setConfig,
-} from "common/struct/config";
+import { setConfig } from "common/struct/config";
 import { Button } from "../components/inputs";
 import { BiExport } from "react-icons/bi";
 import { MdGamepad, MdRemoveCircle, MdStop } from "react-icons/md";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { observer } from "mobx-react";
-import { showOverlay } from "../renderer/overlays";
-import { AlertDialog, ConfirmDialog } from "../components/Dialog";
+import { observer } from "mobx-react-lite";
+import { showOverlay } from "../overlay";
 import { FaLayerGroup } from "react-icons/fa";
 import { GiStoneBlock } from "react-icons/gi";
 import { useCallback } from "react";
 import path from "path";
-import { historyStore } from "../renderer/history";
+import fs from "fs";
 import { _ } from "common/utils/arrays";
-import { showItemInFinder } from "common/utils/open";
-import { Process, processStore } from "common/stores/process";
+import { Process, processStore } from "../../common/stores/process";
+import { ephLatestLog, ephLogs } from "common/utils/info";
+import { openItemInFinder } from "common/utils/open";
+import { pushToHistory } from "eph/renderer/history";
 
 const ProcessesPage = observer(() => {
   const minecraftProcesses = processStore.processes;
@@ -33,39 +29,34 @@ const ProcessesPage = observer(() => {
 
   const handleExport = () => {
     if (selected === -1) {
-      showItemInFinder(logFilename);
+      openItemInFinder(ephLatestLog);
     } else {
       const logFile = path.join(
-        ephLogExportsPath,
+        ephLogs,
         `log.${new Date().getTime()}_${selected}.log`
       );
       fs.writeFileSync(logFile, current.outputs.join("\n"));
-      showItemInFinder(logFile);
-      showOverlay(
-        <AlertDialog
-          title={t("tip")}
-          message={t("processes.logExported", logFile)}
-        />
-      );
+      openItemInFinder(logFile);
+      showOverlay({
+        title: t("tip"),
+        message: t("processes.logExported", logFile),
+      });
     }
   };
   const handleTerminate = () => {
-    showOverlay(
-      <ConfirmDialog
-        title={t("processes.terminate")}
-        message={t("processes.terminateIrreversible")}
-        positiveText={t("continueAnyway")}
-        positiveClassName="text-danger"
-        action={() => {
-          current.raw.kill();
-        }}
-      />
-    );
+    showOverlay({
+      title: t("processes.terminate"),
+      message: t("processes.terminateIrreversible"),
+      positiveText: t("continueAnyway"),
+      dangerous: true,
+      cancellable: true,
+      action: () => current.raw.kill(),
+    });
   };
   const handleRemove = () => processStore.remove(current);
   const handleOpenProfile = () => {
     setConfig((cfg) => _.select(cfg.profiles, current.profile));
-    historyStore.push("profiles");
+    pushToHistory("profiles");
   };
 
   return (

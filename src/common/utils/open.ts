@@ -5,11 +5,11 @@ export function openInBrowser(url: string): void {
   shell.openExternal(url);
 }
 
-export function showItemInFinder(path: string): void {
+export function openItemInFinder(path: string): void {
   shell.showItemInFolder(path);
 }
 
-export function openPathInFinder(path: string): void {
+export function openInFinder(path: string): void {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path, { recursive: true });
   }

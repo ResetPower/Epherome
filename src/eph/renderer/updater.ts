@@ -1,8 +1,6 @@
-import { ipcRenderer } from "electron";
 import { coreLogger } from "common/loggers";
-import { nativeRequestAsync } from "core/net";
-
-export const ephVersion = ipcRenderer.sendSync("get-version");
+import { ephVersion } from "common/utils/info";
+import got from "got";
 
 export interface EphUpdatableVersion {
   name: string;
@@ -12,11 +10,8 @@ export interface EphUpdatableVersion {
 
 export async function checkEphUpdate(): Promise<EphUpdatableVersion | null> {
   try {
-    const [, body] = await nativeRequestAsync(
-      "get",
-      "https://epherome.com/api/version"
-    );
-    const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(body);
+    const resp = await got("https://epherome.com/api/version");
+    const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(resp.body);
     const need = params.name !== `v${ephVersion}`;
     coreLogger.info(
       `Fetched latest version: ${params.name}. Epherome ${

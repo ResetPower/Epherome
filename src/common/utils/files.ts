@@ -1,12 +1,27 @@
-import fs from "fs";
+import fs, { createWriteStream } from "fs";
 import path from "path";
 import crypto from "crypto";
-import { adapt, DefaultFn, ErrorHandler } from ".";
+import { adapt, DefaultFn, ErrorHandler } from "../utils";
 import { MutableRefObject } from "react";
 import { shell } from "electron";
-import { shortid } from "./ids";
-import { Counter, ObjectWrapper } from "./object";
-import { DownloaderDetailsListener } from "core/down/downloader";
+import { Counter, ObjectWrapper } from "../utils/object";
+import got from "got";
+import stream from "stream";
+import { promisify } from "util";
+import pLimit from "p-limit";
+
+const pipeline = promisify(stream.pipeline);
+
+export type DownloaderDetailsListener = (
+  details: ObjectWrapper<DownloadDetail[]>,
+  totalPercentage: number
+) => unknown;
+
+export interface DownloadDetail {
+  filename: string;
+  percentage: number;
+  inProgress: boolean;
+}
 
 export interface ParallelDownloadItem {
   unique: number;
@@ -19,6 +34,10 @@ export type ParallelDownloadItemWithoutUnique = Omit<
   "unique"
 >;
 
+export function createDirByPath(p: string): void {
+  ensureDir(path.dirname(p));
+}
+
 export function ensureDir(p: string): void {
   try {
     fs.accessSync(p);
@@ -27,29 +46,20 @@ export function ensureDir(p: string): void {
   }
 }
 
-// create a folder which the file is in
-export function createDirByPath(p: string): void {
-  ensureDir(path.dirname(p));
-}
-
 export function downloadFile(
   url: string,
   target: string,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
-  const id = shortid();
-  return new Promise((resolve, reject) => {
-    cancellerWrapper &&
-      (cancellerWrapper.current = () => window.native.task.cancel(id));
-    window.native.downloadFile(
-      url,
-      target,
-      (err) => (err ? reject(err) : resolve()),
-      id,
-      false,
-      true
-    );
-  });
+  const downloadStream = got.stream(url);
+  const fileWriterStream = createWriteStream(target);
+  cancellerWrapper &&
+    (cancellerWrapper.current = () => {
+      downloadStream.destroy();
+      fileWriterStream.destroy();
+      fs.rmSync(target);
+    });
+  return pipeline(downloadStream, fileWriterStream);
 }
 
 export async function parallelDownload(
@@ -59,7 +69,6 @@ export async function parallelDownload(
   concurrency: number,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
-  const id = shortid();
   const counter = new Counter();
   const items = itemList.map((i) => ({ ...i, unique: counter.count() }));
   const details = items.map((i) => ({
@@ -68,37 +77,42 @@ export async function parallelDownload(
     percentage: 0,
     inProgress: false,
   }));
-  return new Promise((resolve) => {
-    window.exchange.listen(`parallel-download-${id}-err`, (msg) =>
-      onError(new Error(msg))
+
+  const updateUI = () =>
+    onDetailsChange(
+      new ObjectWrapper<DownloadDetail[]>(details),
+      Math.floor(
+        details.map((i) => i.percentage).reduce((a, b) => a + b) /
+          details.length
+      )
     );
-    window.exchange.listen(`parallel-download-${id}-done`, () => {
-      resolve();
-    });
-    window.exchange.listen(`parallel-download-${id}-progress`, (arg) => {
-      const [unique, progress] = arg.split("-");
-      const [uInt, pInt] = [+unique, +progress];
-      const detail = details.find((i) => i.unique === uInt);
-      if (detail) {
-        if (pInt === 100) {
-          detail.inProgress = false;
-        } else if (pInt >= 0) {
-          detail.inProgress = true;
+
+  const limit = pLimit(concurrency);
+  items.map((item) =>
+    limit(() => {
+      const downloadStream = got.stream(item.url);
+      const fileWriterStream = createWriteStream(item.target);
+      cancellerWrapper &&
+        (cancellerWrapper.current = () => {
+          downloadStream.destroy();
+          fileWriterStream.destroy();
+          fs.rmSync(item.target);
+        });
+      downloadStream.on("downloadProgress", ({ percent }) => {
+        const detail = details.find((i) => i.unique === item.unique);
+        if (detail) {
+          if (percent === 100) {
+            detail.inProgress = false;
+          } else if (percent >= 0) {
+            detail.inProgress = true;
+          }
+          detail.percentage = percent;
         }
-        detail.percentage = pInt;
-      }
-      onDetailsChange(
-        new ObjectWrapper(details),
-        Math.floor(
-          details.map((i) => i.percentage).reduce((a, b) => a + b) /
-            details.length
-        )
-      );
-    });
-    window.native.parallelDownload(items, concurrency, id);
-    cancellerWrapper &&
-      (cancellerWrapper.current = () => window.native.task.cancel(id));
-  });
+        updateUI();
+      });
+      return pipeline(downloadStream, fileWriterStream);
+    })
+  );
 }
 
 export function calculateHash(file: string, type: "sha1"): string {

@@ -1,10 +1,10 @@
 import { createDirByPath } from "common/utils/files";
-import { MinecraftUrlUtils } from "core/down/url";
 import { ClientJsonLibraries } from "core/launch/struct";
 import path from "path";
 import fs from "fs";
 import { InstallVersion } from ".";
-import { nativeRequestAsync } from "core/net";
+import { MinecraftUrlUtil } from "core/url";
+import got from "got";
 
 export interface LiteLoaderVersionMeta {
   tweakClass: string;
@@ -41,12 +41,11 @@ function processLib(libraries: ClientJsonLibraries): ClientJsonLibraries {
 export async function getLiteLoaderInstallVersions(
   mc: string
 ): Promise<InstallVersion[]> {
-  const [, result] = await nativeRequestAsync(
-    "get",
-    MinecraftUrlUtils.LiteLoader.versions()
+  const urlUtil = MinecraftUrlUtil.fromDefault();
+  const resp = await got(urlUtil.liteLoaderVersions());
+  const parsed: { versions: { [key: string]: LiteLoaderVersion } } = JSON.parse(
+    resp.body
   );
-  const parsed: { versions: { [key: string]: LiteLoaderVersion } } =
-    JSON.parse(result);
   const version = parsed.versions[mc];
   const latests = [
     ...(version.artefacts

@@ -11,7 +11,6 @@ import {
   ClientLibraryResult,
 } from "./struct";
 import { calculateHash, downloadFile } from "common/utils/files";
-import { MinecraftUrlUtils } from "core/down/url";
 import { DefaultFn } from "common/utils";
 import { MutableRefObject } from "react";
 
@@ -64,7 +63,7 @@ export async function analyzeLibrary(
                 missing.push({
                   name: nativeObj.path.split("/").pop() ?? "",
                   path: `${dir}/libraries/${nativeObj.path}`,
-                  url: MinecraftUrlUtils.library(nativeObj.url),
+                  url: nativeObj.url,
                   sha1: nativeObj.sha1,
                 });
               natives.push(file);
@@ -88,7 +87,7 @@ export async function analyzeLibrary(
           missing.push({
             name: ar.path.split("/").pop() ?? "",
             path: `${dir}/libraries/${ar.path}`,
-            url: MinecraftUrlUtils.library(ar.url),
+            url: ar.url,
             sha1: ar.sha1,
           });
         classpath.push(file);
@@ -96,9 +95,7 @@ export async function analyzeLibrary(
     } else if (lib.name) {
       // with only `name` and `url` key (It seems to be LiteLoader or Fabric)
       const name = lib.name.split(":");
-      const url =
-        lib.url ??
-        MinecraftUrlUtils.library("https://libraries.minecraft.net/");
+      const url = lib.url ?? "https://libraries.minecraft.net/";
       const p = path.join(
         dir,
         "libraries",
@@ -120,7 +117,7 @@ export async function analyzeLibrary(
           }-${name[2]}.jar`;
           missing.push({
             name: `${name[1]}-${name[2]}.jar`,
-            url: MinecraftUrlUtils.library(urlObject),
+            url: urlObject,
             path: p,
           });
         }
@@ -149,11 +146,7 @@ export async function analyzeAssets(
   );
 
   if (!fs.existsSync(assetIndexPath)) {
-    await downloadFile(
-      MinecraftUrlUtils.assetIndex(assetIndex),
-      assetIndexPath,
-      cancellerWrapper
-    );
+    await downloadFile(assetIndex.url, assetIndexPath, cancellerWrapper);
   }
   const parsedAssetIndex = JSON.parse(
     fs.readFileSync(assetIndexPath).toString()
@@ -173,7 +166,7 @@ export async function analyzeAssets(
     miss &&
       missing.push({
         path: p,
-        url: MinecraftUrlUtils.assetObject(startHash, hash),
+        url: hash,
         hash,
       });
   }

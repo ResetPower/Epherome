@@ -1,10 +1,10 @@
 import { MinecraftProfile } from "./profiles";
 import path from "path";
 import fs from "fs";
-import { basenameWithoutExt, readdir } from "common/utils/files";
-import { shortid } from "common/utils/ids";
+import { shortid } from "../utils/ids";
 import { action, makeObservable, observable } from "mobx";
 import { ipcRenderer } from "electron";
+import { basenameWithoutExt, readdir } from "common/utils/files";
 
 export interface MinecraftSave {
   id: number;

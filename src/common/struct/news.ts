@@ -1,4 +1,4 @@
-import { commonLogger } from "common/loggers";
+import { rendererLogger } from "common/loggers";
 import { promisify } from "util";
 
 export interface NewItem {
@@ -9,13 +9,13 @@ export interface NewItem {
 }
 
 export async function fetchNews(): Promise<NewItem[] | null> {
-  commonLogger.info("Fetching news...");
+  rendererLogger.info("Fetching news...");
   try {
     const result = await promisify(window.native.fetchNews)();
-    commonLogger.info("Fetched news");
+    rendererLogger.info("Fetched news");
     return result ?? [];
   } catch {
-    commonLogger.warn("Unable to fetch news");
+    rendererLogger.warn("Unable to fetch news");
     return null;
   }
 }

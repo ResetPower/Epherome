@@ -1,10 +1,10 @@
 /**
- * All language messages' definition is here.
- * See https://epherome.com/wiki/intl
+ * All language messages' definition.
  */
 export interface LanguageDefinition {
   hello: string;
   epherome: string;
+  home: string;
   accounts: string;
   profiles: string;
   settings: string;

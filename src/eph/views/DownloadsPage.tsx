@@ -5,21 +5,20 @@ import Spin from "../components/Spin";
 import { Alert } from "../components/layouts";
 import { List, ListItem, ListItemText } from "../components/lists";
 import { useState, useEffect, useRef, Fragment } from "react";
-import { minecraftDownloadPath } from "common/struct/config";
-import { createProfile } from "common/struct/profiles";
+import { createProfile } from "../../common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
 import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "core/installer/minecraft";
-import { MinecraftUrlUtils } from "core/down/url";
+import { MinecraftUrlUtil } from "core/url";
 import { call, DefaultFn } from "common/utils";
 import { ObjectWrapper } from "common/utils/object";
-import { defaultJvmArgs } from "core/java";
+import { defaultJvmArgs } from "common/struct/java";
 import { Center } from "../components/fragments";
-import { showOverlay } from "eph/renderer/overlays";
-import { DoneDialog } from "eph/components/Dialog";
-import { historyStore } from "eph/renderer/history";
-import { DownloadDetail } from "core/down/downloader";
+import { showOverlay } from "eph/overlay";
+import got from "got";
+import { DownloadDetail } from "common/utils/files";
+import { ephDefaultDotMinecraft } from "common/utils/info";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -30,7 +29,7 @@ export function DownloadingFragment(props: {
   const canceller = useRef<DefaultFn>();
   const [status, setStatus] = useState<null | "error" | "done">(null);
   const [tasks, setTasks] = useState<ObjectWrapper<DownloadDetail[]>>(
-    new ObjectWrapper([])
+    new ObjectWrapper<DownloadDetail[]>([])
   );
   const [totalPercentage, setTotalPercentage] = useState<number>(0);
   const [name, setName] = useState(`Minecraft ${props.version.id}`);
@@ -66,14 +65,17 @@ export function DownloadingFragment(props: {
       () => {
         createProfile({
           name,
-          dir: minecraftDownloadPath,
+          dir: ephDefaultDotMinecraft,
           ver: props.version.id,
           from: "download",
           jvmArgs: defaultJvmArgs(),
         });
         setStatus("done");
         props.setLocking(false);
-        showOverlay(<DoneDialog back={historyStore.back} />);
+        showOverlay({
+          message: t("doneMessage"),
+          action: () => history.back(),
+        });
       },
       canceller
     );
@@ -160,25 +162,20 @@ export default function DownloadsPage(): JSX.Element {
       : false;
 
   useEffect(() => {
+    const urlUtil = MinecraftUrlUtil.fromDefault();
     // copy the ref here in order to satisfy eslint-plugin-react-hooks
     const cancellerRef = canceller;
-
     rendererLogger.info("Fetching Minecraft launcher meta...");
-    window.native.request(
-      "get",
-      MinecraftUrlUtils.versionManifest(),
-      (err, data) => {
-        if (err || !data) {
-          rendererLogger.warn("Unable to fetch Minecraft launcher meta");
-          setVersions(null);
-        } else {
-          const [_, body] = data;
-          const parsed = JSON.parse(body);
-          setVersions(parsed.versions);
-          rendererLogger.info("Fetched Minecraft launcher meta");
-        }
-      }
-    );
+    got(urlUtil.versionManifest())
+      .then((resp) => {
+        const parsed = JSON.parse(resp.body);
+        setVersions(parsed.versions);
+        rendererLogger.info("Fetched Minecraft launcher meta");
+      })
+      .catch(() => {
+        rendererLogger.warn("Unable to fetch Minecraft launcher meta");
+        setVersions(null);
+      });
     return () => {
       call(cancellerRef.current?.current);
     };

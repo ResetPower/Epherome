@@ -5,11 +5,11 @@ import {
   CreateAccountImplResult,
   MinecraftAccount,
   removeAccount,
-} from "common/struct/accounts";
-import { configStore, setConfig } from "common/struct/config";
+} from "../../common/struct/accounts";
+import { configStore, setConfig } from "../../common/struct/config";
 import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
 import { List, ListItem } from "../components/lists";
-import { showOverlay } from "../renderer/overlays";
+import { showOverlay } from "../overlay";
 import {
   TabBar,
   TabBarItem,
@@ -22,32 +22,13 @@ import { adapt, call, DefaultFn } from "common/utils";
 import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "common/utils/arrays";
-import {
-  ConfirmDialog,
-  ExportedDialog,
-  InternetNotAvailableDialog,
-  NotSupportedDialog,
-} from "../components/Dialog";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { useRef } from "react";
-import { Avatar, Body, downloadSkin } from "core/model/skin";
+import { downloadSkin } from "core/model/skin";
 import { BiExport } from "react-icons/bi";
 import { Center, Info } from "../components/fragments";
 import { commonLogger } from "common/loggers";
-
-export function RemoveAccountDialog(props: {
-  account: MinecraftAccount;
-}): JSX.Element {
-  return (
-    <ConfirmDialog
-      title={t("account.removing")}
-      message={t("confirmRemoving")}
-      action={() => removeAccount(props.account)}
-      positiveClassName="text-danger"
-      positiveText={t("remove")}
-    />
-  );
-}
+import { Avatar, Body } from "eph/components/skin";
 
 export function ChangeAccountFragment(props: {
   onDone: DefaultFn;
@@ -146,7 +127,14 @@ export function AccountGeneralFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
   const handleRemove = (selected: MinecraftAccount) =>
-    showOverlay(<RemoveAccountDialog account={selected} />);
+    showOverlay({
+      title: t("account.removing"),
+      message: t("confirmRemoving"),
+      action: () => removeAccount(selected),
+      dangerous: true,
+      cancellable: true,
+      positiveText: t("remove"),
+    });
 
   return (
     <div className="flex flex-col">
@@ -183,16 +171,22 @@ export function AccountSkinFragment(props: {
     downloadSkin(uuid)
       .then((target) => {
         setExporting(false);
-        showOverlay(<ExportedDialog target={target} />);
+        showOverlay({
+          message: t("exportedAt", target),
+        });
       })
       .catch((err) => {
         commonLogger.warn("Error occurred downloading skin: " + err);
         setExporting(false);
-        showOverlay(<InternetNotAvailableDialog />);
+        showOverlay({
+          message: t("internetNotAvailable"),
+        });
       });
   };
   const handleEdit = () => {
-    showOverlay(<NotSupportedDialog />);
+    showOverlay({
+      message: t("notSupportedYet"),
+    });
   };
 
   return (

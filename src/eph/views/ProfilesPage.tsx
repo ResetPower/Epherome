@@ -10,7 +10,7 @@ import {
   createProfile,
   editProfile,
   MinecraftProfile,
-} from "common/struct/profiles";
+} from "../../common/struct/profiles";
 import { configStore, setConfig } from "common/struct/config";
 import {
   MdCreate,
@@ -27,18 +27,16 @@ import {
   TabContext,
   TabController,
 } from "../components/tabs";
-import { ipcRenderer } from "electron";
 import { call, DefaultFn } from "common/utils";
 import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
-import { historyStore } from "../renderer/history";
 import { _ } from "common/utils/arrays";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { FaTimes } from "react-icons/fa";
 import { useEffect } from "react";
 import { useMemo } from "react";
-import { MinecraftProfileManagerStore } from "common/struct/manager";
-import { defaultJvmArgs } from "core/java";
+import { MinecraftProfileManagerStore } from "../../common/struct/manager";
+import { defaultJvmArgs } from "common/struct/java";
 import {
   ProfileGeneralFragment,
   ProfileModsFragment,
@@ -46,6 +44,8 @@ import {
   ProfileSavesFragment,
 } from "./ProfileManagers";
 import { Center } from "../components/fragments";
+import { ipcRenderer } from "electron";
+import { pushToHistory } from "eph/renderer/history";
 
 export function ChangeProfileFragment(props: {
   onDone?: DefaultFn;
@@ -277,7 +277,7 @@ const ProfilesPage = observer(() => {
           <Button
             className="whitespace-nowrap"
             variant="contained"
-            onClick={() => historyStore.push("downloads")}
+            onClick={() => pushToHistory("download")}
           >
             <MdFileDownload /> {t("download")}
           </Button>

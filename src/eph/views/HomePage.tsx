@@ -9,14 +9,8 @@ import {
 import { useState } from "react";
 import { configStore, setConfig } from "common/struct/config";
 import { LaunchCanceller, launchMinecraft } from "core/launch";
-import { DefaultFn } from "common/utils";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
 import { Card } from "../components/layouts";
-import Dialog, {
-  AlertDialog,
-  CrashReportDialog,
-  ErrorDialog,
-} from "../components/Dialog";
 import {
   MdAccountCircle,
   MdApps,
@@ -28,64 +22,35 @@ import {
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
-import { showOverlay, useOverlayCloser } from "../renderer/overlays";
+import { showOverlay } from "../overlay";
 import { t } from "../intl";
-import { historyStore } from "../renderer/history";
 import { _ } from "common/utils/arrays";
 import { action, makeObservable, observable, runInAction } from "mobx";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
-import ExtensionsView from "./ExtensionsView";
 import NewsView from "./NewsView";
-import { fetchNews, NewItem } from "common/struct/news";
-import { JavaManagementDialog } from "./SettingsPage";
-import {
-  showJava16RequiredDialog,
-  showJava8RequiredDialog,
-  showNoJavaDialog,
-} from "eph/renderer/alerts";
+import { fetchNews, NewItem } from "../../common/struct/news";
+import { JavaManagementSheet } from "./SettingsPage";
 import { ObjectWrapper } from "common/utils/object";
+import { rendererLogger } from "common/loggers";
+import { pushToHistory } from "eph/renderer/history";
+import { DefaultFn } from "common/utils";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
-  onCancel: DefaultFn;
-  callback: (password: string) => void;
+  password: string;
+  onChangePassword: (ev: string) => unknown;
 }): JSX.Element {
-  const close = useOverlayCloser();
-  const [password, setPassword] = useState("");
-  const handler = () => {
-    close();
-    props.callback(password);
-  };
-
   return (
-    <Dialog indentBottom>
-      <p className="text-xl font-semibold">{t("account.inputPassword")}</p>
-      <div>
-        <TextField
-          value={password}
-          onChange={setPassword}
-          label={t("password")}
-          type="password"
-          helperText={props.again ? t("account.wrongPassword") : ""}
-          error={props.again}
-          onEnter={handler}
-        />
-      </div>
-      <div className="flex justify-end">
-        <Button
-          className="text-shallow"
-          onClick={() => {
-            props.onCancel();
-            close();
-          }}
-        >
-          {t("cancel")}
-        </Button>
-        <Button onClick={handler}>{t("fine")}</Button>
-      </div>
-    </Dialog>
+    <TextField
+      value={props.password}
+      onChange={props.onChangePassword}
+      label={t("password")}
+      type="password"
+      helperText={props.again ? t("account.wrongPassword") : ""}
+      error={props.again}
+    />
   );
 }
 
@@ -140,6 +105,7 @@ export class HomePageStore {
 export const homePageStore = new HomePageStore();
 
 const HomePage = observer(() => {
+  const password = useRef<string>("");
   const account = useRef(_.selected(configStore.accounts));
   const profiles = configStore.profiles;
   const isHitokotoEnabled = configStore.hitokoto;
@@ -169,9 +135,10 @@ const HomePage = observer(() => {
           homePageStore.setLaunching(false);
           if (process && process.crash) {
             // show crash report
-            showOverlay(
-              <CrashReportDialog crashReport={process.crashReport} />
-            );
+            showOverlay({
+              title: t("launching.crashReport"),
+              message: t("launching.crashReport.helper"),
+            });
           }
         },
         requestPassword: (again: boolean) =>
@@ -179,17 +146,21 @@ const HomePage = observer(() => {
             if (again !== homePageStore.againRequestingPassword) {
               homePageStore.again();
             }
-            showOverlay(
-              <RequestPasswordDialog
-                onCancel={() => homePageStore.setLaunching(false)}
-                again={homePageStore.againRequestingPassword}
-                callback={(password: string) => {
-                  resolve(password);
-                }}
-              />
-            );
+            password.current = "";
+            showOverlay({
+              title: t("account.inputPassword"),
+              content: RequestPasswordDialog,
+              cancellable: () => homePageStore.setLaunching(false),
+              params: {
+                again: homePageStore.againRequestingPassword,
+                password: password.current,
+                onChangePassword: (ev) => (password.current = ev),
+              },
+              action: () => resolve(password.current),
+            });
           }),
         cancellerWrapper: homePageStore.canceller,
+        provider: configStore.downloadProvider,
       })
         .then(([stat, cb]) => {
           if (stat === "jRequired") {
@@ -201,16 +172,17 @@ const HomePage = observer(() => {
           }
         })
         .catch((err: Error) => {
-          showOverlay(<ErrorDialog stacktrace={err.stack ?? " "} />);
+          showOverlay({
+            title: t("errorOccurred"),
+            message: err.stack ?? t("errorOccurred"),
+          });
           homePageStore.setLaunching(false);
         });
     } else {
-      showOverlay(
-        <AlertDialog
-          title={t("warning")}
-          message={t("launching.noAccOrProSelected")}
-        />
-      );
+      showOverlay({
+        title: t("warning"),
+        message: t("launching.noAccOrProSelected"),
+      });
     }
   };
 
@@ -240,23 +212,21 @@ const HomePage = observer(() => {
             )}
           </div>
           <div>
-            <IconButton onClick={() => historyStore.push("processes")}>
+            <IconButton onClick={() => pushToHistory("processes")}>
               <MdViewCarousel />
             </IconButton>
             <IconButton
-              onClick={() => {
-                showOverlay(<ExtensionsView />, "sheet", "slide");
-              }}
+              onClick={() => rendererLogger.warn("Extensions not available")}
             >
               <MdApps />
             </IconButton>
           </div>
         </div>
         <div className="flex">
-          <Button onClick={() => historyStore.push("accounts")}>
+          <Button onClick={() => pushToHistory("accounts")}>
             <MdAccountCircle /> {t("accounts")}
           </Button>
-          <Button onClick={() => historyStore.push("profiles")}>
+          <Button onClick={() => pushToHistory("profiles")}>
             <MdGamepad /> {t("profiles")}
           </Button>
           <div className="flex-grow" />
@@ -265,7 +235,7 @@ const HomePage = observer(() => {
               <MdRefresh />
             </IconButton>
           )}
-          <IconButton onClick={() => historyStore.push("settings")}>
+          <IconButton onClick={() => pushToHistory("settings")}>
             <MdSettings />
           </IconButton>
         </div>
@@ -320,7 +290,13 @@ const HomePage = observer(() => {
           <div className="border-t border-divider text-contrast flex">
             <TinyButton
               className="px-1"
-              onClick={() => showOverlay(<JavaManagementDialog />)}
+              onClick={() =>
+                showOverlay({
+                  type: "sheet",
+                  title: t("java.manage"),
+                  content: JavaManagementSheet,
+                })
+              }
             >
               {t("java.manage")}
             </TinyButton>
@@ -352,7 +328,13 @@ const HomePage = observer(() => {
           )}
           <div>
             <TinyButton
-              onClick={() => showOverlay(<NewsView />, "sheet", "slide")}
+              onClick={() =>
+                showOverlay({
+                  type: "sheet",
+                  title: t("news"),
+                  content: NewsView,
+                })
+              }
               paddingRight
             >
               <MdMoreHoriz /> {t("expand")}
@@ -372,5 +354,30 @@ const HomePage = observer(() => {
     </div>
   );
 });
+
+export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
+  showOverlay({
+    title: t("warning"),
+    message: t("launching.considerUsingJava16"),
+    positiveText: t("continueAnyway"),
+    action: finallyRun,
+  });
+}
+
+export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
+  showOverlay({
+    title: t("warning"),
+    message: t("launching.considerUsingJava8"),
+    positiveText: t("continueAnyway"),
+    action: finallyRun,
+  });
+}
+
+export function showNoJavaDialog(): void {
+  showOverlay({
+    title: t("launching.javaNotFound"),
+    message: t("launching.javaNotFoundMessage"),
+  });
+}
 
 export default HomePage;

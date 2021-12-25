@@ -35,27 +35,25 @@ jobs:
       - name: Extract version
         id: ver
         uses: Saionaro/extract-package-version@v1.0.6
-      - name: Webpack Build Production
-        run: npm run prod
       - name: Build Electron for Windows
         if: matrix.os == 'windows-latest'
-        run: npm run package -- --windows
+        run: npm run make -- --windows
       - name: Build Electron for macOS
         if: matrix.os == 'macos-latest'
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-        run: npm run package -- --macos
+        run: npm run make -- --macos
       - name: Build Electron for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: npm run package -- --linux
+        run: npm run make -- --linux
       - name: Upload Artifact
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
         with:
           name: art
           retention-days: 1
-          path: package/Epherome-v${{ steps.ver.outputs.version }}.exe
+          path: package/Epherome-v${{ steps.ver.outputs.version }}.msi
       - name: Upload Artifact
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v2
@@ -102,8 +100,8 @@ jobs:
           body_path: docs/RELEASE_NOTE.md
           prerelease: true
           files: |
-            package/Epherome-v${{ steps.ver.outputs.version }}.exe
-            package/Epherome-v${{ steps.ver.outputs.version }}.exe.hash
+            package/Epherome-v${{ steps.ver.outputs.version }}.msi
+            package/Epherome-v${{ steps.ver.outputs.version }}.msi.hash
             package/Epherome-v${{ steps.ver.outputs.version }}.dmg
             package/Epherome-v${{ steps.ver.outputs.version }}.dmg.hash
             package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz

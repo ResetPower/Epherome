@@ -3,29 +3,40 @@ import os from "os";
 import fs from "fs";
 import path from "path";
 import log4js from "log4js";
-import { default as log4jsConfiguration } from "common/utils/logging";
+import { default as log4jsConfiguration } from "./common/utils/logging";
 
+// base information
 const version = app.getVersion();
 const codeName = "Binary Tree";
-const userDataPath = app.getPath("userData"); // config file and application data directory
+const userDataPath = app.getPath("userData");
+
 const configPath = path.join(userDataPath, "settings.json");
-
-!fs.existsSync(configPath) && fs.writeFileSync(configPath, "{}");
-
-export const parsed = JSON.parse(fs.readFileSync(configPath).toString());
 const logFilename = path.join(userDataPath, "latest.log");
 
-try {
-  fs.writeFileSync(logFilename, "");
-} catch {}
+// initialize files
+fs.writeFileSync(logFilename, "");
+!fs.existsSync(configPath) && fs.writeFileSync(configPath, "{}");
+
+// parse config
+export let parsed = readConfig();
+
+function readConfig() {
+  return JSON.parse(fs.readFileSync(configPath).toString());
+}
 
 // configure log4js
 log4js.configure(log4jsConfiguration(logFilename));
 
-ipcMain.on("get-user-data-path", (ev) => (ev.returnValue = userDataPath));
-ipcMain.on("get-code-name", (ev) => (ev.returnValue = codeName));
-ipcMain.on("get-version", (ev) => (ev.returnValue = version));
-ipcMain.on("get-config", (ev) => (ev.returnValue = { configPath, parsed }));
+ipcMain.on("get-info", (ev) => {
+  parsed = readConfig();
+  ev.returnValue = {
+    userDataPath,
+    codeName,
+    version,
+    configPath,
+    parsed,
+  };
+});
 
 ipcMain.handle("open-directory", async () => {
   const files = await dialog.showOpenDialog({
@@ -53,10 +64,6 @@ ipcMain.handle("import-mod", async () => {
   if (!files.canceled) {
     return files.filePaths[0];
   } else return undefined;
-});
-
-ipcMain.on("get-java-home", (ev) => {
-  ev.returnValue = process.env.JAVA_HOME;
 });
 
 // global main-process logger

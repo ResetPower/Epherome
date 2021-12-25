@@ -1,18 +1,17 @@
-import { ipcRenderer } from "electron";
 import {
   authCode2AuthToken,
   authenticate,
   authToken2XBLToken,
   checkMinecraftOwnership,
-  genOfflineToken,
   genUUID,
   getMicrosoftMinecraftProfile,
   XBLToken2XSTSToken,
   XSTSToken2MinecraftToken,
 } from "core/auth";
 import { setConfig } from "./config";
-import { WithUnderline, _ } from "../utils/arrays";
+import { WithUnderline, _ } from "common/utils/arrays";
 import { commonLogger } from "common/loggers";
+import { ipcRenderer } from "electron";
 
 export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
 
@@ -155,11 +154,12 @@ export async function createAccount(
   } else {
     // offline account
     if (username === "") return unsuccessfulResult;
+    const uuid = genUUID();
     appendAccount({
       email: "",
       name: username,
-      uuid: genUUID(),
-      token: genOfflineToken(username),
+      uuid,
+      token: uuid,
       mode: "offline",
     });
     return successfulResult;

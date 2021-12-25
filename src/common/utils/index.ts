@@ -2,6 +2,10 @@ export interface StringMap {
   [key: string]: string;
 }
 
+export interface AnyMap {
+  [key: string]: unknown;
+}
+
 export type DefaultFn = () => unknown;
 
 export type Nullable<T> = T | null;
@@ -68,4 +72,8 @@ export function format(source: string, ...params: string[]): string {
     source = source.replace(`{${index}}`, param);
   });
   return source;
+}
+
+export function apply<T>(obj: T, act: (obj: T) => unknown) {
+  obj && act(obj);
 }

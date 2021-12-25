@@ -1,11 +1,10 @@
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
+import { call, DefaultFn } from "common/utils";
 import {
   openInBrowser,
-  openPathInFinder,
-  showItemInFinder,
+  openInFinder,
+  openItemInFinder,
 } from "common/utils/open";
-import { call, DefaultFn } from "common/utils";
-import { AppBarContext } from "eph/renderer/App";
 
 export function Button(props: {
   children: ReactNode;
@@ -55,10 +54,9 @@ export function IconButton(props: {
   onClick?: DefaultFn;
   active?: boolean;
 }): JSX.Element {
-  const { cursorDefault } = useContext(AppBarContext);
   return (
     <div
-      className={`eph-icon-button ${cursorDefault && "cursor-default"} ${
+      className={`eph-icon-button  ${
         props.active && "eph-icon-button-active"
       } color-contrast ${props.className}`}
       onClick={props.onClick}
@@ -206,9 +204,9 @@ export function Link(props: {
 }): JSX.Element {
   const handleClick = () => {
     if (props.type === "file") {
-      showItemInFinder(props.href ?? "");
+      openItemInFinder(props.href ?? "");
     } else if (props.type === "folder") {
-      openPathInFinder(props.href ?? "");
+      openInFinder(props.href ?? "");
     } else if (props.type === "clickable") {
       call(props.onClick);
     } else {

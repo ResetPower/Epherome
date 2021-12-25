@@ -1,12 +1,11 @@
 [package]
 name = "epherome"
 version = "0.0.0"
-license = "ISC"
+license = "GPL-3.0"
 edition = "2018"
-exclude = ["index.node"]
 
 [lib]
-path = "src/rust/lib.rs"
+path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
@@ -16,10 +15,7 @@ regex = "1.5.4"
 zip = "0.5.13"
 reqwest = { version = "0.11.4", features = ["json", "stream"] }
 scraper = "0.12.0"
-serde_json = "1.0.68"
 tokio = { version = "1.12.0", features = ["rt-multi-thread"] }
-futures-util = "0.3.17"
-futures = "0.3.17"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.9.0"

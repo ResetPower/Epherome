@@ -1,34 +1,36 @@
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { BiImport } from "react-icons/bi";
 import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import { MdClose, MdDelete, MdFolderOpen, MdRefresh } from "react-icons/md";
-import { AlertDialog, ConfirmDialog } from "../components/Dialog";
 import { Info } from "../components/fragments";
 import { Button, Link } from "../components/inputs";
 import { ListItem, ListItemText } from "../components/lists";
 import { MinecraftProfileManagerStore } from "common/struct/manager";
 import { t } from "../intl";
-import { openPathInFinder } from "common/utils/open";
-import { showOverlay } from "../renderer/overlays";
+import { openInFinder } from "common/utils/open";
+import { showOverlay } from "../overlay";
 import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
-import { historyStore } from "../renderer/history";
-import { showMoveToTrashAlert } from "eph/renderer/alerts";
 import { parseJson } from "core/launch/parser";
 import { useMemo } from "react";
+import { pushToHistory } from "eph/renderer/history";
+import { moveToTrash } from "common/utils/files";
+import path from "path";
 
-export function RemoveProfileDialog(props: {
-  profile: MinecraftProfile;
-}): JSX.Element {
-  return (
-    <ConfirmDialog
-      title={t("profile.removing")}
-      message={t("confirmRemoving")}
-      action={() => removeProfile(props.profile)}
-      positiveClassName="text-danger"
-      positiveText={t("remove")}
-    />
-  );
+export function showMoveToTrashAlert(filepath: string): Promise<void> {
+  return new Promise((resolve) => {
+    const filename = path.basename(filepath);
+
+    showOverlay({
+      title: t("moveToTrash"),
+      message: t("confirmMoveSomethingToTrash", filename),
+      action: () => {
+        moveToTrash(filepath).then(resolve);
+      },
+      dangerous: true,
+      cancellable: true,
+    });
+  });
 }
 
 export function ProfileGeneralFragment({
@@ -44,17 +46,19 @@ export function ProfileGeneralFragment({
     }
   }, [current]);
   const handleRemove = () =>
-    showOverlay(<RemoveProfileDialog profile={current} />);
+    showOverlay({
+      title: t("profile.removing"),
+      message: t("confirmRemoving"),
+      action: () => removeProfile(current),
+      positiveText: t("remove"),
+      dangerous: true,
+      cancellable: true,
+    });
   const handleGoToInstall = () => {
     if (parsed.inheritsFrom) {
-      showOverlay(
-        <AlertDialog
-          title={t("tip")}
-          message={t("profile.canOnlyInstallOnVanilla")}
-        />
-      );
+      showOverlay({ message: t("profile.canOnlyInstallOnVanilla") });
     } else {
-      historyStore.push("profiles/install", { profile: current });
+      pushToHistory("profile.install", "$current");
     }
   };
 
@@ -92,7 +96,7 @@ export const ProfileSavesFragment = observer(
           {t("refresh")}
         </Button>
         <div className="flex-grow" />
-        <Button onClick={() => openPathInFinder(manager.savesPath)}>
+        <Button onClick={() => openInFinder(manager.savesPath)}>
           <MdFolderOpen />
           {t("profile.openDirectory")}
         </Button>
@@ -130,7 +134,7 @@ export const ProfileResourcePacksFragment = observer(
           {t("refresh")}
         </Button>
         <div className="flex-grow" />
-        <Button onClick={() => openPathInFinder(manager.resourcePacksPath)}>
+        <Button onClick={() => openInFinder(manager.resourcePacksPath)}>
           <MdFolderOpen />
           {t("profile.openDirectory")}
         </Button>
@@ -179,7 +183,7 @@ export const ProfileModsFragment = observer(
           <IoMdCloseCircle />
           {t("profile.disable")}
         </Button>
-        <Button onClick={() => openPathInFinder(manager.modsPath)}>
+        <Button onClick={() => openInFinder(manager.modsPath)}>
           <MdFolderOpen />
           {t("profile.openDirectory")}
         </Button>
