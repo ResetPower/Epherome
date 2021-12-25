@@ -20,6 +20,7 @@ export interface MinecraftProfile extends WithUnderline {
   java?: string;
   gameDirIsolation?: boolean;
   showEpherome?: boolean;
+  safeLog4j?: boolean;
 }
 
 export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;

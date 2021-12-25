@@ -86,6 +86,9 @@ const enUs: Language = {
     "profile.noInstallerAdaptToSomething": "No {1} for Minecraft {0} found",
     "profile.canOnlyInstallOnVanilla":
       '"Installs" is only available for vanilla Minecraft.',
+    "profile.safeLog4j": "Safe Log4J",
+    "profile.safeLog4j.description":
+      'Enable "formatMsgNoLookups" to prevent Log4J issues.',
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",

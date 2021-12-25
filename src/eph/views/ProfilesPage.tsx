@@ -64,6 +64,7 @@ export function ChangeProfileFragment(props: {
   const [showEpherome, setShowEpherome] = useState(
     current?.showEpherome ?? true
   );
+  const [safeLog4j, setSafeLog4j] = useState(current?.safeLog4j ?? true);
   const [gameDirIsolation, setGameDirIsolation] = useState(
     current?.gameDirIsolation ?? false
   );
@@ -79,6 +80,7 @@ export function ChangeProfileFragment(props: {
         resolution,
         java,
         gameDirIsolation,
+        safeLog4j,
       })
     ) {
       call(props.onDone);
@@ -94,6 +96,7 @@ export function ChangeProfileFragment(props: {
         resolution,
         java,
         gameDirIsolation,
+        safeLog4j,
       });
       call(props.onDone);
     }
@@ -187,6 +190,12 @@ export function ChangeProfileFragment(props: {
             </p>
             <p className="eph-helper-text text-right">
               {t("profile.showEpherome.description")}
+            </p>
+            <Checkbox checked={safeLog4j} onChange={setSafeLog4j}>
+              {t("profile.safeLog4j")}
+            </Checkbox>
+            <p className="eph-helper-text">
+              {t("profile.safeLog4j.description")}
             </p>
             <div className="flex items-center space-x-3">
               <TextField

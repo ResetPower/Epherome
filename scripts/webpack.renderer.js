@@ -22,11 +22,14 @@ module.exports = ({ dev }) => ({
       new MiniCssExtractPlugin(),
       new HtmlPlugin({
         templateContent: `<!DOCTYPE html>
-      <html>
-        <body>
-          <div id="root"></div>
-        </body>
-      </html>
+<html>
+  <head>
+    <title>Epherome</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
       `,
         inject: "body",
         title: "Epherome",

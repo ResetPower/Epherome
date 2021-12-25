@@ -82,6 +82,9 @@ const zhCn: Language = {
     "profile.installerAdaptToSomething": "适用于 Minecraft {0} 的 {1}",
     "profile.noInstallerAdaptToSomething": "没有适用于 Minecraft {0} 的 {1}",
     "profile.canOnlyInstallOnVanilla": "「安装」只在 Minecraft 原版可用。",
+    "profile.safeLog4j": "安全的 Log4J",
+    "profile.safeLog4j.description":
+      "启用 「formatMsgNoLookups」 以预防 Log4J 问题。",
     "settings.epheromePath": "Epherome 路径",
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",

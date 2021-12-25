@@ -216,7 +216,13 @@ export async function launchMinecraft(
   };
 
   // jvm arguments
-  profile.jvmArgs && buff.push(...parseJvmArgs(profile.jvmArgs));
+  profile.jvmArgs &&
+    buff.push(
+      ...parseJvmArgs(profile.jvmArgs),
+      ...(adapt(profile.safeLog4j, undefined, true)
+        ? ["-Dlog4j2.formatMsgNoLookups=true"]
+        : [])
+    );
   if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {

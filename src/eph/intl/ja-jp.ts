@@ -87,6 +87,9 @@ const jaJp: Language = {
       "Minecraft {0} の {1} が見つかりません",
     "profile.canOnlyInstallOnVanilla":
       "「インストール」は Minecraft のバニラバージョンのみをサポートしています。",
+    "profile.safeLog4j": "安全な Log4J",
+    "profile.safeLog4j.description":
+      "「formatMsgNoLookups」 を有効にして Log4J 問題を防ぐ。",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",

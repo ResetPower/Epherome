@@ -76,6 +76,8 @@ export interface LanguageDefinition {
   "profile.installerAdaptToSomething": string;
   "profile.noInstallerAdaptToSomething": string;
   "profile.canOnlyInstallOnVanilla": string;
+  "profile.safeLog4j": string;
+  "profile.safeLog4j.description": string;
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;
