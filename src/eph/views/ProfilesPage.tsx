@@ -108,6 +108,7 @@ export function ChangeProfileFragment(props: {
     resolution,
     java,
     gameDirIsolation,
+    safeLog4j,
     props.onDone,
     current,
   ]);
@@ -294,7 +295,7 @@ const ProfilesPage = observer(() => {
         <List className="space-y-1">
           {_.map(profiles, (i, id) => (
             <ListItem
-              className="p-3 mx-2 rounded-lg overflow-x-hidden"
+              className="px-3 py-2 mx-2 rounded-lg overflow-x-hidden"
               checked={!creating && current === i}
               onClick={() => {
                 creating && setCreating(false);

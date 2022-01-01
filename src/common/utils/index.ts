@@ -77,3 +77,7 @@ export function format(source: string, ...params: string[]): string {
 export function apply<T>(obj: T, act: (obj: T) => unknown) {
   obj && act(obj);
 }
+
+export function combineFun(...fun: (DefaultFn | undefined)[]): DefaultFn {
+  return () => fun.forEach((f) => f && f());
+}

@@ -3,6 +3,9 @@ import { mainLogger, parsed } from "./system";
 import "./ms-auth";
 import getTouchBar from "./touchbar";
 import path from "path";
+import "./loader";
+
+const prod = process.env.NODE_ENV !== "development";
 
 // Prevent Electron Security Warning (Insecure Content-Security-Policy)
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
@@ -33,11 +36,7 @@ function createWindow() {
     mainLogger.info("Wish your Mac has a touch bar...");
   }
 
-  win.loadURL(
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "dist/index.html"
-  );
+  win.loadURL(prod ? "dist/index.html" : "http://localhost:3000");
 
   ipcMain.on("quit", () => win.close());
   ipcMain.on("minimize", () => win.minimize());
@@ -54,7 +53,9 @@ app.on("activate", () => {
   }
 });
 
-// prevent redirection
-app.on("web-contents-created", (_, contents) =>
-  contents.on("will-navigate", (event) => event.preventDefault())
-);
+// prevent redirection in production
+if (prod) {
+  app.on("web-contents-created", (_, contents) =>
+    contents.on("will-navigate", (event) => event.preventDefault())
+  );
+}

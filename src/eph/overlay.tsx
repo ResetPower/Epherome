@@ -1,12 +1,12 @@
-import { rendererLogger } from "common/loggers";
-import { AnyMap, apply, DefaultFn } from "common/utils";
+import { AnyMap, apply, combineFun, DefaultFn } from "common/utils";
 import { Button, IconButton } from "eph/components/inputs";
 import { t } from "eph/intl";
-import { action, computed, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react-lite";
 import { ReactNode, useRef } from "react";
 import { MdArrowDownward } from "react-icons/md";
 import { Transition } from "react-transition-group";
+import { rendererLogger } from "common/loggers";
+import { action, computed, makeObservable, observable } from "mobx";
 
 export type GlobalOverlaySettings<P = AnyMap> = {
   type?: "dialog" | "sheet";
@@ -43,7 +43,7 @@ export class GlobalOverlayStore {
   }
 }
 
-const overlayStore = new GlobalOverlayStore();
+export const overlayStore = new GlobalOverlayStore();
 
 // global dialog manager component
 export const GlobalOverlay = observer(() => {
@@ -86,7 +86,7 @@ export const GlobalOverlay = observer(() => {
                     {o.bottomDivide && <div className="flex-grow" />}
                     <Button
                       className={o.dangerous ? "text-danger" : ""}
-                      onClick={o.action}
+                      onClick={combineFun(o.action, onClose)}
                     >
                       {o.positiveText ?? t("fine")}
                     </Button>
@@ -100,10 +100,6 @@ export const GlobalOverlay = observer(() => {
     </Transition>
   );
 });
-
-export function showOverlay<P = AnyMap>(overlay: GlobalOverlaySettings<P>) {
-  overlayStore.show(overlay as GlobalOverlaySettings<unknown>);
-}
 
 function Dialog(props: {
   children: ReactNode;
@@ -147,4 +143,8 @@ function BottomSheetTitle({
       </IconButton>
     </div>
   );
+}
+
+export function showOverlay<P = AnyMap>(overlay: GlobalOverlaySettings<P>) {
+  overlayStore.show(overlay as GlobalOverlaySettings<unknown>);
 }

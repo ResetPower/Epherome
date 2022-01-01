@@ -224,7 +224,7 @@ const AccountsPage = observer(() => {
         <List className="space-y-3">
           {_.map(accounts, (i, id) => (
             <ListItem
-              className="p-3 mx-2 rounded-lg"
+              className="px-3 py-2 mx-2 rounded-lg"
               checked={!creating && current === i}
               onClick={() => {
                 creating && setCreating(false);

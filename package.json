@@ -11,7 +11,7 @@
     "prettier": "prettier ./src ./test --write --no-error-on-unmatched-pattern",
     "electron": "webpack build --config ./scripts/webpack.main.js --env dev && electron . --remote-debugging-port=9222 --inspect=9223",
     "serve": "webpack serve --config ./scripts/webpack.renderer.js --env dev",
-    "start": "concurrently -n elect,serve npm:electron npm:serve",
+    "start": "concurrently --kill-others -n elect,serve npm:electron npm:serve",
     "prod": "webpack build --config ./scripts/webpack.main.js && webpack build --config ./scripts/webpack.renderer.js",
     "make": "electron-builder"
   },
@@ -103,6 +103,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
-    "react-transition-group": "^4.4.2"
+    "react-transition-group": "^4.4.2",
+    "semver": "^7.3.5"
   }
 }

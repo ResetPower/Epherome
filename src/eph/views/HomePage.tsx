@@ -33,9 +33,9 @@ import NewsView from "./NewsView";
 import { fetchNews, NewItem } from "../../common/struct/news";
 import { JavaManagementSheet } from "./SettingsPage";
 import { ObjectWrapper } from "common/utils/object";
-import { rendererLogger } from "common/loggers";
 import { pushToHistory } from "eph/renderer/history";
 import { DefaultFn } from "common/utils";
+import ExtensionView from "./ExtensionView";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -216,7 +216,13 @@ const HomePage = observer(() => {
               <MdViewCarousel />
             </IconButton>
             <IconButton
-              onClick={() => rendererLogger.warn("Extensions not available")}
+              onClick={() =>
+                showOverlay({
+                  type: "sheet",
+                  title: t("extensions"),
+                  content: ExtensionView,
+                })
+              }
             >
               <MdApps />
             </IconButton>

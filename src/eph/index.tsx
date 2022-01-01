@@ -5,6 +5,10 @@ import App from "./renderer/App";
 import EpheromeLogo from "assets/Epherome.png";
 import { themeStore } from "./renderer/theme";
 import { rendererLogger } from "common/loggers";
+import { ipcRenderer } from "electron";
+import path from "path";
+import { userDataPath } from "common/utils/info";
+import { extensionStore } from "common/stores/extension";
 
 console.log("Hello, World!");
 
@@ -35,6 +39,11 @@ const splash = `
 // show splash
 const root = document.getElementById("root");
 root && (root.innerHTML = splash);
+
+// load extensions
+ipcRenderer
+  .invoke("load-extensions", path.join(userDataPath, "ext"))
+  .then(([e, s]) => extensionStore.load(e, s));
 
 // render app
 render(<App />, root);

@@ -22,20 +22,15 @@ import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { useEffect, useMemo, useState } from "react";
 import { configStore } from "common/struct/config";
-import {
-  VscChromeMinimize,
-  VscClose,
-  VscDebugConsole,
-  VscExtensions,
-} from "react-icons/vsc";
+import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
 import Popover from "../components/Popover";
 import ProfileInstallPage from "../views/ProfileInstallPage";
 import PopMenu from "eph/components/PopMenu";
-import { rendererLogger } from "common/loggers";
 import { ipcRenderer } from "electron";
 import { pushToHistory } from "./history";
 import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
+import ExtensionView from "eph/views/ExtensionView";
 
 export const AppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -69,7 +64,12 @@ export const AppBar = observer(
       {
         icon: <MdApps />,
         text: t("extensions"),
-        onClick: () => rendererLogger.warn("Extensions is not available"),
+        onClick: () =>
+          showOverlay({
+            type: "sheet",
+            title: t("extensions"),
+            content: ExtensionView,
+          }),
       },
       {
         icon: <MdSettings />,
@@ -116,13 +116,6 @@ export const AppBar = observer(
                     icon: <VscDebugConsole />,
                     text: "Developer Tools",
                     onClick: () => ipcRenderer.send("open-devtools"),
-                  },
-                  {
-                    icon: <VscExtensions />,
-                    text: "Extensions",
-                    onClick: () => {
-                      // no actions now
-                    },
                   },
                   {
                     icon: <MdRefresh />,
