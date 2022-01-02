@@ -110,7 +110,7 @@ export function DownloadingFragment(props: {
                     <p className="flex-grow">
                       {t("downloadingSomething", val.filename)}
                     </p>
-                    <p className="text-shallow">({val.percentage}%)</p>
+                    <p className="text-shallow">{val.percentage}%</p>
                   </div>
                   <ProgressBar percentage={val.percentage} />
                 </Fragment>

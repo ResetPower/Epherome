@@ -10,6 +10,13 @@ export const _ = {
       i === item && (i.selected = true);
     }
   },
+  index<T extends WithUnderline>(arr: T[], item: T): number | undefined {
+    for (const i in arr) {
+      if (arr[i] === item) {
+        return +i;
+      }
+    }
+  },
   selectByIndex<T extends WithUnderline>(arr: T[], index: number): void {
     this.select(arr, arr[index]);
   },

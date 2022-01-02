@@ -6,7 +6,7 @@ import {
   TinyButton,
   Link,
 } from "../components/inputs";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { configStore, setConfig } from "common/struct/config";
 import { LaunchCanceller, launchMinecraft } from "core/launch";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
@@ -27,7 +27,6 @@ import { t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useRef } from "react";
 import ProgressBar from "../components/ProgressBar";
 import NewsView from "./NewsView";
 import { fetchNews, NewItem } from "../../common/struct/news";
@@ -36,6 +35,8 @@ import { ObjectWrapper } from "common/utils/object";
 import { pushToHistory } from "eph/renderer/history";
 import { DefaultFn } from "common/utils";
 import ExtensionView from "./ExtensionView";
+import { MinecraftAccount } from "common/struct/accounts";
+import { MinecraftProfile } from "common/struct/profiles";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -58,10 +59,11 @@ export class HomePageStore {
   @observable isLaunching = false;
   @observable launchingHelper = "";
   @observable hitokoto: Hitokoto = { content: "", from: "" };
-  @observable againRequestingPassword = false;
   // empty array: not loaded yet; null: loading; undefined: error occurred;
   @observable news: NewItem[] | null | undefined = [];
+  againRequestingPassword = false;
   canceller = new ObjectWrapper<LaunchCanceller>(() => false);
+  password = new ObjectWrapper<string>("");
   constructor() {
     makeObservable(this);
   }
@@ -86,53 +88,30 @@ export class HomePageStore {
     );
   };
   @action
-  cancel = (): void => {
-    this.canceller.current() && this.setLaunching(false);
-  };
-  @action
   reloadNews = (): void => {
     this.news = null;
     fetchNews().then((news) =>
       runInAction(() => (this.news = news ?? undefined))
     );
   };
-  @action
   again = (): void => {
     this.againRequestingPassword = true;
   };
-}
-
-export const homePageStore = new HomePageStore();
-
-const HomePage = observer(() => {
-  const password = useRef<string>("");
-  const account = useRef(_.selected(configStore.accounts));
-  const profiles = configStore.profiles;
-  const isHitokotoEnabled = configStore.hitokoto;
-  const [value, setValue] = useState<number | null>(
-    _.selectedIndex(configStore.profiles) ?? null
-  );
-  const profile = value !== null && configStore.profiles[+value];
-
-  const handleChange = (val: string) => {
-    const newValue = +val;
-    setValue(newValue);
-    setConfig(() => _.selectByIndex(profiles, newValue));
-  };
-  const handleLaunch = () => {
-    // value will be "" if not selected
-    const current = account.current;
+  launch = (
+    current: MinecraftAccount | undefined,
+    profile: MinecraftProfile
+  ): void => {
     if (current && profile) {
-      homePageStore.setLaunching(true);
+      this.setLaunching(true);
       launchMinecraft({
         account: current,
         profile,
-        setHelper: homePageStore.setLaunchHelper,
+        setHelper: this.setLaunchHelper,
         java:
           configStore.javas.find((val) => val.nanoid === profile.java) ??
           _.selected(configStore.javas),
         onDone: (process) => {
-          homePageStore.setLaunching(false);
+          this.setLaunching(false);
           if (process && process.crash) {
             // show crash report
             showOverlay({
@@ -143,23 +122,23 @@ const HomePage = observer(() => {
         },
         requestPassword: (again: boolean) =>
           new Promise((resolve) => {
-            if (again !== homePageStore.againRequestingPassword) {
-              homePageStore.again();
+            if (again !== this.againRequestingPassword) {
+              this.again();
             }
-            password.current = "";
+            this.password.current = "";
             showOverlay({
               title: t("account.inputPassword"),
               content: RequestPasswordDialog,
-              cancellable: () => homePageStore.setLaunching(false),
+              cancellable: () => this.setLaunching(false),
               params: {
-                again: homePageStore.againRequestingPassword,
-                password: password.current,
-                onChangePassword: (ev) => (password.current = ev),
+                again: this.againRequestingPassword,
+                password: this.password.current,
+                onChangePassword: (ev) => (this.password.current = ev),
               },
-              action: () => resolve(password.current),
+              action: () => resolve(this.password.current),
             });
           }),
-        cancellerWrapper: homePageStore.canceller,
+        cancellerWrapper: this.canceller,
         provider: configStore.downloadProvider,
       })
         .then(([stat, cb]) => {
@@ -176,7 +155,7 @@ const HomePage = observer(() => {
             title: t("errorOccurred"),
             message: err.stack ?? t("errorOccurred"),
           });
-          homePageStore.setLaunching(false);
+          this.setLaunching(false);
         });
     } else {
       showOverlay({
@@ -185,13 +164,35 @@ const HomePage = observer(() => {
       });
     }
   };
+  cancel = (): void => {
+    this.canceller.current() && this.setLaunching(false);
+  };
+}
 
-  if (isHitokotoEnabled && !homePageStore.hitokoto.content) {
-    homePageStore.reloadHitokoto();
-  }
-  if (homePageStore.news?.length === 0) {
-    homePageStore.reloadNews();
-  }
+export const homePageStore = new HomePageStore();
+
+const HomePage = observer(() => {
+  const account = useMemo(() => _.selected(configStore.accounts), []);
+  const profiles = configStore.profiles;
+  const [value, setValue] = useState<number | null>(
+    _.selectedIndex(configStore.profiles) ?? null
+  );
+  const profile = value !== null && configStore.profiles[+value];
+
+  const handleChange = (val: string) => {
+    const newValue = +val;
+    setValue(newValue);
+    setConfig(() => _.selectByIndex(profiles, newValue));
+  };
+
+  useEffect(() => {
+    if (configStore.hitokoto && !homePageStore.hitokoto.content) {
+      homePageStore.reloadHitokoto();
+    }
+    if (homePageStore.news?.length === 0) {
+      homePageStore.reloadNews();
+    }
+  }, []);
 
   return (
     <div className="px-5">
@@ -200,9 +201,9 @@ const HomePage = observer(() => {
           <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
             <p className="text-2xl">
-              {account.current?.name ?? t("account.notSelected")}
+              {account?.name ?? t("account.notSelected")}
             </p>
-            {isHitokotoEnabled && (
+            {configStore.hitokoto && (
               <div>
                 <p className="text-sm">{homePageStore.hitokoto.content}</p>
                 <p className="text-sm text-shallow">
@@ -236,7 +237,7 @@ const HomePage = observer(() => {
             <MdGamepad /> {t("profiles")}
           </Button>
           <div className="flex-grow" />
-          {isHitokotoEnabled && (
+          {configStore.hitokoto && (
             <IconButton onClick={homePageStore.reloadHitokoto}>
               <MdRefresh />
             </IconButton>
@@ -274,7 +275,11 @@ const HomePage = observer(() => {
                       {t("cancel")}
                     </Button>
                   ) : (
-                    <Button onClick={handleLaunch}>
+                    <Button
+                      onClick={() => {
+                        homePageStore.launch(account, profile);
+                      }}
+                    >
                       <MdPlayArrow />
                       {t("launch")}
                     </Button>
@@ -366,6 +371,8 @@ export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
     title: t("warning"),
     message: t("launching.considerUsingJava16"),
     positiveText: t("continueAnyway"),
+    dangerous: true,
+    cancellable: true,
     action: finallyRun,
   });
 }
@@ -375,6 +382,8 @@ export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
     title: t("warning"),
     message: t("launching.considerUsingJava8"),
     positiveText: t("continueAnyway"),
+    dangerous: true,
+    cancellable: true,
     action: finallyRun,
   });
 }

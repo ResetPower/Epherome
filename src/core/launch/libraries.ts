@@ -13,6 +13,7 @@ import {
 import { calculateHash, downloadFile } from "common/utils/files";
 import { DefaultFn } from "common/utils";
 import { MutableRefObject } from "react";
+import { MinecraftUrlUtil } from "core/url";
 
 function existsAsFileSync(filepath: string): boolean {
   return (
@@ -166,7 +167,7 @@ export async function analyzeAssets(
     miss &&
       missing.push({
         path: p,
-        url: hash,
+        url: MinecraftUrlUtil.fromDefault().assetObject(startHash, hash),
         hash,
       });
   }

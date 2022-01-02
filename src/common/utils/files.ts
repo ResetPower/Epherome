@@ -9,6 +9,8 @@ import got from "got";
 import stream from "stream";
 import { promisify } from "util";
 import pLimit from "p-limit";
+import { rendererLogger } from "common/loggers";
+import { shortid } from "./ids";
 
 const pipeline = promisify(stream.pipeline);
 
@@ -51,6 +53,7 @@ export function downloadFile(
   target: string,
   cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
 ): Promise<void> {
+  createDirByPath(target);
   const downloadStream = got.stream(url);
   const fileWriterStream = createWriteStream(target);
   cancellerWrapper &&
@@ -78,6 +81,9 @@ export async function parallelDownload(
     inProgress: false,
   }));
 
+  // task unique identifier
+  const id = shortid();
+
   const updateUI = () =>
     onDetailsChange(
       new ObjectWrapper<DownloadDetail[]>(details),
@@ -88,9 +94,10 @@ export async function parallelDownload(
     );
 
   const limit = pLimit(concurrency);
-  items.map((item) =>
+  const promises = items.map((item) =>
     limit(() => {
       const downloadStream = got.stream(item.url);
+      createDirByPath(item.target);
       const fileWriterStream = createWriteStream(item.target);
       cancellerWrapper &&
         (cancellerWrapper.current = () => {
@@ -99,20 +106,25 @@ export async function parallelDownload(
           fs.rmSync(item.target);
         });
       downloadStream.on("downloadProgress", ({ percent }) => {
+        const percentage = Math.floor(percent * 100);
         const detail = details.find((i) => i.unique === item.unique);
         if (detail) {
-          if (percent === 100) {
+          if (percentage === 100) {
             detail.inProgress = false;
-          } else if (percent >= 0) {
+          } else if (percentage >= 0 && percentage < 100) {
             detail.inProgress = true;
           }
-          detail.percentage = percent;
+          detail.percentage = percentage;
         }
         updateUI();
       });
       return pipeline(downloadStream, fileWriterStream);
     })
   );
+
+  rendererLogger.info(`Download queue#${id} created (${promises.length})`);
+  await Promise.all(promises);
+  rendererLogger.info(`Download queue#${id} finished`);
 }
 
 export function calculateHash(file: string, type: "sha1"): string {

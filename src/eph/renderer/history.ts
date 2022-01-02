@@ -4,5 +4,5 @@ export function pushToHistory(
   pathname: KeyOfLanguageDefinition,
   params?: string
 ) {
-  location.hash = pathname + (params ?? "");
+  location.hash = `${pathname}?${params ?? ""}`;
 }

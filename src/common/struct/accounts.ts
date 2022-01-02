@@ -1,16 +1,14 @@
 import {
   authCode2AuthToken,
   authenticate,
-  authToken2XBLToken,
+  authToken2MinecraftTokenDirectly,
   checkMinecraftOwnership,
   genUUID,
   getMicrosoftMinecraftProfile,
-  XBLToken2XSTSToken,
-  XSTSToken2MinecraftToken,
 } from "core/auth";
 import { setConfig } from "./config";
 import { WithUnderline, _ } from "common/utils/arrays";
-import { commonLogger } from "common/loggers";
+import { commonLogger, rendererLogger } from "common/loggers";
 import { ipcRenderer } from "electron";
 
 export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
@@ -21,12 +19,13 @@ export interface MinecraftAccount extends WithUnderline {
   uuid: string;
   token: string;
   authserver?: string;
+  refreshToken?: string;
   mode: MinecraftAuthMode;
 }
 
 export interface CreateAccountImplResult {
   success: boolean;
-  message?: "msAccNoMinecraft" | "";
+  message?: "msAccNoMinecraft" | string;
 }
 
 function appendAccount(account: MinecraftAccount) {
@@ -61,6 +60,14 @@ export async function createAccount(
     // Microsoft OAuth Flow
     let authCode = "";
 
+    const unsuccessfulWith = (reason: string) => {
+      rendererLogger.error(reason);
+      return {
+        success: false,
+        message: reason,
+      };
+    };
+
     const result = await ipcRenderer.invoke("ms-auth");
     const split = result.split("&");
     for (const i of split) {
@@ -71,43 +78,28 @@ export async function createAccount(
     }
     if (authCode === "") {
       // unusable auth code
-      throw new Error("Unable to get auth code at microsoft authenticating");
+      return unsuccessfulWith(
+        "Unable to get auth code at microsoft authenticating"
+      );
     }
 
     // Authorization Code -> Authorization Token
     const authTokenResult = await authCode2AuthToken(authCode);
     const authToken = authTokenResult.access_token;
-    if (authTokenResult.err || !authToken) {
+    const refreshToken = authTokenResult.refresh_token;
+    if (authTokenResult.error || !authToken) {
       // unable to get auth token
-      throw new Error("Unable to get auth token at microsoft authenticating");
+      return unsuccessfulWith(
+        "Unable to get auth token at microsoft authenticating"
+      );
     }
 
-    // Authorization Token -> XBL Token
-    const XBLTokenResult = await authToken2XBLToken(authToken);
-    const XBLToken = XBLTokenResult.Token;
-    if (XBLTokenResult.err || !XBLToken) {
-      // unable to get xbl token
-      throw new Error("Unable to get XBL token at microsoft authenticating");
-    }
-
-    // XBL Token -> XSTS Token
-    const XSTSTokenResult = await XBLToken2XSTSToken(XBLToken);
-    const XSTSToken = XSTSTokenResult.Token;
-    const XSTSTokenUhs = XSTSTokenResult.DisplayClaims?.xui[0].uhs;
-    if (XSTSTokenResult.err || !XSTSToken || !XSTSTokenUhs) {
-      // unable to get xsts token
-      throw new Error("Unable to XSTS auth token at microsoft authenticating");
-    }
-
-    // XSTS Token -> Minecraft Token
-    const minecraftTokenResult = await XSTSToken2MinecraftToken(
-      XSTSToken,
-      XSTSTokenUhs
+    const minecraftTokenResult = await authToken2MinecraftTokenDirectly(
+      authToken
     );
-    const minecraftToken = minecraftTokenResult.access_token;
-    if (minecraftTokenResult.err || !minecraftToken) {
-      // unable to get minecraft token
-      throw new Error("Unable to get Minecraft token");
+    const minecraftToken = minecraftTokenResult.token;
+    if (minecraftTokenResult.errorMessage || !minecraftToken) {
+      return unsuccessfulWith("Unable to get Minecraft token");
     }
 
     // Check Minecraft Ownership
@@ -118,7 +110,7 @@ export async function createAccount(
       const prof = await getMicrosoftMinecraftProfile(minecraftToken);
       const uuid = prof.id;
       const name = prof.name;
-      if (prof.err || !uuid || !name) {
+      if (prof.error || !uuid || !name) {
         throw new Error("Unable to get Minecraft profile");
       } else {
         appendAccount({
@@ -126,6 +118,7 @@ export async function createAccount(
           name,
           uuid,
           token: minecraftToken,
+          refreshToken,
           mode: "microsoft",
         });
         return successfulResult;
@@ -173,11 +166,17 @@ export function removeAccount(account: MinecraftAccount): void {
 
 export function updateAccountToken(
   account: MinecraftAccount,
-  newToken: string
+  newToken: string,
+  refreshToken?: string // microsoft account only
 ): void {
   setConfig((cfg) =>
     cfg.accounts.forEach((value) => {
-      value === account && (value.token = newToken);
+      if (value === account) {
+        value.token = newToken;
+        if (refreshToken) {
+          value.refreshToken = refreshToken;
+        }
+      }
     })
   );
   commonLogger.info(`Updated account access token`);

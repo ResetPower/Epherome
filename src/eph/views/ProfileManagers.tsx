@@ -16,6 +16,8 @@ import { useMemo } from "react";
 import { pushToHistory } from "eph/renderer/history";
 import { moveToTrash } from "common/utils/files";
 import path from "path";
+import { _ } from "common/utils/arrays";
+import { configStore } from "common/struct/config";
 
 export function showMoveToTrashAlert(filepath: string): Promise<void> {
   return new Promise((resolve) => {
@@ -58,7 +60,10 @@ export function ProfileGeneralFragment({
     if (parsed.inheritsFrom) {
       showOverlay({ message: t("profile.canOnlyInstallOnVanilla") });
     } else {
-      pushToHistory("profile.install", "$current");
+      pushToHistory(
+        "profile.install",
+        `${_.index(configStore.profiles, current)}`
+      );
     }
   };
 

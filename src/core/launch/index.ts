@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "common/struct/profiles";
-import { MinecraftAccount } from "common/struct/accounts";
+import { MinecraftAccount, updateAccountToken } from "common/struct/accounts";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
@@ -23,6 +23,14 @@ import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "common/struct/java";
 import { ObjectWrapper } from "common/utils/object";
 import { Process } from "common/stores/process";
+import {
+  authenticate,
+  refresh,
+  refreshMicrosoft,
+  validate,
+  validateMicrosoft,
+} from "core/auth";
+import { showOverlay } from "eph/overlay";
 
 export type LaunchCanceller = () => boolean;
 
@@ -69,6 +77,51 @@ export async function launchMinecraft(
 
   setHelper(defaultHelper);
 
+  // === authenticating ===
+  if (navigator.onLine) {
+    if (account.mode === "mojang" || account.mode === "authlib") {
+      const server = account.mode === "mojang" ? undefined : account.authserver;
+      coreLogger.info("Validating account token");
+      const valid = await validate(account.token, server);
+      if (!valid) {
+        coreLogger.info("Account token is not valid, refreshing");
+        const refreshed = await refresh(account.token, server);
+        if (refreshed.err) {
+          const act = async (again: boolean) => {
+            const password = await options.requestPassword(again);
+            const result = await authenticate(account.email, password, server);
+            if (result.err) {
+              coreLogger.warn("Password wrong, requesting for password again");
+              await act(true);
+            } else {
+              updateAccountToken(account, result.token);
+            }
+          };
+          coreLogger.warn("Failed to refresh token, requesting for password");
+          await act(false);
+        } else {
+          updateAccountToken(account, refreshed.token);
+        }
+      }
+    } else if (account.mode === "microsoft") {
+      coreLogger.info("Validating account token");
+      if (!validateMicrosoft(account.token)) {
+        const refreshed = await refreshMicrosoft(account);
+        if (!refreshed) {
+          coreLogger.warn(
+            "Unable to refresh microsoft account, please login again"
+          );
+          showOverlay({
+            title: "Warning",
+            message: "Unable to refresh microsoft account, please login again",
+          });
+        }
+      }
+    }
+  } else {
+    coreLogger.info("Network not available, account validating skipped");
+  }
+
   // === parsing json file ===
   const dir = path.resolve(profile.dir);
   const parsed = parseJson(profile);
@@ -97,42 +150,47 @@ export async function launchMinecraft(
   cp.push(clientJar);
 
   // download missing libraries
-  setHelper(`${t("launching.downloadingLib")} (0%)`);
-  await parallelDownload(
-    analyzedLibrary.missing.map((val) => ({
-      url: val.url,
-      target: val.path,
-    })),
-    (_, totalPercentage) => {
-      setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
-    },
-    (err) => {
-      throw err;
-    },
-    configStore.downloadConcurrency,
-    cancellerWrapper
-  );
-  restoreCanceller();
-
-  const analyzedAssets = await analyzeAssets(dir, assetIndex);
+  const missingLibList = analyzedLibrary.missing.map((val) => ({
+    url: val.url,
+    target: val.path,
+  }));
+  if (missingLibList.length > 0) {
+    setHelper(`${t("launching.downloadingLib")} (0%)`);
+    await parallelDownload(
+      missingLibList,
+      (_, totalPercentage) => {
+        setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
+      },
+      (err) => {
+        throw err;
+      },
+      configStore.downloadConcurrency,
+      cancellerWrapper
+    );
+    restoreCanceller();
+  }
 
   // download missing libraries
-  setHelper(`${t("launching.downloadingAsset")} (0%)`);
-  await parallelDownload(
-    analyzedAssets.missing.map((val) => ({
-      url: val.url,
-      target: val.path,
-    })),
-    (_, totalPercentage) => {
-      setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
-    },
-    (err) => {
-      throw err;
-    },
-    configStore.downloadConcurrency,
-    cancellerWrapper
-  );
-  restoreCanceller();
+  const analyzedAssets = await analyzeAssets(dir, assetIndex);
+  const missingAssetList = analyzedAssets.missing.map((val) => ({
+    url: val.url,
+    target: val.path,
+  }));
+  if (missingAssetList.length > 0) {
+    setHelper(`${t("launching.downloadingAsset")} (0%)`);
+    await parallelDownload(
+      missingAssetList,
+      (_, totalPercentage) => {
+        setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
+      },
+      (err) => {
+        throw err;
+      },
+      configStore.downloadConcurrency,
+      cancellerWrapper
+    );
+    restoreCanceller();
+  }
 
   setHelper(defaultHelper);
 

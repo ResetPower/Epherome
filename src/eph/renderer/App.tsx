@@ -168,7 +168,7 @@ export function RouterView({
           <ProfilesPage />
         ) : pathname === "profile.install" ? (
           params ? (
-            <ProfileInstallPage profile={{ name: "", dir: "", ver: "" }} />
+            <ProfileInstallPage profile={configStore.profiles[+params]} />
           ) : (
             <div />
           )
@@ -188,7 +188,9 @@ export function RouterView({
 
 export default function App(): JSX.Element {
   const [route, setRoute] = useState("home");
-  const [pathname, params] = route.split("?");
+  const i = route.indexOf("?");
+  const [pathname, params] =
+    i === -1 ? [route, ""] : [route.slice(0, i), route.slice(i + 1)];
 
   // response route change
   useEffect(
