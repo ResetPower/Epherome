@@ -1,5 +1,5 @@
 import log4js, { Logger } from "log4js";
-import { EphExtension } from "./extension";
+import { EphExtensionMeta } from "./extension";
 
 export type EphSubscriptionAct = (event: unknown) => unknown;
 
@@ -9,13 +9,13 @@ export interface EphSubscription {
 }
 
 export class Bridge {
-  ext: EphExtension;
+  meta: EphExtensionMeta;
   subscriptions: EphSubscription[] = [];
-  constructor(ext: EphExtension) {
-    this.ext = ext;
+  constructor(meta: EphExtensionMeta) {
+    this.meta = meta;
   }
   getLogger(): Logger {
-    return log4js.getLogger(`${this.ext.meta.name}`);
+    return log4js.getLogger(`${this.meta.name}`);
   }
   subscribe(id: string, act: EphSubscriptionAct) {
     this.subscriptions.push({ id, act });

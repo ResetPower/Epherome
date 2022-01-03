@@ -60,7 +60,7 @@ const jaJp: Language = {
     "account.skin.notSupportedExcludeMojangMs":
       "Mojang アカウントまたは Microsoft アカウントのスキンの表示のみをサポート。",
     "profile.removing": "プロフィルを削除",
-    "profile.notSelected": "プロフィルが選択だれていません",
+    "profile.notSelected": "プロフィルが選択されていません",
     "profile.openDirectory": "ブラウズ",
     "profile.usuallyDotMinecraftEtc":
       "通常、Windows では「.minecraft」ですが、macOS 及び Linux では「minecraft」です。",

@@ -345,8 +345,8 @@ export const SettingsAboutFragment = (): JSX.Element => (
       <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
       <div>
         <p className="space-x-1 text-lg">
-          <span className="font-extrabold">Epherome</span>
-          <span>{codeName ?? ""}</span>
+          <span className="font-semibold">Epherome</span>
+          <span className="font-light">{codeName ?? ""}</span>
         </p>
         <p className="space-x-1 text-sm">
           <span>{t("version")}</span>
@@ -387,7 +387,7 @@ export const SettingsAboutFragment = (): JSX.Element => (
           https://github.com/ResetPower/Epherome
         </Link>
       </p>
-      <p>Copyright © 2021 ResetPower.</p>
+      <p>Copyright © 2021-2022 ResetPower.</p>
       <p>{t("settings.openSourceSoftware")} | GNU General Public License 3.0</p>
     </Card>
   </div>

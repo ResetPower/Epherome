@@ -6,7 +6,7 @@ Powerful Minecraft launcher
 
 [简体中文](docs/README_zh_cn.md) | English
 
-[Official Site](https://epherome.com) · [RELEASE NOTE](docs/RELEASE_NOTE.md) · [Documents](https://epherome.com/docs)
+[Official Site](https://epherome.com) · [Releases](https://github.com/ResetPower/Epherome/releases) · [Documents](https://epherome.com/docs)
 
 ## Brief
 

@@ -1,6 +1,6 @@
 import { Bridge } from "common/bridge";
 import type { EphExtension, EphExtensionMeta } from "common/extension";
-import { EphSubscriptionMap } from "common/stores/extension";
+import type { EphSubscriptionMap } from "common/stores/extension";
 import { ipcMain } from "electron";
 import fs from "fs";
 import { nanoid } from "nanoid";
@@ -9,7 +9,7 @@ import { createContext, runInContext } from "vm";
 import { mainLogger } from "./system";
 
 function loadExtension(ext: EphExtension): Bridge | null {
-  const bridge = new Bridge(ext);
+  const bridge = new Bridge(ext.meta);
   const vm = createContext({
     bridge,
   });

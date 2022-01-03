@@ -25,6 +25,7 @@ module.exports = ({ dev }) => ({
 <html>
   <head>
     <title>Epherome</title>
+    <meta charset="utf8"/>
   </head>
   <body>
     <div id="root"></div>
@@ -33,9 +34,6 @@ module.exports = ({ dev }) => ({
       `,
         inject: "body",
         title: "Epherome",
-        meta: {
-          charset: "utf8",
-        },
         minify: !dev,
       }),
       dev && new ReactRefreshPlugin(),

@@ -15,7 +15,7 @@ function resolveTsconfigPathsToAlias() {
   return aliases;
 }
 
-module.exports = ({ dev }, morePlugins = [], moreModuleRules = []) => ({
+module.exports = ({ dev }, morePlugins = []) => ({
   mode: dev ? "development" : "production",
   devtool: dev ? "inline-source-map" : undefined,
   module: {
@@ -41,7 +41,6 @@ module.exports = ({ dev }, morePlugins = [], moreModuleRules = []) => ({
         test: /\.node$/,
         loader: "node-loader",
       },
-      ...moreModuleRules,
     ],
   },
   resolve: {

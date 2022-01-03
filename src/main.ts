@@ -36,7 +36,11 @@ function createWindow() {
     mainLogger.info("Wish your Mac has a touch bar...");
   }
 
-  win.loadURL(prod ? "dist/index.html" : "http://localhost:3000");
+  if (prod) {
+    win.loadFile("dist/index.html");
+  } else {
+    win.loadURL("http://localhost:3000");
+  }
 
   ipcMain.on("quit", () => win.close());
   ipcMain.on("minimize", () => win.minimize());
@@ -52,10 +56,3 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
-// prevent redirection in production
-if (prod) {
-  app.on("web-contents-created", (_, contents) =>
-    contents.on("will-navigate", (event) => event.preventDefault())
-  );
-}

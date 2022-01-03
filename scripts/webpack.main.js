@@ -14,7 +14,6 @@ module.exports = ({ dev }) => {
           compiler.hooks.afterEmit.tap("AfterEmitPlugin", () => {
             console.log(">>> Building native, please wait...");
             execSync(`npm run build-native ${dev ? "" : "-- --release"}`);
-            execSync(`npm run rebuild`);
             console.log("\n");
             fs.writeFileSync(
               "dist/preload.js",

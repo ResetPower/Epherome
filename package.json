@@ -6,7 +6,6 @@
   "main": "dist/main.js",
   "scripts": {
     "build-native": "cd native && cargo-cp-artifact -nc ../dist/index.node -- cargo build --message-format=json-render-diagnostics",
-    "rebuild": "electron-rebuild native/index.node",
     "lint": "eslint ./src ./test --ext .js,.ts,.tsx --no-error-on-unmatched-pattern",
     "prettier": "prettier ./src ./test --write --no-error-on-unmatched-pattern",
     "electron": "webpack build --config ./scripts/webpack.main.js --env dev && electron . --remote-debugging-port=9222 --inspect=9223",
@@ -70,7 +69,6 @@
     "cssnano": "^5.0.14",
     "electron": "^16.0.5",
     "electron-builder": "^22.14.5",
-    "electron-rebuild": "^3.2.5",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.28.0",
@@ -104,7 +102,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
-    "react-transition-group": "^4.4.2",
-    "semver": "^7.3.5"
+    "react-transition-group": "^4.4.2"
   }
 }
