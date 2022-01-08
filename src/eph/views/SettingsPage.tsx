@@ -5,6 +5,7 @@ import {
   Button,
   TextField,
   IconButton,
+  TinyTextField,
 } from "../components/inputs";
 import {
   configStore,
@@ -120,14 +121,11 @@ export const JavaManagementSheet = observer(() => {
               <div className="flex">
                 {editing === value.nanoid ? (
                   <div className="flex flex-grow">
-                    <input
+                    <TinyTextField
                       value={nickname}
-                      onKeyPress={(ev) =>
-                        ev.key === "Enter" && submitNickname()
-                      }
-                      onChange={(ev) => setNickname(ev.target.value)}
+                      onEnter={submitNickname}
+                      onChange={setNickname}
                       placeholder={t("java.nickName")}
-                      className="appearance-none bg-inherit focus:outline-none border-b border-divider"
                     />
                   </div>
                 ) : (

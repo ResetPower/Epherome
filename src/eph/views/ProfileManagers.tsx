@@ -1,9 +1,15 @@
 import { observer } from "mobx-react-lite";
 import { BiImport } from "react-icons/bi";
 import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
-import { MdClose, MdDelete, MdFolderOpen, MdRefresh } from "react-icons/md";
+import {
+  MdClose,
+  MdDelete,
+  MdFolderOpen,
+  MdRefresh,
+  MdSave,
+} from "react-icons/md";
 import { Info } from "../components/fragments";
-import { Button, Link } from "../components/inputs";
+import { Button, Link, TextField, TinyTextField } from "../components/inputs";
 import { ListItem, ListItemText } from "../components/lists";
 import { MinecraftProfileManagerStore } from "common/struct/manager";
 import { t } from "../intl";
@@ -12,12 +18,35 @@ import { showOverlay } from "../overlay";
 import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
 import { parseJson } from "core/launch/parser";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { pushToHistory } from "eph/renderer/history";
 import { moveToTrash } from "common/utils/files";
 import path from "path";
 import { _ } from "common/utils/arrays";
 import { configStore } from "common/struct/config";
+
+export function Highlight({
+  keyword,
+  children,
+  className,
+}: {
+  keyword: string;
+  children: string;
+  className?: string;
+}) {
+  const i = children.indexOf(keyword);
+  const [before, after] = [
+    children.slice(0, i),
+    children.slice(i + keyword.length),
+  ];
+  return (
+    <div className={className}>
+      <span>{before}</span>
+      <span className="text-danger">{keyword}</span>
+      <span>{after}</span>
+    </div>
+  );
+}
 
 export function showMoveToTrashAlert(filepath: string): Promise<void> {
   return new Promise((resolve) => {
@@ -215,4 +244,76 @@ export const ProfileModsFragment = observer(
       )}
     </div>
   )
+);
+
+export const ProfileSettingsFragment = observer(
+  ({ manager }: { manager: MinecraftProfileManagerStore }) => {
+    const [query, setQuery] = useState("");
+    const [editions, setEditions] = useState<
+      Record<string, string | undefined>
+    >({});
+
+    const edit = (key: string, value: string) => {
+      if (manager.options?.find((v) => v.key === key)?.value === value) {
+        setEditions({ ...editions, [key]: undefined });
+      } else {
+        setEditions({ ...editions, [key]: value });
+      }
+    };
+
+    useEffect(() => {
+      if (manager.options === null) {
+        manager.readOptions();
+      }
+    });
+
+    return (
+      <div className="text-sm">
+        <p>
+          Minecraft Options Path:{" "}
+          <Link href={manager.optionsTxtPath} type="file" />
+        </p>
+        <div className="flex">
+          <Button
+            variant="contained"
+            onClick={() => {
+              manager.saveOptions(editions);
+              setEditions({});
+            }}
+          >
+            <MdSave /> {t("save")}
+          </Button>
+          <div className="flex-grow" />
+          <TextField
+            value={query}
+            onChange={setQuery}
+            placeholder="Search..."
+          />
+        </div>
+        <div className="space-y-3 mt-3">
+          {manager.options
+            ? manager.options.map(
+                (value, index) =>
+                  value.key.includes(query) && (
+                    <div key={index} className="flex">
+                      <Highlight
+                        keyword={query}
+                        className={`flex-grow ${
+                          editions[value.key] && "italic"
+                        }`}
+                      >
+                        {value.key}
+                      </Highlight>
+                      <TinyTextField
+                        value={editions[value.key] ?? value.value}
+                        onChange={(v) => edit(value.key, v)}
+                      />
+                    </div>
+                  )
+              )
+            : "..."}
+        </div>
+      </div>
+    );
+  }
 );

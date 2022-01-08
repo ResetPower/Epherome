@@ -5,6 +5,7 @@ import { shortid } from "../utils/ids";
 import { action, makeObservable, observable } from "mobx";
 import { ipcRenderer } from "electron";
 import { basenameWithoutExt, readdir } from "common/utils/files";
+import { apply } from "common/utils";
 
 export interface MinecraftSave {
   id: number;
@@ -28,12 +29,18 @@ export interface MinecraftMod {
   enabled: boolean;
 }
 
+export type MinecraftGameOptions = {
+  key: string;
+  value: string;
+}[];
+
 export class MinecraftProfileManagerStore {
   profile: MinecraftProfile;
   gameDir: string;
   savesPath: string;
   resourcePacksPath: string;
   shaderPacksPath: string;
+  optionsTxtPath: string;
   modsPath: string;
   @observable
   saves: MinecraftSave[] = [];
@@ -41,6 +48,8 @@ export class MinecraftProfileManagerStore {
   resourcePacks: MinecraftResourcePack[] = [];
   @observable
   mods: MinecraftMod[] = [];
+  @observable
+  options: MinecraftGameOptions | null = null;
   @observable
   selections = {
     save: -1,
@@ -56,9 +65,43 @@ export class MinecraftProfileManagerStore {
     this.resourcePacksPath = path.join(this.gameDir, "resourcepacks");
     this.shaderPacksPath = path.join(this.gameDir, "shaderpacks");
     this.modsPath = path.join(this.gameDir, "mods");
+    this.optionsTxtPath = path.join(this.gameDir, "options.txt");
     this.refresh();
     makeObservable(this);
   }
+  @action
+  readOptions = (): void => {
+    const read = fs
+      .readFileSync(this.optionsTxtPath)
+      .toString()
+      .split("\n")
+      .map((v) => v.split(":"));
+    const temp: MinecraftGameOptions = [];
+    for (const [key, value] of read) {
+      key &&
+        value &&
+        temp.push({
+          key,
+          value,
+        });
+    }
+    this.options = temp;
+  };
+  @action
+  saveOptions = (editions: Record<string, string | undefined>): void => {
+    for (const [key, value] of Object.entries(editions)) {
+      value &&
+        apply(
+          this.options?.find((v) => v.key === key),
+          (v) => (v.value = value)
+        );
+    }
+    this.options &&
+      fs.writeFileSync(
+        this.optionsTxtPath,
+        this.options.map((value) => `${value.key}:${value.value}`).join("\n")
+      );
+  };
   @action
   importMod = (): void => {
     ipcRenderer.invoke("import-mod").then((value) => {

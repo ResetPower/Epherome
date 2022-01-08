@@ -167,6 +167,24 @@ export function TextField(props: {
   );
 }
 
+export function TinyTextField(props: {
+  value?: string;
+  onChange?: (ev: string) => unknown;
+  placeholder?: string;
+  className?: string;
+  onEnter?: DefaultFn;
+}): JSX.Element {
+  return (
+    <input
+      value={props.value}
+      onKeyPress={(ev) => ev.key === "Enter" && call(props.onEnter)}
+      onChange={(ev) => call(props.onChange, ev.target.value)}
+      placeholder={props.placeholder}
+      className="appearance-none bg-inherit focus:outline-none border-b border-divider focus:border-primary"
+    />
+  );
+}
+
 export function Checkbox(props: {
   className?: string;
   children: string;

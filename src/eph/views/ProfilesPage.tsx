@@ -42,6 +42,7 @@ import {
   ProfileModsFragment,
   ProfileResourcePacksFragment,
   ProfileSavesFragment,
+  ProfileSettingsFragment,
 } from "./ProfileManagers";
 import { Center } from "../components/fragments";
 import { ipcRenderer } from "electron";
@@ -329,6 +330,7 @@ const ProfilesPage = observer(() => {
               <TabBarItem value={2}>{t("profile.maps")}</TabBarItem>
               <TabBarItem value={3}>{t("profile.resourcePacks")}</TabBarItem>
               <TabBarItem value={4}>Mods</TabBarItem>
+              <TabBarItem value={5}>{t("settings")}</TabBarItem>
             </TabBar>
             <TabBody>
               <ProfileGeneralFragment current={current} />
@@ -336,6 +338,7 @@ const ProfilesPage = observer(() => {
               <ProfileSavesFragment manager={manager} />
               <ProfileResourcePacksFragment manager={manager} />
               <ProfileModsFragment manager={manager} />
+              <ProfileSettingsFragment manager={manager} />
             </TabBody>
           </TabController>
         ) : (
