@@ -162,7 +162,7 @@ const jaJp: Language = {
     internetNotAvailable:
       "Web はあなたにとって異なる、インターネットに接続できません。",
     errorOccurred: "エラーが発生しました",
-    notSupportedYet: "すみません、これはさポードされていません。",
+    notSupportedYet: "すみません、これはサポードされていません。",
     confirmRemoving: "削除してもよろしいですか？操作は元に戻せません。",
     continueAnyway: "とにかく続け",
     moveToTrash: "ゴミ箱に移動",
