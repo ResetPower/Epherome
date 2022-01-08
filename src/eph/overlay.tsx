@@ -19,6 +19,11 @@ export type GlobalOverlaySettings<P = AnyMap> = {
   content?: (props: P) => JSX.Element;
   params?: P;
   bottomDivide?: boolean;
+  fineCancel?: boolean;
+  neutral?: {
+    text: string;
+    action: DefaultFn;
+  };
 };
 
 export class GlobalOverlayStore {
@@ -80,7 +85,12 @@ export const GlobalOverlay = observer(() => {
                     {!o.bottomDivide && <div className="flex-grow" />}
                     {o.cancellable && (
                       <Button className="text-shallow" onClick={onClose}>
-                        {t("cancel")}
+                        {o.fineCancel ? t("fine") : t("cancel")}
+                      </Button>
+                    )}
+                    {o.neutral && (
+                      <Button onClick={combineFun(o.neutral.action, onClose)}>
+                        {o.neutral.text}
                       </Button>
                     )}
                     {o.bottomDivide && <div className="flex-grow" />}

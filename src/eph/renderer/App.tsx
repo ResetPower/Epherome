@@ -31,6 +31,7 @@ import { pushToHistory } from "./history";
 import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
 import ExtensionView from "eph/views/ExtensionView";
+import JavaInstallPage from "eph/views/JavaInstallPage";
 
 export const AppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -136,6 +137,7 @@ export const AppBar = observer(
                   showOverlay({
                     title: t("warning"),
                     message: t("confirmQuitting"),
+                    cancellable: true,
                     action: () => ipcRenderer.send("quit"),
                   })
                 }
@@ -176,6 +178,8 @@ export function RouterView({
           <SettingsPage />
         ) : pathname === "download" ? (
           <DownloadsPage />
+        ) : pathname === "java.installJava" ? (
+          <JavaInstallPage />
         ) : pathname === "processes" ? (
           <ProcessesPage />
         ) : (

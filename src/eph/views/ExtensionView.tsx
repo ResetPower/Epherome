@@ -74,7 +74,7 @@ export default function ExtensionView(): JSX.Element {
 
   return (
     <div>
-      <div className="flex px-3 border-b border-opacity-5">
+      <div className="flex px-3">
         <Button onClick={() => openInFinder(ephExtPath)}>
           <MdOpenInNew />
           Open

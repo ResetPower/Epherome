@@ -108,6 +108,9 @@ const zhCn: Language = {
     "java.detect": "自动检测",
     "java.bitNumber": "{0} 位",
     "java.default": "默认 Java",
+    "java.installJava": "安装 Java",
+    "java.pleaseGoTo": "要安装这种 JDK，请点击下面的链接。",
+    "java.nickName": "JVM 名称",
     download: "下载",
     downloading: "下载中",
     downloadingSomething: "正在下载 {0}",
@@ -136,6 +139,8 @@ const zhCn: Language = {
     "epheromeUpdate.availableMessage": "请前往 Epherome 官方网站下载最新版本。",
     "epheromeUpdate.needNot": "Epherome 已是最新版本。",
     "launching.noAccOrProSelected": "账户或档案未选择。",
+    "launching.considerUsingJava17":
+      "从 Minecraft 1.18 开始，启动 Minecraft 需要 Java 17",
     "launching.considerUsingJava16":
       "从 Minecraft 1.17 开始，启动 Minecraft 需要 Java 16",
     "launching.considerUsingJava8":

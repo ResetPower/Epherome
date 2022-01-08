@@ -10,6 +10,7 @@ import { ensureDir, downloadFile, parallelDownload } from "common/utils/files";
 import { adapt, DefaultFn } from "common/utils";
 import {
   isJava16Required,
+  isJava17Required,
   isJava8Required,
   parseMinecraftVersionDetail,
 } from "./versions";
@@ -50,7 +51,10 @@ export interface MinecraftLaunchOptions {
 export async function launchMinecraft(
   options: MinecraftLaunchOptions
 ): Promise<
-  ["j8Required" | "j16Required" | "jRequired" | null, DefaultFn | null]
+  [
+    "j8Required" | "j16Required" | "j17Required" | "jRequired" | null,
+    DefaultFn | null
+  ]
 > {
   const urlUtil = new MinecraftUrlUtil(options.provider);
   const cancellerWrapper = options.cancellerWrapper;
@@ -312,7 +316,13 @@ export async function launchMinecraft(
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
   const javaVersion = java.name;
   const javaMajor = +javaVersion.split(".")[0];
-  if (isJava16Required(versionDetail) && javaVersion && javaMajor < 16) {
+  if (isJava17Required(versionDetail) && javaVersion && +javaMajor < 17) {
+    coreLogger.warn(
+      `Minecraft version is higher than 1.18 but is using a java version under 17`
+    );
+    options.onDone(null);
+    return ["j17Required", finallyRun];
+  } else if (isJava16Required(versionDetail) && javaVersion && javaMajor < 16) {
     coreLogger.warn(
       `Minecraft version is higher than 1.17 but is using a java version under 16`
     );

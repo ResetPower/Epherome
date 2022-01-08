@@ -196,7 +196,7 @@ export function Link(props: {
   className?: string;
   type?: "url" | "file" | "folder" | "clickable";
   onClick?: DefaultFn;
-  children: ReactNode;
+  children?: ReactNode;
   paddingX?: boolean;
 }): JSX.Element {
   const handleClick = () => {
@@ -217,7 +217,7 @@ export function Link(props: {
       }`}
       onClick={handleClick}
     >
-      {props.children}
+      {props.children ?? props.href}
     </span>
   );
 }

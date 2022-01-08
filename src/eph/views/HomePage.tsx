@@ -148,6 +148,8 @@ export class HomePageStore {
             showJava8RequiredDialog(cb);
           } else if (stat === "j16Required" && cb) {
             showJava16RequiredDialog(cb);
+          } else if (stat === "j17Required" && cb) {
+            showJava17RequiredDialog(cb);
           }
         })
         .catch((err: Error) => {
@@ -377,6 +379,23 @@ export function showJava16RequiredDialog(finallyRun: DefaultFn): void {
   });
 }
 
+export function showJava17RequiredDialog(finallyRun: DefaultFn): void {
+  showOverlay({
+    title: t("warning"),
+    message: t("launching.considerUsingJava17"),
+    positiveText: t("continueAnyway"),
+    dangerous: true,
+    cancellable: true,
+    fineCancel: true,
+    action: finallyRun,
+    bottomDivide: true,
+    neutral: {
+      text: t("java.installJava"),
+      action: () => pushToHistory("java.installJava"),
+    },
+  });
+}
+
 export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
   showOverlay({
     title: t("warning"),
@@ -384,7 +403,13 @@ export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
     positiveText: t("continueAnyway"),
     dangerous: true,
     cancellable: true,
+    fineCancel: true,
     action: finallyRun,
+    bottomDivide: true,
+    neutral: {
+      text: t("java.installJava"),
+      action: () => pushToHistory("java.installJava"),
+    },
   });
 }
 
@@ -392,6 +417,11 @@ export function showNoJavaDialog(): void {
   showOverlay({
     title: t("launching.javaNotFound"),
     message: t("launching.javaNotFoundMessage"),
+    cancellable: true,
+    fineCancel: true,
+    positiveText: t("java.installJava"),
+    action: () => pushToHistory("java.installJava"),
+    bottomDivide: true,
   });
 }
 

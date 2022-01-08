@@ -100,6 +100,9 @@ export interface LanguageDefinition {
   "java.detect": string;
   "java.bitNumber": string;
   "java.default": string;
+  "java.installJava": string;
+  "java.pleaseGoTo": string;
+  "java.nickName": string;
   download: string;
   downloading: string;
   downloadingSomething: string;
@@ -127,6 +130,7 @@ export interface LanguageDefinition {
   "epheromeUpdate.availableMessage": string;
   "epheromeUpdate.needNot": string;
   "launching.noAccOrProSelected": string;
+  "launching.considerUsingJava17": string;
   "launching.considerUsingJava16": string;
   "launching.considerUsingJava8": string;
   "launching.javaNotFound": string;

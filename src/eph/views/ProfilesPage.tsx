@@ -167,6 +167,7 @@ export function ChangeProfileFragment(props: {
           onChange={setVer}
           required
         />
+        <div className="h-2" />
         {more && (
           <>
             <div className="flex">
@@ -209,7 +210,7 @@ export function ChangeProfileFragment(props: {
                 <option value="default">{t("useDefault")}</option>
                 {configStore.javas.map((val) => (
                   <option value={val.nanoid} key={val.nanoid}>
-                    {val.name}
+                    {val.nickname ?? val.name}
                   </option>
                 ))}
               </Select>

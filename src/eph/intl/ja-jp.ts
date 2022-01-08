@@ -116,6 +116,10 @@ const jaJp: Language = {
     "java.detect": "検出する",
     "java.bitNumber": "{0} ビット",
     "java.default": "デフォルト Java",
+    "java.installJava": "Java をインストール",
+    "java.pleaseGoTo":
+      "この JDK をダウンロードする場合は、次のにアクセスして下さい。",
+    "java.nickName": "JVM ニックネーム",
     download: "ダウンロード",
     downloading: "ダウンロード中",
     downloadingSomething: "{0} をダウンロード中",
@@ -146,6 +150,8 @@ const jaJp: Language = {
     "epheromeUpdate.needNot": "Epherome は最新バージョンです。",
     "launching.noAccOrProSelected":
       "アカウントまたはプロフィルを選択されていません",
+    "launching.considerUsingJava17":
+      "1.18 以降、Minecraft を起動するには Java 17 が必要です。",
     "launching.considerUsingJava16":
       "1.17 以降、Minecraft を起動するには Java 16 が必要です。",
     "launching.considerUsingJava8":
@@ -162,7 +168,7 @@ const jaJp: Language = {
     internetNotAvailable:
       "Web はあなたにとって異なる、インターネットに接続できません。",
     errorOccurred: "エラーが発生しました",
-    notSupportedYet: "すみません、これはサポードされていません。",
+    notSupportedYet: "すみません、これはサポートされていません。",
     confirmRemoving: "削除してもよろしいですか？操作は元に戻せません。",
     continueAnyway: "とにかく続け",
     moveToTrash: "ゴミ箱に移動",

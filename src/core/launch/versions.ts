@@ -18,6 +18,12 @@ export interface MinecraftVersionDetail {
   id: string;
 }
 
+// From Minecraft 1.18, Java 17 is required to run minecraft
+// Make this judgment to prompt the user to use Java 17 if not
+export function isJava17Required(detail: MinecraftVersionDetail): boolean {
+  return detail.match && detail.major >= 1 && detail.minor >= 18;
+}
+
 // From Minecraft 1.17, Java 16 is required to run minecraft
 // Make this judgment to prompt the user to use Java 16 if not
 export function isJava16Required(detail: MinecraftVersionDetail): boolean {

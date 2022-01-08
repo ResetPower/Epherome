@@ -115,6 +115,9 @@ const enUs: Language = {
     "java.detect": "Detect",
     "java.bitNumber": "{0}-Bit",
     "java.default": "Default Java",
+    "java.installJava": "Install Java",
+    "java.pleaseGoTo": "If you want to download this kind of JDK, go to",
+    "java.nickName": "Nickname of the JVM",
     download: "Download",
     downloading: "Downloading",
     downloadingSomething: "Downloading {0}",
@@ -144,6 +147,8 @@ const enUs: Language = {
       "Please go to Epherome official website to download the latest version.",
     "epheromeUpdate.needNot": "Epherome is the latest version.",
     "launching.noAccOrProSelected": "No account or profile selected.",
+    "launching.considerUsingJava17":
+      "Java 17 is required to launch Minecraft since 1.18.",
     "launching.considerUsingJava16":
       "Java 16 is required to launch Minecraft since 1.17.",
     "launching.considerUsingJava8":

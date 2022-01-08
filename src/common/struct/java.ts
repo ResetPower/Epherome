@@ -24,8 +24,9 @@ for (const i of configStore.javas) {
 export interface Java extends WithUnderline {
   nanoid: string;
   dir: string;
-  name: string;
+  name: string; // version name
   is64Bit: boolean;
+  nickname?: string; // created by user manually
 }
 
 export type JavaWithoutNanoid = Omit<Java, "nanoid">;
