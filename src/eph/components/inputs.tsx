@@ -174,14 +174,11 @@ export function Checkbox(props: {
   onChange?: (checked: boolean) => void;
 }): JSX.Element {
   return (
-    <div className={`flex items-center ${props.className ?? ""}`}>
-      <div className="eph-checkbox">
-        <input
-          type="checkbox"
-          className="opacity-0 absolute"
-          checked={props.checked}
-          onChange={(ev) => call(props.onChange, ev.currentTarget.checked)}
-        />
+    <div className="flex items-center">
+      <div
+        className="eph-checkbox"
+        onClick={() => call(props.onChange, !props.checked)}
+      >
         <svg
           className={`eph-checkbox-svg ${props.checked ? "" : "hidden"}`}
           viewBox="0 0 20 20"
@@ -189,7 +186,7 @@ export function Checkbox(props: {
           <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
         </svg>
       </div>
-      <p className="whitespace-nowrap">{props.children}</p>
+      {props.children}
     </div>
   );
 }
