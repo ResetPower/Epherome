@@ -1,14 +1,16 @@
 import "@fontsource/inter";
+import "@resetpower/rcs/styles/index.css";
 import "../styles/index.css";
 import { render } from "react-dom";
 import App from "./renderer/App";
 import EpheromeLogo from "assets/Epherome.png";
-import { themeStore } from "./renderer/theme";
 import { rendererLogger } from "common/loggers";
 import { ipcRenderer } from "electron";
 import path from "path";
 import { userDataPath } from "common/utils/info";
 import { extensionStore } from "common/stores/extension";
+import { rcsDark, rcsLight, ThemeManager } from "@resetpower/rcs";
+import { configStore, setConfig } from "common/struct/config";
 
 console.log("Hello, World!");
 
@@ -23,7 +25,29 @@ window.addEventListener("error", (event) => {
 console.log(window.native.hello());
 
 // load theme before splash
-themeStore.updateTheme();
+const manager = new ThemeManager(
+  () => configStore.themeFollowOs,
+  (dark) => {
+    setConfig((cfg) => (cfg.theme = dark ? "RCS Dark" : "RCS Light"));
+  },
+  {
+    light: rcsLight,
+    dark: rcsDark,
+  }
+);
+updateTheme();
+
+export function updateTheme() {
+  manager.responseSystemChange();
+  if (!configStore.themeFollowOs) {
+    const t = [rcsLight, rcsDark, ...configStore.themeList].find(
+      (t) => t.name === configStore.theme
+    );
+    if (t) {
+      manager.apply(t);
+    }
+  }
+}
 
 const splash = `
 <div class="flex flex-col justify-center items-center h-full">

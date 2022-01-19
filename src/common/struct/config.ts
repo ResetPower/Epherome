@@ -15,6 +15,7 @@ import {
 } from "common/utils/info";
 import fs from "fs";
 import { ensureDir } from "common/utils/files";
+import { RCSTheme } from "@resetpower/rcs";
 
 export type TitleBarStyle = "os" | "eph";
 
@@ -41,6 +42,7 @@ export class ConfigStore {
   @observable profiles: MinecraftProfile[] = [];
   @observable javas: Java[] = [];
   @observable theme = "light";
+  @observable themeList: RCSTheme[] = [];
   @observable themeFollowOs = false;
   @observable language = getSystemPreferredLanguage();
   @observable news = false;

@@ -1,32 +1,36 @@
 import { Alert } from "../components/layouts";
-import { Button, Select, TextField } from "../components/inputs";
 import {
-  createAccount,
-  CreateAccountImplResult,
-  MinecraftAccount,
-  removeAccount,
-} from "../../common/struct/accounts";
-import { configStore, setConfig } from "../../common/struct/config";
-import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
-import { List, ListItem } from "../components/lists";
-import { showOverlay } from "../overlay";
-import {
+  Button,
+  Select,
+  TextField,
+  List,
+  ListItem,
   TabBar,
   TabBarItem,
   TabBody,
   TabContext,
   TabController,
-} from "../components/tabs";
+  Spin,
+  Center,
+  Info,
+} from "@resetpower/rcs";
+import {
+  createAccount,
+  CreateAccountImplResult,
+  MinecraftAccount,
+  removeAccount,
+} from "common/struct/accounts";
+import { configStore, setConfig } from "common/struct/config";
+import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
+import { showOverlay } from "../overlay";
 import { useState } from "react";
 import { adapt, call, DefaultFn } from "common/utils";
-import Spin from "../components/Spin";
 import { t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
 import { useRef } from "react";
 import { downloadSkin } from "core/model/skin";
 import { BiExport } from "react-icons/bi";
-import { Center, Info } from "../components/fragments";
 import { commonLogger } from "common/loggers";
 import { Avatar, Body } from "eph/components/skin";
 
@@ -74,12 +78,16 @@ export function ChangeAccountFragment(props: {
             <Alert severity="warn">{t("account.msAccNoMinecraft")}</Alert>
           </div>
         )}
-        <Select value={value} onChange={setValue}>
-          <option value={"mojang"}>{t("account.mojang")}</option>
-          <option value={"microsoft"}>{t("account.microsoft")}</option>
-          <option value={"authlib"}>{t("account.authlib")}</option>
-          <option value={"offline"}>{t("account.offline")}</option>
-        </Select>
+        <Select
+          value={value}
+          options={[
+            { value: "mojang", text: t("account.mojang") },
+            { value: "microsoft", text: t("account.microsoft") },
+            { value: "authlib", text: t("account.authlib") },
+            { value: "offline", text: t("account.offline") },
+          ]}
+          onChange={setValue}
+        />
         <div hidden={value !== "mojang"}>
           <TextField label={t("email")} value={name} onChange={setName} />
           <TextField
@@ -260,7 +268,7 @@ const AccountsPage = observer(() => {
             </TabBody>
           </TabController>
         ) : (
-          <Center hFull>
+          <Center>
             <p className="text-shallow">{t("account.notSelected")}</p>
           </Center>
         )}

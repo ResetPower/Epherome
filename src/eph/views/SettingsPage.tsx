@@ -6,7 +6,18 @@ import {
   TextField,
   IconButton,
   TinyTextField,
-} from "../components/inputs";
+  TabBar,
+  TabBarItem,
+  TabBody,
+  TabController,
+  Spin,
+  List,
+  ListItem,
+  Info,
+  WithHelper,
+  rcsLight,
+  rcsDark,
+} from "@resetpower/rcs";
 import {
   configStore,
   setConfig,
@@ -15,6 +26,7 @@ import {
 import { rendererLogger } from "common/loggers";
 import { Card } from "../components/layouts";
 import {
+  MdAdd,
   MdClose,
   MdDoneOutline,
   MdEdit,
@@ -25,12 +37,8 @@ import {
   MdRadioButtonUnchecked,
   MdTune,
 } from "react-icons/md";
-import { themeStore } from "../renderer/theme";
-import { TabBar, TabBarItem, TabBody, TabController } from "../components/tabs";
 import { checkEphUpdate } from "../renderer/updater";
-import Spin from "../components/Spin";
 import { FaJava } from "react-icons/fa";
-import { List, ListItem } from "../components/lists";
 import { createJava, removeJava } from "common/struct/java";
 import { useState } from "react";
 import { t, intlStore } from "../intl";
@@ -38,22 +46,24 @@ import { _ } from "common/utils/arrays";
 import os from "os";
 import { observer } from "mobx-react-lite";
 import { MinecraftDownloadProvider } from "core/url";
-import { Info, WithHelper } from "../components/fragments";
 import EpheromeLogo from "assets/Epherome.png";
 import { ipcRenderer } from "electron";
 import { codeName, ephVersion, userDataPath } from "common/utils/info";
 import { overlayStore, showOverlay } from "eph/overlay";
 import { pushToHistory } from "eph/renderer/history";
 import { apply } from "common/utils";
+import { openInBrowser, openInFinder } from "common/utils/open";
+import { updateTheme } from "..";
+import NewThemeView from "./NewThemeView";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
+  const href = "https://epherome.com/download";
+
   return (
     <>
       <p>{t("epheromeUpdate.available", props.version)}</p>
       <p>{t("epheromeUpdate.availableMessage")}</p>
-      <Link type="url" href="https://epherome.com/download">
-        https://epherome.com/download
-      </Link>
+      <Link onClick={() => openInBrowser(href)}>{href}</Link>
     </>
   );
 }
@@ -181,7 +191,6 @@ export const JavaManagementSheet = observer(() => {
             <>
               <Link
                 className="border-r border-divider pr-3"
-                type="clickable"
                 onClick={() =>
                   ipcRenderer.invoke("open-java").then((value) => {
                     value && handleAddJava(value);
@@ -190,7 +199,7 @@ export const JavaManagementSheet = observer(() => {
               >
                 <MdFolderOpen />
               </Link>
-              <Link type="clickable" className="pl-3" onClick={handleAddJava}>
+              <Link className="pl-3" onClick={handleAddJava}>
                 {t("add")}
               </Link>
             </>
@@ -269,30 +278,30 @@ export const SettingsGeneralFragment = observer(() => {
         value={intlStore.language?.name ?? ""}
         label={t("language")}
         onChange={handleChangeLanguage}
-      >
-        {intlStore.languages.map((lang, index) => (
-          <option value={lang.name} key={index}>
-            {lang.nativeName}
-          </option>
-        ))}
-      </Select>
+        options={intlStore.languages.map((lang) => ({
+          value: lang.name,
+          text: lang.nativeName,
+        }))}
+      />
       <WithHelper helper={t("settings.downloadProvider.description")}>
         <Select
           value={configStore.downloadProvider}
           label={t("settings.downloadProvider")}
+          options={[
+            {
+              value: "official",
+              text: t("settings.downloadProvider.official"),
+            },
+            { value: "bmclapi", text: "BMCLAPI" },
+            { value: "mcbbs", text: "MCBBS" },
+          ]}
           onChange={(provider) =>
             setConfig(
               (cfg) =>
                 (cfg.downloadProvider = provider as MinecraftDownloadProvider)
             )
           }
-        >
-          <option value="official">
-            {t("settings.downloadProvider.official")}
-          </option>
-          <option value="bmclapi">BMCLAPI</option>
-          <option value="mcbbs">MCBBS</option>
-        </Select>
+        />
       </WithHelper>
       <TextField
         min={1}
@@ -343,15 +352,19 @@ export const SettingsGeneralFragment = observer(() => {
 });
 
 export const SettingsAppearanceFragment = observer(() => {
+  const theme = configStore.theme;
+
   const handleChangeTheme = (ev: string) => {
-    rendererLogger.info(`Changing theme to '${ev}'`);
-    setConfig((cfg) => (cfg.theme = ev));
-    themeStore.updateTheme();
+    if (!configStore.themeFollowOs) {
+      rendererLogger.info(`Changing theme to '${ev}'`);
+      setConfig((cfg) => (cfg.theme = ev));
+      updateTheme();
+    }
   };
   const handleThemeFollowOs = (checked: boolean) => {
     rendererLogger.info(`Theme follow OS is ${checked ? "on" : "off"}`);
     setConfig((cfg) => (cfg.themeFollowOs = checked));
-    themeStore.updateTheme();
+    updateTheme();
   };
   const handleChangeTitleBarStyle = (ev: string) => {
     setConfig((cfg) => (cfg.titleBarStyle = ev as TitleBarStyle));
@@ -364,28 +377,41 @@ export const SettingsAppearanceFragment = observer(() => {
         <Select
           value={configStore.titleBarStyle}
           label={t("settings.titleBar")}
+          options={[
+            { value: "os", text: t("os") },
+            { value: "eph", text: t("epherome") },
+          ]}
           onChange={handleChangeTitleBarStyle}
-        >
-          <option value="os">{t("os")}</option>
-          <option value="eph">{t("epherome")}</option>
-        </Select>
+        />
       </div>
       <div>
-        <Select
-          value={configStore.theme}
-          label={t("settings.theme")}
-          onChange={handleChangeTheme}
-          disabled={configStore.themeFollowOs}
-        >
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </Select>
+        <p className="font-semibold text-lg mb-3">{t("settings.theme")}</p>
         <Checkbox
           checked={configStore.themeFollowOs}
           onChange={handleThemeFollowOs}
         >
           {t("settings.theme.followOS")}
         </Checkbox>
+        {[rcsLight, rcsDark, ...configStore.themeList].map((value, index) => (
+          <ListItem
+            checked={theme === value.name}
+            onClick={() => handleChangeTheme(value.name)}
+            key={index}
+          >
+            <div className="flex-grow">{value.name}</div>
+          </ListItem>
+        ))}
+        <ListItem
+          onClick={() =>
+            showOverlay({
+              type: "sheet",
+              title: "New Theme",
+              content: NewThemeView,
+            })
+          }
+        >
+          <MdAdd /> Create a theme...
+        </ListItem>
       </div>
     </div>
   );
@@ -421,21 +447,24 @@ export const SettingsAboutFragment = (): JSX.Element => (
       </Info>
       <Info title={t("versionOfSomething", "V8")}>{process.versions.v8}</Info>
       <Info title={t("settings.epheromePath")}>
-        <Link href={userDataPath} type="folder">
-          {userDataPath}
-        </Link>
+        <Link onClick={() => openInFinder(userDataPath)}>{userDataPath}</Link>
       </Info>
     </Card>
     <Card>
       <p>
         {t("settings.officialSite")}
-        <Link paddingX href="https://epherome.com">
+        <Link paddingX onClick={() => openInBrowser("https://epherome.com")}>
           https://epherome.com
         </Link>
       </p>
       <p>
         GitHub
-        <Link paddingX href="https://github.com/ResetPower/Epherome">
+        <Link
+          paddingX
+          onClick={() =>
+            openInBrowser("https://github.com/ResetPower/Epherome")
+          }
+        >
           https://github.com/ResetPower/Epherome
         </Link>
       </p>

@@ -15,10 +15,8 @@ import {
   InstallVersion,
   MinecraftInstall,
 } from "core/installer";
-import { List, ListItem } from "../components/lists";
-import Spin from "../components/Spin";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button, TextField } from "../components/inputs";
+import { Button, TextField, Spin, List, ListItem } from "@resetpower/rcs";
 import { t } from "../intl";
 import { useRef } from "react";
 import { showOverlay } from "eph/overlay";

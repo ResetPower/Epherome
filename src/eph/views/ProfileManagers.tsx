@@ -8,12 +8,18 @@ import {
   MdRefresh,
   MdSave,
 } from "react-icons/md";
-import { Info } from "../components/fragments";
-import { Button, Link, TextField, TinyTextField } from "../components/inputs";
-import { ListItem, ListItemText } from "../components/lists";
+import {
+  Button,
+  Link,
+  TextField,
+  TinyTextField,
+  Info,
+  ListItem,
+  ListItemText,
+} from "@resetpower/rcs";
 import { MinecraftProfileManagerStore } from "common/struct/manager";
 import { t } from "../intl";
-import { openInFinder } from "common/utils/open";
+import { openInFinder, openItemInFinder } from "common/utils/open";
 import { showOverlay } from "../overlay";
 import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
@@ -101,7 +107,11 @@ export function ProfileGeneralFragment({
       <div className="flex-grow space-y-1 pb-3">
         <Info title={t("name")}>{current.name}</Info>
         <Info title={t("directory")}>
-          <Link type="file" href={current.dir}>
+          <Link
+            onClick={() => {
+              openInFinder(current.dir);
+            }}
+          >
             {current.dir}
           </Link>
         </Info>
@@ -271,7 +281,9 @@ export const ProfileSettingsFragment = observer(
       <div className="text-sm">
         <p>
           Minecraft Options Path:{" "}
-          <Link href={manager.optionsTxtPath} type="file" />
+          <Link onClick={() => openItemInFinder(manager.optionsTxtPath)}>
+            {manager.optionsTxtPath}
+          </Link>
         </p>
         <div className="flex">
           <Button

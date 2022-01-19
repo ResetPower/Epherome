@@ -5,12 +5,20 @@ import {
   Select,
   TextField,
   TinyButton,
-} from "../components/inputs";
+  List,
+  ListItem,
+  TabBar,
+  TabBarItem,
+  TabBody,
+  TabContext,
+  TabController,
+  Center,
+} from "@resetpower/rcs";
 import {
   createProfile,
   editProfile,
   MinecraftProfile,
-} from "../../common/struct/profiles";
+} from "common/struct/profiles";
 import { configStore, setConfig } from "common/struct/config";
 import {
   MdCreate,
@@ -19,14 +27,6 @@ import {
   MdFileDownload,
   MdGamepad,
 } from "react-icons/md";
-import { List, ListItem } from "../components/lists";
-import {
-  TabBar,
-  TabBarItem,
-  TabBody,
-  TabContext,
-  TabController,
-} from "../components/tabs";
 import { call, DefaultFn } from "common/utils";
 import { useState, useRef, useCallback } from "react";
 import { t } from "../intl";
@@ -44,7 +44,6 @@ import {
   ProfileSavesFragment,
   ProfileSettingsFragment,
 } from "./ProfileManagers";
-import { Center } from "../components/fragments";
 import { ipcRenderer } from "electron";
 import { pushToHistory } from "eph/renderer/history";
 
@@ -156,7 +155,7 @@ export function ChangeProfileFragment(props: {
           onChange={setDir}
           helperText={t("profile.usuallyDotMinecraftEtc")}
           trailing={
-            <Link type="clickable" onClick={handleOpenDirectory}>
+            <Link onClick={handleOpenDirectory}>
               {t("profile.openDirectory")}
             </Link>
           }
@@ -207,14 +206,18 @@ export function ChangeProfileFragment(props: {
                 value={jvmArgs}
                 onChange={setJvmArgs}
               />
-              <Select label="Java" value={java} onChange={setJava}>
-                <option value="default">{t("useDefault")}</option>
-                {configStore.javas.map((val) => (
-                  <option value={val.nanoid} key={val.nanoid}>
-                    {val.nickname ?? val.name}
-                  </option>
-                ))}
-              </Select>
+              <Select
+                label="Java"
+                value={java}
+                onChange={setJava}
+                options={[
+                  { value: "default", text: t("useDefault") },
+                  ...configStore.javas.map((val) => ({
+                    value: val.nanoid,
+                    text: val.nickname ?? val.name,
+                  })),
+                ]}
+              />
             </div>
             <div>
               <label className="eph-label">{t("profile.resolution")}</label>
@@ -342,7 +345,7 @@ const ProfilesPage = observer(() => {
             </TabBody>
           </TabController>
         ) : (
-          <Center hFull>
+          <Center>
             <p className="text-shallow">{t("profile.notSelected")}</p>
           </Center>
         )}

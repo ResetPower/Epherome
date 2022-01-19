@@ -1,6 +1,6 @@
 import { EphExtensionTranslations } from "common/extension";
 import { extensionStore } from "common/stores/extension";
-import { Button } from "eph/components/inputs";
+import { Button } from "@resetpower/rcs";
 import { intlStore } from "eph/intl";
 import { nanoid } from "nanoid";
 import path from "path";

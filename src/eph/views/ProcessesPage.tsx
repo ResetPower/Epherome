@@ -1,7 +1,6 @@
-import { ListItem } from "../components/lists";
+import { ListItem, Button } from "@resetpower/rcs";
 import { t } from "../intl";
 import { setConfig } from "common/struct/config";
-import { Button } from "../components/inputs";
 import { BiExport } from "react-icons/bi";
 import { MdGamepad, MdRemoveCircle, MdStop } from "react-icons/md";
 import { CSSTransition, SwitchTransition } from "react-transition-group";

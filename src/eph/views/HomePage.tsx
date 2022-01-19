@@ -5,7 +5,8 @@ import {
   TextField,
   TinyButton,
   Link,
-} from "../components/inputs";
+  ProgressBar,
+} from "@resetpower/rcs";
 import { useEffect, useMemo, useState } from "react";
 import { configStore, setConfig } from "common/struct/config";
 import { LaunchCanceller, launchMinecraft } from "core/launch";
@@ -27,7 +28,6 @@ import { t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
-import ProgressBar from "../components/ProgressBar";
 import NewsView from "./NewsView";
 import { fetchNews, NewItem } from "../../common/struct/news";
 import { JavaManagementSheet } from "./SettingsPage";
@@ -37,6 +37,7 @@ import { DefaultFn } from "common/utils";
 import ExtensionView from "./ExtensionView";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
+import { openInBrowser } from "common/utils/open";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -181,10 +182,9 @@ const HomePage = observer(() => {
   );
   const profile = value !== null && configStore.profiles[+value];
 
-  const handleChange = (val: string) => {
-    const newValue = +val;
-    setValue(newValue);
-    setConfig(() => _.selectByIndex(profiles, newValue));
+  const handleChange = (val: number) => {
+    setValue(val);
+    setConfig(() => _.selectByIndex(profiles, val));
   };
 
   useEffect(() => {
@@ -256,16 +256,14 @@ const HomePage = observer(() => {
               <>
                 <Select
                   value={value}
+                  options={_.map(profiles, (i, id) => ({
+                    value: id,
+                    text: i.name,
+                  }))}
                   onChange={handleChange}
                   disabled={homePageStore.isLaunching}
                   className="overflow-ellipsis mb-1"
-                >
-                  {_.map(profiles, (i, id) => (
-                    <option key={id} value={id}>
-                      {i.name}
-                    </option>
-                  ))}
-                </Select>
+                />
                 <div className="flex space-x-3 p-1">
                   <p className="text-shallow">{t("version")}</p>
                   <p>{profile.ver}</p>
@@ -360,7 +358,9 @@ const HomePage = observer(() => {
               onClick={homePageStore.reloadNews}
             />
             <div className="flex-grow" />
-            <Link href="https://www.mcbbs.net">MCBBS</Link>
+            <Link onClick={() => openInBrowser("https://www.mcbbs.net")}>
+              MCBBS
+            </Link>
           </div>
         </Card>
       </div>

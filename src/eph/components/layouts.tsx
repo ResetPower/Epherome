@@ -7,7 +7,7 @@ export function Alert(props: {
 }): JSX.Element {
   return (
     <div
-      className={`eph-alert ${
+      className={`flex bg-opacity-60 text-white shadow-md rounded-md text-base p-3 ${
         props.severity === "warn"
           ? "bg-yellow-600"
           : props.severity === "error"

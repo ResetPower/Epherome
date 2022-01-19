@@ -21,7 +21,15 @@ fs.writeFileSync(logFilename, "");
 export let parsed = readConfig();
 
 function readConfig() {
-  return JSON.parse(fs.readFileSync(configPath).toString());
+  const parsed = JSON.parse(fs.readFileSync(configPath).toString());
+  // transfer old theme name to new theme name
+  if (parsed.theme === "light") {
+    parsed.theme = "RCS Light";
+  } else if (parsed.theme === "dark") {
+    parsed.theme = "RCS Dark";
+  }
+  fs.writeFileSync(configPath, JSON.stringify(parsed));
+  return parsed;
 }
 
 // configure log4js

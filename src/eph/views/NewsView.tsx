@@ -1,4 +1,4 @@
-import { List, ListItem } from "../components/lists";
+import { List, ListItem } from "@resetpower/rcs";
 import { homePageStore } from "./HomePage";
 import { openInBrowser } from "common/utils/open";
 

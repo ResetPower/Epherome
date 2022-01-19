@@ -1,12 +1,20 @@
 import { match } from "common/utils";
-import { Center } from "eph/components/fragments";
-import { Link } from "eph/components/inputs";
-import { ListItem } from "eph/components/lists";
+import { Center, Link, ListItem } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { useState } from "react";
+import { openInBrowser } from "common/utils/open";
 
 export default function JavaInstallPage(): JSX.Element {
   const [selection, setSelection] = useState(0);
+
+  const matched = match(
+    selection,
+    [0, "https://www.oracle.com/java/technologies/downloads/"],
+    [1, "https://adoptium.net/"],
+    [2, "https://www.eclipse.org/openj9/"],
+    [3, "https://www.azul.com/downloads/?package=jdk"],
+    [4, "https://dragonwell-jdk.io/"]
+  );
 
   return (
     <div className="flex eph-h-full">
@@ -25,21 +33,13 @@ export default function JavaInstallPage(): JSX.Element {
         )}
       </div>
       <div className="w-3/4">
-        <Center hFull className="text-shallow">
+        <Center className="text-shallow">
           <div>
             <p>{t("notSupportedYet")}</p>
             <p>{t("java.pleaseGoTo")}</p>
-            <Link
-              type="url"
-              href={match(
-                selection,
-                [0, "https://www.oracle.com/java/technologies/downloads/"],
-                [1, "https://adoptium.net/"],
-                [2, "https://www.eclipse.org/openj9/"],
-                [3, "https://www.azul.com/downloads/?package=jdk"],
-                [4, "https://dragonwell-jdk.io/"]
-              )}
-            />
+            {matched && (
+              <Link onClick={() => openInBrowser(matched)}>{matched}</Link>
+            )}
           </div>
         </Center>
       </div>

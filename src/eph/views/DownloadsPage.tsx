@@ -1,20 +1,26 @@
-import { Button, Checkbox, TextField } from "../components/inputs";
+import {
+  Button,
+  Checkbox,
+  TextField,
+  Spin,
+  List,
+  ListItem,
+  ListItemText,
+  ProgressBar,
+  Center,
+} from "@resetpower/rcs";
 import { MinecraftVersion, MinecraftVersionType } from "core/launch/versions";
 import { rendererLogger } from "common/loggers";
-import Spin from "../components/Spin";
 import { Alert } from "../components/layouts";
-import { List, ListItem, ListItemText } from "../components/lists";
 import { useState, useEffect, useRef, Fragment } from "react";
 import { createProfile } from "../../common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
-import ProgressBar from "../components/ProgressBar";
 import { downloadMinecraft } from "core/installer/minecraft";
 import { MinecraftUrlUtil } from "core/url";
 import { call, DefaultFn } from "common/utils";
 import { ObjectWrapper } from "common/utils/object";
 import { defaultJvmArgs } from "common/struct/java";
-import { Center } from "../components/fragments";
 import { showOverlay } from "eph/overlay";
 import got from "got";
 import { DownloadDetail } from "common/utils/files";
@@ -166,7 +172,8 @@ export default function DownloadsPage(): JSX.Element {
     // copy the ref here in order to satisfy eslint-plugin-react-hooks
     const cancellerRef = canceller;
     rendererLogger.info("Fetching Minecraft launcher meta...");
-    got(urlUtil.versionManifest())
+    got
+      .get(urlUtil.versionManifest())
       .then((resp) => {
         const parsed = JSON.parse(resp.body);
         setVersions(parsed.versions);
@@ -237,7 +244,7 @@ export default function DownloadsPage(): JSX.Element {
             setLocking={setLocking}
           />
         ) : (
-          <Center hFull>
+          <Center>
             <p className="text-shallow">{t("download.notSelected")}</p>
           </Center>
         )}

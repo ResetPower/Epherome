@@ -1,5 +1,5 @@
 import { AnyMap, apply, combineFun, DefaultFn } from "common/utils";
-import { Button, IconButton } from "eph/components/inputs";
+import { Button, IconButton } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import { ReactNode, useRef } from "react";

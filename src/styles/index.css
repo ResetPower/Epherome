@@ -1,10 +1,8 @@
-@import "tailwind.css";
-@import "anime.css";
-@import "inputs.css";
 @import "overlay.css";
-@import "tabs.css";
-@import "layouts.css";
-@import "progress.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer components {
   .eph-appbar {
@@ -18,19 +16,11 @@
 
 :root {
   --eph-height: calc(100vh - 4rem);
-  /*
-    only for default value, for more global css variables please see:
-      `src/renderer/theme.ts` and `tailwind.config.js`
-  */
-  --eph-background-color: white;
-  --eph-divider-color: grey;
-  --eph-shallow-color: gray;
-  @apply text-contrast;
+  --animate-duration: 0.3s;
 }
 
 body {
   font-family: Inter;
-  background: var(--eph-background-color);
 }
 
 img {
@@ -40,10 +30,6 @@ img {
 
 ::-webkit-scrollbar {
   width: 0;
-}
-
-:root {
-  --animate-duration: 0.3s;
 }
 
 #root {
@@ -65,17 +51,4 @@ img {
 }
 .eph-no-drag {
   -webkit-app-region: no-drag;
-}
-
-input[type="number"].no-spin-button::-webkit-outer-spin-button,
-input[type="number"].no-spin-button::-webkit-inner-spin-button {
-  display: none;
-  appearance: none;
-  margin: 0;
-}
-
-/* Checkbox Component */
-input:checked ~ .dot {
-  transform: translateX(100%);
-  background-color: #48bb78;
 }

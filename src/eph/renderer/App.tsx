@@ -17,23 +17,21 @@ import {
 } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
-import { IconButton } from "../components/inputs";
 import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { useEffect, useMemo, useState } from "react";
 import { configStore } from "common/struct/config";
 import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
-import Popover from "../components/Popover";
 import ProfileInstallPage from "../views/ProfileInstallPage";
-import PopMenu from "eph/components/PopMenu";
 import { ipcRenderer } from "electron";
 import { pushToHistory } from "./history";
 import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
 import ExtensionView from "eph/views/ExtensionView";
 import JavaInstallPage from "eph/views/JavaInstallPage";
+import { IconButton, AppBar, Menu } from "@resetpower/rcs";
 
-export const AppBar = observer(
+export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
     // visit the key
     // in order to update title on language change correctly
@@ -50,22 +48,22 @@ export const AppBar = observer(
       {
         icon: <MdAccountCircle />,
         text: t("accounts"),
-        onClick: () => pushToHistory("accounts"),
+        action: () => pushToHistory("accounts"),
       },
       {
         icon: <MdGamepad />,
         text: t("profiles"),
-        onClick: () => pushToHistory("profiles"),
+        action: () => pushToHistory("profiles"),
       },
       {
         icon: <MdViewCarousel />,
         text: t("processes"),
-        onClick: () => pushToHistory("processes"),
+        action: () => pushToHistory("processes"),
       },
       {
         icon: <MdApps />,
         text: t("extensions"),
-        onClick: () =>
+        action: () =>
           showOverlay({
             type: "sheet",
             title: t("extensions"),
@@ -75,25 +73,19 @@ export const AppBar = observer(
       {
         icon: <MdSettings />,
         text: t("settings"),
-        onClick: () => pushToHistory("settings"),
+        action: () => pushToHistory("settings"),
       },
     ];
 
     return (
-      <div className={`eph-appbar text-white ${isTitleBarEph && "eph-drag"}`}>
+      <AppBar className={`${isTitleBarEph && "eph-drag"}`}>
         <div className="eph-no-drag">
           {isAtHome ? (
-            <Popover
-              className="bg-card rounded-lg p-2 shadow-xl text-contrast"
-              dock="left"
-              button={(trigger, active) => (
-                <IconButton onClick={trigger} active={active}>
-                  <MdMenu />
-                </IconButton>
-              )}
-            >
-              <PopMenu items={popMenuItems} />
-            </Popover>
+            <Menu items={popMenuItems}>
+              <IconButton>
+                <MdMenu />
+              </IconButton>
+            </Menu>
           ) : (
             <IconButton onClick={isAtHome ? undefined : () => history.back()}>
               {<MdArrowBack />}
@@ -103,29 +95,24 @@ export const AppBar = observer(
         <p className="eph-appbar-title flex-grow">{title}</p>
         <div className="eph-no-drag flex">
           {configStore.developerMode && (
-            <Popover
-              className="bg-card rounded-lg p-2 shadow-lg text-contrast eph-no-drag"
-              button={(trigger, active) => (
-                <IconButton onClick={trigger} active={active}>
-                  <MdDeveloperBoard />
-                </IconButton>
-              )}
+            <Menu
+              items={[
+                {
+                  icon: <VscDebugConsole />,
+                  text: "Developer Tools",
+                  action: () => ipcRenderer.send("open-devtools"),
+                },
+                {
+                  icon: <MdRefresh />,
+                  text: "Reload Epherome",
+                  action: () => location.reload(),
+                },
+              ]}
             >
-              <PopMenu
-                items={[
-                  {
-                    icon: <VscDebugConsole />,
-                    text: "Developer Tools",
-                    onClick: () => ipcRenderer.send("open-devtools"),
-                  },
-                  {
-                    icon: <MdRefresh />,
-                    text: "Reload Epherome",
-                    onClick: () => location.reload(),
-                  },
-                ]}
-              />
-            </Popover>
+              <IconButton>
+                <MdDeveloperBoard />
+              </IconButton>
+            </Menu>
           )}
           {isTitleBarEph && (
             <>
@@ -147,7 +134,7 @@ export const AppBar = observer(
             </>
           )}
         </div>
-      </div>
+      </AppBar>
     );
   }
 );
@@ -210,7 +197,7 @@ export default function App(): JSX.Element {
   return (
     <IconContext.Provider value={{ size: "1.5em", className: "mx-0.5" }}>
       <GlobalOverlay />
-      <AppBar pathname={pn} />
+      <EphAppBar pathname={pn} />
       <RouterView pathname={pn} params={params} />
     </IconContext.Provider>
   );
