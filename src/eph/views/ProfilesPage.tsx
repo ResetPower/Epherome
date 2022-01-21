@@ -13,6 +13,8 @@ import {
   TabContext,
   TabController,
   Center,
+  IconButton,
+  ProgressBar,
 } from "@resetpower/rcs";
 import {
   createProfile,
@@ -26,6 +28,7 @@ import {
   MdExpandMore,
   MdFileDownload,
   MdGamepad,
+  MdImportExport,
 } from "react-icons/md";
 import { call, DefaultFn } from "common/utils";
 import { useState, useRef, useCallback } from "react";
@@ -46,6 +49,10 @@ import {
 } from "./ProfileManagers";
 import { ipcRenderer } from "electron";
 import { pushToHistory } from "eph/renderer/history";
+import { BiImport } from "react-icons/bi";
+import { importModpack } from "core/modpack";
+import { Canceller } from "common/task/cancel";
+import { DownloadDetail } from "common/utils/files";
 
 export function ChangeProfileFragment(props: {
   onDone?: DefaultFn;
@@ -60,7 +67,7 @@ export function ChangeProfileFragment(props: {
   const [ver, setVer] = useState(current?.ver ?? "");
   const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? defaultJvmArgs());
   const [resolution, setResolution] = useState(current?.resolution ?? {});
-  const [java, setJava] = useState(current?.java ?? "");
+  const [java, setJava] = useState(current?.java ? current.java : "default");
   const [showEpherome, setShowEpherome] = useState(
     current?.showEpherome ?? true
   );
@@ -170,6 +177,44 @@ export function ChangeProfileFragment(props: {
         <div className="h-2" />
         {more && (
           <>
+            <div className="flex items-center space-x-3">
+              <TextField
+                className="flex-grow"
+                label={t("profile.jvmArgs")}
+                value={jvmArgs}
+                onChange={setJvmArgs}
+              />
+              <Select
+                label="Java"
+                value={java}
+                onChange={setJava}
+                options={[
+                  { value: "default", text: t("useDefault") },
+                  ...configStore.javas.map((val) => ({
+                    value: val.nanoid,
+                    text: val.nickname ?? val.name,
+                  })),
+                ]}
+              />
+            </div>
+            <label className="rcs-label">{t("profile.resolution")}</label>
+            <div className="flex items-center mb-3">
+              <TextField
+                placeholder={t("useDefault")}
+                value={`${resolution.width ?? ""}`}
+                onChange={(ev) => handleResolutionChange("width", ev)}
+                className="flex-grow"
+                noSpinButton
+              />
+              <FaTimes className="text-contrast m-3" />
+              <TextField
+                placeholder={t("useDefault")}
+                value={`${resolution.height ?? ""}`}
+                onChange={(ev) => handleResolutionChange("height", ev)}
+                className="flex-grow"
+                noSpinButton
+              />
+            </div>
             <div className="flex">
               <Checkbox
                 className="m-1"
@@ -199,46 +244,6 @@ export function ChangeProfileFragment(props: {
             <p className="eph-helper-text">
               {t("profile.safeLog4j.description")}
             </p>
-            <div className="flex items-center space-x-3">
-              <TextField
-                className="flex-grow"
-                label={t("profile.jvmArgs")}
-                value={jvmArgs}
-                onChange={setJvmArgs}
-              />
-              <Select
-                label="Java"
-                value={java}
-                onChange={setJava}
-                options={[
-                  { value: "default", text: t("useDefault") },
-                  ...configStore.javas.map((val) => ({
-                    value: val.nanoid,
-                    text: val.nickname ?? val.name,
-                  })),
-                ]}
-              />
-            </div>
-            <div>
-              <label className="eph-label">{t("profile.resolution")}</label>
-              <div className="flex items-center">
-                <TextField
-                  placeholder={t("useDefault")}
-                  value={`${resolution.width ?? ""}`}
-                  onChange={(ev) => handleResolutionChange("width", ev)}
-                  className="flex-grow"
-                  noSpinButton
-                />
-                <FaTimes className="text-contrast m-3" />
-                <TextField
-                  placeholder={t("useDefault")}
-                  value={`${resolution.height ?? ""}`}
-                  onChange={(ev) => handleResolutionChange("height", ev)}
-                  className="flex-grow"
-                  noSpinButton
-                />
-              </div>
-            </div>
           </>
         )}
         <TinyButton onClick={() => setMore((prev) => !prev)} paddingRight>
@@ -266,10 +271,73 @@ export function ChangeProfileFragment(props: {
   );
 }
 
+export function ImportPackFragment(props: { onDone: DefaultFn }): JSX.Element {
+  const canceller = useMemo(() => new Canceller(), []);
+  const [details, setDetails] = useState<DownloadDetail[]>([]);
+  const [helper, setHelper] = useState("");
+  const [value, setValue] = useState("");
+
+  const handleImport = () => {
+    importModpack(value, canceller, (helper, i) => {
+      if (i) {
+        const [d, t] = i;
+        setDetails(d.current);
+        setHelper(`${helper} (${t}%)`);
+      } else {
+        setHelper(helper);
+      }
+    }).then((profile) => {
+      if (profile) {
+        createProfile(profile);
+      }
+      props.onDone();
+    });
+  };
+  const handleBrowse = () =>
+    ipcRenderer
+      .invoke("import-modpack")
+      .then((value) => value && setValue(value));
+
+  return (
+    <div className="p-5 flex flex-col h-full">
+      <p className="font-semibold text-xl pb-3">Import Modpack</p>
+      <TextField
+        value={value}
+        onChange={setValue}
+        placeholder="Modpack File Path (*.zip)"
+        trailing={
+          <Link onClick={handleBrowse}>{t("profile.openDirectory")}</Link>
+        }
+      />
+      <div className="flex-grow pt-3">
+        {details.map(
+          (detail, index) =>
+            detail.inProgress && (
+              <div key={index}>
+                <p className="text-sm">
+                  {detail.filename} ({detail.percentage}%)
+                </p>
+                <ProgressBar percentage={detail.percentage} />
+              </div>
+            )
+        )}
+      </div>
+      <div className="flex items-center">
+        <p className="text-sm">{helper}</p>
+        <div className="flex-grow" />
+        <Button disabled={!!helper} onClick={handleImport}>
+          Import
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 const ProfilesPage = observer(() => {
   const tabRef = useRef<TabContext>();
-  const [creating, setCreating] = useState(false);
-  const handleCreate = () => setCreating(true);
+  const [status, setStatus] = useState<false | "creating" | "importing">(false);
+  const handleCreate = () => setStatus("creating");
+  const handleImport = () => setStatus("importing");
   const profiles = configStore.profiles;
   const current = _.selected(profiles);
   const _key = current?.gameDirIsolation;
@@ -281,29 +349,24 @@ const ProfilesPage = observer(() => {
   return (
     <div className="flex eph-h-full">
       <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
-        <div className="py-1 px-3">
-          <Button
-            className="whitespace-nowrap"
-            variant="contained"
-            onClick={handleCreate}
-          >
-            <MdCreate /> {t("create")}
-          </Button>
-          <Button
-            className="whitespace-nowrap"
-            variant="contained"
-            onClick={() => pushToHistory("download")}
-          >
-            <MdFileDownload /> {t("download")}
-          </Button>
+        <div className="flex items-center justify-center">
+          <IconButton onClick={handleCreate}>
+            <MdCreate />
+          </IconButton>
+          <IconButton onClick={() => pushToHistory("download")}>
+            <MdFileDownload />
+          </IconButton>
+          <IconButton onClick={handleImport}>
+            <BiImport />
+          </IconButton>
         </div>
         <List className="space-y-1">
           {_.map(profiles, (i, id) => (
             <ListItem
               className="px-3 py-2 mx-2 rounded-lg overflow-x-hidden"
-              checked={!creating && current === i}
+              checked={status !== "creating" && current === i}
               onClick={() => {
-                creating && setCreating(false);
+                status && setStatus(false);
                 i.selected
                   ? setConfig(() => _.deselect(profiles))
                   : setConfig(() => _.select(profiles, i));
@@ -312,7 +375,13 @@ const ProfilesPage = observer(() => {
               key={id}
             >
               <p className="flex">
-                {i.from === "download" ? <MdFileDownload /> : <MdGamepad />}{" "}
+                {i.from === "download" ? (
+                  <MdFileDownload />
+                ) : i.from === "import" ? (
+                  <MdImportExport />
+                ) : (
+                  <MdGamepad />
+                )}{" "}
                 {i.name}
               </p>
             </ListItem>
@@ -320,11 +389,13 @@ const ProfilesPage = observer(() => {
         </List>
       </div>
       <div className="flex-grow p-3 overflow-y-auto w-3/4">
-        {creating ? (
+        {status === "creating" ? (
           <ChangeProfileFragment
             action="create"
-            onDone={() => setCreating(false)}
+            onDone={() => setStatus(false)}
           />
+        ) : status === "importing" ? (
+          <ImportPackFragment onDone={() => setStatus(false)} />
         ) : current && manager ? (
           <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>

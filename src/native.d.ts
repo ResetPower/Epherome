@@ -1,6 +1,6 @@
 import { JavaWithoutNanoid } from "./common/struct/java";
 import { NewItem } from "./common/struct/news";
-import { DefaultCb } from "./common/utils";
+import { DefaultCb, IsOkCb } from "./common/utils";
 
 declare global {
   interface Window {
@@ -13,7 +13,8 @@ declare global {
       findJavaExecutable(pathname: string): string | never;
       // check availability and get information of a java executable file
       checkJava(pathname: string): JavaWithoutNanoid | never;
-      extractZip(file: string, target: string): void | never;
+      extractZip(file: string, target: string, cb: IsOkCb): void | never;
+      compressZip(folder: string, target: string, cb: IsOkCb): void | never;
     };
   }
 }

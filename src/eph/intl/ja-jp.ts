@@ -90,6 +90,7 @@ const jaJp: Language = {
     "profile.safeLog4j": "安全な Log4J",
     "profile.safeLog4j.description":
       "「formatMsgNoLookups」 を有効にして Log4J 問題を防ぐ。",
+    "profile.exportModpack": "パックを輸出",
     "settings.epheromePath": "Epherome パス",
     "settings.officialSite": "公式サイト",
     "settings.openSourceSoftware": "オープンソースソフトウェア",

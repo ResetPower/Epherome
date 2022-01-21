@@ -14,6 +14,7 @@ import { calculateHash, downloadFile } from "common/utils/files";
 import { DefaultFn } from "common/utils";
 import { MutableRefObject } from "react";
 import { MinecraftUrlUtil } from "core/url";
+import { Canceller } from "common/task/cancel";
 
 function existsAsFileSync(filepath: string): boolean {
   return (
@@ -137,7 +138,7 @@ export async function analyzeLibrary(
 export async function analyzeAssets(
   dir: string,
   assetIndex: ClientJsonAssetIndex,
-  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
+  canceller?: Canceller
 ): Promise<ClientAssetsResult> {
   const missing: ClientAnalyzedAsset[] = [];
   const assetIndexPath = path.join(
@@ -147,7 +148,7 @@ export async function analyzeAssets(
   );
 
   if (!fs.existsSync(assetIndexPath)) {
-    await downloadFile(assetIndex.url, assetIndexPath, cancellerWrapper);
+    await downloadFile(assetIndex.url, assetIndexPath, canceller);
   }
   const parsedAssetIndex = JSON.parse(
     fs.readFileSync(assetIndexPath).toString()

@@ -41,8 +41,19 @@ export function parseJson(
     profile.ver,
     `${profile.ver}.json`
   );
+  const vanillaJsonFile = path.join(
+    dir,
+    "versions",
+    profile.ver,
+    "vanilla.json"
+  );
   let parsed: ClientJson = JSON.parse(fs.readFileSync(jsonFile).toString());
-  if (parsed.inheritsFrom) {
+  if (fs.existsSync(vanillaJsonFile)) {
+    const vanilla: ClientJson = JSON.parse(
+      fs.readFileSync(vanillaJsonFile).toString()
+    );
+    parsed = mergeClientJson(parsed, vanilla, reserveId);
+  } else if (parsed.inheritsFrom) {
     const inheritsFrom = parsed.inheritsFrom;
     const inherit: ClientJson = JSON.parse(
       fs

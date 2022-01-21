@@ -89,6 +89,7 @@ const enUs: Language = {
     "profile.safeLog4j": "Safe Log4J",
     "profile.safeLog4j.description":
       'Enable "formatMsgNoLookups" to prevent Log4J issues.',
+    "profile.exportModpack": "Export Modpack",
     "settings.epheromePath": "Epherome Path",
     "settings.officialSite": "Official Site",
     "settings.openSourceSoftware": "Open Source Software",

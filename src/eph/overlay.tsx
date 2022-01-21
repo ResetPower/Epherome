@@ -1,8 +1,8 @@
 import { AnyMap, apply, combineFun, DefaultFn } from "common/utils";
-import { Button, IconButton } from "@resetpower/rcs";
+import { Button, Checkbox, IconButton } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { MdArrowDownward } from "react-icons/md";
 import { Transition } from "react-transition-group";
 import { rendererLogger } from "common/loggers";
@@ -14,9 +14,11 @@ export type GlobalOverlaySettings<P = AnyMap> = {
   message?: string;
   positiveText?: string;
   dangerous?: boolean;
-  action?: DefaultFn;
+  action?: (checked?: boolean) => unknown;
   cancellable?: boolean | DefaultFn;
   content?: (props: P) => JSX.Element;
+  check?: boolean;
+  checkText?: string;
   params?: P;
   bottomDivide?: boolean;
   fineCancel?: boolean;
@@ -52,6 +54,7 @@ export const overlayStore = new GlobalOverlayStore();
 
 // global dialog manager component
 export const GlobalOverlay = observer(() => {
+  const [checked, setChecked] = useState(false);
   const previous = useRef<GlobalOverlaySettings<unknown>>();
   const onClose = overlayStore.close;
 
@@ -80,6 +83,11 @@ export const GlobalOverlay = observer(() => {
                 <Dialog>
                   <p className="font-semibold text-xl">{o.title ?? t("tip")}</p>
                   {o.message && <p>{o.message}</p>}
+                  {o.check && (
+                    <Checkbox checked={checked} onChange={setChecked}>
+                      {o.checkText ?? ""}
+                    </Checkbox>
+                  )}
                   {o.content && <o.content {...((o.params as AnyMap) ?? {})} />}
                   <div className="flex">
                     {!o.bottomDivide && <div className="flex-grow" />}
@@ -96,7 +104,13 @@ export const GlobalOverlay = observer(() => {
                     {o.bottomDivide && <div className="flex-grow" />}
                     <Button
                       className={o.dangerous ? "text-danger" : ""}
-                      onClick={combineFun(o.action, onClose)}
+                      onClick={() => {
+                        if (o.action) {
+                          o.action(checked);
+                        }
+                        setChecked(false);
+                        onClose();
+                      }}
                     >
                       {o.positiveText ?? t("fine")}
                     </Button>

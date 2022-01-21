@@ -85,6 +85,7 @@ const zhCn: Language = {
     "profile.safeLog4j": "安全的 Log4J",
     "profile.safeLog4j.description":
       "启用 「formatMsgNoLookups」 以预防 Log4J 问题。",
+    "profile.exportModpack": "导出整合包",
     "settings.epheromePath": "Epherome 路径",
     "settings.officialSite": "官方网站",
     "settings.openSourceSoftware": "开源软件",

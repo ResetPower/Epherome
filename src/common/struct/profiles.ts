@@ -7,7 +7,13 @@ export interface MinecraftResolution {
   height?: number;
 }
 
-export type MinecraftProfileType = "create" | "download";
+export type MinecraftProfileType = "create" | "download" | "import";
+
+export interface MinecraftProfileModpackInfo {
+  name: string;
+  version: string;
+  author: string;
+}
 
 export interface MinecraftProfile extends WithUnderline {
   name: string;
@@ -21,6 +27,8 @@ export interface MinecraftProfile extends WithUnderline {
   gameDirIsolation?: boolean;
   showEpherome?: boolean;
   safeLog4j?: boolean;
+  modpackInfo?: MinecraftProfileModpackInfo;
+  realVer?: string;
 }
 
 export type MinecraftProfileEditablePart = Omit<MinecraftProfile, "from">;

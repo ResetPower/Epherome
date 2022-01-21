@@ -4,7 +4,10 @@ import { getLiteLoaderInstallVersions } from "./liteloader";
 
 export type MinecraftInstall = "Fabric" | "Forge" | "Optifine" | "LiteLoader";
 
-export type Installer = (profile: MinecraftProfile) => Promise<void>;
+export type Installer = (
+  profile: MinecraftProfile,
+  originalDir?: boolean
+) => Promise<void>;
 
 export interface InstallVersion {
   name: string;

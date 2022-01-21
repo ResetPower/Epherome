@@ -29,7 +29,8 @@ import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
 import ExtensionView from "eph/views/ExtensionView";
 import JavaInstallPage from "eph/views/JavaInstallPage";
-import { IconButton, AppBar, Menu } from "@resetpower/rcs";
+import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
+import ModpackExportPage from "eph/views/ModpackExportPage";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -82,9 +83,11 @@ export const EphAppBar = observer(
         <div className="eph-no-drag">
           {isAtHome ? (
             <Menu items={popMenuItems}>
-              <IconButton>
-                <MdMenu />
-              </IconButton>
+              {(open) => (
+                <IconButton active={open}>
+                  <MdMenu />
+                </IconButton>
+              )}
             </Menu>
           ) : (
             <IconButton onClick={isAtHome ? undefined : () => history.back()}>
@@ -92,28 +95,31 @@ export const EphAppBar = observer(
             </IconButton>
           )}
         </div>
-        <p className="eph-appbar-title flex-grow">{title}</p>
-        <div className="eph-no-drag flex">
-          {configStore.developerMode && (
-            <Menu
-              items={[
-                {
-                  icon: <VscDebugConsole />,
-                  text: "Developer Tools",
-                  action: () => ipcRenderer.send("open-devtools"),
-                },
-                {
-                  icon: <MdRefresh />,
-                  text: "Reload Epherome",
-                  action: () => location.reload(),
-                },
-              ]}
-            >
-              <IconButton>
+        <AppBarTitle>{title}</AppBarTitle>
+        {configStore.developerMode && (
+          <Menu
+            className="right-0"
+            items={[
+              {
+                icon: <VscDebugConsole />,
+                text: "Developer Tools",
+                action: () => ipcRenderer.send("open-devtools"),
+              },
+              {
+                icon: <MdRefresh />,
+                text: "Reload Epherome",
+                action: () => location.reload(),
+              },
+            ]}
+          >
+            {(open) => (
+              <IconButton active={open}>
                 <MdDeveloperBoard />
               </IconButton>
-            </Menu>
-          )}
+            )}
+          </Menu>
+        )}
+        <div className="eph-no-drag flex">
           {isTitleBarEph && (
             <>
               <IconButton onClick={() => ipcRenderer.send("minimize")}>
@@ -158,6 +164,12 @@ export function RouterView({
         ) : pathname === "profile.install" ? (
           params ? (
             <ProfileInstallPage profile={configStore.profiles[+params]} />
+          ) : (
+            <div />
+          )
+        ) : pathname === "profile.exportModpack" ? (
+          params ? (
+            <ModpackExportPage profile={configStore.profiles[+params]} />
           ) : (
             <div />
           )

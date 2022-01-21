@@ -71,21 +71,23 @@ export class MinecraftProfileManagerStore {
   }
   @action
   readOptions = (): void => {
-    const read = fs
-      .readFileSync(this.optionsTxtPath)
-      .toString()
-      .split("\n")
-      .map((v) => v.split(":"));
-    const temp: MinecraftGameOptions = [];
-    for (const [key, value] of read) {
-      key &&
-        value &&
-        temp.push({
-          key,
-          value,
-        });
+    if (fs.existsSync(this.optionsTxtPath)) {
+      const read = fs
+        .readFileSync(this.optionsTxtPath)
+        .toString()
+        .split("\n")
+        .map((v) => v.split(":"));
+      const temp: MinecraftGameOptions = [];
+      for (const [key, value] of read) {
+        key &&
+          value &&
+          temp.push({
+            key,
+            value,
+          });
+      }
+      this.options = temp;
     }
-    this.options = temp;
   };
   @action
   saveOptions = (editions: Record<string, string | undefined>): void => {

@@ -2,6 +2,7 @@ import { MinecraftProfile } from "common/struct/profiles";
 import { downloadFile } from "common/utils/files";
 import { MinecraftUrlUtil } from "core/url";
 import got from "got";
+import fs from "fs";
 import path from "path";
 import { InstallVersion } from ".";
 
@@ -21,11 +22,21 @@ export interface FabricGameVersion {
 async function installFabric(
   profile: MinecraftProfile,
   mc: string,
-  loader: string
+  loader: string,
+  originalDir?: boolean
 ) {
   const urlUtil = MinecraftUrlUtil.fromDefault();
   const url = urlUtil.fabricJson(mc, loader);
-  profile.ver = `fabric-loader-${loader}-${mc}`;
+  const newName = `fabric-loader-${loader}-${mc}`;
+  if (originalDir) {
+    fs.renameSync(
+      path.join(profile.dir, "versions", profile.ver, `${profile.ver}.json`),
+      path.join(profile.dir, "versions", profile.ver, "vanilla.json")
+    );
+    profile.realVer = newName;
+  } else {
+    profile.ver = newName;
+  }
   const target = path.join(
     profile.dir,
     "versions",
@@ -48,6 +59,6 @@ export async function getFabricInstallVersions(
   }
   return loaders.map((loader) => ({
     name: loader.version,
-    install: (profile) => installFabric(profile, mc, loader.version),
+    install: (profile, od) => installFabric(profile, mc, loader.version, od),
   }));
 }

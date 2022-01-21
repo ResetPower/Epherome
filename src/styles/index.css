@@ -12,6 +12,9 @@
   .eph-appbar-title {
     @apply flex-grow pl-3 text-xl;
   }
+  .eph-helper-text {
+    @apply text-sm text-shallow;
+  }
 }
 
 :root {

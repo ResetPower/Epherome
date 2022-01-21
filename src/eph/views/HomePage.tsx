@@ -9,7 +9,7 @@ import {
 } from "@resetpower/rcs";
 import { useEffect, useMemo, useState } from "react";
 import { configStore, setConfig } from "common/struct/config";
-import { LaunchCanceller, launchMinecraft } from "core/launch";
+import { launchMinecraft } from "core/launch";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
 import { Card } from "../components/layouts";
 import {
@@ -38,6 +38,7 @@ import ExtensionView from "./ExtensionView";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { openInBrowser } from "common/utils/open";
+import { Canceller } from "common/task/cancel";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -63,7 +64,7 @@ export class HomePageStore {
   // empty array: not loaded yet; null: loading; undefined: error occurred;
   @observable news: NewItem[] | null | undefined = [];
   againRequestingPassword = false;
-  canceller = new ObjectWrapper<LaunchCanceller>(() => false);
+  canceller = new Canceller();
   password = new ObjectWrapper<string>("");
   constructor() {
     makeObservable(this);
@@ -139,7 +140,7 @@ export class HomePageStore {
               action: () => resolve(this.password.current),
             });
           }),
-        cancellerWrapper: this.canceller,
+        canceller: this.canceller,
         provider: configStore.downloadProvider,
       })
         .then(([stat, cb]) => {
@@ -168,7 +169,7 @@ export class HomePageStore {
     }
   };
   cancel = (): void => {
-    this.canceller.current() && this.setLaunching(false);
+    this.canceller.cancel() && this.setLaunching(false);
   };
 }
 

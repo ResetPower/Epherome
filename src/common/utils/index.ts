@@ -11,6 +11,7 @@ export type DefaultFn = () => unknown;
 export type Nullable<T> = T | null;
 
 export type DefaultCb<E, T> = (err: Nullable<E>, data: Nullable<T>) => unknown;
+export type IsOkCb = (isOk: boolean) => unknown;
 
 export type ErrorHandler = (error: Error) => unknown;
 

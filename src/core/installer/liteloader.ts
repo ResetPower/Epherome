@@ -58,8 +58,22 @@ export async function getLiteLoaderInstallVersions(
     const time = new Date(+latest.timestamp * 1000).toISOString();
     return {
       name: `${mc}-${stream}`,
-      install: async (profile) => {
-        profile.ver = `${mc}-LiteLoader-${stream}`;
+      install: async (profile, originalDir) => {
+        const newName = `${mc}-LiteLoader-${stream}`;
+        if (originalDir) {
+          fs.renameSync(
+            path.join(
+              profile.dir,
+              "versions",
+              profile.ver,
+              `${profile.ver}.json`
+            ),
+            path.join(profile.dir, "versions", profile.ver, "vanilla.json")
+          );
+          profile.realVer = newName;
+        } else {
+          profile.ver = newName;
+        }
         const versionDir = path.join(profile.dir, "versions", profile.ver);
         const jsonFile = path.join(versionDir, `${profile.ver}.json`);
         createDirByPath(jsonFile);

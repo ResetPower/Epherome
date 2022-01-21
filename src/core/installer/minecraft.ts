@@ -2,7 +2,6 @@ import { MinecraftVersion } from "core/launch/versions";
 import path from "path";
 import fs from "fs";
 import { configStore } from "common/struct/config";
-import { DefaultFn, ErrorHandler } from "common/utils";
 import { ClientJson } from "core/launch/struct";
 import { analyzeAssets, analyzeLibrary } from "core/launch/libraries";
 import {
@@ -13,33 +12,31 @@ import {
 } from "common/utils/files";
 import { coreLogger } from "common/loggers";
 import { DownloaderDetailsListener } from "common/utils/files";
-import { MutableRefObject } from "react";
 import { MinecraftUrlUtil } from "core/url";
 import { ephDefaultDotMinecraft } from "common/utils/info";
+import { Canceller } from "common/task/cancel";
 
 export async function downloadMinecraft(
   version: MinecraftVersion,
   onDetailsChange: DownloaderDetailsListener,
-  onError: ErrorHandler,
-  onDone: DefaultFn,
-  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
+  canceller: Canceller,
+  dest?: string
 ): Promise<void> {
+  const vid = dest ?? version.id;
   const urlUtil = MinecraftUrlUtil.fromDefault();
 
-  const versionDir = path.join(ephDefaultDotMinecraft, "versions", version.id);
+  const versionDir = path.join(ephDefaultDotMinecraft, "versions", vid);
   coreLogger.info(
-    `Start downloading Minecraft ${version.id} to "${versionDir}"`
+    `Start downloading Minecraft ${version.id}${
+      dest ? `(${dest})` : ""
+    } to "${versionDir}"`
   );
 
-  const jsonFilename = `${version.id}.json`;
+  const jsonFilename = `${vid}.json`;
   const jsonPath = path.join(versionDir, jsonFilename);
   createDirByPath(jsonPath);
 
-  await downloadFile(
-    urlUtil.clientJson(version),
-    jsonPath,
-    cancellerWrapper
-  ).catch(onError);
+  await downloadFile(urlUtil.clientJson(version), jsonPath, canceller);
 
   // read content from json file
   const data = fs.readFileSync(jsonPath).toString();
@@ -56,18 +53,18 @@ export async function downloadMinecraft(
   const assets = await analyzeAssets(
     ephDefaultDotMinecraft,
     parsed.assetIndex,
-    cancellerWrapper
+    canceller
   );
 
   coreLogger.info(`Download requirements in "${jsonFilename}" parsed`);
 
   // resolve jar
   const client = parsed.downloads.client;
-  const jarPath = path.join(versionDir, `${version.id}.jar`);
+  const jarPath = path.join(versionDir, `${vid}.jar`);
   const noNeedToDownloadJar =
     fs.existsSync(jarPath) && client.sha1 === calculateHash(jarPath, "sha1");
 
-  parallelDownload(
+  await parallelDownload(
     [
       ...(noNeedToDownloadJar
         ? []
@@ -87,8 +84,7 @@ export async function downloadMinecraft(
       })),
     ],
     onDetailsChange,
-    onError,
     configStore.downloadConcurrency,
-    cancellerWrapper
-  ).then(onDone);
+    canceller
+  );
 }

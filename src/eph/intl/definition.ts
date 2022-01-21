@@ -78,6 +78,7 @@ export interface LanguageDefinition {
   "profile.canOnlyInstallOnVanilla": string;
   "profile.safeLog4j": string;
   "profile.safeLog4j.description": string;
+  "profile.exportModpack": string;
   "settings.epheromePath": string;
   "settings.officialSite": string;
   "settings.openSourceSoftware": string;

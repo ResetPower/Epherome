@@ -22,7 +22,6 @@ import { MinecraftDownloadProvider, MinecraftUrlUtil } from "core/url";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "common/struct/java";
-import { ObjectWrapper } from "common/utils/object";
 import { Process } from "common/stores/process";
 import {
   authenticate,
@@ -32,8 +31,7 @@ import {
   validateMicrosoft,
 } from "core/auth";
 import { showOverlay } from "eph/overlay";
-
-export type LaunchCanceller = () => boolean;
+import { Canceller } from "common/task/cancel";
 
 export type LaunchOnDone = (process: Process | null) => void;
 
@@ -44,7 +42,7 @@ export interface MinecraftLaunchOptions {
   setHelper: (value: string) => void;
   requestPassword: (again: boolean) => Promise<string>;
   onDone: LaunchOnDone;
-  cancellerWrapper: ObjectWrapper<LaunchCanceller>;
+  canceller: Canceller;
   provider: MinecraftDownloadProvider;
 }
 
@@ -57,8 +55,7 @@ export async function launchMinecraft(
   ]
 > {
   const urlUtil = new MinecraftUrlUtil(options.provider);
-  const cancellerWrapper = options.cancellerWrapper;
-  const restoreCanceller = cancellerWrapper.setToDefault;
+  const canceller = options.canceller;
   const java = options.java;
 
   if (!java) {
@@ -165,13 +162,10 @@ export async function launchMinecraft(
       (_, totalPercentage) => {
         setHelper(`${t("launching.downloadingLib")} (${totalPercentage}%)`);
       },
-      (err) => {
-        throw err;
-      },
       configStore.downloadConcurrency,
-      cancellerWrapper
+      canceller
     );
-    restoreCanceller();
+    canceller.clear();
   }
 
   // download missing libraries
@@ -187,13 +181,10 @@ export async function launchMinecraft(
       (_, totalPercentage) => {
         setHelper(`${t("launching.downloadingAsset")} (${totalPercentage}%)`);
       },
-      (err) => {
-        throw err;
-      },
       configStore.downloadConcurrency,
-      cancellerWrapper
+      canceller
     );
-    restoreCanceller();
+    canceller.clear();
   }
 
   setHelper(defaultHelper);
@@ -213,7 +204,9 @@ export async function launchMinecraft(
   // unzip native libraries
   for (const i of analyzedLibrary.natives) {
     // 借助 Rust 神力解压，法力无边。
-    window.native.extractZip(i, nativeDir);
+    await new Promise((resolve) =>
+      window.native.extractZip(i, nativeDir, resolve)
+    );
   }
 
   const gameDir = profile.gameDirIsolation

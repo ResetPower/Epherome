@@ -12,7 +12,7 @@ import {
 import { MinecraftVersion, MinecraftVersionType } from "core/launch/versions";
 import { rendererLogger } from "common/loggers";
 import { Alert } from "../components/layouts";
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment, useMemo } from "react";
 import { createProfile } from "../../common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
@@ -25,6 +25,7 @@ import { showOverlay } from "eph/overlay";
 import got from "got";
 import { DownloadDetail } from "common/utils/files";
 import { ephDefaultDotMinecraft } from "common/utils/info";
+import { Canceller } from "common/task/cancel";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -32,7 +33,7 @@ export function DownloadingFragment(props: {
   canceller: ObjectWrapper<DefaultFn>;
   setLocking: (locking: boolean) => void;
 }): JSX.Element {
-  const canceller = useRef<DefaultFn>();
+  const canceller = useMemo(() => new Canceller(), []);
   const [status, setStatus] = useState<null | "error" | "done">(null);
   const [tasks, setTasks] = useState<ObjectWrapper<DownloadDetail[]>>(
     new ObjectWrapper<DownloadDetail[]>([])
@@ -54,9 +55,12 @@ export function DownloadingFragment(props: {
 
   const handleCancel = () => {
     rendererLogger.info("Download cancelled");
-    call(canceller.current);
-    props.setLocking(false);
-    setStatus(null);
+    if (canceller.cancel()) {
+      props.setLocking(false);
+      setStatus(null);
+    } else {
+      rendererLogger.info("Unable to cancel download");
+    }
   };
 
   const handleStart = () => {
@@ -67,8 +71,9 @@ export function DownloadingFragment(props: {
         setTasks(tasks);
         setTotalPercentage(totalPercentage);
       },
-      onError,
-      () => {
+      canceller
+    )
+      .then(() => {
         createProfile({
           name,
           dir: ephDefaultDotMinecraft,
@@ -82,9 +87,8 @@ export function DownloadingFragment(props: {
           message: t("doneMessage"),
           action: () => history.back(),
         });
-      },
-      canceller
-    );
+      })
+      .catch(onError);
   };
 
   return (

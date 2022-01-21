@@ -1,3 +1,4 @@
+mod compress;
 mod data;
 mod java;
 mod tool;
@@ -17,5 +18,6 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("checkJava", java::checker::check_java)?;
     cx.export_function("extractZip", unzip::js_extract_zip)?;
     cx.export_function("fetchNews", data::news::fetch_news)?;
+    cx.export_function("compressZip", compress::js_compress_zip)?;
     Ok(())
 }

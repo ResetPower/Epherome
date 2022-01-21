@@ -46,6 +46,20 @@ pub fn extract_zip(zip: &str, target: &str) -> Result<(), Box<dyn Error>> {
 pub fn js_extract_zip(mut c: FunctionContext) -> JsResult<JsUndefined> {
     let zip = c.argument::<JsString>(0)?.value(&mut c);
     let target = c.argument::<JsString>(1)?.value(&mut c);
-    extract_zip(&zip, &target).unwrap();
+    let callback = c.argument::<JsFunction>(2)?.root(&mut c);
+    let channel = c.channel();
+
+    std::thread::spawn(move || {
+        let result = extract_zip(&zip, &target).is_ok();
+
+        channel.send(move |mut c| {
+            let callback = callback.into_inner(&mut c);
+            let this = c.undefined();
+            let arg = c.boolean(result);
+            callback.call(&mut c, this, vec![arg])?;
+            Ok(())
+        });
+    });
+
     Ok(c.undefined())
 }

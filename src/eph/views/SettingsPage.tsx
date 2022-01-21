@@ -51,7 +51,7 @@ import { ipcRenderer } from "electron";
 import { codeName, ephVersion, userDataPath } from "common/utils/info";
 import { overlayStore, showOverlay } from "eph/overlay";
 import { pushToHistory } from "eph/renderer/history";
-import { apply } from "common/utils";
+import { adapt, apply } from "common/utils";
 import { openInBrowser, openInFinder } from "common/utils/open";
 import { updateTheme } from "..";
 import NewThemeView from "./NewThemeView";
@@ -393,13 +393,36 @@ export const SettingsAppearanceFragment = observer(() => {
           {t("settings.theme.followOS")}
         </Checkbox>
         {[rcsLight, rcsDark, ...configStore.themeList].map((value, index) => (
-          <ListItem
-            checked={theme === value.name}
-            onClick={() => handleChangeTheme(value.name)}
-            key={index}
-          >
-            <div className="flex-grow">{value.name}</div>
-          </ListItem>
+          <div className="flex" key={index}>
+            <ListItem
+              className="flex-grow"
+              checked={theme === value.name}
+              onClick={() => handleChangeTheme(value.name)}
+            >
+              {value.name}
+            </ListItem>
+            {!adapt(value, rcsLight, rcsDark) && (
+              <IconButton
+                onClick={() =>
+                  showOverlay({
+                    title: t("warning"),
+                    message: t("confirmRemoving"),
+                    cancellable: true,
+                    action: () => {
+                      setConfig(
+                        (cfg) =>
+                          (cfg.themeList = cfg.themeList.filter(
+                            (t) => t !== value
+                          ))
+                      );
+                    },
+                  })
+                }
+              >
+                <MdClose />
+              </IconButton>
+            )}
+          </div>
         ))}
         <ListItem
           onClick={() =>

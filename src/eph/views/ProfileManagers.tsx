@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { BiImport } from "react-icons/bi";
+import { BiExport, BiImport } from "react-icons/bi";
 import { IoMdCheckmarkCircle, IoMdCloseCircle } from "react-icons/io";
 import {
   MdClose,
@@ -86,13 +86,27 @@ export function ProfileGeneralFragment({
     showOverlay({
       title: t("profile.removing"),
       message: t("confirmRemoving"),
-      action: () => removeProfile(current),
+      action: (r) => {
+        if (r) {
+          moveToTrash(path.join(current.dir, "versions", current.ver));
+        }
+        removeProfile(current);
+      },
+      check: true,
+      checkText: "Remove files as well",
       positiveText: t("remove"),
       dangerous: true,
       cancellable: true,
     });
+  const handleExport = () =>
+    pushToHistory(
+      "profile.exportModpack",
+      `${configStore.profiles.indexOf(current)}`
+    );
   const handleGoToInstall = () => {
-    if (parsed.inheritsFrom) {
+    if (current.modpackInfo) {
+      showOverlay({ message: "Don't install on a modpack." });
+    } else if (parsed.inheritsFrom) {
       showOverlay({ message: t("profile.canOnlyInstallOnVanilla") });
     } else {
       pushToHistory(
@@ -115,17 +129,38 @@ export function ProfileGeneralFragment({
             {current.dir}
           </Link>
         </Info>
-        <Info title={t("version")}>{current.ver}</Info>
+        <Info title={t("version")}>
+          {current.realVer ? (
+            <>
+              {current.realVer} ({current.ver})
+            </>
+          ) : (
+            current.ver
+          )}
+        </Info>
+        {current.modpackInfo && (
+          <div>
+            <Info title="Modpack Name">{current.modpackInfo.name}</Info>
+            <Info title="Modpack Version">{current.modpackInfo.version}</Info>
+            <Info title="Modpack Author">{current.modpackInfo.author}</Info>
+          </div>
+        )}
       </div>
       <div className="flex">
         <Button variant="contained" onClick={handleGoToInstall}>
           <VscPackage /> {t("profile.install")}
+        </Button>
+        <Button onClick={handleExport}>
+          <BiExport /> Export as Modpack...
         </Button>
         <div className="flex-grow" />
         <Button className="text-danger" onClick={handleRemove}>
           <MdDelete />
           {t("remove")}
         </Button>
+      </div>
+      <div className="flex">
+        <div className="flex-grow" />
       </div>
     </div>
   );

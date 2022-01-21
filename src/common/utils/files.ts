@@ -1,8 +1,7 @@
 import fs, { createWriteStream } from "fs";
 import path from "path";
 import crypto from "crypto";
-import { adapt, DefaultFn, ErrorHandler } from "../utils";
-import { MutableRefObject } from "react";
+import { adapt, ErrorHandler } from "../utils";
 import { shell } from "electron";
 import { Counter, ObjectWrapper } from "../utils/object";
 import got from "got";
@@ -11,6 +10,7 @@ import { promisify } from "util";
 import pLimit from "p-limit";
 import { rendererLogger } from "common/loggers";
 import { shortid } from "./ids";
+import { Canceller } from "common/task/cancel";
 
 const pipeline = promisify(stream.pipeline);
 
@@ -51,13 +51,13 @@ export function ensureDir(p: string): void {
 export function downloadFile(
   url: string,
   target: string,
-  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
+  canceller?: Canceller
 ): Promise<void> {
   createDirByPath(target);
   const downloadStream = got.stream(url);
   const fileWriterStream = createWriteStream(target);
-  cancellerWrapper &&
-    (cancellerWrapper.current = () => {
+  canceller &&
+    canceller.update(() => {
       downloadStream.destroy();
       fileWriterStream.destroy();
       fs.rmSync(target);
@@ -68,9 +68,8 @@ export function downloadFile(
 export async function parallelDownload(
   itemList: ParallelDownloadItemWithoutUnique[],
   onDetailsChange: DownloaderDetailsListener,
-  onError: ErrorHandler,
   concurrency: number,
-  cancellerWrapper?: MutableRefObject<DefaultFn | undefined>
+  canceller: Canceller
 ): Promise<void> {
   const counter = new Counter();
   const items = itemList.map((i) => ({ ...i, unique: counter.count() }));
@@ -99,8 +98,8 @@ export async function parallelDownload(
       const downloadStream = got.stream(item.url);
       createDirByPath(item.target);
       const fileWriterStream = createWriteStream(item.target);
-      cancellerWrapper &&
-        (cancellerWrapper.current = () => {
+      canceller &&
+        canceller.update(() => {
           downloadStream.destroy();
           fileWriterStream.destroy();
           fs.rmSync(item.target);
@@ -171,4 +170,35 @@ export function basenameWithoutExt(filepath: string): string {
     return basenameWithoutExt(filepath.slice(0, -9));
   }
   return filename.split(".").slice(0, -1).join(".");
+}
+
+export function copyFolder(
+  src: string,
+  target: string,
+  noGoodList?: string[]
+): void {
+  ensureDir(target);
+  for (const i of fs.readdirSync(src)) {
+    const pathname = path.join(src, i);
+    if (noGoodList && noGoodList.indexOf(i) !== -1) {
+      continue;
+    }
+    if (fs.statSync(pathname).isDirectory()) {
+      copyFolder(pathname, path.join(target, i));
+    } else {
+      fs.copyFileSync(pathname, path.join(target, i));
+    }
+  }
+}
+
+export function rmFolder(src: string): void {
+  for (const i of fs.readdirSync(src)) {
+    const pathname = path.join(src, i);
+    if (fs.statSync(pathname).isDirectory()) {
+      rmFolder(pathname);
+    } else {
+      fs.rmSync(pathname);
+    }
+  }
+  fs.rmdirSync(src);
 }
