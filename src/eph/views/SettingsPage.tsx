@@ -53,7 +53,7 @@ import { overlayStore, showOverlay } from "eph/overlay";
 import { pushToHistory } from "eph/renderer/history";
 import { adapt, apply } from "common/utils";
 import { openInBrowser, openInFinder } from "common/utils/open";
-import { updateTheme } from "..";
+import { coordinateFont, updateTheme } from "..";
 import NewThemeView from "./NewThemeView";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
@@ -262,6 +262,7 @@ export const SettingsGeneralFragment = observer(() => {
   const handleChangeLanguage = (ev: string) => {
     rendererLogger.info(`Changing language to ${ev}'`);
     intlStore.setLanguage(ev);
+    coordinateFont();
     setResult("");
   };
   const handleManageJava = () => {

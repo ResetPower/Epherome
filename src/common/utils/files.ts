@@ -1,7 +1,7 @@
 import fs, { createWriteStream } from "fs";
 import path from "path";
 import crypto from "crypto";
-import { adapt, ErrorHandler } from "../utils";
+import { adapt } from "../utils";
 import { shell } from "electron";
 import { Counter, ObjectWrapper } from "../utils/object";
 import got from "got";
@@ -11,19 +11,14 @@ import pLimit from "p-limit";
 import { rendererLogger } from "common/loggers";
 import { shortid } from "./ids";
 import { Canceller } from "common/task/cancel";
+import { SubTask } from "common/task";
 
 const pipeline = promisify(stream.pipeline);
 
 export type DownloaderDetailsListener = (
-  details: ObjectWrapper<DownloadDetail[]>,
+  details: ObjectWrapper<SubTask[]>,
   totalPercentage: number
 ) => unknown;
-
-export interface DownloadDetail {
-  filename: string;
-  percentage: number;
-  inProgress: boolean;
-}
 
 export interface ParallelDownloadItem {
   unique: number;
@@ -69,13 +64,13 @@ export async function parallelDownload(
   itemList: ParallelDownloadItemWithoutUnique[],
   onDetailsChange: DownloaderDetailsListener,
   concurrency: number,
-  canceller: Canceller
+  canceller?: Canceller
 ): Promise<void> {
   const counter = new Counter();
   const items = itemList.map((i) => ({ ...i, unique: counter.count() }));
   const details = items.map((i) => ({
     ...i,
-    filename: path.basename(i.target),
+    name: path.basename(i.target),
     percentage: 0,
     inProgress: false,
   }));
@@ -85,7 +80,7 @@ export async function parallelDownload(
 
   const updateUI = () =>
     onDetailsChange(
-      new ObjectWrapper<DownloadDetail[]>(details),
+      new ObjectWrapper<SubTask[]>(details),
       Math.floor(
         details.map((i) => i.percentage).reduce((a, b) => a + b) /
           details.length
@@ -94,16 +89,13 @@ export async function parallelDownload(
 
   const limit = pLimit(concurrency);
   const promises = items.map((item) =>
-    limit(() => {
+    limit(async () => {
+      if (canceller?.cancelled) {
+        return;
+      }
       const downloadStream = got.stream(item.url);
       createDirByPath(item.target);
       const fileWriterStream = createWriteStream(item.target);
-      canceller &&
-        canceller.update(() => {
-          downloadStream.destroy();
-          fileWriterStream.destroy();
-          fs.rmSync(item.target);
-        });
       downloadStream.on("downloadProgress", ({ percent }) => {
         const percentage = Math.floor(percent * 100);
         const detail = details.find((i) => i.unique === item.unique);
@@ -117,7 +109,14 @@ export async function parallelDownload(
         }
         updateUI();
       });
-      return pipeline(downloadStream, fileWriterStream);
+      canceller &&
+        canceller.update(() => {
+          downloadStream.destroy();
+          fileWriterStream.close();
+          fileWriterStream.destroy();
+          fs.rmSync(item.target);
+        });
+      await pipeline(downloadStream, fileWriterStream);
     })
   );
 

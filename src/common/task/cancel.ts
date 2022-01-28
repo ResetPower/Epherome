@@ -2,6 +2,7 @@ import { DefaultFn } from "common/utils";
 
 export class Canceller {
   fn?: DefaultFn;
+  cancelled = false;
   constructor(fn?: DefaultFn) {
     fn && (this.fn = fn);
   }
@@ -14,6 +15,7 @@ export class Canceller {
   cancel(): boolean {
     if (this.fn) {
       this.fn();
+      this.cancelled = true;
       return true;
     } else {
       return false;

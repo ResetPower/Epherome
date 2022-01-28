@@ -1,7 +1,7 @@
 import { useFloating, shift } from "@floating-ui/react-dom";
 import { twColors } from "@resetpower/rcs";
 import { DefaultFn } from "common/utils";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function parseForegroundWhite(bgHex: string): boolean {
   if (bgHex === "#000") {
@@ -50,10 +50,30 @@ export default function UIPalette(props: {
   blackAndWhite?: boolean;
 }): JSX.Element {
   const [show, setShow] = useState(false);
-  const { x, y, reference, floating, strategy } = useFloating({
+  const { x, y, reference, floating, strategy, refs } = useFloating({
     placement: "bottom",
     middleware: [shift()],
   });
+  const close = useCallback(
+    (event: Event) => {
+      if (
+        !refs.reference.current?.contains(event.target as Node) &&
+        !refs.floating.current?.contains(event.target as Node)
+      ) {
+        setShow(false);
+      }
+    },
+    [refs]
+  );
+
+  useEffect(
+    () =>
+      (show ? document.addEventListener : document.removeEventListener)(
+        "click",
+        close
+      ),
+    [show, close]
+  );
 
   return (
     <div className="flex justify-center items-center">

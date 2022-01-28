@@ -4,22 +4,16 @@ import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "common/struct/profiles";
 import { defaultJvmArgs } from "common/struct/java";
-import {
-  copyFolder,
-  DownloadDetail,
-  ensureDir,
-  rmFolder,
-} from "common/utils/files";
+import { copyFolder, ensureDir, rmFolder } from "common/utils/files";
 import { downloadMinecraft } from "./installer/minecraft";
 import { MinecraftUrlUtil } from "./url";
-import { configStore } from "common/struct/config";
 import got from "got";
 import { MinecraftVersion } from "./launch/versions";
-import { Canceller } from "common/task/cancel";
 import { getInstallVersions, MinecraftInstall } from "./installer";
-import { ObjectWrapper } from "common/utils/object";
 import { coreLogger } from "common/loggers";
 import { ClientJson } from "./launch/struct";
+import { Task } from "common/task";
+import { taskStore } from "common/task/store";
 
 export interface ModpackModLoader {
   id: string;
@@ -36,7 +30,7 @@ export interface ModpackManifest {
 
 export type ModpackImportDetailReader = (
   helper: string,
-  details?: [ObjectWrapper<DownloadDetail[]>, number]
+  progress?: number
 ) => void;
 
 async function installModLoader(
@@ -60,8 +54,8 @@ async function installModLoader(
 async function resolveModpack(
   root: string,
   manifest: string,
-  detailReader: ModpackImportDetailReader,
-  canceller: Canceller
+  task: Task,
+  detailReader: ModpackImportDetailReader
 ): Promise<MinecraftProfile> {
   detailReader("Reading Modpack");
 
@@ -81,7 +75,7 @@ async function resolveModpack(
   }
 
   // install minecraft
-  const util = new MinecraftUrlUtil(configStore.downloadProvider);
+  const util = MinecraftUrlUtil.fromDefault();
   const versions: MinecraftVersion[] = JSON.parse(
     (await got(util.versionManifest())).body
   ).versions;
@@ -104,14 +98,10 @@ async function resolveModpack(
   };
 
   if (minecraftVersion) {
-    await downloadMinecraft(
-      minecraftVersion,
-      (d, t) => {
-        detailReader("Installing Minecraft", [d, t]);
-      },
-      canceller,
-      name
+    await downloadMinecraft(minecraftVersion, task, name, (p) =>
+      detailReader("Installing Minecraft", p)
     );
+    task.percentage = 80;
     detailReader("Installing Mod Loader");
     for (const i of manifestJson.minecraft.modLoaders) {
       const split = i.id.split("-");
@@ -124,6 +114,7 @@ async function resolveModpack(
         break;
       }
     }
+    task.percentage = 100;
   }
 
   return profile;
@@ -131,14 +122,17 @@ async function resolveModpack(
 
 export async function importModpack(
   filename: string,
-  canceller: Canceller,
-  detailReader: ModpackImportDetailReader,
-  theId?: string
+  task: Task
 ): Promise<MinecraftProfile | null> {
-  const id = theId ?? nanoid();
-  const destination = path.join(userDataPath, "modpackTemp", id);
+  task.percentage = 10;
+  const destination = path.join(
+    userDataPath,
+    "modpackTemp",
+    task.id.toString()
+  );
   ensureDir(destination);
-  detailReader("Unzipping");
+  task.hashMap.put("helper", "Unzipping");
+  task.signal();
   await new Promise((resolve) =>
     window.native.extractZip(filename, destination, resolve)
   );
@@ -150,16 +144,26 @@ export async function importModpack(
     if (!fs.existsSync(modpackZip)) {
       return null;
     }
-    return importModpack(modpackZip, canceller, detailReader, id);
+    return importModpack(modpackZip, task);
   } else {
+    task.percentage = 20;
     const profile = await resolveModpack(
       destination,
       manifest,
-      detailReader,
-      canceller
+      task,
+      (helper, p) => {
+        if (p) {
+          task.percentage = 20 + Math.floor(p * 0.6);
+          task.hashMap.put("helper", `${helper} (${p}%)`);
+        } else {
+          task.hashMap.put("helper", helper);
+          task.signal();
+        }
+      }
     );
     // do cleanup
     rmFolder(destination);
+    taskStore.finish(task);
     return profile;
   }
 }

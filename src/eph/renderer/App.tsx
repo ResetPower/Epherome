@@ -19,7 +19,7 @@ import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
 import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { configStore } from "common/struct/config";
 import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
 import ProfileInstallPage from "../views/ProfileInstallPage";
@@ -31,6 +31,63 @@ import ExtensionView from "eph/views/ExtensionView";
 import JavaInstallPage from "eph/views/JavaInstallPage";
 import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
 import ModpackExportPage from "eph/views/ModpackExportPage";
+import { useFloating } from "@floating-ui/react-dom";
+import { shift } from "@floating-ui/core";
+import TaskPanel from "eph/components/TaskPanel";
+import { FaServer } from "react-icons/fa";
+
+function TaskPanelShower(): JSX.Element {
+  const { x, y, reference, floating, refs, strategy } = useFloating({
+    placement: "bottom",
+    middleware: [shift()],
+  });
+  const [show, setShow] = useState(false);
+  const close = useCallback(
+    (event: Event) => {
+      if (
+        !refs.reference.current?.contains(event.target as Node) &&
+        !refs.floating.current?.contains(event.target as Node)
+      ) {
+        setShow(false);
+      }
+    },
+    [refs]
+  );
+
+  useEffect(
+    () =>
+      (show ? document.addEventListener : document.removeEventListener)(
+        "click",
+        close
+      ),
+    [show, close]
+  );
+
+  return (
+    <div>
+      <div ref={reference}>
+        <IconButton
+          className="flex"
+          onClick={() => setShow(!show)}
+          active={show}
+        >
+          <FaServer size="1.2em" />
+        </IconButton>
+      </div>
+      {show && (
+        <TaskPanel
+          className="z-20 right-1"
+          ref={floating}
+          style={{
+            position: strategy,
+            top: y ?? "",
+            left: x ?? "",
+          }}
+        />
+      )}
+    </div>
+  );
+}
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -96,9 +153,10 @@ export const EphAppBar = observer(
           )}
         </div>
         <AppBarTitle>{title}</AppBarTitle>
+        <TaskPanelShower />
         {configStore.developerMode && (
           <Menu
-            className="right-0"
+            className="right-1"
             items={[
               {
                 icon: <VscDebugConsole />,
@@ -160,7 +218,7 @@ export function RouterView({
         ) : pathname === "accounts" ? (
           <AccountsPage />
         ) : pathname === "profiles" ? (
-          <ProfilesPage />
+          <ProfilesPage params={params} />
         ) : pathname === "profile.install" ? (
           params ? (
             <ProfileInstallPage profile={configStore.profiles[+params]} />
@@ -176,7 +234,7 @@ export function RouterView({
         ) : pathname === "settings" ? (
           <SettingsPage />
         ) : pathname === "download" ? (
-          <DownloadsPage />
+          <DownloadsPage version={params ? JSON.parse(params) : undefined} />
         ) : pathname === "java.installJava" ? (
           <JavaInstallPage />
         ) : pathname === "processes" ? (
@@ -210,7 +268,7 @@ export default function App(): JSX.Element {
     <IconContext.Provider value={{ size: "1.5em", className: "mx-0.5" }}>
       <GlobalOverlay />
       <EphAppBar pathname={pn} />
-      <RouterView pathname={pn} params={params} />
+      <RouterView pathname={pn} params={decodeURIComponent(params)} />
     </IconContext.Provider>
   );
 }

@@ -11,16 +11,16 @@ import {
   parallelDownload,
 } from "common/utils/files";
 import { coreLogger } from "common/loggers";
-import { DownloaderDetailsListener } from "common/utils/files";
 import { MinecraftUrlUtil } from "core/url";
 import { ephDefaultDotMinecraft } from "common/utils/info";
-import { Canceller } from "common/task/cancel";
+import { Task } from "common/task";
+import { taskStore } from "common/task/store";
 
 export async function downloadMinecraft(
   version: MinecraftVersion,
-  onDetailsChange: DownloaderDetailsListener,
-  canceller: Canceller,
-  dest?: string
+  task: Task,
+  dest?: string,
+  onProgress?: (progress: number) => unknown
 ): Promise<void> {
   const vid = dest ?? version.id;
   const urlUtil = MinecraftUrlUtil.fromDefault();
@@ -36,7 +36,7 @@ export async function downloadMinecraft(
   const jsonPath = path.join(versionDir, jsonFilename);
   createDirByPath(jsonPath);
 
-  await downloadFile(urlUtil.clientJson(version), jsonPath, canceller);
+  await downloadFile(urlUtil.clientJson(version), jsonPath, task.canceller);
 
   // read content from json file
   const data = fs.readFileSync(jsonPath).toString();
@@ -53,7 +53,7 @@ export async function downloadMinecraft(
   const assets = await analyzeAssets(
     ephDefaultDotMinecraft,
     parsed.assetIndex,
-    canceller
+    task.canceller
   );
 
   coreLogger.info(`Download requirements in "${jsonFilename}" parsed`);
@@ -83,8 +83,21 @@ export async function downloadMinecraft(
         target: i.path,
       })),
     ],
-    onDetailsChange,
+    (tasks, totalPercentage) => {
+      if (task) {
+        task.putSubtask(tasks.current);
+        if (onProgress) {
+          onProgress(totalPercentage);
+        } else {
+          taskStore.setProgress(task.id, totalPercentage);
+        }
+        // update ui
+        task.signal();
+      }
+    },
     configStore.downloadConcurrency,
-    canceller
+    task.canceller
   );
+
+  taskStore.finish(task);
 }

@@ -1,4 +1,6 @@
-import "@fontsource/inter";
+import "@fontsource/noto-sans";
+import "@fontsource/noto-sans-jp";
+import "@fontsource/noto-sans-sc";
 import "@resetpower/rcs/styles/index.css";
 import "../styles/index.css";
 import { render } from "react-dom";
@@ -36,6 +38,7 @@ const manager = new ThemeManager(
   }
 );
 updateTheme();
+coordinateFont();
 
 export function updateTheme() {
   manager.responseSystemChange();
@@ -47,6 +50,12 @@ export function updateTheme() {
       manager.apply(t);
     }
   }
+}
+
+export function coordinateFont() {
+  document.body.style.fontFamily = `Noto Sans, ${
+    configStore.language === "ja-jp" ? "Noto Sans JP" : "Noto Sans SC"
+  }`;
 }
 
 const splash = `

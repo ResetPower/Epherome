@@ -15,15 +15,14 @@
   .eph-helper-text {
     @apply text-sm text-shallow;
   }
+  .eph-small-icon-btn {
+    @apply bg-black bg-opacity-0 hover:bg-opacity-10 p-1 rounded-full cursor-pointer;
+  }
 }
 
 :root {
   --eph-height: calc(100vh - 4rem);
   --animate-duration: 0.3s;
-}
-
-body {
-  font-family: Inter;
 }
 
 img {

@@ -2,6 +2,19 @@ export interface StringMap {
   [key: string]: string;
 }
 
+export class HashMap {
+  private pairs: StringMap = {};
+  constructor(initMap?: StringMap) {
+    initMap && (this.pairs = initMap);
+  }
+  put(key: string, value: string): void {
+    this.pairs[key] = value;
+  }
+  get(key: string): string | undefined {
+    return this.pairs[key];
+  }
+}
+
 export interface AnyMap {
   [key: string]: unknown;
 }
@@ -75,8 +88,11 @@ export function format(source: string, ...params: string[]): string {
   return source;
 }
 
-export function apply<T>(obj: T | undefined, act: (obj: T) => unknown) {
-  obj && act(obj);
+export function apply<T, R>(
+  obj: T | undefined,
+  act: (obj: T) => R
+): R | undefined {
+  return obj ? act(obj) : undefined;
 }
 
 export function combineFun(...fun: (DefaultFn | undefined)[]): DefaultFn {

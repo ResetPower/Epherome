@@ -31,7 +31,7 @@ import {
   MdImportExport,
 } from "react-icons/md";
 import { call, DefaultFn } from "common/utils";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useReducer } from "react";
 import { t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
@@ -51,8 +51,8 @@ import { ipcRenderer } from "electron";
 import { pushToHistory } from "eph/renderer/history";
 import { BiImport } from "react-icons/bi";
 import { importModpack } from "core/modpack";
-import { Canceller } from "common/task/cancel";
-import { DownloadDetail } from "common/utils/files";
+import { taskStore } from "common/task/store";
+import { Alert } from "eph/components/layouts";
 
 export function ChangeProfileFragment(props: {
   onDone?: DefaultFn;
@@ -271,26 +271,30 @@ export function ChangeProfileFragment(props: {
   );
 }
 
-export function ImportPackFragment(props: { onDone: DefaultFn }): JSX.Element {
-  const canceller = useMemo(() => new Canceller(), []);
-  const [details, setDetails] = useState<DownloadDetail[]>([]);
-  const [helper, setHelper] = useState("");
+export function ImportModpackFragment(props: {
+  onDone: DefaultFn;
+}): JSX.Element {
+  const theTask = useMemo(() => taskStore.findByType("importModpack"), []);
+  const task = useRef(theTask);
   const [value, setValue] = useState("");
+  const [, update] = useReducer((x) => x + 1, 0);
+
+  task.current && (task.current.onSignal = update);
 
   const handleImport = () => {
-    importModpack(value, canceller, (helper, i) => {
-      if (i) {
-        const [d, t] = i;
-        setDetails(d.current);
-        setHelper(`${helper} (${t}%)`);
-      } else {
-        setHelper(helper);
-      }
-    }).then((profile) => {
+    task.current = taskStore.register(
+      "Import Modpack",
+      "importModpack",
+      { value },
+      () => pushToHistory("profiles", "importModpack")
+    );
+    importModpack(value, task.current).then((profile) => {
       if (profile) {
         createProfile(profile);
+        props.onDone();
+      } else {
+        task.current && taskStore.error(task.current.id, new Error());
       }
-      props.onDone();
     });
   };
   const handleBrowse = () =>
@@ -309,13 +313,16 @@ export function ImportPackFragment(props: { onDone: DefaultFn }): JSX.Element {
           <Link onClick={handleBrowse}>{t("profile.openDirectory")}</Link>
         }
       />
+      {task.current?.percentage === -2 && (
+        <Alert severity="error">{t("errorOccurred")}</Alert>
+      )}
       <div className="flex-grow pt-3">
-        {details.map(
+        {task.current?.subTasks.map(
           (detail, index) =>
             detail.inProgress && (
               <div key={index}>
                 <p className="text-sm">
-                  {detail.filename} ({detail.percentage}%)
+                  {detail.name} ({detail.percentage}%)
                 </p>
                 <ProgressBar percentage={detail.percentage} />
               </div>
@@ -323,9 +330,9 @@ export function ImportPackFragment(props: { onDone: DefaultFn }): JSX.Element {
         )}
       </div>
       <div className="flex items-center">
-        <p className="text-sm">{helper}</p>
+        <p className="text-sm">{task.current?.hashMap.get("helper")}</p>
         <div className="flex-grow" />
-        <Button disabled={!!helper} onClick={handleImport}>
+        <Button disabled={!!task.current?.isRunning} onClick={handleImport}>
           Import
         </Button>
       </div>
@@ -333,9 +340,11 @@ export function ImportPackFragment(props: { onDone: DefaultFn }): JSX.Element {
   );
 }
 
-const ProfilesPage = observer(() => {
+const ProfilesPage = observer((props: { params: string }) => {
   const tabRef = useRef<TabContext>();
-  const [status, setStatus] = useState<false | "creating" | "importing">(false);
+  const [status, setStatus] = useState<false | "creating" | "importing">(
+    props.params === "importModpack" ? "importing" : false
+  );
   const handleCreate = () => setStatus("creating");
   const handleImport = () => setStatus("importing");
   const profiles = configStore.profiles;
@@ -374,14 +383,16 @@ const ProfilesPage = observer(() => {
               }}
               key={id}
             >
-              <p className="flex">
-                {i.from === "download" ? (
-                  <MdFileDownload />
-                ) : i.from === "import" ? (
-                  <MdImportExport />
-                ) : (
-                  <MdGamepad />
-                )}{" "}
+              <p className="flex items-center">
+                <div className="w-7">
+                  {i.from === "download" ? (
+                    <MdFileDownload />
+                  ) : i.from === "import" ? (
+                    <MdImportExport />
+                  ) : (
+                    <MdGamepad />
+                  )}
+                </div>
                 {i.name}
               </p>
             </ListItem>
@@ -395,7 +406,7 @@ const ProfilesPage = observer(() => {
             onDone={() => setStatus(false)}
           />
         ) : status === "importing" ? (
-          <ImportPackFragment onDone={() => setStatus(false)} />
+          <ImportModpackFragment onDone={() => setStatus(false)} />
         ) : current && manager ? (
           <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>
