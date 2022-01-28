@@ -51,6 +51,7 @@ export class ConfigStore {
   @observable downloadConcurrency = 7;
   @observable developerMode = false;
   @observable titleBarStyle: TitleBarStyle = "os";
+  @observable checkUpdate = true;
   constructor(preferred: Partial<unknown>) {
     extendObservable(this, preferred);
   }

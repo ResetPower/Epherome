@@ -1,7 +1,7 @@
 import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/ProfilesPage";
-import SettingsPage from "../views/SettingsPage";
+import SettingsPage, { UpdateAvailableDialog } from "../views/SettingsPage";
 import DownloadsPage from "../views/DownloadsPage";
 import { showOverlay } from "../overlay";
 import {
@@ -35,6 +35,7 @@ import { useFloating } from "@floating-ui/react-dom";
 import { shift } from "@floating-ui/core";
 import TaskPanel from "eph/components/TaskPanel";
 import { FaServer } from "react-icons/fa";
+import { checkEphUpdate } from "./updater";
 
 function TaskPanelShower(): JSX.Element {
   const { x, y, reference, floating, refs, strategy } = useFloating({
@@ -254,14 +255,26 @@ export default function App(): JSX.Element {
     i === -1 ? [route, ""] : [route.slice(0, i), route.slice(i + 1)];
 
   // response route change
-  useEffect(
-    () =>
-      window.addEventListener("hashchange", () => {
-        const hash = location.hash.slice(1);
-        setRoute(hash === "" ? "home" : hash);
-      }),
-    []
-  );
+  useEffect(() => {
+    window.addEventListener("hashchange", () => {
+      const hash = location.hash.slice(1);
+      setRoute(hash === "" ? "home" : hash);
+    });
+    // check update automatic
+    if (configStore.checkUpdate) {
+      checkEphUpdate().then((result) => {
+        if (result && result.need) {
+          showOverlay({
+            title: t("epheromeUpdate"),
+            content: UpdateAvailableDialog,
+            params: {
+              version: result.name,
+            },
+          });
+        }
+      });
+    }
+  }, []);
 
   const pn = pathname as KeyOfLanguageDefinition;
   return (

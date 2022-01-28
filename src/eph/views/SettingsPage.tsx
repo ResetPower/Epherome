@@ -57,7 +57,7 @@ import { coordinateFont, updateTheme } from "..";
 import NewThemeView from "./NewThemeView";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
-  const href = "https://epherome.com/download";
+  const href = "https://epherome.com/downloads";
 
   return (
     <>
@@ -335,6 +335,12 @@ export const SettingsGeneralFragment = observer(() => {
         onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
       >
         Show News
+      </Checkbox>
+      <Checkbox
+        checked={configStore.checkUpdate}
+        onChange={(checked) => setConfig((cfg) => (cfg.checkUpdate = checked))}
+      >
+        Automatically check for updates
       </Checkbox>
       <WithHelper helper={t("settings.hitokoto.description")}>
         <Checkbox
