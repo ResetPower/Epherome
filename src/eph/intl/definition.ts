@@ -190,4 +190,6 @@ export interface LanguageDefinition {
   quit: string;
   confirmQuitting: string;
   removeFilesAsWell: string;
+  unableToRefreshMsToken: string;
+  msLoginAgain: string;
 }

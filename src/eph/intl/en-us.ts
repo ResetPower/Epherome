@@ -215,6 +215,9 @@ const enUs: Language = {
     quit: "Quit",
     confirmQuitting: "Are you sure you want to quit Epherome?",
     removeFilesAsWell: "Remove files as well",
+    unableToRefreshMsToken:
+      "Unable to refresh Microsoft account token, please login again.",
+    msLoginAgain: "Login Again",
   },
 };
 

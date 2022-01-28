@@ -19,6 +19,7 @@ import {
   CreateAccountImplResult,
   MinecraftAccount,
   removeAccount,
+  updateAccountToken,
 } from "common/struct/accounts";
 import { configStore, setConfig } from "common/struct/config";
 import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
@@ -33,6 +34,11 @@ import { downloadSkin } from "core/model/skin";
 import { BiExport } from "react-icons/bi";
 import { commonLogger } from "common/loggers";
 import { Avatar, Body } from "eph/components/skin";
+import { ipcRenderer } from "electron";
+import {
+  authCode2AuthToken,
+  authToken2MinecraftTokenDirectly,
+} from "core/auth";
 
 export function ChangeAccountFragment(props: {
   onDone: DefaultFn;
@@ -134,6 +140,8 @@ export function ChangeAccountFragment(props: {
 export function AccountGeneralFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
+  const [stat, setStat] = useState<boolean | "err" | "succ">(false);
+  const onClose = () => setStat(false);
   const handleRemove = (selected: MinecraftAccount) =>
     showOverlay({
       title: t("account.removing"),
@@ -144,15 +152,72 @@ export function AccountGeneralFragment(props: {
       positiveText: t("remove"),
     });
 
+  const handleLoginAgain = () => {
+    if (props.current.mode === "microsoft") {
+      setStat(true);
+      ipcRenderer.invoke("ms-auth").then(async (result) => {
+        let code = "";
+        const split = result.split("&");
+        for (const i of split) {
+          const j = i.split("=");
+          if (j[0] === "code") {
+            code = j[1];
+          }
+        }
+        if (code) {
+          const authTokenResult = await authCode2AuthToken(code);
+          const accessToken = authTokenResult.access_token;
+          const refreshToken = authTokenResult.refresh_token;
+          if (accessToken && refreshToken) {
+            const mcTokenResult = await authToken2MinecraftTokenDirectly(
+              accessToken
+            );
+            if (mcTokenResult.token) {
+              updateAccountToken(
+                props.current,
+                mcTokenResult.token,
+                authTokenResult.refresh_token
+              );
+              setStat("succ");
+              return;
+            }
+          }
+          setStat("err");
+        }
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col">
+      {stat === "succ" && (
+        <Alert severity="successful" className="mb-3" onClose={onClose}>
+          {t("doneMessage")}
+        </Alert>
+      )}
+      {stat === "err" && (
+        <Alert severity="error" className="mb-3" onClose={onClose}>
+          {t("errorOccurred")}
+        </Alert>
+      )}
       <div className="flex-grow">
-        <Info title={t("name")}>{props.current?.name}</Info>
+        <Info title={t("name")}>{props.current.name}</Info>
         <p className="text-shallow text-sm">
           {props.current && t(`account.${props.current.mode}`)}
         </p>
       </div>
-      <div className="flex justify-end">
+      <div className="flex mt-3">
+        {props.current.mode === "microsoft" && (
+          <Button
+            onClick={handleLoginAgain}
+            variant="contained"
+            disabled={stat === true}
+          >
+            {t("msLoginAgain")}
+          </Button>
+        )}
+        {stat === true && <Spin />}
+        <div className="flex-grow" />
         <Button
           className="text-danger"
           onClick={() => props.current && handleRemove(props.current)}

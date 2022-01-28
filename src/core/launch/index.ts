@@ -109,12 +109,10 @@ export async function launchMinecraft(
       if (!validateMicrosoft(account.token)) {
         const refreshed = await refreshMicrosoft(account);
         if (!refreshed) {
-          coreLogger.warn(
-            "Unable to refresh microsoft account, please login again"
-          );
+          coreLogger.warn("Unable to refresh microsoft account token");
           showOverlay({
-            title: "Warning",
-            message: "Unable to refresh microsoft account, please login again",
+            title: t("warning"),
+            message: t("unableToRefreshMsToken"),
           });
         }
       }

@@ -203,6 +203,8 @@ const zhCn: Language = {
     quit: "退出",
     confirmQuitting: "你确定要退出 Epherome 吗？",
     removeFilesAsWell: "删除文件",
+    unableToRefreshMsToken: "无法刷新微软账户令牌，请重新登录。",
+    msLoginAgain: "重新登录",
   },
 };
 

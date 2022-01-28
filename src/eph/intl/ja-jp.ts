@@ -217,6 +217,9 @@ const jaJp: Language = {
     quit: "終了",
     confirmQuitting: "Epherome を終了してもよろしいですか？",
     removeFilesAsWell: "ファイルを削除",
+    unableToRefreshMsToken:
+      "Microsoft アカウントのトークンを更新できません。もう一度ログインしてください。",
+    msLoginAgain: "再度ログイン",
   },
 };
 
