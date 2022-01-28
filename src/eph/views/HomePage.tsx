@@ -192,7 +192,7 @@ const HomePage = observer(() => {
     if (configStore.hitokoto && !homePageStore.hitokoto.content) {
       homePageStore.reloadHitokoto();
     }
-    if (homePageStore.news?.length === 0) {
+    if (configStore.news && homePageStore.news?.length === 0) {
       homePageStore.reloadNews();
     }
   }, []);
@@ -251,7 +251,11 @@ const HomePage = observer(() => {
         </div>
       </Card>
       <div className="flex space-x-6">
-        <Card className="w-1/2 flex flex-col p-3">
+        <Card
+          className={`${
+            configStore.news ? "w-1/2" : "w-full"
+          } flex flex-col p-3`}
+        >
           <div className="flex flex-col flex-grow justify-center">
             {profile && value !== null ? (
               <>
@@ -319,51 +323,53 @@ const HomePage = observer(() => {
             </p>
           </div>
         </Card>
-        <Card className="w-1/2 flex flex-col p-3">
-          <p className="text-xl font-semibold mb-1">{t("news")}</p>
-          {homePageStore.news === null ? (
-            <p>
-              ...
-              <br />
-              <br />
-            </p>
-          ) : homePageStore.news === undefined ? (
-            <p>
-              {t("internetNotAvailable")}
-              <br />
-              <br />
-            </p>
-          ) : (
-            homePageStore.news
-              .slice(0, 2)
-              .map((val, index) => <p key={index}>{val.title}</p>)
-          )}
-          <div>
-            <TinyButton
-              onClick={() =>
-                showOverlay({
-                  type: "sheet",
-                  title: t("news"),
-                  content: NewsView,
-                })
-              }
-              paddingRight
-            >
-              <MdMoreHoriz /> {t("expand")}
-            </TinyButton>
-          </div>
-          <div className="flex-grow" />
-          <div className="flex border-t border-divider p-1">
-            <MdRefresh
-              className="cursor-pointer text-contrast"
-              onClick={homePageStore.reloadNews}
-            />
+        {configStore.news && (
+          <Card className="w-1/2 flex flex-col p-3">
+            <p className="text-xl font-semibold mb-1">{t("news")}</p>
+            {homePageStore.news === null ? (
+              <p>
+                ...
+                <br />
+                <br />
+              </p>
+            ) : homePageStore.news === undefined ? (
+              <p>
+                {t("internetNotAvailable")}
+                <br />
+                <br />
+              </p>
+            ) : (
+              homePageStore.news
+                .slice(0, 2)
+                .map((val, index) => <p key={index}>{val.title}</p>)
+            )}
+            <div>
+              <TinyButton
+                onClick={() =>
+                  showOverlay({
+                    type: "sheet",
+                    title: t("news"),
+                    content: NewsView,
+                  })
+                }
+                paddingRight
+              >
+                <MdMoreHoriz /> {t("expand")}
+              </TinyButton>
+            </div>
             <div className="flex-grow" />
-            <Link onClick={() => openInBrowser("https://www.mcbbs.net")}>
-              MCBBS
-            </Link>
-          </div>
-        </Card>
+            <div className="flex border-t border-divider p-1">
+              <MdRefresh
+                className="cursor-pointer text-contrast"
+                onClick={homePageStore.reloadNews}
+              />
+              <div className="flex-grow" />
+              <Link onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                MCBBS
+              </Link>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

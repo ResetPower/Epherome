@@ -330,6 +330,12 @@ export const SettingsGeneralFragment = observer(() => {
       >
         {t("settings.devMode")}
       </Checkbox>
+      <Checkbox
+        checked={configStore.news}
+        onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
+      >
+        Show News
+      </Checkbox>
       <WithHelper helper={t("settings.hitokoto.description")}>
         <Checkbox
           checked={configStore.hitokoto}

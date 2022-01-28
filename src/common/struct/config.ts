@@ -45,7 +45,7 @@ export class ConfigStore {
   @observable themeList: RCSTheme[] = [];
   @observable themeFollowOs = false;
   @observable language = getSystemPreferredLanguage();
-  @observable news = false;
+  @observable news = true;
   @observable hitokoto = false;
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
