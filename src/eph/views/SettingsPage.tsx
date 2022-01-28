@@ -334,13 +334,13 @@ export const SettingsGeneralFragment = observer(() => {
         checked={configStore.news}
         onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
       >
-        Show News
+        {t("settings.showNews")}
       </Checkbox>
       <Checkbox
         checked={configStore.checkUpdate}
         onChange={(checked) => setConfig((cfg) => (cfg.checkUpdate = checked))}
       >
-        Automatically check for updates
+        {t("settings.autoCheckUpdate")}
       </Checkbox>
       <WithHelper helper={t("settings.hitokoto.description")}>
         <Checkbox
@@ -441,12 +441,12 @@ export const SettingsAppearanceFragment = observer(() => {
           onClick={() =>
             showOverlay({
               type: "sheet",
-              title: "New Theme",
+              title: t("theme.newTheme"),
               content: NewThemeView,
             })
           }
         >
-          <MdAdd /> Create a theme...
+          <MdAdd /> {t("theme.create")}
         </ListItem>
       </div>
     </div>

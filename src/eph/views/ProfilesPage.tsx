@@ -304,11 +304,11 @@ export function ImportModpackFragment(props: {
 
   return (
     <div className="p-5 flex flex-col h-full">
-      <p className="font-semibold text-xl pb-3">Import Modpack</p>
+      <p className="font-semibold text-xl pb-3">{t("modpack.import")}</p>
       <TextField
         value={value}
         onChange={setValue}
-        placeholder="Modpack File Path (*.zip)"
+        placeholder={t("modpack.filePath")}
         trailing={
           <Link onClick={handleBrowse}>{t("profile.openDirectory")}</Link>
         }
@@ -333,7 +333,7 @@ export function ImportModpackFragment(props: {
         <p className="text-sm">{task.current?.hashMap.get("helper")}</p>
         <div className="flex-grow" />
         <Button disabled={!!task.current?.isRunning} onClick={handleImport}>
-          Import
+          {t("profile.import")}
         </Button>
       </div>
     </div>

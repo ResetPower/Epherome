@@ -73,42 +73,62 @@ export default function NewThemeView(): JSX.Element {
   return (
     <div className="flex flex-col p-3">
       <div className="flex space-x-3 w-1/2 justify-center items-center">
-        <p className="rcs-label w-24">Type</p>
+        <p className="rcs-label w-24">{t("theme.type")}</p>
         <div className="flex space-x-3 w-56">
-          {["light", "dark"].map((t, i) => (
+          {["light", "dark"].map((th, i) => (
             <Fragment key={i}>
               <div
                 className="text-pink-400 hover:text-pink-500 cursor-pointer"
-                onClick={() => setType(t as ThemeType)}
+                onClick={() => setType(th as ThemeType)}
               >
-                {type === t ? (
+                {type === th ? (
                   <MdRadioButtonChecked />
                 ) : (
                   <MdRadioButtonUnchecked />
                 )}
               </div>
-              <p className="capitalize">{t}</p>
+              <p>{th === "light" ? t("theme.light") : t("theme.dark")}</p>
             </Fragment>
           ))}
         </div>
       </div>
       <div className="flex-grow grid grid-cols-2 mb-6 mt-3">
         <UIPalette
-          label="Background"
+          label={t("theme.background")}
           color={background}
           onChange={setBackground}
         />
-        <UIPalette label="Primary" color={primary} onChange={setPrimary} />
         <UIPalette
-          label="Secondary"
+          label={t("theme.primary")}
+          color={primary}
+          onChange={setPrimary}
+        />
+        <UIPalette
+          label={t("theme.secondary")}
           color={secondary}
           onChange={setSecondary}
         />
-        <UIPalette label="Shallow" color={shallow} onChange={setShallow} />
-        <UIPalette label="Divider" color={divider} onChange={setDivider} />
-        <UIPalette label="Card" color={card} onChange={setCard} />
-        <UIPalette label="Contrast" color={contrast} onChange={setContrast} />
-        <UIPalette label="Danger" color={danger} onChange={setDanger} />
+        <UIPalette
+          label={t("theme.shallow")}
+          color={shallow}
+          onChange={setShallow}
+        />
+        <UIPalette
+          label={t("theme.divider")}
+          color={divider}
+          onChange={setDivider}
+        />
+        <UIPalette label={t("theme.card")} color={card} onChange={setCard} />
+        <UIPalette
+          label={t("theme.contrast")}
+          color={contrast}
+          onChange={setContrast}
+        />
+        <UIPalette
+          label={t("theme.danger")}
+          color={danger}
+          onChange={setDanger}
+        />
       </div>
       <TextField
         value={name}

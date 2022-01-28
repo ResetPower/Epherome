@@ -1,6 +1,7 @@
 import { ProgressBar } from "@resetpower/rcs";
 import { taskStore } from "common/task/store";
 import { call } from "common/utils";
+import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import { CSSProperties, Ref, useEffect, useState } from "react";
 import { MdCancel, MdOpenInNew } from "react-icons/md";
@@ -25,7 +26,7 @@ const TaskPanel = observer(
         style={props.style}
         className={`bg-card text-contrast border border-divider shadow-md rounded-md p-3 ${props.className}`}
       >
-        <p>Task Manager</p>
+        <p>{t("task.manager")}</p>
         <JoinIn
           separator={<div className="border-t border-divider w-auto my-1" />}
         >
@@ -58,7 +59,7 @@ const TaskPanel = observer(
           })}
         </JoinIn>
         {taskStore.tasks.length === 0 && (
-          <div className="text-shallow">No Tasks</div>
+          <div className="text-shallow text-sm">{t("task.noTasks")}</div>
         )}
       </div>
     );

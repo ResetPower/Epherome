@@ -93,7 +93,7 @@ export function ProfileGeneralFragment({
         removeProfile(current);
       },
       check: true,
-      checkText: "Remove files as well",
+      checkText: t("removeFilesAsWell"),
       positiveText: t("remove"),
       dangerous: true,
       cancellable: true,
@@ -140,9 +140,13 @@ export function ProfileGeneralFragment({
         </Info>
         {current.modpackInfo && (
           <div>
-            <Info title="Modpack Name">{current.modpackInfo.name}</Info>
-            <Info title="Modpack Version">{current.modpackInfo.version}</Info>
-            <Info title="Modpack Author">{current.modpackInfo.author}</Info>
+            <Info title={t("modpack.name")}>{current.modpackInfo.name}</Info>
+            <Info title={t("modpack.version")}>
+              {current.modpackInfo.version}
+            </Info>
+            <Info title={t("modpack.author")}>
+              {current.modpackInfo.author}
+            </Info>
           </div>
         )}
       </div>
@@ -151,7 +155,7 @@ export function ProfileGeneralFragment({
           <VscPackage /> {t("profile.install")}
         </Button>
         <Button onClick={handleExport}>
-          <BiExport /> Export as Modpack...
+          <BiExport /> {t("profile.exportModpack")}
         </Button>
         <div className="flex-grow" />
         <Button className="text-danger" onClick={handleRemove}>
@@ -230,7 +234,11 @@ export const ProfileResourcePacksFragment = observer(
             onClick={() => manager.select("resourcePack", i.id)}
             key={i.id}
           >
-            <ListItemText primary={i.name} secondary={i.type} expand />
+            <ListItemText
+              primary={i.name}
+              secondary={t(`profile.resourceType.${i.type}`)}
+              expand
+            />
             <MdClose
               onClick={() => showMoveToTrashAlert(i.path).then(manager.refresh)}
             />
@@ -315,7 +323,7 @@ export const ProfileSettingsFragment = observer(
     return (
       <div className="text-sm">
         <p>
-          Minecraft Options Path:{" "}
+          {t("profile.gameOptionsPath")}:{" "}
           <Link onClick={() => openItemInFinder(manager.optionsTxtPath)}>
             {manager.optionsTxtPath}
           </Link>
@@ -334,7 +342,7 @@ export const ProfileSettingsFragment = observer(
           <TextField
             value={query}
             onChange={setQuery}
-            placeholder="Search..."
+            placeholder={`${t("search")}...`}
           />
         </div>
         <div className="space-y-3 mt-3">

@@ -62,29 +62,31 @@ export default function ModpackExportPage({
       <div className="flex-grow">
         {stage === 0 ? (
           <div className="space-y-1">
-            <p className="font-semibold text-xl mb-3">Modpack Info</p>
+            <p className="font-semibold text-xl mb-3">{t("modpack.info")}</p>
             <TextField
               value={name}
               onChange={setName}
               icon={<MdTextFields />}
-              placeholder="Modpack Name"
+              placeholder={t("modpack.name")}
             />
             <TextField
               value={ver}
               onChange={setVer}
               icon={<MdTimelapse />}
-              placeholder="Modpack Version"
+              placeholder={t("modpack.version")}
             />
             <TextField
               value={author}
               onChange={setAuthor}
               icon={<MdPersonOutline />}
-              placeholder="Modpack Author"
+              placeholder={t("modpack.author")}
             />
           </div>
         ) : (
           <div>
-            <p className="font-semibold text-xl mb-3">Select Files...</p>
+            <p className="font-semibold text-xl mb-3">
+              {t("modpack.selectFiles")}...
+            </p>
             <div className="overflow-auto">
               {files.map(
                 (value, index) =>
@@ -106,18 +108,18 @@ export default function ModpackExportPage({
       <div className="flex items-center">
         {stage === 1 &&
           (stat ? (
-            <p className="text-sm">Exporting...</p>
+            <p className="text-sm">{t("modpack.exporting")}...</p>
           ) : (
-            <Button onClick={() => setStage(0)}>Previous</Button>
+            <Button onClick={() => setStage(0)}>{t("previous")}</Button>
           ))}
         <div className="flex-grow" />
         {stage === 0 ? (
           <Button onClick={() => !!name && !!author && !!ver && setStage(1)}>
-            Next
+            {t("next")}
           </Button>
         ) : (
           <Button onClick={handleExport} disabled={stat}>
-            EXPORT!
+            {t("modpack.export")}
           </Button>
         )}
       </div>
