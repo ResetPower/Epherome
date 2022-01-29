@@ -41,7 +41,7 @@ export class ConfigStore {
   @observable accounts: MinecraftAccount[] = [];
   @observable profiles: MinecraftProfile[] = [];
   @observable javas: Java[] = [];
-  @observable theme = "light";
+  @observable theme = "RCS Light";
   @observable themeList: RCSTheme[] = [];
   @observable themeFollowOs = false;
   @observable language = getSystemPreferredLanguage();
