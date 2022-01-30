@@ -349,7 +349,7 @@ export const ProfileSettingsFragment = observer(
           {manager.options
             ? manager.options.map(
                 (value, index) =>
-                  value.key.includes(query) && (
+                  value.key.toLowerCase().includes(query.toLowerCase()) && (
                     <div key={index} className="flex">
                       <Highlight
                         keyword={query}

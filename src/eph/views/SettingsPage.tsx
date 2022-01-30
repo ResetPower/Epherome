@@ -323,7 +323,10 @@ export const SettingsGeneralFragment = observer(() => {
         <FaJava /> {t("java.manage")}
       </Button>
       <Checkbox
-        checked={configStore.developerMode}
+        checked={(() => {
+          console.log(configStore.developerMode);
+          return configStore.developerMode;
+        })()}
         onChange={(checked) =>
           setConfig((cfg) => (cfg.developerMode = checked))
         }

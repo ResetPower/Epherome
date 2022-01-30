@@ -28,7 +28,6 @@ function readConfig() {
   } else if (parsed.theme === "dark") {
     parsed.theme = "RCS Dark";
   }
-  fs.writeFileSync(configPath, JSON.stringify(parsed));
   return parsed;
 }
 

@@ -154,31 +154,32 @@ export const EphAppBar = observer(
           )}
         </div>
         <AppBarTitle>{title}</AppBarTitle>
-        <TaskPanelShower />
-        {configStore.developerMode && (
-          <Menu
-            className="right-1"
-            items={[
-              {
-                icon: <VscDebugConsole />,
-                text: "Developer Tools",
-                action: () => ipcRenderer.send("open-devtools"),
-              },
-              {
-                icon: <MdRefresh />,
-                text: "Reload Epherome",
-                action: () => location.reload(),
-              },
-            ]}
-          >
-            {(open) => (
-              <IconButton active={open}>
-                <MdDeveloperBoard />
-              </IconButton>
-            )}
-          </Menu>
-        )}
+
         <div className="eph-no-drag flex">
+          <TaskPanelShower />
+          {configStore.developerMode && (
+            <Menu
+              className="right-1"
+              items={[
+                {
+                  icon: <VscDebugConsole />,
+                  text: "Developer Tools",
+                  action: () => ipcRenderer.send("open-devtools"),
+                },
+                {
+                  icon: <MdRefresh />,
+                  text: "Reload Epherome",
+                  action: () => location.reload(),
+                },
+              ]}
+            >
+              {(open) => (
+                <IconButton active={open}>
+                  <MdDeveloperBoard />
+                </IconButton>
+              )}
+            </Menu>
+          )}
           {isTitleBarEph && (
             <>
               <IconButton onClick={() => ipcRenderer.send("minimize")}>

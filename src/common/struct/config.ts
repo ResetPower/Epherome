@@ -1,7 +1,7 @@
 import { MinecraftProfile } from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { Java } from "./java";
-import { extendObservable, observable, runInAction, toJS } from "mobx";
+import { action, extendObservable, observable, runInAction, toJS } from "mobx";
 import { MinecraftDownloadProvider } from "core/url";
 import log4js from "log4js";
 import log4jsConfiguration from "common/utils/logging";
@@ -53,8 +53,10 @@ export class ConfigStore {
   @observable titleBarStyle: TitleBarStyle = "os";
   @observable checkUpdate = true;
   constructor(preferred: Partial<unknown>) {
-    extendObservable(this, preferred);
+    const defaultConfig = toJS(this);
+    extendObservable(this, { ...defaultConfig, ...preferred });
   }
+  @action
   setConfig = (cb: (store: ConfigStore) => unknown, save = true): void => {
     runInAction(() => cb(this));
     save && this.save();

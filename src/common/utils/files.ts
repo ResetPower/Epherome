@@ -64,7 +64,7 @@ export async function parallelDownload(
   itemList: ParallelDownloadItemWithoutUnique[],
   onDetailsChange: DownloaderDetailsListener,
   concurrency: number,
-  canceller?: Canceller
+  canceller: Canceller
 ): Promise<void> {
   const counter = new Counter();
   const items = itemList.map((i) => ({ ...i, unique: counter.count() }));
@@ -90,7 +90,7 @@ export async function parallelDownload(
   const limit = pLimit(concurrency);
   const promises = items.map((item) =>
     limit(async () => {
-      if (canceller?.cancelled) {
+      if (canceller.cancelled) {
         return;
       }
       const downloadStream = got.stream(item.url);
@@ -112,7 +112,6 @@ export async function parallelDownload(
       canceller &&
         canceller.update(() => {
           downloadStream.destroy();
-          fileWriterStream.close();
           fileWriterStream.destroy();
           fs.rmSync(item.target);
         });

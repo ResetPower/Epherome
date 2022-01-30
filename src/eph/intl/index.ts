@@ -17,13 +17,13 @@ export class IntlStore {
   @observable language?: Language;
   constructor(languages: Language[], fallback: string) {
     this.languages = languages;
-    this.setLanguage(fallback);
+    this.setLanguage(fallback, false);
     makeObservable(this);
   }
   @action
-  setLanguage(name: string): void {
+  setLanguage(name: string, save?: boolean): void {
     this.language = this.languages.find((val) => val.name === name);
-    setConfig((cfg) => (cfg.language = name));
+    setConfig((cfg) => (cfg.language = name), save);
   }
 }
 
