@@ -48,7 +48,7 @@ import {
   ProfileSettingsFragment,
 } from "./ProfileManagers";
 import { ipcRenderer } from "electron";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 import { BiImport } from "react-icons/bi";
 import { importModpack } from "core/modpack";
 import { taskStore } from "common/task/store";
@@ -286,7 +286,7 @@ export function ImportModpackFragment(props: {
       "Import Modpack",
       "importModpack",
       { value },
-      () => pushToHistory("profiles", "importModpack")
+      () => historyStore.push("profiles", "importModpack")
     );
     importModpack(value, task.current).then((profile) => {
       if (profile) {
@@ -362,7 +362,7 @@ const ProfilesPage = observer((props: { params: string }) => {
           <IconButton onClick={handleCreate}>
             <MdCreate />
           </IconButton>
-          <IconButton onClick={() => pushToHistory("download")}>
+          <IconButton onClick={() => historyStore.push("download")}>
             <MdFileDownload />
           </IconButton>
           <IconButton onClick={handleImport}>

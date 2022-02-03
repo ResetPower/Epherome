@@ -24,10 +24,9 @@ import { configStore } from "common/struct/config";
 import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
 import ProfileInstallPage from "../views/ProfileInstallPage";
 import { ipcRenderer } from "electron";
-import { pushToHistory } from "./history";
+import { historyStore } from "./history";
 import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
-import ExtensionView from "eph/views/ExtensionView";
 import JavaInstallPage from "eph/views/JavaInstallPage";
 import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
 import ModpackExportPage from "eph/views/ModpackExportPage";
@@ -36,6 +35,7 @@ import { shift } from "@floating-ui/core";
 import TaskPanel from "eph/components/TaskPanel";
 import { FaServer } from "react-icons/fa";
 import { checkEphUpdate } from "./updater";
+import ExtensionStore from "eph/views/ExtensionStore";
 
 function TaskPanelShower(): JSX.Element {
   const { x, y, reference, floating, refs, strategy } = useFloating({
@@ -107,32 +107,27 @@ export const EphAppBar = observer(
       {
         icon: <MdAccountCircle />,
         text: t("accounts"),
-        action: () => pushToHistory("accounts"),
+        action: () => historyStore.push("accounts"),
       },
       {
         icon: <MdGamepad />,
         text: t("profiles"),
-        action: () => pushToHistory("profiles"),
+        action: () => historyStore.push("profiles"),
       },
       {
         icon: <MdViewCarousel />,
         text: t("processes"),
-        action: () => pushToHistory("processes"),
+        action: () => historyStore.push("processes"),
       },
       {
         icon: <MdApps />,
         text: t("extensions"),
-        action: () =>
-          showOverlay({
-            type: "sheet",
-            title: t("extensions"),
-            content: ExtensionView,
-          }),
+        action: () => historyStore.push("extensions"),
       },
       {
         icon: <MdSettings />,
         text: t("settings"),
-        action: () => pushToHistory("settings"),
+        action: () => historyStore.push("settings"),
       },
     ];
 
@@ -148,7 +143,9 @@ export const EphAppBar = observer(
               )}
             </Menu>
           ) : (
-            <IconButton onClick={isAtHome ? undefined : () => history.back()}>
+            <IconButton
+              onClick={isAtHome ? undefined : () => historyStore.back()}
+            >
               {<MdArrowBack />}
             </IconButton>
           )}
@@ -235,6 +232,8 @@ export function RouterView({
           )
         ) : pathname === "settings" ? (
           <SettingsPage />
+        ) : pathname === "extensions" ? (
+          <ExtensionStore />
         ) : pathname === "download" ? (
           <DownloadsPage version={params ? JSON.parse(params) : undefined} />
         ) : pathname === "java.installJava" ? (
@@ -249,18 +248,11 @@ export function RouterView({
   );
 }
 
-export default function App(): JSX.Element {
-  const [route, setRoute] = useState("home");
-  const i = route.indexOf("?");
-  const [pathname, params] =
-    i === -1 ? [route, ""] : [route.slice(0, i), route.slice(i + 1)];
+const App = observer(() => {
+  const { pathname, params } = historyStore.use;
 
   // response route change
   useEffect(() => {
-    window.addEventListener("hashchange", () => {
-      const hash = location.hash.slice(1);
-      setRoute(hash === "" ? "home" : hash);
-    });
     // check update automatic
     if (configStore.checkUpdate) {
       checkEphUpdate().then((result) => {
@@ -285,4 +277,6 @@ export default function App(): JSX.Element {
       <RouterView pathname={pn} params={decodeURIComponent(params)} />
     </IconContext.Provider>
   );
-}
+});
+
+export default App;

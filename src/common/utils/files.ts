@@ -35,11 +35,13 @@ export function createDirByPath(p: string): void {
   ensureDir(path.dirname(p));
 }
 
-export function ensureDir(p: string): void {
+export function ensureDir(p: string): boolean {
   try {
     fs.accessSync(p);
+    return true;
   } catch {
     fs.mkdirSync(p, { recursive: true });
+    return false;
   }
 }
 
@@ -189,11 +191,11 @@ export function copyFolder(
   }
 }
 
-export function rmFolder(src: string): void {
+export async function rmFolder(src: string): Promise<void> {
   for (const i of fs.readdirSync(src)) {
     const pathname = path.join(src, i);
     if (fs.statSync(pathname).isDirectory()) {
-      rmFolder(pathname);
+      await rmFolder(pathname);
     } else {
       fs.rmSync(pathname);
     }

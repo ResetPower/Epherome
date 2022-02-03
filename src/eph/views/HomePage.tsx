@@ -32,9 +32,8 @@ import NewsView from "./NewsView";
 import { fetchNews, NewItem } from "../../common/struct/news";
 import { JavaManagementSheet } from "./SettingsPage";
 import { ObjectWrapper } from "common/utils/object";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 import { DefaultFn } from "common/utils";
-import ExtensionView from "./ExtensionView";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { openInBrowser } from "common/utils/open";
@@ -216,27 +215,19 @@ const HomePage = observer(() => {
             )}
           </div>
           <div>
-            <IconButton onClick={() => pushToHistory("processes")}>
+            <IconButton onClick={() => historyStore.push("processes")}>
               <MdViewCarousel />
             </IconButton>
-            <IconButton
-              onClick={() =>
-                showOverlay({
-                  type: "sheet",
-                  title: t("extensions"),
-                  content: ExtensionView,
-                })
-              }
-            >
+            <IconButton onClick={() => historyStore.push("extensions")}>
               <MdApps />
             </IconButton>
           </div>
         </div>
         <div className="flex">
-          <Button onClick={() => pushToHistory("accounts")}>
+          <Button onClick={() => historyStore.push("accounts")}>
             <MdAccountCircle /> {t("accounts")}
           </Button>
-          <Button onClick={() => pushToHistory("profiles")}>
+          <Button onClick={() => historyStore.push("profiles")}>
             <MdGamepad /> {t("profiles")}
           </Button>
           <div className="flex-grow" />
@@ -245,7 +236,7 @@ const HomePage = observer(() => {
               <MdRefresh />
             </IconButton>
           )}
-          <IconButton onClick={() => pushToHistory("settings")}>
+          <IconButton onClick={() => historyStore.push("settings")}>
             <MdSettings />
           </IconButton>
         </div>
@@ -398,7 +389,7 @@ export function showJava17RequiredDialog(finallyRun: DefaultFn): void {
     bottomDivide: true,
     neutral: {
       text: t("java.installJava"),
-      action: () => pushToHistory("java.installJava"),
+      action: () => historyStore.push("java.installJava"),
     },
   });
 }
@@ -415,7 +406,7 @@ export function showJava8RequiredDialog(finallyRun: DefaultFn): void {
     bottomDivide: true,
     neutral: {
       text: t("java.installJava"),
-      action: () => pushToHistory("java.installJava"),
+      action: () => historyStore.push("java.installJava"),
     },
   });
 }
@@ -427,7 +418,7 @@ export function showNoJavaDialog(): void {
     cancellable: true,
     fineCancel: true,
     positiveText: t("java.installJava"),
-    action: () => pushToHistory("java.installJava"),
+    action: () => historyStore.push("java.installJava"),
     bottomDivide: true,
   });
 }

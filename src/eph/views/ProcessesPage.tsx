@@ -15,7 +15,7 @@ import { _ } from "common/utils/arrays";
 import { Process, processStore } from "../../common/stores/process";
 import { ephLatestLog, ephLogs } from "common/utils/info";
 import { openItemInFinder } from "common/utils/open";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 
 const ProcessesPage = observer(() => {
   const minecraftProcesses = processStore.processes;
@@ -55,7 +55,7 @@ const ProcessesPage = observer(() => {
   const handleRemove = () => processStore.remove(current);
   const handleOpenProfile = () => {
     setConfig((cfg) => _.select(cfg.profiles, current.profile));
-    pushToHistory("profiles");
+    historyStore.push("profiles");
   };
 
   return (
@@ -107,8 +107,7 @@ const ProcessesPage = observer(() => {
             >
               <div
                 ref={onScrollPaneLoaded}
-                className="text-contrast overflow-y-auto rounded-lg bg-card shadow-md"
-                style={{ height: "calc(var(--eph-height) - 3rem)" }}
+                className="text-contrast overflow-y-auto rounded-lg bg-card shadow-md eph-h-full"
               >
                 <div className="px-3 flex items-center top-0 sticky shadow-sm bg-card">
                   <Button

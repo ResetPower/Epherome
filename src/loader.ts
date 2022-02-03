@@ -3,7 +3,6 @@ import type { EphExtension, EphExtensionMeta } from "common/extension";
 import type { EphSubscriptionMap } from "common/stores/extension";
 import { ipcMain } from "electron";
 import fs from "fs";
-import { nanoid } from "nanoid";
 import path from "path";
 import { createContext, runInContext } from "vm";
 import { mainLogger } from "./system";
@@ -28,8 +27,8 @@ ipcMain.handle("load-extensions", async (_, extPath: string) => {
   const extensions: EphExtension[] = [];
   const files = fs.readdirSync(extPath);
   const map: EphSubscriptionMap = {};
-  for (const i of files) {
-    const ext = path.join(extPath, i);
+  for (const file of files) {
+    const ext = path.join(extPath, file);
     const stat = fs.lstatSync(ext);
     if (stat.isFile()) {
       continue;
@@ -45,7 +44,7 @@ ipcMain.handle("load-extensions", async (_, extPath: string) => {
         );
       }
       if (meta && runnable) {
-        const extObj: EphExtension = { id: nanoid(), meta, runnable };
+        const extObj: EphExtension = { id: file, meta, runnable };
         const bridge = loadExtension(extObj);
         bridge?.subscriptions.forEach((s) => {
           if (map[s.id]) {

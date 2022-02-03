@@ -50,7 +50,7 @@ import EpheromeLogo from "assets/Epherome.png";
 import { ipcRenderer } from "electron";
 import { codeName, ephVersion, userDataPath } from "common/utils/info";
 import { overlayStore, showOverlay } from "eph/overlay";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 import { adapt, apply } from "common/utils";
 import { openInBrowser, openInFinder } from "common/utils/open";
 import { coordinateFont, updateTheme } from "..";
@@ -223,7 +223,7 @@ export const JavaManagementSheet = observer(() => {
           <div className="flex-grow" />
           <Button
             onClick={() => {
-              pushToHistory("java.installJava");
+              historyStore.push("java.installJava");
               overlayStore.close();
             }}
           >

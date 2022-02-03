@@ -20,6 +20,7 @@ import { Button, TextField, Spin, List, ListItem } from "@resetpower/rcs";
 import { t } from "../intl";
 import { useRef } from "react";
 import { showOverlay } from "eph/overlay";
+import { historyStore } from "eph/renderer/history";
 
 export type InstallSelection = {
   type?: MinecraftInstall;
@@ -126,7 +127,7 @@ export default function ProfileInstallPage({
           setHelper(t("done"));
           showOverlay({
             message: t("doneMessage"),
-            action: () => history.back(),
+            action: () => historyStore.back(),
           });
         })
         .catch((reason) => {

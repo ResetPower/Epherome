@@ -7,9 +7,7 @@ export interface EphExtensionMeta {
   } & { default: string };
   version: string;
   apiVersion: string;
-  application?: {
-    entrance: string;
-  };
+  introduction?: string;
 }
 
 export interface EphExtension {

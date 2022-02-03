@@ -9,6 +9,7 @@ import { adapt } from "common/utils";
 import { showOverlay } from "eph/overlay";
 import { t } from "eph/intl";
 import { MdPersonOutline, MdTextFields, MdTimelapse } from "react-icons/md";
+import { historyStore } from "eph/renderer/history";
 
 export default function ModpackExportPage({
   profile,
@@ -52,7 +53,7 @@ export default function ModpackExportPage({
           [...noGoodList, ...antiValues],
           [name, ver, author]
         ).then(() =>
-          showOverlay({ message: t("done"), action: () => history.back() })
+          showOverlay({ message: t("done"), action: () => historyStore.back() })
         );
       }
     });

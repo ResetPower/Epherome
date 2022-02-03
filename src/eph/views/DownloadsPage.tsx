@@ -23,7 +23,7 @@ import { showOverlay } from "eph/overlay";
 import got from "got";
 import { ephDefaultDotMinecraft } from "common/utils/info";
 import { taskStore } from "common/task/store";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 import { adapt } from "common/utils";
 import { Task } from "common/task";
 import { observer } from "mobx-react-lite";
@@ -67,7 +67,7 @@ export function DownloadingFragment(props: {
       `Download Minecraft ${props.version.id}`,
       "installMinecraft",
       { version: params, profileName: name },
-      () => pushToHistory("download", params)
+      () => historyStore.push("download", params)
     );
     downloadMinecraft(props.version, task.current)
       .then(() => {
@@ -80,7 +80,7 @@ export function DownloadingFragment(props: {
         });
         showOverlay({
           message: t("doneMessage"),
-          action: () => history.back(),
+          action: () => historyStore.back(),
         });
       })
       .catch(onError);

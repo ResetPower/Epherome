@@ -25,7 +25,7 @@ import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
 import { parseJson } from "core/launch/parser";
 import { useEffect, useMemo, useState } from "react";
-import { pushToHistory } from "eph/renderer/history";
+import { historyStore } from "eph/renderer/history";
 import { moveToTrash } from "common/utils/files";
 import path from "path";
 import { _ } from "common/utils/arrays";
@@ -99,7 +99,7 @@ export function ProfileGeneralFragment({
       cancellable: true,
     });
   const handleExport = () =>
-    pushToHistory(
+    historyStore.push(
       "profile.exportModpack",
       `${configStore.profiles.indexOf(current)}`
     );
@@ -109,7 +109,7 @@ export function ProfileGeneralFragment({
     } else if (parsed.inheritsFrom) {
       showOverlay({ message: t("profile.canOnlyInstallOnVanilla") });
     } else {
-      pushToHistory(
+      historyStore.push(
         "profile.install",
         `${_.index(configStore.profiles, current)}`
       );
