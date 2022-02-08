@@ -380,8 +380,10 @@ export const SettingsAppearanceFragment = observer(() => {
     updateTheme();
   };
   const handleChangeTitleBarStyle = (ev: string) => {
-    setConfig((cfg) => (cfg.titleBarStyle = ev as TitleBarStyle));
-    showOverlay({ message: t("settings.titleBar.message") });
+    if (ev !== configStore.titleBarStyle) {
+      setConfig((cfg) => (cfg.titleBarStyle = ev as TitleBarStyle));
+      showOverlay({ message: t("settings.titleBar.message") });
+    }
   };
 
   return (

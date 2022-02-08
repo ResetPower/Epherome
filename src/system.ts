@@ -7,7 +7,7 @@ import { default as log4jsConfiguration } from "./common/utils/logging";
 
 // base information
 const version = app.getVersion();
-const codeName = "Binary Tree";
+const codeName = "Prismarine";
 const userDataPath = app.getPath("userData");
 
 const configPath = path.join(userDataPath, "settings.json");
