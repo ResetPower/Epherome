@@ -383,7 +383,7 @@ const ProfilesPage = observer((props: { params: string }) => {
               }}
               key={id}
             >
-              <p className="flex items-center">
+              <div className="flex items-center">
                 <div className="w-7">
                   {i.from === "download" ? (
                     <MdFileDownload />
@@ -394,7 +394,7 @@ const ProfilesPage = observer((props: { params: string }) => {
                   )}
                 </div>
                 {i.name}
-              </p>
+              </div>
             </ListItem>
           ))}
         </List>

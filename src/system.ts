@@ -63,6 +63,16 @@ ipcMain.handle("open-java", async () => {
   } else return undefined;
 });
 
+ipcMain.handle("open-avatar", async () => {
+  const files = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [{ extensions: ["jpg", "jpeg", "png"], name: "Image" }],
+  });
+  if (!files.canceled) {
+    return files.filePaths[0];
+  } else return undefined;
+});
+
 ipcMain.handle("import-modpack", async () => {
   const files = await dialog.showOpenDialog({
     properties: ["openFile"],

@@ -192,4 +192,6 @@ export interface LanguageDefinition {
   removeFilesAsWell: string;
   unableToRefreshMsToken: string;
   msLoginAgain: string;
+  ephPersonalCenter: string;
+  ephLogin: string;
 }

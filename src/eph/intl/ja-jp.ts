@@ -220,6 +220,8 @@ const jaJp: Language = {
     unableToRefreshMsToken:
       "Microsoft アカウントのトークンを更新できません。もう一度ログインしてください。",
     msLoginAgain: "再度ログイン",
+    ephPersonalCenter: "パーソナルセンター",
+    ephLogin: "ログイン",
   },
 };
 

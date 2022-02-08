@@ -52,6 +52,7 @@ export class ConfigStore {
   @observable developerMode = false;
   @observable titleBarStyle: TitleBarStyle = "os";
   @observable checkUpdate = true;
+  @observable epheromeToken = "";
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });

@@ -19,7 +19,7 @@ import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
 import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { configStore } from "common/struct/config";
 import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
 import ProfileInstallPage from "../views/ProfileInstallPage";
@@ -30,65 +30,13 @@ import { GlobalOverlay } from "eph/overlay";
 import JavaInstallPage from "eph/views/JavaInstallPage";
 import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
 import ModpackExportPage from "eph/views/ModpackExportPage";
-import { useFloating } from "@floating-ui/react-dom";
-import { shift } from "@floating-ui/core";
-import TaskPanel from "eph/components/TaskPanel";
-import { FaServer } from "react-icons/fa";
 import { checkEphUpdate } from "./updater";
 import ExtensionStore from "eph/views/ExtensionStore";
-
-function TaskPanelShower(): JSX.Element {
-  const { x, y, reference, floating, refs, strategy } = useFloating({
-    placement: "bottom",
-    middleware: [shift()],
-  });
-  const [show, setShow] = useState(false);
-  const close = useCallback(
-    (event: Event) => {
-      if (
-        !refs.reference.current?.contains(event.target as Node) &&
-        !refs.floating.current?.contains(event.target as Node)
-      ) {
-        setShow(false);
-      }
-    },
-    [refs]
-  );
-
-  useEffect(
-    () =>
-      (show ? document.addEventListener : document.removeEventListener)(
-        "click",
-        close
-      ),
-    [show, close]
-  );
-
-  return (
-    <div>
-      <div ref={reference}>
-        <IconButton
-          className="flex"
-          onClick={() => setShow(!show)}
-          active={show}
-        >
-          <FaServer size="1.2em" />
-        </IconButton>
-      </div>
-      {show && (
-        <TaskPanel
-          className="z-20 right-1"
-          ref={floating}
-          style={{
-            position: strategy,
-            top: y ?? "",
-            left: x ?? "",
-          }}
-        />
-      )}
-    </div>
-  );
-}
+import { BsPersonCircle } from "react-icons/bs";
+import LoginPage from "eph/views/LoginPage";
+import PersonalCenterPage from "eph/views/PersonalCenterPage";
+import { TaskPanelShower } from "eph/components/TaskPanel";
+import { PersonalPanelShower } from "eph/components/PersonalPanel";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -129,6 +77,14 @@ export const EphAppBar = observer(
         text: t("settings"),
         action: () => historyStore.push("settings"),
       },
+      {
+        icon: <BsPersonCircle />,
+        text: t("ephPersonalCenter"),
+        action: () =>
+          configStore.epheromeToken
+            ? historyStore.push("ephPersonalCenter")
+            : historyStore.push("ephLogin"),
+      },
     ];
 
     return (
@@ -153,6 +109,7 @@ export const EphAppBar = observer(
         <AppBarTitle>{title}</AppBarTitle>
 
         <div className="eph-no-drag flex">
+          <PersonalPanelShower />
           <TaskPanelShower />
           {configStore.developerMode && (
             <Menu
@@ -240,6 +197,10 @@ export function RouterView({
           <JavaInstallPage />
         ) : pathname === "processes" ? (
           <ProcessesPage />
+        ) : pathname === "ephLogin" ? (
+          <LoginPage />
+        ) : pathname === "ephPersonalCenter" ? (
+          <PersonalCenterPage />
         ) : (
           <></>
         )}

@@ -205,6 +205,8 @@ const zhCn: Language = {
     removeFilesAsWell: "删除文件",
     unableToRefreshMsToken: "无法刷新微软账户令牌，请重新登录。",
     msLoginAgain: "重新登录",
+    ephPersonalCenter: "个人中心",
+    ephLogin: "登录",
   },
 };
 

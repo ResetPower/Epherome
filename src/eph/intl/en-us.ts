@@ -218,6 +218,8 @@ const enUs: Language = {
     unableToRefreshMsToken:
       "Unable to refresh Microsoft account token, please login again.",
     msLoginAgain: "Login Again",
+    ephPersonalCenter: "Personal Center",
+    ephLogin: "Login",
   },
 };
 

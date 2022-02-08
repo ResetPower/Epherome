@@ -13,6 +13,7 @@ import { userDataPath } from "common/utils/info";
 import { extensionStore } from "common/stores/extension";
 import { rcsDark, rcsLight, ThemeManager } from "@resetpower/rcs";
 import { configStore, setConfig } from "common/struct/config";
+import { personalStore, validateEphToken } from "common/stores/personal";
 
 console.log("Hello, World!");
 
@@ -73,10 +74,35 @@ const splash = `
 const root = document.getElementById("root");
 root && (root.innerHTML = splash);
 
-// load extensions
-ipcRenderer
-  .invoke("load-extensions", path.join(userDataPath, "ext"))
-  .then(([e, s]) => extensionStore.load(e, s));
+async function launchEpherome() {
+  // load extensions
+  rendererLogger.info("Loading extensions...");
+  const [e, s] = await ipcRenderer.invoke(
+    "load-extensions",
+    path.join(userDataPath, "ext")
+  );
+  extensionStore.load(e, s);
+  rendererLogger.info(`Loaded extensions (Total ${e.length})`);
 
-// render app
-render(<App />, root);
+  // login epherome account
+  if (configStore.epheromeToken !== "") {
+    rendererLogger.info("Validating Epherome account token");
+    const valid = await validateEphToken(configStore.epheromeToken);
+    if (valid === -1) {
+      rendererLogger.warn("Epherome account token is not valid. logging out");
+    } else {
+      if (valid === 0) {
+        rendererLogger.warn("Network not available, skipping check");
+      }
+      personalStore.autoLogin();
+    }
+  }
+
+  // load epherome account avatar
+  personalStore.updateHead();
+
+  // render app
+  render(<App />, root);
+}
+
+launchEpherome();

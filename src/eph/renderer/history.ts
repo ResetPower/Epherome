@@ -12,10 +12,14 @@ export class HistoryStore {
     makeObservable(this);
   }
   @action push(pathname: KeyOfLanguageDefinition, params?: string) {
-    this.history.push({ pathname, params: params ?? "" });
+    this.current !== pathname &&
+      this.history.push({ pathname, params: params ?? "" });
   }
   @action back() {
     this.history.length !== 1 && this.history.pop();
+  }
+  get current(): string {
+    return this.history[this.history.length - 1].pathname;
   }
   get use(): Location {
     return this.history[this.history.length - 1];

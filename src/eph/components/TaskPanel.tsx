@@ -1,9 +1,11 @@
-import { ProgressBar } from "@resetpower/rcs";
+import { shift, useFloating } from "@floating-ui/react-dom";
+import { IconButton, ProgressBar } from "@resetpower/rcs";
 import { taskStore } from "common/task/store";
 import { call } from "common/utils";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
-import { CSSProperties, Ref, useEffect, useState } from "react";
+import { CSSProperties, Ref, useCallback, useEffect, useState } from "react";
+import { FaServer } from "react-icons/fa";
 import { MdCancel, MdOpenInNew } from "react-icons/md";
 import JoinIn from "./JoinIn";
 
@@ -67,4 +69,55 @@ const TaskPanel = observer(
   { forwardRef: true }
 );
 
-export default TaskPanel;
+export function TaskPanelShower(): JSX.Element {
+  const { x, y, reference, floating, refs, strategy } = useFloating({
+    placement: "bottom",
+    middleware: [shift()],
+  });
+  const [show, setShow] = useState(false);
+  const close = useCallback(
+    (event: Event) => {
+      if (
+        !refs.reference.current?.contains(event.target as Node) &&
+        !refs.floating.current?.contains(event.target as Node)
+      ) {
+        setShow(false);
+      }
+    },
+    [refs]
+  );
+
+  useEffect(
+    () =>
+      (show ? document.addEventListener : document.removeEventListener)(
+        "click",
+        close
+      ),
+    [show, close]
+  );
+
+  return (
+    <div>
+      <div ref={reference}>
+        <IconButton
+          className="flex"
+          onClick={() => setShow(!show)}
+          active={show}
+        >
+          <FaServer size="1.2em" />
+        </IconButton>
+      </div>
+      {show && (
+        <TaskPanel
+          className="z-20 right-1"
+          ref={floating}
+          style={{
+            position: strategy,
+            top: y ?? "",
+            left: x ?? "",
+          }}
+        />
+      )}
+    </div>
+  );
+}

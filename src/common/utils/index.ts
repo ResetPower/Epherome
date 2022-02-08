@@ -21,6 +21,12 @@ export interface AnyMap {
 
 export type DefaultFn = () => unknown;
 
+export enum Trilean {
+  negative = -1,
+  neutral = 0,
+  positive = 1,
+}
+
 export type Nullable<T> = T | null;
 
 export type DefaultCb<E, T> = (err: Nullable<E>, data: Nullable<T>) => unknown;
