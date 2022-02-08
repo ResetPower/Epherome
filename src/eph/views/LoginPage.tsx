@@ -45,17 +45,17 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <div className="p-9 space-y-3">
-      <p className="font-semibold text-xl">Login to Epherome</p>
+      <p className="font-semibold text-xl">{t("personal.loginTo")}</p>
       <TextField
-        label="Username"
-        placeholder="Username"
+        label={t("username")}
+        placeholder={t("username")}
         value={username}
         onChange={setUsername}
       />
       <TextField
-        label="Password"
+        label={t("password")}
         type={visible ? undefined : "password"}
-        placeholder="Password"
+        placeholder={t("password")}
         value={password}
         onChange={setPassword}
         trailing={
@@ -66,12 +66,12 @@ export default function LoginPage(): JSX.Element {
       />
       <div className="flex items-center space-x-3">
         <Button variant="pill" onClick={handleLogin} disabled={pending}>
-          Login
+          {t("personal.login")}
         </Button>
         {pending && <Spin />}
         <p className="flex-grow">{message}</p>
         <Link onClick={() => openInBrowser("https://epherome.com/register")}>
-          Register...
+          {t("personal.register")}...
         </Link>
       </div>
     </div>

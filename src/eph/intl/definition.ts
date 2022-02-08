@@ -194,4 +194,22 @@ export interface LanguageDefinition {
   msLoginAgain: string;
   ephPersonalCenter: string;
   ephLogin: string;
+  "ext.installed": string;
+  "ext.recommended": string;
+  "ext.all": string;
+  "ext.noItems": string;
+  "ext.remove": string;
+  "ext.add": string;
+  "ext.reloadRequired": string;
+  "personal.loginTo": string;
+  "personal.register": string;
+  "personal.login": string;
+  "personal.openPersonalCenter": string;
+  "personal.changeAvatar": string;
+  "personal.logout": string;
+  "personal.notLoggedIn": string;
+  imageTooBig: string;
+  notSelected: string;
+  "ext.added": string;
+  "ext.removed": string;
 }

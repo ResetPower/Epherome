@@ -108,6 +108,7 @@ const ProcessesPage = observer(() => {
               <div
                 ref={onScrollPaneLoaded}
                 className="text-contrast overflow-y-auto rounded-lg bg-card shadow-md eph-h-full"
+                style={{ height: "calc(var(--eph-height) - 3rem)" }}
               >
                 <div className="px-3 flex items-center top-0 sticky shadow-sm bg-card">
                   <Button

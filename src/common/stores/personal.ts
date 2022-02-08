@@ -89,16 +89,18 @@ export class PersonalStore {
       commonLogger.warn("No token, skipping head updating");
     }
   }
-  @action
-  autoLogin() {
+  @action autoLogin() {
     this.userInfo = parseEphToken(configStore.epheromeToken);
     this.updateHead();
   }
-  @action
-  login(token: string) {
+  @action login(token: string) {
     setConfig((cfg) => (cfg.epheromeToken = token));
     this.userInfo = parseEphToken(token);
     this.updateHead();
+  }
+  @action logout() {
+    setConfig((cfg) => (cfg.epheromeToken = ""));
+    this.userInfo = null;
   }
 }
 

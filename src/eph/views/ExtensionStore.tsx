@@ -88,7 +88,7 @@ function Panel(props: {
     <div>
       {!props.forceOpen && (
         <div
-          className="flex bg-white bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 cursor-pointer select-none transition-colors text-sm font-semibold px-1 "
+          className="flex bg-slate-500 bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 cursor-pointer select-none transition-colors text-sm font-semibold px-1 "
           onClick={() => setExpanded(!expanded)}
         >
           <p>{props.label}</p>
@@ -215,7 +215,7 @@ export default function ExtensionStore(): JSX.Element {
                 className="inline-flex items-center mx-3"
                 onClick={() => setStat(false)}
               >
-                <MdArrowBackIos size="0.8em" /> All
+                <MdArrowBackIos size="0.8em" /> {t("ext.all")}
               </Link>
               <Panel
                 label="Search Result"
@@ -227,17 +227,17 @@ export default function ExtensionStore(): JSX.Element {
           ) : (
             <>
               <Panel
-                label="Installed"
+                label={t("ext.installed")}
                 list={installed}
                 controller={controller}
                 open
               />
               <Panel
-                label="Recommended"
+                label={t("ext.recommended")}
                 list={recommended}
                 controller={controller}
               />
-              <Panel label="All" list={all} controller={controller} />
+              <Panel label={t("ext.all")} list={all} controller={controller} />
             </>
           )}
         </div>
@@ -266,7 +266,7 @@ export default function ExtensionStore(): JSX.Element {
                   variant="pill"
                   disabled={pending}
                 >
-                  Add to Epherome
+                  {t("ext.add")}
                 </Button>
               )}
               {extStat === "installed" && (
@@ -276,32 +276,32 @@ export default function ExtensionStore(): JSX.Element {
                   variant="pill"
                   disabled={pending}
                 >
-                  Remove from Epherome
+                  {t("ext.remove")}
                 </Button>
               )}
               {extStat === "reloadRequiredToIn" && (
                 <>
-                  <p className="text-shallow text-sm">Added</p>
+                  <p className="text-shallow text-sm">{t("ext.added")}</p>
                   <Button
                     className="bg-green-400 hover:bg-green-500 active:bg-green-600"
                     onClick={handleReload}
                     variant="pill"
                     disabled={pending}
                   >
-                    Reload Required
+                    {t("ext.reloadRequired")}
                   </Button>
                 </>
               )}
               {extStat === "reloadRequiredToUn" && (
                 <>
-                  <p className="text-shallow text-sm">Removed</p>
+                  <p className="text-shallow text-sm">{t("ext.removed")}</p>
                   <Button
                     className="bg-green-400 hover:bg-green-500 active:bg-green-600"
                     onClick={handleReload}
                     variant="pill"
                     disabled={pending}
                   >
-                    Reload Required
+                    {t("ext.reloadRequired")}
                   </Button>
                 </>
               )}
@@ -313,7 +313,7 @@ export default function ExtensionStore(): JSX.Element {
             </ReactMarkdown>
           </div>
         ) : (
-          <Center className="text-shallow">Not Selected</Center>
+          <Center className="text-shallow">{t("notSelected")}</Center>
         )}
       </div>
     </div>

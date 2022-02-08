@@ -20,6 +20,7 @@ import {
   parseEphToken,
   personalStore,
 } from "common/stores/personal";
+import { t } from "eph/intl";
 
 const PersonalHead = observer((props: { lg?: boolean }) => {
   if (personalStore.userInfo === null) {
@@ -45,14 +46,14 @@ export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
       <div className="flex items-center space-x-1">
         <p className="font-semibold text-lg">{userInfo.name}</p>
         {userInfo.verified && <VerifiedBadge />}
-        {userInfo.plan === "ultimate" && (
-          <Tooltip
-            placement={props.bottomPop ? "bottom" : undefined}
-            text="Epherome Ultimate Plan Subscriber"
-          >
+        {userInfo.plan === "ultimate" &&
+          (props.bottomPop ? (
             <BsFillXDiamondFill color="#0abab5" />
-          </Tooltip>
-        )}
+          ) : (
+            <Tooltip text="Epherome Ultimate Plan Subscriber">
+              <BsFillXDiamondFill color="#0abab5" />
+            </Tooltip>
+          ))}
       </div>
       <p className="text-sm text-shallow">ID: {userInfo.id}</p>
     </div>
@@ -91,7 +92,7 @@ const PersonalPanel = observer(
         </>
       ) : (
         <>
-          <p className="text-center py-3">NOT LOGGED IN</p>
+          <p className="text-center py-3">{t("personal.notLoggedIn")}</p>
           <Button
             onClick={() => {
               historyStore.push("ephLogin");
@@ -99,7 +100,7 @@ const PersonalPanel = observer(
             }}
             className="justify-center w-full"
           >
-            Login to Epherome
+            {t("personal.loginTo")}
           </Button>
         </>
       )}

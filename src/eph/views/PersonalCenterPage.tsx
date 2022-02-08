@@ -1,6 +1,6 @@
 import { ListItem } from "@resetpower/rcs";
 import { personalStore } from "common/stores/personal";
-import { configStore, setConfig } from "common/struct/config";
+import { configStore } from "common/struct/config";
 import { DefaultFn } from "common/utils";
 import { ipcRenderer } from "electron";
 import JoinIn from "eph/components/JoinIn";
@@ -47,7 +47,7 @@ export default function PersonalCenterPage(): JSX.Element {
   }
 
   const handleLogout = () => {
-    setConfig((cfg) => (cfg.epheromeToken = ""));
+    personalStore.logout();
     historyStore.back();
   };
   const handleChangeAvatar = () => {
@@ -59,7 +59,7 @@ export default function PersonalCenterPage(): JSX.Element {
         if (byteLength >= 256000) {
           showOverlay({
             title: t("warning"),
-            message: "Image size should not bigger than 256KB.",
+            message: t("imageTooBig"),
           });
           return;
         }
@@ -101,10 +101,10 @@ export default function PersonalCenterPage(): JSX.Element {
         separator={<div className="border-t border-divider" />}
       >
         <Tile onClick={handleChangeAvatar} disabled={stat}>
-          Change Avatar...
+          {t("personal.changeAvatar")}...
         </Tile>
         <Tile onClick={handleLogout} danger>
-          Logout
+          {t("personal.logout")}
         </Tile>
       </JoinIn>
     </div>
