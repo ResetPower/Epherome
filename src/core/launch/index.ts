@@ -80,8 +80,8 @@ export async function launchMinecraft(
 
   // === authenticating ===
   if (navigator.onLine) {
-    if (account.mode === "mojang" || account.mode === "authlib") {
-      const server = account.mode === "mojang" ? undefined : account.authserver;
+    if (account.mode === "authlib") {
+      const server = account.authserver ?? "";
       coreLogger.info("Validating account token");
       const valid = await validate(account.token, server);
       if (!valid) {
@@ -116,6 +116,8 @@ export async function launchMinecraft(
           });
         }
       }
+    } else if (account.mode === "mojang") {
+      coreLogger.warn("Outdated Mojang account!");
     }
   } else {
     coreLogger.info("Network not available, account validating skipped");

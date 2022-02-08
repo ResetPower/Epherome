@@ -46,7 +46,7 @@ export function ChangeAccountFragment(props: {
   const [errAlert, setErrAlert] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [msAccNoMcAlert, setMsAccNoMcAlert] = useState(false);
-  const [value, setValue] = useState("mojang");
+  const [value, setValue] = useState("microsoft");
   const [authserver, setAuthserver] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -87,22 +87,12 @@ export function ChangeAccountFragment(props: {
         <Select
           value={value}
           options={[
-            { value: "mojang", text: t("account.mojang") },
             { value: "microsoft", text: t("account.microsoft") },
             { value: "authlib", text: t("account.authlib") },
             { value: "offline", text: t("account.offline") },
           ]}
           onChange={setValue}
         />
-        <div hidden={value !== "mojang"}>
-          <TextField label={t("email")} value={name} onChange={setName} />
-          <TextField
-            label={t("password")}
-            value={password}
-            onChange={setPassword}
-            type="password"
-          />
-        </div>
         <div hidden={value !== "microsoft"}>
           <p>{t("account.clickToLogin")}</p>
         </div>

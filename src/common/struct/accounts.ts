@@ -41,22 +41,7 @@ export async function createAccount(
 ): Promise<CreateAccountImplResult> {
   const unsuccessfulResult: CreateAccountImplResult = { success: false };
   const successfulResult: CreateAccountImplResult = { success: true };
-  if (mode === "mojang") {
-    if (username === "" || password === "") return unsuccessfulResult;
-    const result = await authenticate(username, password);
-    if (result.err) {
-      return unsuccessfulResult;
-    } else {
-      appendAccount({
-        email: username,
-        name: result.name,
-        uuid: result.uuid,
-        token: result.token,
-        mode: "mojang",
-      });
-      return successfulResult;
-    }
-  } else if (mode === "microsoft") {
+  if (mode === "microsoft") {
     // Microsoft OAuth Flow
     let authCode = "";
 

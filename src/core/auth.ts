@@ -3,9 +3,6 @@ import { MinecraftAccount, updateAccountToken } from "common/struct/accounts";
 import { form, StringMap } from "common/utils";
 import got from "got";
 
-// yggdrasil authentication server url
-export const MOJANG_AUTHSERVER_URL = "https://authserver.mojang.com";
-
 // minecraft (microsoft) authentication client id
 export const MICROSOFT_CLIENT_ID = "00000000402b5328";
 
@@ -30,7 +27,7 @@ function json(object: { [key: string]: unknown }): string {
 export async function authenticate(
   username: string,
   password: string,
-  url: string = MOJANG_AUTHSERVER_URL
+  url: string
 ): Promise<AuthenticateResult> {
   try {
     const resp = await got(`${url}/authenticate`, {
@@ -58,7 +55,7 @@ export async function authenticate(
 
 export async function refresh(
   token: string,
-  url: string = MOJANG_AUTHSERVER_URL
+  url: string
 ): Promise<RefreshResult> {
   try {
     const response = await got(url + "/refresh", {
@@ -80,10 +77,7 @@ export async function refresh(
   }
 }
 
-export async function validate(
-  token: string,
-  url: string = MOJANG_AUTHSERVER_URL
-): Promise<boolean> {
+export async function validate(token: string, url: string): Promise<boolean> {
   try {
     await got(url + "/validate", {
       method: "POST",
