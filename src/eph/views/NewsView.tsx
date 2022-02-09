@@ -4,7 +4,7 @@ import { openInBrowser } from "common/utils/open";
 
 export default function NewsView(): JSX.Element {
   return (
-    <List>
+    <List className="eph-force-chinese">
       {homePageStore.news?.map((val, index) => (
         <ListItem className="rounded-lg items-center px-9 m-1" key={index}>
           <p

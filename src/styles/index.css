@@ -30,6 +30,10 @@ img {
   @apply pointer-events-none;
 }
 
+.eph-force-chinese {
+  font-family: Noto Sans, Noto Sans SC;
+}
+
 ::-webkit-scrollbar {
   width: 0;
 }

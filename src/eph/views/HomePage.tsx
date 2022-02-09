@@ -206,7 +206,7 @@ const HomePage = observer(() => {
               {account?.name ?? t("account.notSelected")}
             </p>
             {configStore.hitokoto && (
-              <div>
+              <div className="eph-force-chinese">
                 <p className="text-sm">{homePageStore.hitokoto.content}</p>
                 <p className="text-sm text-shallow">
                   {homePageStore.hitokoto.from}
@@ -330,9 +330,11 @@ const HomePage = observer(() => {
                 <br />
               </p>
             ) : (
-              homePageStore.news
-                .slice(0, 2)
-                .map((val, index) => <p key={index}>{val.title}</p>)
+              <div className="eph-force-chinese">
+                {homePageStore.news.slice(0, 2).map((val, index) => (
+                  <p key={index}>{val.title}</p>
+                ))}
+              </div>
             )}
             <div>
               <TinyButton
