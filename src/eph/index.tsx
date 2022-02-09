@@ -14,6 +14,7 @@ import { extensionStore } from "common/stores/extension";
 import { rcsDark, rcsLight, ThemeManager } from "@resetpower/rcs";
 import { configStore, setConfig } from "common/struct/config";
 import { personalStore, validateEphToken } from "common/stores/personal";
+import { ensureDir } from "common/utils/files";
 
 console.log("Hello, World!");
 
@@ -75,12 +76,11 @@ const root = document.getElementById("root");
 root && (root.innerHTML = splash);
 
 async function launchEpherome() {
+  const extPath = path.join(userDataPath, "ext");
+  ensureDir(extPath);
   // load extensions
   rendererLogger.info("Loading extensions...");
-  const [e, s] = await ipcRenderer.invoke(
-    "load-extensions",
-    path.join(userDataPath, "ext")
-  );
+  const [e, s] = await ipcRenderer.invoke("load-extensions", extPath);
   extensionStore.load(e, s);
   rendererLogger.info(`Loaded extensions (Total ${e.length})`);
 
