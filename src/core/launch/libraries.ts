@@ -11,8 +11,6 @@ import {
   ClientLibraryResult,
 } from "./struct";
 import { calculateHash, downloadFile } from "common/utils/files";
-import { DefaultFn } from "common/utils";
-import { MutableRefObject } from "react";
 import { MinecraftUrlUtil } from "core/url";
 import { Canceller } from "common/task/cancel";
 
