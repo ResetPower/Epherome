@@ -33,7 +33,7 @@ import { fetchNews, NewItem } from "../../common/struct/news";
 import { JavaManagementSheet } from "./SettingsPage";
 import { ObjectWrapper } from "common/utils/object";
 import { historyStore } from "eph/renderer/history";
-import { DefaultFn } from "common/utils";
+import { apply, DefaultFn } from "common/utils";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { openInBrowser } from "common/utils/open";
@@ -309,8 +309,16 @@ const HomePage = observer(() => {
             </TinyButton>
             <div className="flex-grow" />
             <p className="text-shallow">
-              {t("java.default")}:{" "}
-              {_.selected(configStore.javas)?.name ?? t("haveNot")}
+              Java:{" "}
+              {apply(_.selected(configStore.javas), (j) =>
+                j.nickname ? (
+                  <>
+                    {j.nickname} ({j.name})
+                  </>
+                ) : (
+                  j.name
+                )
+              ) ?? t("haveNot")}
             </p>
           </div>
         </Card>
