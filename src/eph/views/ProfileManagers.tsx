@@ -30,29 +30,7 @@ import { moveToTrash } from "common/utils/files";
 import path from "path";
 import { _ } from "common/utils/arrays";
 import { configStore } from "common/struct/config";
-
-export function Highlight({
-  keyword,
-  children,
-  className,
-}: {
-  keyword: string;
-  children: string;
-  className?: string;
-}) {
-  const i = children.indexOf(keyword);
-  const [before, after] = [
-    children.slice(0, i),
-    children.slice(i + keyword.length),
-  ];
-  return (
-    <div className={className}>
-      <span>{before}</span>
-      <span className="text-danger">{keyword}</span>
-      <span>{after}</span>
-    </div>
-  );
-}
+import { Highlight, matchKeyword } from "eph/components/Highlight";
 
 export function showMoveToTrashAlert(filepath: string): Promise<void> {
   return new Promise((resolve) => {
@@ -349,7 +327,7 @@ export const ProfileSettingsFragment = observer(
           {manager.options
             ? manager.options.map(
                 (value, index) =>
-                  value.key.toLowerCase().includes(query.toLowerCase()) && (
+                  matchKeyword(value.key, query) && (
                     <div key={index} className="flex">
                       <Highlight
                         keyword={query}

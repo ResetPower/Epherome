@@ -5,14 +5,21 @@ import {
   Spin,
   List,
   ListItem,
-  ListItemText,
   ProgressBar,
   Center,
+  TinyTextField,
 } from "@resetpower/rcs";
 import { MinecraftVersion, MinecraftVersionType } from "core/launch/versions";
 import { rendererLogger } from "common/loggers";
 import { Alert } from "../components/layouts";
-import { useState, useEffect, Fragment, useRef, useReducer } from "react";
+import {
+  useState,
+  useEffect,
+  Fragment,
+  useRef,
+  useReducer,
+  useMemo,
+} from "react";
 import { createProfile } from "../../common/struct/profiles";
 import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
@@ -27,6 +34,7 @@ import { historyStore } from "eph/renderer/history";
 import { adapt } from "common/utils";
 import { Task } from "common/task";
 import { observer } from "mobx-react-lite";
+import { Highlight, matchKeyword } from "eph/components/Highlight";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -141,7 +149,6 @@ export function DownloadingFragment(props: {
 
 const DownloadsPage = observer(
   (props: { version?: MinecraftVersion }): JSX.Element => {
-    console.log("FUCKU!");
     // load the download task last time
     let version = props.version;
     const task = taskStore.findByType("installMinecraft");
@@ -157,11 +164,18 @@ const DownloadsPage = observer(
     const [old, setOld] = useState(
       false || adapt(version?.type, "old_alpha", "old_beta")
     );
-    const [selected, setSelected] = useState(-1);
+    const [selected, setSelected] = useState("");
     const [versions, setVersions] = useState<
       MinecraftVersion[] | null | undefined
     >(undefined);
-    const current = (versions ?? [])[selected];
+    const current = (versions ?? []).find((v) => v.id === selected);
+
+    const [query, setQuery] = useState("");
+    const result = useMemo(
+      () =>
+        query ? versions?.filter((v) => matchKeyword(v.id, query)) : undefined,
+      [query, versions]
+    );
 
     const matchType = (type: MinecraftVersionType) =>
       type === "release"
@@ -192,7 +206,7 @@ const DownloadsPage = observer(
     return (
       <div className="flex eph-h-full">
         <div className="p-3 bg-card shadow-md overflow-y-auto w-1/4">
-          <div className="p-3">
+          <div className="p-1">
             <Checkbox checked={release} onChange={setRelease}>
               {t("version.release")}
             </Checkbox>
@@ -203,26 +217,32 @@ const DownloadsPage = observer(
               {t("version.old")}
             </Checkbox>
           </div>
+          <TinyTextField
+            value={query}
+            onChange={setQuery}
+            placeholder={t("search")}
+          />
           {versions ? (
             <List>
-              {versions.map(
-                (item, index) =>
-                  matchType(item.type) && (
+              {(result ?? versions).map(
+                (item) =>
+                  (result ? true : matchType(item.type)) && (
                     <ListItem
                       className="rounded-lg p-1 pl-3"
-                      checked={selected === index}
+                      checked={selected === item.id}
                       onClick={() =>
-                        selected === index
-                          ? setSelected(-1)
-                          : setSelected(index)
+                        selected === item.id
+                          ? setSelected("")
+                          : setSelected(item.id)
                       }
-                      key={index}
+                      key={item.id}
                     >
-                      <ListItemText
-                        primary={item.id}
-                        secondary={t(`version.${item.type}`)}
-                        className="cursor-pointer"
-                      />
+                      <div>
+                        <Highlight keyword={query}>{item.id}</Highlight>
+                        <p className="text-shallow">
+                          {t(`version.${item.type}`)}
+                        </p>
+                      </div>
                     </ListItem>
                   )
               )}
@@ -236,11 +256,10 @@ const DownloadsPage = observer(
           )}
         </div>
         <div className="w-3/4">
-          {current || version ? (
-            <DownloadingFragment
-              version={current ?? version}
-              task={task ?? undefined}
-            />
+          {version ? (
+            <DownloadingFragment version={version} task={task ?? undefined} />
+          ) : current ? (
+            <DownloadingFragment version={current} task={task ?? undefined} />
           ) : (
             <Center>
               <p className="text-shallow">{t("download.notSelected")}</p>
