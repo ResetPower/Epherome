@@ -87,7 +87,7 @@ const PersonalPanel = observer(
             }}
             className="justify-center w-full"
           >
-            Open Personal Center
+            {t("personal.openPersonalCenter")}
           </Button>
         </>
       ) : (
