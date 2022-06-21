@@ -97,7 +97,7 @@
     "@fontsource/noto-sans-jp": "^4.5.3",
     "@fontsource/noto-sans-sc": "^4.5.3",
     "@resetpower/rcs": "^0.0.20",
-    "got": "^12.0.1",
+    "got": "^12.1.0",
     "log4js": "^6.4.1",
     "mobx": "^6.3.13",
     "mobx-react-lite": "^3.2.3",
