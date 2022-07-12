@@ -70,10 +70,11 @@ const TaskPanel = observer(
 );
 
 export function TaskPanelShower(): JSX.Element {
-  const { x, y, reference, floating, refs, strategy } = useFloating({
-    placement: "bottom",
-    middleware: [shift()],
-  });
+  const { x, y, reference, floating, refs, strategy } =
+    useFloating<HTMLElement>({
+      placement: "bottom",
+      middleware: [shift()],
+    });
   const [show, setShow] = useState(false);
   const close = useCallback(
     (event: Event) => {

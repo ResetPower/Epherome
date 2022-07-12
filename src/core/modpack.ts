@@ -133,9 +133,7 @@ export async function importModpack(
   ensureDir(destination);
   task.hashMap.put("helper", "Unzipping");
   task.signal();
-  await new Promise((resolve) =>
-    window.native.extractZip(filename, destination, resolve)
-  );
+  await window.native.extractZip(filename, destination);
   const manifest = path.join(destination, "manifest.json");
   const bbsMeta = path.join(destination, "mcbbs.packmeta");
   if (!fs.existsSync(manifest) || !fs.existsSync(bbsMeta)) {
@@ -214,7 +212,5 @@ export async function exportModpack(
   copyFolder(realGameDir, path.join(temp, "overrides"), noGoodList);
 
   // make zip
-  await new Promise((resolve) =>
-    window.native.compressZip(temp, dest, resolve)
-  );
+  await window.native.compressZip(temp, dest);
 }

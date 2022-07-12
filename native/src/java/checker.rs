@@ -1,4 +1,4 @@
-use neon::{prelude::*, result::Throw};
+use neon::prelude::*;
 use regex::Regex;
 use std::process::Command;
 
@@ -28,9 +28,9 @@ pub fn check_java(mut c: FunctionContext) -> JsResult<JsObject> {
         }
         // fail if regex not matched
         if !matched {
-            return Err(Throw);
+            panic!("Regex not matched")
         }
         return Ok(obj);
     }
-    Err(Throw)
+    panic!("Internal Error")
 }

@@ -10,11 +10,7 @@ export interface NewItem {
 export async function fetchNews(): Promise<NewItem[] | null> {
   rendererLogger.info("Fetching news...");
   try {
-    const result = await new Promise<NewItem[]>((resolve, reject) =>
-      window.native.fetchNews((err, data) => {
-        data ? resolve(data) : reject(err);
-      })
-    );
+    const result = await window.native.fetchNews();
     rendererLogger.info("Fetched news");
     return result ?? [];
   } catch {

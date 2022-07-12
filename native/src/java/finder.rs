@@ -1,5 +1,4 @@
 use neon::prelude::*;
-use neon::result::Throw;
 
 use crate::tool::deduplicate;
 use env::consts::OS;
@@ -75,7 +74,7 @@ pub fn find_java_executable(mut c: FunctionContext) -> JsResult<JsString> {
     if let Some(exec_path) = exec_path {
         return Ok(c.string(exec_path));
     }
-    Err(Throw)
+    panic!("Unable to find java executable")
 }
 
 fn find_java_executable_impl(path: &Path) -> Option<String> {

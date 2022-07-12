@@ -43,23 +43,13 @@ pub fn extract_zip(zip: &str, target: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn js_extract_zip(mut c: FunctionContext) -> JsResult<JsUndefined> {
+pub fn js_extract_zip(mut c: FunctionContext) -> JsResult<JsPromise> {
     let zip = c.argument::<JsString>(0)?.value(&mut c);
     let target = c.argument::<JsString>(1)?.value(&mut c);
-    let callback = c.argument::<JsFunction>(2)?.root(&mut c);
-    let channel = c.channel();
 
-    std::thread::spawn(move || {
-        let result = extract_zip(&zip, &target).is_ok();
+    let promise = c
+        .task(move || extract_zip(&zip, &target).is_ok())
+        .promise(move |mut cx, status| Ok(cx.boolean(status)));
 
-        channel.send(move |mut c| {
-            let callback = callback.into_inner(&mut c);
-            let this = c.undefined();
-            let arg = c.boolean(result);
-            callback.call(&mut c, this, vec![arg])?;
-            Ok(())
-        });
-    });
-
-    Ok(c.undefined())
+    Ok(promise)
 }

@@ -47,22 +47,21 @@ fn parse_element(element: ElementRef) -> (String, String, String) {
     (author, time, title)
 }
 
-pub fn fetch_news(mut c: FunctionContext) -> JsResult<JsUndefined> {
-    let callback = c.argument::<JsFunction>(0)?.root(&mut c);
-    let channel = c.channel();
-    std::thread::spawn(move || {
-        let result = (|| -> Result<(Runtime, Response), MyError> {
-            let rt = Runtime::new().or(my_err("Error occurred creating tokio runtime"))?;
-            let resp = rt
-                .block_on(async { reqwest::get("https://www.mcbbs.net/forum-news-1.html").await })
-                .or(my_err("Error occurred requesting"))?;
-            Ok((rt, resp))
-        })();
-        channel.send(move |mut c| {
-            let callback = callback.into_inner(&mut c);
-            let this = c.undefined();
-            let arr = c.empty_array();
-            let mut msg = "";
+pub fn fetch_news(mut c: FunctionContext) -> JsResult<JsPromise> {
+    let promise = c
+        .task(move || {
+            (|| -> Result<(Runtime, Response), MyError> {
+                let rt = Runtime::new().or(my_err("Error occurred creating tokio runtime"))?;
+                let resp = rt
+                    .block_on(async {
+                        reqwest::get("https://www.mcbbs.net/forum-news-1.html").await
+                    })
+                    .or(my_err("Error occurred requesting"))?;
+                Ok((rt, resp))
+            })()
+        })
+        .promise(move |mut cx, result| {
+            let arr = cx.empty_array();
             let selector = Selector::parse("#threadlisttableid > tbody");
             if let Ok((rt, resp)) = result {
                 if let (Ok(content), Ok(thread_body_selector)) =
@@ -80,32 +79,27 @@ pub fn fetch_news(mut c: FunctionContext) -> JsResult<JsUndefined> {
                         // extract info from element
                         let (author, time, title) = parse_element(element);
                         // transfer objects to js
-                        let obj = c.empty_object();
-                        let url = c.string(format!(
+                        let obj = cx.empty_object();
+                        let url = cx.string(format!(
                             "https://www.mcbbs.net/thread-{}-1-1.html",
                             thread_id
                         ));
-                        let author = c.string(author);
-                        let time = c.string(time);
-                        let title = c.string(title);
-                        obj.set(&mut c, "url", url)?;
-                        obj.set(&mut c, "author", author)?;
-                        obj.set(&mut c, "time", time)?;
-                        obj.set(&mut c, "title", title)?;
-                        let len = arr.len(&mut c);
-                        arr.set(&mut c, len, obj)?;
+                        let author = cx.string(author);
+                        let time = cx.string(time);
+                        let title = cx.string(title);
+                        obj.set(&mut cx, "url", url)?;
+                        obj.set(&mut cx, "author", author)?;
+                        obj.set(&mut cx, "time", time)?;
+                        obj.set(&mut cx, "title", title)?;
+                        let len = arr.len(&mut cx);
+                        arr.set(&mut cx, len, obj)?;
                     }
                 }
             } else {
-                msg = "Network Error"
+                panic!("Network Error")
             }
-            let args = match msg {
-                "" => vec![c.null().upcast::<JsValue>(), arr.upcast()],
-                _ => vec![c.string(msg).upcast()],
-            };
-            callback.call(&mut c, this, args)?;
-            Ok(())
+            Ok(arr)
         });
-    });
-    Ok(c.undefined())
+
+    Ok(promise)
 }

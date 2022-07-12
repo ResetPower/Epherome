@@ -50,10 +50,11 @@ export default function UIPalette(props: {
   blackAndWhite?: boolean;
 }): JSX.Element {
   const [show, setShow] = useState(false);
-  const { x, y, reference, floating, strategy, refs } = useFloating({
-    placement: "bottom",
-    middleware: [shift()],
-  });
+  const { x, y, reference, floating, strategy, refs } =
+    useFloating<HTMLElement>({
+      placement: "bottom",
+      middleware: [shift()],
+    });
   const close = useCallback(
     (event: Event) => {
       if (

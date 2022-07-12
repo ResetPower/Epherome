@@ -204,9 +204,7 @@ export async function launchMinecraft(
   // unzip native libraries
   for (const i of analyzedLibrary.natives) {
     // 借助 Rust 神力解压，法力无边。
-    await new Promise((resolve) =>
-      window.native.extractZip(i, nativeDir, resolve)
-    );
+    await window.native.extractZip(i, nativeDir);
   }
 
   const gameDir = profile.gameDirIsolation

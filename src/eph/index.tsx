@@ -3,7 +3,7 @@ import "@fontsource/noto-sans-jp";
 import "@fontsource/noto-sans-sc";
 import "@resetpower/rcs/styles/index.css";
 import "../styles/index.css";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./renderer/App";
 import EpheromeLogo from "assets/Epherome.png";
 import { rendererLogger } from "common/loggers";
@@ -72,8 +72,10 @@ const splash = `
 `;
 
 // show splash
-const root = document.getElementById("root");
-root && (root.innerHTML = splash);
+const container = document.createElement("div");
+container.id = "root";
+document.body.append(container);
+container.innerHTML = splash;
 
 async function launchEpherome() {
   const extPath = path.join(userDataPath, "ext");
@@ -102,7 +104,8 @@ async function launchEpherome() {
   personalStore.updateHead();
 
   // render app
-  render(<App />, root);
+  const root = createRoot(container);
+  root.render(<App />);
 }
 
 launchEpherome();

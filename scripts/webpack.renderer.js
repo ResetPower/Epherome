@@ -21,19 +21,9 @@ module.exports = ({ dev }) => ({
     [
       new MiniCssExtractPlugin(),
       new HtmlPlugin({
-        templateContent: `<!DOCTYPE html>
-<html>
-  <head>
-    <title>Epherome</title>
-    <meta charset="utf8"/>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
-      `,
         inject: "body",
         title: "Epherome",
+        meta: { charset: "utf8" },
         minify: !dev,
       }),
       dev && new ReactRefreshPlugin(),

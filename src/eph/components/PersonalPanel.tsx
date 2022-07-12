@@ -113,10 +113,11 @@ PersonalPanel.displayName = "PersonalPanel";
 
 export const PersonalPanelShower = observer(() => {
   const token = configStore.epheromeToken;
-  const { x, y, reference, floating, refs, strategy } = useFloating({
-    placement: "bottom",
-    middleware: [shift()],
-  });
+  const { x, y, reference, floating, refs, strategy } =
+    useFloating<HTMLElement>({
+      placement: "bottom",
+      middleware: [shift()],
+    });
   const userInfo = useMemo(() => parseEphToken(token), [token]);
   const [show, setShow] = useState(false);
   const close = useCallback(

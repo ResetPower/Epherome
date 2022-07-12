@@ -52,23 +52,13 @@ fn compress_zip(folder: &str, target: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn js_compress_zip(mut c: FunctionContext) -> JsResult<JsUndefined> {
+pub fn js_compress_zip(mut c: FunctionContext) -> JsResult<JsPromise> {
     let folder = c.argument::<JsString>(0)?.value(&mut c);
     let target = c.argument::<JsString>(1)?.value(&mut c);
-    let callback = c.argument::<JsFunction>(2)?.root(&mut c);
-    let channel = c.channel();
 
-    std::thread::spawn(move || {
-        let result = compress_zip(&folder, &target).is_ok();
+    let promise = c
+        .task(move || compress_zip(&folder, &target).is_ok())
+        .promise(move |mut cx, status| Ok(cx.boolean(status)));
 
-        channel.send(move |mut c| {
-            let callback = callback.into_inner(&mut c);
-            let this = c.undefined();
-            let arg = c.boolean(result);
-            callback.call(&mut c, this, vec![arg])?;
-            Ok(())
-        });
-    });
-
-    Ok(c.undefined())
+    Ok(promise)
 }
