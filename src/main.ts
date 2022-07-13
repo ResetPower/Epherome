@@ -18,7 +18,6 @@ function createWindow() {
     width: 800,
     height: 600,
     autoHideMenuBar: true,
-    resizable: false,
     title: "Epherome",
     frame: !isTitleBarEph,
     transparent: isTitleBarEph,
