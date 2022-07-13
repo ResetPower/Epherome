@@ -6,6 +6,7 @@ import { historyStore } from "eph/renderer/history";
 import { observer } from "mobx-react-lite";
 import {
   CSSProperties,
+  forwardRef,
   Ref,
   useCallback,
   useEffect,
@@ -62,7 +63,7 @@ export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
   );
 }
 
-const PersonalPanel = observer(
+const PersonalPanelForwardRef = forwardRef(
   (
     props: {
       style: CSSProperties;
@@ -105,9 +106,12 @@ const PersonalPanel = observer(
         </>
       )}
     </div>
-  ),
-  { forwardRef: true }
+  )
 );
+
+PersonalPanelForwardRef.displayName = "PersonalPanel";
+
+const PersonalPanel = observer(PersonalPanelForwardRef);
 
 PersonalPanel.displayName = "PersonalPanel";
 

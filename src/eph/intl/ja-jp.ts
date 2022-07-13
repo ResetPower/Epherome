@@ -240,6 +240,9 @@ const jaJp: Language = {
     notSelected: "選択されていません",
     "ext.added": "追加済み",
     "ext.removed": "削除済み",
+    checkTokenAvailability: "トークンの可用性を確認",
+    "token.available.true": "トークンが利用可能です。",
+    "token.available.false": "トークンは利用できません。",
   },
 };
 

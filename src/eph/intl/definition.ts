@@ -210,6 +210,9 @@ export interface LanguageDefinition {
   "personal.notLoggedIn": string;
   imageTooBig: string;
   notSelected: string;
+  checkTokenAvailability: string;
   "ext.added": string;
   "ext.removed": string;
+  "token.available.true": string;
+  "token.available.false": string;
 }

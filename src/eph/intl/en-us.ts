@@ -238,6 +238,9 @@ const enUs: Language = {
     notSelected: "Not Selected",
     "ext.added": "Added",
     "ext.removed": "Removed",
+    checkTokenAvailability: "Check Token Availability",
+    "token.available.true": "Token is available.",
+    "token.available.false": "Token is not available.",
   },
 };
 

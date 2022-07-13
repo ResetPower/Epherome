@@ -151,6 +151,16 @@ export class HomePageStore {
             showJava16RequiredDialog(cb);
           } else if (stat === "j17Required" && cb) {
             showJava17RequiredDialog(cb);
+          } else if (stat === "microsoftTokenUnavailable" && cb) {
+            showOverlay({
+              title: t("warning"),
+              message: t("unableToRefreshMsToken"),
+              positiveText: t("continueAnyway"),
+              dangerous: true,
+              cancellable: () => this.setLaunching(false),
+              fineCancel: true,
+              action: cb,
+            });
           }
         })
         .catch((err: Error) => {
@@ -206,7 +216,7 @@ const HomePage = observer(() => {
               {account?.name ?? t("account.notSelected")}
             </p>
             {configStore.hitokoto && (
-              <div className="eph-force-chinese">
+              <div className="eph-force-zh-cn">
                 <p className="text-sm">{homePageStore.hitokoto.content}</p>
                 <p className="text-sm text-shallow">
                   {homePageStore.hitokoto.from}
@@ -338,7 +348,7 @@ const HomePage = observer(() => {
                 <br />
               </p>
             ) : (
-              <div className="eph-force-chinese">
+              <div className="eph-force-zh-cn">
                 {homePageStore.news.slice(0, 2).map((val, index) => (
                   <p key={index}>{val.title}</p>
                 ))}

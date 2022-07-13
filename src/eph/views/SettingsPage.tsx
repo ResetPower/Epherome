@@ -282,6 +282,7 @@ export const SettingsGeneralFragment = observer(() => {
         options={intlStore.languages.map((lang) => ({
           value: lang.name,
           text: lang.nativeName,
+          className: `eph-force-${lang.name}`,
         }))}
       />
       <WithHelper helper={t("settings.downloadProvider.description")}>

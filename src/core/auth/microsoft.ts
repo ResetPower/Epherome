@@ -6,105 +6,6 @@ import got from "got";
 // minecraft (microsoft) authentication client id
 export const MICROSOFT_CLIENT_ID = "00000000402b5328";
 
-interface WithErr {
-  err?: boolean;
-}
-
-interface AuthenticateResult extends WithErr {
-  token: string;
-  uuid: string;
-  name: string;
-}
-
-interface RefreshResult extends WithErr {
-  token: string;
-}
-
-function json(object: { [key: string]: unknown }): string {
-  return JSON.stringify(object);
-}
-
-export async function authenticate(
-  username: string,
-  password: string,
-  url: string
-): Promise<AuthenticateResult> {
-  try {
-    const resp = await got(`${url}/authenticate`, {
-      body: json({
-        agent: {
-          name: "Minecraft",
-          version: 1,
-        },
-        username: username,
-        password: password,
-      }),
-    });
-    const param = JSON.parse(resp.body);
-    const prof = param["selectedProfile"];
-    return {
-      err: false,
-      token: param["accessToken"],
-      uuid: prof["id"],
-      name: prof["name"],
-    };
-  } catch {
-    return { err: true, token: "", uuid: "", name: "" };
-  }
-}
-
-export async function refresh(
-  token: string,
-  url: string
-): Promise<RefreshResult> {
-  try {
-    const response = await got(url + "/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ accessToken: token }),
-    });
-    return {
-      err: false,
-      token: JSON.parse(response.body)["accessToken"],
-    };
-  } catch (e) {
-    return {
-      err: true,
-      token: "",
-    };
-  }
-}
-
-export async function validate(token: string, url: string): Promise<boolean> {
-  try {
-    await got(url + "/validate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ accessToken: token }),
-    });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-// generate fake uuid for offline account
-export function genUUID(): string {
-  let result = "";
-  for (let j = 0; j < 32; j++) {
-    const i = Math.floor(Math.random() * 16)
-      .toString(16)
-      .toLowerCase();
-    result = result + i;
-  }
-  return result;
-}
-
-// === MICROSOFT AUTHENTICATION PART === //
 export interface XBLTokenResult {
   error?: unknown;
   IssueInstance?: string;
@@ -294,9 +195,13 @@ export async function getMicrosoftMinecraftProfile(
 }
 
 export function validateMicrosoft(token: string): boolean {
-  const payload = Buffer.from(token.split(".")[1], "base64").toString();
-  const params = JSON.parse(payload);
-  return Math.floor(Date.now() / 1000) < params.exp;
+  try {
+    const payload = Buffer.from(token.split(".")[1], "base64").toString();
+    const params = JSON.parse(payload);
+    return Math.floor(Date.now() / 1000) < params.exp;
+  } catch {
+    return false;
+  }
 }
 
 export async function refreshMicrosoft(

@@ -51,6 +51,10 @@ export function form(data: StringMap): string {
   return urlEncodedDataPairs.join("&").replace(/%20/g, "+");
 }
 
+export function json(object: { [key: string]: unknown }): string {
+  return JSON.stringify(object);
+}
+
 // value or a function returns value (with or without parameters)
 export type Accessible<T, P extends unknown[] = []> = T | ((...args: P) => T);
 

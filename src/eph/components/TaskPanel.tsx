@@ -4,12 +4,19 @@ import { taskStore } from "common/task/store";
 import { call } from "common/utils";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
-import { CSSProperties, Ref, useCallback, useEffect, useState } from "react";
+import {
+  CSSProperties,
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { FaServer } from "react-icons/fa";
 import { MdCancel, MdOpenInNew } from "react-icons/md";
 import JoinIn from "./JoinIn";
 
-const TaskPanel = observer(
+const TaskPanelForwardRef = forwardRef(
   (
     props: { style?: CSSProperties; className?: string },
     ref: Ref<HTMLDivElement>
@@ -65,9 +72,12 @@ const TaskPanel = observer(
         )}
       </div>
     );
-  },
-  { forwardRef: true }
+  }
 );
+
+TaskPanelForwardRef.displayName = "TaskPanel";
+
+const TaskPanel = observer(TaskPanelForwardRef);
 
 export function TaskPanelShower(): JSX.Element {
   const { x, y, reference, floating, refs, strategy } =

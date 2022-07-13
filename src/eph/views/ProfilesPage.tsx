@@ -303,7 +303,7 @@ export function ImportModpackFragment(props: {
       .then((value) => value && setValue(value));
 
   return (
-    <div className="p-5 flex flex-col h-full">
+    <div className="p-5 py-16 flex flex-col h-full">
       <p className="font-semibold text-xl pb-3">{t("modpack.import")}</p>
       <TextField
         value={value}
@@ -332,7 +332,14 @@ export function ImportModpackFragment(props: {
       <div className="flex items-center">
         <p className="text-sm">{task.current?.hashMap.get("helper")}</p>
         <div className="flex-grow" />
-        <Button disabled={!!task.current?.isRunning} onClick={handleImport}>
+        <Button className="text-shallow" onClick={props.onDone}>
+          {t("cancel")}
+        </Button>
+        <Button
+          className="text-secondary"
+          disabled={!!task.current?.isRunning}
+          onClick={handleImport}
+        >
           {t("profile.import")}
         </Button>
       </div>

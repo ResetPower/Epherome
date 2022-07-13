@@ -1,15 +1,15 @@
 import {
   authCode2AuthToken,
-  authenticate,
   authToken2MinecraftTokenDirectly,
   checkMinecraftOwnership,
-  genUUID,
   getMicrosoftMinecraftProfile,
-} from "core/auth";
+} from "core/auth/microsoft";
 import { setConfig } from "./config";
 import { WithUnderline, _ } from "common/utils/arrays";
 import { commonLogger, rendererLogger } from "common/loggers";
 import { ipcRenderer } from "electron";
+import { authenticate } from "core/auth/yggdrasil";
+import { genUUID } from "core/auth";
 
 export type MinecraftAuthMode = "mojang" | "microsoft" | "authlib" | "offline";
 

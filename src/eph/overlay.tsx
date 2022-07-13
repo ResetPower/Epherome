@@ -1,4 +1,4 @@
-import { AnyMap, apply, combineFun, DefaultFn } from "common/utils";
+import { AnyMap, apply, call, combineFun, DefaultFn } from "common/utils";
 import { Button, Checkbox, IconButton } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
@@ -92,7 +92,14 @@ export const GlobalOverlay = observer(() => {
                   <div className="flex">
                     {!o.bottomDivide && <div className="flex-grow" />}
                     {o.cancellable && (
-                      <Button className="text-shallow" onClick={onClose}>
+                      <Button
+                        className="text-shallow"
+                        onClick={() => {
+                          onClose();
+                          o.cancellable instanceof Function &&
+                            call(o.cancellable);
+                        }}
+                      >
                         {o.fineCancel ? t("fine") : t("cancel")}
                       </Button>
                     )}

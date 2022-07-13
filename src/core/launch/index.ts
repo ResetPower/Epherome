@@ -23,14 +23,8 @@ import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
 import { parseJvmArgs } from "common/struct/java";
 import { Process } from "common/stores/process";
-import {
-  authenticate,
-  refresh,
-  refreshMicrosoft,
-  validate,
-  validateMicrosoft,
-} from "core/auth";
-import { showOverlay } from "eph/overlay";
+import { refreshMicrosoft, validateMicrosoft } from "core/auth/microsoft";
+import { authenticate, refresh, validate } from "core/auth/yggdrasil";
 import { Canceller } from "common/task/cancel";
 
 export type LaunchOnDone = (process: Process | null) => void;
@@ -50,13 +44,21 @@ export async function launchMinecraft(
   options: MinecraftLaunchOptions
 ): Promise<
   [
-    "j8Required" | "j16Required" | "j17Required" | "jRequired" | null,
+    (
+      | "j8Required"
+      | "j16Required"
+      | "j17Required"
+      | "jRequired"
+      | "microsoftTokenUnavailable"
+      | null
+    ),
     DefaultFn | null
   ]
 > {
   const urlUtil = new MinecraftUrlUtil(options.provider);
   const canceller = options.canceller;
   const java = options.java;
+  let microsoftTokenAvailability = true;
 
   if (!java) {
     options.onDone(null);
@@ -110,10 +112,7 @@ export async function launchMinecraft(
         const refreshed = await refreshMicrosoft(account);
         if (!refreshed) {
           coreLogger.warn("Unable to refresh microsoft account token");
-          showOverlay({
-            title: t("warning"),
-            message: t("unableToRefreshMsToken"),
-          });
+          microsoftTokenAvailability = false;
         }
       }
     } else if (account.mode === "mojang") {
@@ -303,6 +302,10 @@ export async function launchMinecraft(
   const finallyRun = () => {
     runMinecraft(java.dir, buff, dir, options.onDone, options.profile);
   };
+
+  if (!microsoftTokenAvailability) {
+    return ["microsoftTokenUnavailable", finallyRun];
+  }
 
   const versionDetail = parseMinecraftVersionDetail(parsed.id);
   const javaVersion = java.name;

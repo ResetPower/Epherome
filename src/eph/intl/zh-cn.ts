@@ -225,6 +225,9 @@ const zhCn: Language = {
     notSelected: "未选择",
     "ext.added": "已添加",
     "ext.removed": "已移除",
+    checkTokenAvailability: "检查令牌可用性",
+    "token.available.true": "令牌可用。",
+    "token.available.false": "令牌不可用。",
   },
 };
 

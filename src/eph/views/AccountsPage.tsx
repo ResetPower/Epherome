@@ -22,7 +22,7 @@ import {
   updateAccountToken,
 } from "common/struct/accounts";
 import { configStore, setConfig } from "common/struct/config";
-import { MdCreate, MdDelete, MdEdit } from "react-icons/md";
+import { MdCheck, MdClear, MdCreate, MdDelete, MdEdit } from "react-icons/md";
 import { showOverlay } from "../overlay";
 import { useState } from "react";
 import { adapt, call, DefaultFn } from "common/utils";
@@ -31,16 +31,18 @@ import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
 import { useRef } from "react";
 import { downloadSkin } from "core/model/skin";
-import { BiExport } from "react-icons/bi";
+import { BiExport, BiLogInCircle } from "react-icons/bi";
 import { commonLogger } from "common/loggers";
 import { Avatar, Body } from "eph/components/skin";
 import { ipcRenderer } from "electron";
 import {
   authCode2AuthToken,
   authToken2MinecraftTokenDirectly,
-} from "core/auth";
+  validateMicrosoft,
+} from "core/auth/microsoft";
+import { GiSpanner } from "react-icons/gi";
 
-export function ChangeAccountFragment(props: {
+export function CreateAccountFragment(props: {
   onDone: DefaultFn;
 }): JSX.Element {
   const [errAlert, setErrAlert] = useState(false);
@@ -131,7 +133,7 @@ export function AccountGeneralFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
   const [stat, setStat] = useState<boolean | "err" | "succ">(false);
-  const onClose = () => setStat(false);
+  const [ctaResult, setCtaResult] = useState<boolean | null>(null);
   const handleRemove = (selected: MinecraftAccount) =>
     showOverlay({
       title: t("account.removing"),
@@ -178,34 +180,56 @@ export function AccountGeneralFragment(props: {
     }
   };
 
+  const handleCheckTokenAvailability = () => {
+    setCtaResult(validateMicrosoft(props.current.token));
+  };
+
   return (
     <div className="flex flex-col">
-      {stat === "succ" && (
-        <Alert severity="successful" className="mb-3" onClose={onClose}>
-          {t("doneMessage")}
-        </Alert>
-      )}
-      {stat === "err" && (
-        <Alert severity="error" className="mb-3" onClose={onClose}>
-          {t("errorOccurred")}
-        </Alert>
-      )}
       <div className="flex-grow">
         <Info title={t("name")}>{props.current.name}</Info>
         <p className="text-shallow text-sm">
           {props.current && t(`account.${props.current.mode}`)}
         </p>
       </div>
+      {props.current.mode === "microsoft" && (
+        <div className="mt-10 mb-5 space-y-3">
+          <div className="flex items-center">
+            <Button onClick={handleCheckTokenAvailability}>
+              <GiSpanner /> {t("checkTokenAvailability")}
+            </Button>
+            {ctaResult !== null &&
+              (ctaResult ? (
+                <>
+                  <MdCheck className="text-green-500" />{" "}
+                  <p>{t("token.available.true")}</p>
+                </>
+              ) : (
+                <>
+                  <MdClear className="text-danger" />{" "}
+                  <p>{t("token.available.false")}</p>
+                </>
+              ))}
+          </div>
+          <div className="flex items-center">
+            <Button onClick={handleLoginAgain} disabled={stat === true}>
+              <BiLogInCircle /> {t("msLoginAgain")}
+            </Button>
+
+            {stat === "succ" && (
+              <>
+                <MdCheck className="text-green-500" /> <p>{t("doneMessage")}</p>
+              </>
+            )}
+            {stat === "err" && (
+              <>
+                <MdClear className="text-danger" /> <p>{t("errorOccurred")}</p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <div className="flex mt-3">
-        {props.current.mode === "microsoft" && (
-          <Button
-            onClick={handleLoginAgain}
-            variant="contained"
-            disabled={stat === true}
-          >
-            {t("msLoginAgain")}
-          </Button>
-        )}
         {stat === true && <Spin />}
         <div className="flex-grow" />
         <Button
@@ -310,7 +334,7 @@ const AccountsPage = observer(() => {
       </div>
       <div className="flex-grow p-6 w-3/4">
         {creating ? (
-          <ChangeAccountFragment onDone={() => setCreating(false)} />
+          <CreateAccountFragment onDone={() => setCreating(false)} />
         ) : current ? (
           <TabController orientation="horizontal" contextRef={tabRef}>
             <TabBar>
