@@ -17,7 +17,7 @@ import {
 } from "core/installer";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { Button, TextField, Spin, List, ListItem } from "@resetpower/rcs";
-import { t } from "../intl";
+import { t } from "eph/intl";
 import { useRef } from "react";
 import { showOverlay } from "eph/overlay";
 import { historyStore } from "eph/renderer/history";

@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 export type MinecraftVersionType =
   | "release"
   | "snapshot"
@@ -49,4 +52,9 @@ export function parseMinecraftVersionDetail(
     patch: +(matched ?? fallback)[3],
     id,
   };
+}
+
+export function searchVersions(dir: string): string[] {
+  const versions = path.join(dir, "versions");
+  return fs.readdirSync(versions);
 }

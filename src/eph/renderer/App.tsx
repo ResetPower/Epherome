@@ -1,6 +1,6 @@
 import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
-import ProfilesPage from "../views/ProfilesPage";
+import ProfilesPage from "../views/profile/ProfilesPage";
 import SettingsPage, { UpdateAvailableDialog } from "../views/SettingsPage";
 import DownloadsPage from "../views/DownloadsPage";
 import { showOverlay } from "../overlay";
@@ -22,7 +22,7 @@ import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { useEffect, useMemo } from "react";
 import { configStore } from "common/struct/config";
 import { VscChromeMinimize, VscClose, VscDebugConsole } from "react-icons/vsc";
-import ProfileInstallPage from "../views/ProfileInstallPage";
+import ProfileInstallPage from "../views/profile/ProfileInstallPage";
 import { ipcRenderer } from "electron";
 import { historyStore } from "./history";
 import { observer } from "mobx-react-lite";

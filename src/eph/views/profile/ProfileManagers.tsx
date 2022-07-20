@@ -18,9 +18,9 @@ import {
   ListItemText,
 } from "@resetpower/rcs";
 import { MinecraftProfileManagerStore } from "common/struct/manager";
-import { t } from "../intl";
+import { t } from "eph/intl";
 import { openInFinder, openItemInFinder } from "common/utils/open";
-import { showOverlay } from "../overlay";
+import { showOverlay } from "eph/overlay";
 import { MinecraftProfile, removeProfile } from "common/struct/profiles";
 import { VscPackage } from "react-icons/vsc";
 import { parseJson } from "core/launch/parser";

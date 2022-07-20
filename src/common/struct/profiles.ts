@@ -46,11 +46,11 @@ export function editProfile(
   profile: MinecraftProfileEditablePart
 ): boolean {
   setConfig(() => Object.assign(former, profile));
-  commonLogger.info(`Update profile`);
+  commonLogger.info(`Updated profile`);
   return true;
 }
 
 export function removeProfile(profile: MinecraftProfile): void {
   setConfig((cfg) => _.remove(cfg.profiles, profile));
-  commonLogger.info(`Removed profile.`);
+  commonLogger.info(`Removed profile`);
 }
