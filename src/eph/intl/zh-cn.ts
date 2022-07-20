@@ -228,6 +228,8 @@ const zhCn: Language = {
     checkTokenAvailability: "检查令牌可用性",
     "token.available.true": "令牌可用。",
     "token.available.false": "令牌不可用。",
+    "profiles.dirUnavailable": "路径不可用。",
+    "profiles.searchVersion": "检索",
   },
 };
 

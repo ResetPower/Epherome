@@ -2,7 +2,7 @@ import {
   Button,
   Checkbox,
   TextField,
-  Spin,
+  Spinner,
   List,
   ListItem,
   ProgressBar,
@@ -229,7 +229,7 @@ const DownloadsPage = observer(
                   (result ? true : matchType(item.type)) && (
                     <ListItem
                       className="rounded-lg p-1 pl-3"
-                      checked={selected === item.id}
+                      active={selected === item.id}
                       onClick={() =>
                         selected === item.id
                           ? setSelected("")
@@ -249,7 +249,7 @@ const DownloadsPage = observer(
             </List>
           ) : versions === undefined ? (
             <div className="p-3">
-              <Spin />
+              <Spinner />
             </div>
           ) : (
             <p className="text-shallow">{t("internetNotAvailable")}</p>

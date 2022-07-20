@@ -56,5 +56,5 @@ export function parseMinecraftVersionDetail(
 
 export function searchVersions(dir: string): string[] {
   const versions = path.join(dir, "versions");
-  return fs.readdirSync(versions);
+  return fs.readdirSync(versions).filter((value) => value !== ".DS_Store");
 }

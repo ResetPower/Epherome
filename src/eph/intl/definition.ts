@@ -215,4 +215,6 @@ export interface LanguageDefinition {
   "ext.removed": string;
   "token.available.true": string;
   "token.available.false": string;
+  "profiles.searchVersion": string;
+  "profiles.dirUnavailable": string;
 }

@@ -1,4 +1,4 @@
-import { Button, Link, Spin, TextField } from "@resetpower/rcs";
+import { Button, Hyperlink, Spinner, TextField } from "@resetpower/rcs";
 import { commonLogger } from "common/loggers";
 import { personalStore } from "common/stores/personal";
 import { openInBrowser } from "common/utils/open";
@@ -59,20 +59,22 @@ export default function LoginPage(): JSX.Element {
         value={password}
         onChange={setPassword}
         trailing={
-          <Link onClick={() => setVisible(!visible)}>
+          <Hyperlink button onClick={() => setVisible(!visible)}>
             {visible ? <MdVisibilityOff /> : <MdVisibility />}
-          </Link>
+          </Hyperlink>
         }
       />
       <div className="flex items-center space-x-3">
         <Button variant="pill" onClick={handleLogin} disabled={pending}>
           {t("personal.login")}
         </Button>
-        {pending && <Spin />}
+        {pending && <Spinner />}
         <p className="flex-grow">{message}</p>
-        <Link onClick={() => openInBrowser("https://epherome.com/register")}>
+        <Hyperlink
+          onClick={() => openInBrowser("https://epherome.com/register")}
+        >
           {t("personal.register")}...
-        </Link>
+        </Hyperlink>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ import {
   MinecraftInstall,
 } from "core/installer";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { Button, TextField, Spin, List, ListItem } from "@resetpower/rcs";
+import { Button, TextField, Spinner, List, ListItem } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { useRef } from "react";
 import { showOverlay } from "eph/overlay";
@@ -67,14 +67,14 @@ export function InstallerView({
                 key={index}
                 className="rounded-lg p-3"
                 onClick={() => select(type, val)}
-                checked={current === val}
+                active={current === val}
               >
                 <p>{val.name}</p>
               </ListItem>
             ))}
           </List>
         ) : versions === undefined ? (
-          <Spin />
+          <Spinner />
         ) : (
           <p className="text-shallow">
             {t("profile.noInstallerAdaptToSomething", version, type)}

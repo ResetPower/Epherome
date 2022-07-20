@@ -63,7 +63,7 @@ const ProcessesPage = observer(() => {
       <div className="overflow-y-auto bg-card shadow-md w-1/4">
         <div className="border-b border-divider">
           <ListItem
-            checked={selected === -1}
+            active={selected === -1}
             onClick={() => processStore.select(-1)}
             className="rounded-lg m-3 p-3 items-center overflow-x-hidden"
           >
@@ -81,7 +81,7 @@ const ProcessesPage = observer(() => {
           minecraftProcesses.map((value, index) => (
             <ListItem
               className="rounded-lg m-3 p-3 items-center overflow-x-hidden"
-              checked={selected === index}
+              active={selected === index}
               onClick={() => processStore.select(index)}
               key={index}
             >

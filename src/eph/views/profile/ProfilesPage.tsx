@@ -1,18 +1,18 @@
 import {
   Button,
-  Link,
+  Hyperlink,
   TextField,
   List,
   ListItem,
   TabBar,
   TabBarItem,
   TabBody,
-  TabContext,
   TabController,
   Center,
   IconButton,
   ProgressBar,
 } from "@resetpower/rcs";
+import type { TabContext } from "@resetpower/rcs";
 import { createProfile } from "common/struct/profiles";
 import { configStore, setConfig } from "common/struct/config";
 import {
@@ -82,7 +82,9 @@ export function ImportModpackFragment(props: {
         onChange={setValue}
         placeholder={t("modpack.filePath")}
         trailing={
-          <Link onClick={handleBrowse}>{t("profile.openDirectory")}</Link>
+          <Hyperlink button onClick={handleBrowse}>
+            {t("profile.openDirectory")}
+          </Hyperlink>
         }
       />
       {task.current?.percentage === -2 && (
@@ -152,7 +154,7 @@ const ProfilesPage = observer((props: { params: string }) => {
           {_.map(profiles, (i, id) => (
             <ListItem
               className="px-3 py-2 mx-2 rounded-lg overflow-x-hidden"
-              checked={status !== "creating" && current === i}
+              active={status !== "creating" && current === i}
               onClick={() => {
                 status && setStatus(false);
                 i.selected

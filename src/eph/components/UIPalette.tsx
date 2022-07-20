@@ -1,7 +1,5 @@
-import { useFloating, shift } from "@floating-ui/react-dom";
-import { twColors } from "@resetpower/rcs";
+import { FloatingView, twColors } from "@resetpower/rcs";
 import { DefaultFn } from "common/utils";
-import { useCallback, useEffect, useState } from "react";
 
 export function parseForegroundWhite(bgHex: string): boolean {
   if (bgHex === "#000") {
@@ -49,99 +47,66 @@ export default function UIPalette(props: {
   onChange: (color: PaletteColor) => unknown;
   blackAndWhite?: boolean;
 }): JSX.Element {
-  const [show, setShow] = useState(false);
-  const { x, y, reference, floating, strategy, refs } =
-    useFloating<HTMLElement>({
-      placement: "bottom",
-      middleware: [shift()],
-    });
-  const close = useCallback(
-    (event: Event) => {
-      if (
-        !refs.reference.current?.contains(event.target as Node) &&
-        !refs.floating.current?.contains(event.target as Node)
-      ) {
-        setShow(false);
-      }
-    },
-    [refs]
-  );
-
-  useEffect(
-    () =>
-      (show ? document.addEventListener : document.removeEventListener)(
-        "click",
-        close
-      ),
-    [show, close]
-  );
-
   return (
-    <div className="flex justify-center items-center">
-      <p className="rcs-label w-24">{props.label}</p>
-      <div>
-        <button
-          onClick={() => setShow(!show)}
-          className="rounded-md py-1 px-2 text-sm w-56 m-2"
-          style={{
-            background: props.color.hex,
-            color: parseForegroundWhite(props.color.hex) ? "white" : "black",
-          }}
-          ref={reference}
-        >
-          {props.color.majorType}
-          {props.color.minorType && `-${props.color.minorType}`} (
-          {props.color.hex})
-        </button>
-        {show && (
-          <div
-            className="rounded-md shadow-md bg-card z-20 p-3"
-            ref={floating}
-            style={{
-              position: strategy,
-              top: y ?? "",
-              left: x ?? "",
-            }}
-          >
-            <div className="flex items-center space-x-1">
-              {!props.blackAndWhite && <p className="rcs-label w-14">Plain</p>}
-              <UIPaletteColor
-                checked={props.color.majorType === "black"}
-                color={twColors.black}
-                onClick={() =>
-                  props.onChange({ majorType: "black", hex: twColors.black })
-                }
-              />
-              <UIPaletteColor
-                checked={props.color.majorType === "white"}
-                color={twColors.white}
-                onClick={() =>
-                  props.onChange({ majorType: "white", hex: twColors.white })
-                }
-              />
-            </div>
-            {Object.entries(twColors).map(
-              ([k, v], i) =>
-                k !== "black" &&
-                k !== "white" && (
-                  <div className="flex items-center space-x-1" key={i}>
-                    <p className="capitalize rcs-label w-14">{k}</p>
-                    {Object.entries(v).map(([l, w], j) => (
-                      <UIPaletteColor
-                        checked={props.color.hex === w}
-                        key={j}
-                        color={w}
-                        onClick={() =>
-                          props.onChange({ majorType: k, minorType: l, hex: w })
-                        }
-                      />
-                    ))}
-                  </div>
-                )
-            )}
+    <FloatingView
+      className="p-3"
+      opener={
+        <div className="flex justify-center items-center">
+          <p className="rcs-label w-24">{props.label}</p>
+          <div>
+            <button
+              className="rounded-md py-1 px-2 text-sm w-56 m-2"
+              style={{
+                background: props.color.hex,
+                color: parseForegroundWhite(props.color.hex)
+                  ? "white"
+                  : "black",
+              }}
+            >
+              {props.color.majorType}
+              {props.color.minorType && `-${props.color.minorType}`} (
+              {props.color.hex})
+            </button>
           </div>
-        )}
+        </div>
+      }
+    >
+      <div className="flex items-center space-x-1">
+        {!props.blackAndWhite && <p className="rcs-label w-14">Plain</p>}
+        <UIPaletteColor
+          checked={props.color.majorType === "black"}
+          color={twColors.black}
+          onClick={() =>
+            props.onChange({ majorType: "black", hex: twColors.black })
+          }
+        />
+        <UIPaletteColor
+          checked={props.color.majorType === "white"}
+          color={twColors.white}
+          onClick={() =>
+            props.onChange({ majorType: "white", hex: twColors.white })
+          }
+        />
       </div>
-    </div>
+      {Object.entries(twColors).map(
+        ([k, v], i) =>
+          k !== "black" &&
+          k !== "white" && (
+            <div className="flex items-center space-x-1" key={i}>
+              <p className="capitalize rcs-label w-14">{k}</p>
+              {Object.entries(v).map(([l, w], j) => (
+                <UIPaletteColor
+                  checked={props.color.hex === w}
+                  key={j}
+                  color={w}
+                  onClick={() =>
+                    props.onChange({ majorType: k, minorType: l, hex: w })
+                  }
+                />
+              ))}
+            </div>
+          )
+      )}
+    </FloatingView>
   );
 }

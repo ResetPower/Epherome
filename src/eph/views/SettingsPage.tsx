@@ -1,7 +1,7 @@
 import {
   Select,
   Checkbox,
-  Link,
+  Hyperlink,
   Button,
   TextField,
   IconButton,
@@ -10,7 +10,7 @@ import {
   TabBarItem,
   TabBody,
   TabController,
-  Spin,
+  Spinner,
   List,
   ListItem,
   Info,
@@ -63,7 +63,7 @@ export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
     <>
       <p>{t("epheromeUpdate.available", props.version)}</p>
       <p>{t("epheromeUpdate.availableMessage")}</p>
-      <Link onClick={() => openInBrowser(href)}>{href}</Link>
+      <Hyperlink onClick={() => openInBrowser(href)}>{href}</Hyperlink>
     </>
   );
 }
@@ -116,7 +116,7 @@ export const JavaManagementSheet = observer(() => {
     <div className="flex flex-col overflow-hidden px-9 m-1">
       <List className="overflow-y-auto flex-grow">
         {javas.map((value, index) => (
-          <ListItem className="items-center space-x-2" key={index}>
+          <div className="flex items-center space-x-2" key={index}>
             <div
               className="text-pink-400 hover:text-pink-500 cursor-pointer"
               onClick={() => setConfig(() => _.select(javas, value))}
@@ -173,7 +173,7 @@ export const JavaManagementSheet = observer(() => {
             <IconButton onClick={() => removeJava(value)}>
               <MdClose />
             </IconButton>
-          </ListItem>
+          </div>
         ))}
       </List>
       <div>
@@ -189,7 +189,8 @@ export const JavaManagementSheet = observer(() => {
           placeholder={t("java.executablePath")}
           trailing={
             <>
-              <Link
+              <Hyperlink
+                button
                 className="border-r border-divider pr-3"
                 onClick={() =>
                   ipcRenderer.invoke("open-java").then((value) => {
@@ -198,10 +199,10 @@ export const JavaManagementSheet = observer(() => {
                 }
               >
                 <MdFolderOpen />
-              </Link>
-              <Link className="pl-3" onClick={handleAddJava}>
+              </Hyperlink>
+              <Hyperlink button className="pl-3" onClick={handleAddJava}>
                 {t("add")}
-              </Link>
+              </Hyperlink>
             </>
           }
         />
@@ -359,7 +360,7 @@ export const SettingsGeneralFragment = observer(() => {
         >
           {t("epheromeUpdate.check")}
         </Button>
-        <p>{result !== null ? result : <Spin />}</p>
+        <p>{result !== null ? result : <Spinner />}</p>
       </div>
     </div>
   );
@@ -412,7 +413,7 @@ export const SettingsAppearanceFragment = observer(() => {
           <div className="flex" key={index}>
             <ListItem
               className="flex-grow"
-              checked={theme === value.name}
+              active={theme === value.name}
               onClick={() => handleChangeTheme(value.name)}
             >
               {value.name}
@@ -486,26 +487,31 @@ export const SettingsAboutFragment = (): JSX.Element => (
       </Info>
       <Info title={t("versionOfSomething", "V8")}>{process.versions.v8}</Info>
       <Info title={t("settings.epheromePath")}>
-        <Link onClick={() => openInFinder(userDataPath)}>{userDataPath}</Link>
+        <Hyperlink onClick={() => openInFinder(userDataPath)}>
+          {userDataPath}
+        </Hyperlink>
       </Info>
     </Card>
     <Card>
       <p>
         {t("settings.officialSite")}
-        <Link paddingX onClick={() => openInBrowser("https://epherome.com")}>
+        <Hyperlink
+          paddingX
+          onClick={() => openInBrowser("https://epherome.com")}
+        >
           https://epherome.com
-        </Link>
+        </Hyperlink>
       </p>
       <p>
         GitHub
-        <Link
+        <Hyperlink
           paddingX
           onClick={() =>
             openInBrowser("https://github.com/ResetPower/Epherome")
           }
         >
           https://github.com/ResetPower/Epherome
-        </Link>
+        </Hyperlink>
       </p>
       <p>Copyright © 2021-2022 ResetPower.</p>
       <p>{t("settings.openSourceSoftware")} | GNU General Public License 3.0</p>

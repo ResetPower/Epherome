@@ -1,10 +1,10 @@
 import {
+  BadgeButton,
   Button,
   Checkbox,
-  Link,
+  Hyperlink,
   Select,
   TextField,
-  TinyButton,
 } from "@resetpower/rcs";
 import { configStore } from "common/struct/config";
 import { defaultJvmArgs } from "common/struct/java";
@@ -14,12 +14,12 @@ import {
   MinecraftProfile,
 } from "common/struct/profiles";
 import { call, DefaultFn } from "common/utils";
-import { searchVersions } from "core/launch/versions";
 import { ipcRenderer } from "electron";
 import { t } from "eph/intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import VersionSelector from "./VersionSelector";
 
 export function ChangeProfileFragment(props: {
   onDone?: DefaultFn;
@@ -32,7 +32,6 @@ export function ChangeProfileFragment(props: {
   const [name, setName] = useState(current?.name ?? "");
   const [dir, setDir] = useState(current?.dir ?? "");
   const [ver, setVer] = useState(current?.ver ?? "");
-  const [verResult, setVerResult] = useState<string[]>([]);
   const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? defaultJvmArgs());
   const [resolution, setResolution] = useState(current?.resolution ?? {});
   const [java, setJava] = useState(current?.java ? current.java : "default");
@@ -99,7 +98,6 @@ export function ChangeProfileFragment(props: {
     ipcRenderer
       .invoke("open-directory")
       .then((value) => value && setDir(value));
-  const handleSearch = () => setVerResult(searchVersions(dir));
 
   useEffect(
     () => () => {
@@ -131,19 +129,13 @@ export function ChangeProfileFragment(props: {
           onChange={setDir}
           helperText={t("profile.usuallyDotMinecraftEtc")}
           trailing={
-            <Link onClick={handleOpenDirectory}>
+            <Hyperlink button onClick={handleOpenDirectory}>
               {t("profile.openDirectory")}
-            </Link>
+            </Hyperlink>
           }
           required
         />
-        <TextField
-          label={t("version")}
-          value={ver}
-          onChange={setVer}
-          trailing={<Link onClick={handleSearch}>{t("search")}</Link>}
-          required
-        />
+        <VersionSelector dir={dir} value={ver} onChange={setVer} />
         <div className="h-2" />
         {more && (
           <>
@@ -214,12 +206,15 @@ export function ChangeProfileFragment(props: {
             <p className="eph-helper-text">
               {t("profile.safeLog4j.description")}
             </p>
+            <p className="h-2"></p>
           </>
         )}
-        <TinyButton onClick={() => setMore((prev) => !prev)} paddingRight>
-          {more ? <MdExpandLess /> : <MdExpandMore />}
-          {more ? t("collapse") : t("expand")}
-        </TinyButton>
+        <div className="flex">
+          <BadgeButton onClick={() => setMore((prev) => !prev)}>
+            {more ? <MdExpandLess /> : <MdExpandMore />}
+            {more ? t("collapse") : t("expand")}
+          </BadgeButton>
+        </div>
       </div>
       <div className="flex justify-end">
         {props.action === "create" ? (

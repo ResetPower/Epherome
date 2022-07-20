@@ -1,5 +1,5 @@
 import { match } from "common/utils";
-import { Center, Link, ListItem } from "@resetpower/rcs";
+import { Center, Hyperlink, ListItem } from "@resetpower/rcs";
 import { t } from "eph/intl";
 import { useState } from "react";
 import { openInBrowser } from "common/utils/open";
@@ -23,7 +23,7 @@ export default function JavaInstallPage(): JSX.Element {
           (value, index) => (
             <ListItem
               className="rounded-md px-3 py-2 m-2"
-              checked={selection === index}
+              active={selection === index}
               onClick={() => setSelection(index)}
               key={index}
             >
@@ -38,7 +38,9 @@ export default function JavaInstallPage(): JSX.Element {
             <p>{t("notSupportedYet")}</p>
             <p>{t("java.pleaseGoTo")}</p>
             {matched && (
-              <Link onClick={() => openInBrowser(matched)}>{matched}</Link>
+              <Hyperlink onClick={() => openInBrowser(matched)}>
+                {matched}
+              </Hyperlink>
             )}
           </div>
         </Center>

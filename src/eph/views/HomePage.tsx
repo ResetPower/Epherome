@@ -3,8 +3,7 @@ import {
   Button,
   IconButton,
   TextField,
-  TinyButton,
-  Link,
+  Hyperlink,
   ProgressBar,
 } from "@resetpower/rcs";
 import { useEffect, useMemo, useState } from "react";
@@ -38,6 +37,7 @@ import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { openInBrowser } from "common/utils/open";
 import { Canceller } from "common/task/cancel";
+import TinyButton from "eph/components/TinyButton";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -208,9 +208,9 @@ const HomePage = observer(() => {
 
   return (
     <div className="px-5">
-      <Card className="my-3 p-9 shadow-sm">
-        <div className="flex">
-          <div className="p-3 flex-grow">
+      <Card className="my-3 p-9 flex shadow-sm">
+        <div className="p-3 flex-grow flex flex-col">
+          <div className="flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
             <p className="text-2xl">
               {account?.name ?? t("account.notSelected")}
@@ -224,28 +224,28 @@ const HomePage = observer(() => {
               </div>
             )}
           </div>
-          <div>
-            <IconButton onClick={() => historyStore.push("processes")}>
-              <MdViewCarousel />
-            </IconButton>
-            <IconButton onClick={() => historyStore.push("extensions")}>
-              <MdApps />
-            </IconButton>
+          <div className="flex">
+            <Button onClick={() => historyStore.push("accounts")}>
+              <MdAccountCircle /> {t("accounts")}
+            </Button>
+            <Button onClick={() => historyStore.push("profiles")}>
+              <MdGamepad /> {t("profiles")}
+            </Button>
+            <div className="flex-grow" />
+            {configStore.hitokoto && (
+              <IconButton onClick={homePageStore.reloadHitokoto}>
+                <MdRefresh />
+              </IconButton>
+            )}
           </div>
         </div>
-        <div className="flex">
-          <Button onClick={() => historyStore.push("accounts")}>
-            <MdAccountCircle /> {t("accounts")}
-          </Button>
-          <Button onClick={() => historyStore.push("profiles")}>
-            <MdGamepad /> {t("profiles")}
-          </Button>
-          <div className="flex-grow" />
-          {configStore.hitokoto && (
-            <IconButton onClick={homePageStore.reloadHitokoto}>
-              <MdRefresh />
-            </IconButton>
-          )}
+        <div>
+          <IconButton onClick={() => historyStore.push("processes")}>
+            <MdViewCarousel />
+          </IconButton>
+          <IconButton onClick={() => historyStore.push("extensions")}>
+            <MdApps />
+          </IconButton>
           <IconButton onClick={() => historyStore.push("settings")}>
             <MdSettings />
           </IconButton>
@@ -306,7 +306,7 @@ const HomePage = observer(() => {
           </div>
           <div className="border-t border-divider text-contrast flex">
             <TinyButton
-              className="px-1"
+              className="m-1"
               onClick={() =>
                 showOverlay({
                   type: "sheet",
@@ -354,8 +354,9 @@ const HomePage = observer(() => {
                 ))}
               </div>
             )}
-            <div>
+            <div className="flex">
               <TinyButton
+                className="m-1"
                 onClick={() =>
                   showOverlay({
                     type: "sheet",
@@ -363,7 +364,6 @@ const HomePage = observer(() => {
                     content: NewsView,
                   })
                 }
-                paddingRight
               >
                 <MdMoreHoriz /> {t("expand")}
               </TinyButton>
@@ -375,9 +375,9 @@ const HomePage = observer(() => {
                 onClick={homePageStore.reloadNews}
               />
               <div className="flex-grow" />
-              <Link onClick={() => openInBrowser("https://www.mcbbs.net")}>
+              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
                 MCBBS
-              </Link>
+              </Hyperlink>
             </div>
           </Card>
         )}

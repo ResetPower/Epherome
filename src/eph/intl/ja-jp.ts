@@ -243,6 +243,8 @@ const jaJp: Language = {
     checkTokenAvailability: "トークンの可用性を確認",
     "token.available.true": "トークンが利用可能です。",
     "token.available.false": "トークンは利用できません。",
+    "profiles.dirUnavailable": "パスは利用できません。",
+    "profiles.searchVersion": "探す",
   },
 };
 

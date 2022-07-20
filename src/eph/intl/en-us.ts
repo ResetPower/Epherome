@@ -241,6 +241,8 @@ const enUs: Language = {
     checkTokenAvailability: "Check Token Availability",
     "token.available.true": "Token is available.",
     "token.available.false": "Token is not available.",
+    "profiles.dirUnavailable": "Directory is unavailable.",
+    "profiles.searchVersion": "Search",
   },
 };
 

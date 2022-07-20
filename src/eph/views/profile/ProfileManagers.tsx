@@ -10,7 +10,7 @@ import {
 } from "react-icons/md";
 import {
   Button,
-  Link,
+  Hyperlink,
   TextField,
   TinyTextField,
   Info,
@@ -99,13 +99,13 @@ export function ProfileGeneralFragment({
       <div className="flex-grow space-y-1 pb-3">
         <Info title={t("name")}>{current.name}</Info>
         <Info title={t("directory")}>
-          <Link
+          <Hyperlink
             onClick={() => {
               openInFinder(current.dir);
             }}
           >
             {current.dir}
-          </Link>
+          </Hyperlink>
         </Info>
         <Info title={t("version")}>
           {current.realVer ? (
@@ -170,7 +170,7 @@ export const ProfileSavesFragment = observer(
         manager.saves.map((i) => (
           <ListItem
             className="rounded-lg m-2 p-3 text-contrast"
-            checked={manager.selections.save === i.id}
+            active={manager.selections.save === i.id}
             onClick={() => manager.select("save", i.id)}
             key={i.id}
           >
@@ -208,7 +208,7 @@ export const ProfileResourcePacksFragment = observer(
         manager.resourcePacks.map((i) => (
           <ListItem
             className="rounded-lg m-2 p-3 text-contrast"
-            checked={manager.selections.resourcePack === i.id}
+            active={manager.selections.resourcePack === i.id}
             onClick={() => manager.select("resourcePack", i.id)}
             key={i.id}
           >
@@ -261,7 +261,7 @@ export const ProfileModsFragment = observer(
         manager.mods.map((i) => (
           <ListItem
             className="rounded-lg m-2 p-3 text-contrast"
-            checked={manager.selections.mod === i.id}
+            active={manager.selections.mod === i.id}
             onClick={() => manager.select("mod", i.id)}
             key={i.id}
           >
@@ -302,9 +302,9 @@ export const ProfileSettingsFragment = observer(
       <div className="text-sm">
         <p>
           {t("profile.gameOptionsPath")}:{" "}
-          <Link onClick={() => openItemInFinder(manager.optionsTxtPath)}>
+          <Hyperlink onClick={() => openItemInFinder(manager.optionsTxtPath)}>
             {manager.optionsTxtPath}
-          </Link>
+          </Hyperlink>
         </p>
         <div className="flex">
           <Button

@@ -91,7 +91,7 @@ export const EphAppBar = observer(
       <AppBar className={`${isTitleBarEph && "eph-drag"}`}>
         <div className="eph-no-drag">
           {isAtHome ? (
-            <Menu items={popMenuItems}>
+            <Menu padding={3} items={popMenuItems}>
               {(open) => (
                 <IconButton active={open}>
                   <MdMenu />
@@ -113,7 +113,7 @@ export const EphAppBar = observer(
           <TaskPanelShower />
           {configStore.developerMode && (
             <Menu
-              className="right-1"
+              padding={3}
               items={[
                 {
                   icon: <VscDebugConsole />,

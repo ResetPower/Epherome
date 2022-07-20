@@ -10,7 +10,7 @@ import {
   TabBody,
   TabContext,
   TabController,
-  Spin,
+  Spinner,
   Center,
   Info,
 } from "@resetpower/rcs";
@@ -117,7 +117,7 @@ export function CreateAccountFragment(props: {
         </div>
       </div>
       <div className="flex">
-        <div className="flex-grow">{isLoading && <Spin />}</div>
+        <div className="flex-grow">{isLoading && <Spinner />}</div>
         <Button className="text-shallow" onClick={props.onDone}>
           {t("cancel")}
         </Button>
@@ -230,7 +230,7 @@ export function AccountGeneralFragment(props: {
         </div>
       )}
       <div className="flex mt-3">
-        {stat === true && <Spin />}
+        {stat === true && <Spinner />}
         <div className="flex-grow" />
         <Button
           className="text-danger"
@@ -281,7 +281,7 @@ export function AccountSkinFragment(props: {
       <Body uuid={uuid} />
       <div>
         <Button disabled={exporting} onClick={handleExport}>
-          {exporting ? <Spin indent /> : <BiExport />} {t("export")}
+          {exporting ? <Spinner indent /> : <BiExport />} {t("export")}
         </Button>
         <Button onClick={handleEdit}>
           <MdEdit /> {t("edit")}
@@ -312,7 +312,7 @@ const AccountsPage = observer(() => {
           {_.map(accounts, (i, id) => (
             <ListItem
               className="px-3 py-2 mx-2 rounded-lg"
-              checked={!creating && current === i}
+              active={!creating && current === i}
               onClick={() => {
                 creating && setCreating(false);
                 i.selected

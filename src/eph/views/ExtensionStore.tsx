@@ -2,9 +2,9 @@ import {
   Button,
   Center,
   IconButton,
-  Link,
+  Hyperlink,
   ListItem,
-  Spin,
+  Spinner,
   TinyTextField,
 } from "@resetpower/rcs";
 import { EphExtensionMeta } from "common/extension";
@@ -104,7 +104,7 @@ function Panel(props: {
           ) : (
             props.list.map((e) => (
               <ListItem
-                checked={current ? current.id === e.id : false}
+                active={current ? current.id === e.id : false}
                 className="p-3"
                 onClick={() => setCurrent(e)}
                 key={e.id}
@@ -115,7 +115,7 @@ function Panel(props: {
             ))
           )
         ) : (
-          <Spin />
+          <Spinner />
         ))}
     </div>
   );
@@ -211,12 +211,13 @@ export default function ExtensionStore(): JSX.Element {
         <div className="overflow-y-auto flex-grow">
           {stat ? (
             <>
-              <Link
+              <Hyperlink
                 className="inline-flex items-center mx-3"
                 onClick={() => setStat(false)}
+                button
               >
                 <MdArrowBackIos size="0.8em" /> {t("ext.all")}
-              </Link>
+              </Hyperlink>
               <Panel
                 label="Search Result"
                 list={result}
@@ -259,7 +260,7 @@ export default function ExtensionStore(): JSX.Element {
                 <p className="font-semibold text-lg">{current.meta.name}</p>
                 <p className="text-shallow text-xs">ID: {current.id}</p>
               </div>
-              {pending && <Spin />}
+              {pending && <Spinner />}
               {extStat === "notInstalled" && (
                 <Button
                   onClick={handleInstall}

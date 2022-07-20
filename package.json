@@ -92,11 +92,11 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
-    "@floating-ui/react-dom": "^0.7.2",
+    "@floating-ui/react-dom": "^1.0.0",
     "@fontsource/noto-sans": "^4.5.10",
     "@fontsource/noto-sans-jp": "^4.5.10",
     "@fontsource/noto-sans-sc": "^4.5.10",
-    "@resetpower/rcs": "^0.0.23",
+    "@resetpower/rcs": "^0.1.5",
     "got": "^12.1.0",
     "log4js": "^6.6.0",
     "mobx": "^6.6.1",

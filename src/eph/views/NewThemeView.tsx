@@ -1,5 +1,5 @@
 import {
-  Link,
+  Hyperlink,
   RCSPalette,
   RCSTheme,
   TextField,
@@ -140,9 +140,9 @@ export default function NewThemeView(): JSX.Element {
         }}
         placeholder={t("name")}
         trailing={
-          <Link onClick={createTheme}>
+          <Hyperlink button onClick={createTheme}>
             <MdCheck />
-          </Link>
+          </Hyperlink>
         }
       />
     </div>
