@@ -29,6 +29,7 @@ import {
   MdAdd,
   MdClose,
   MdDoneOutline,
+  MdDownload,
   MdEdit,
   MdFolderOpen,
   MdInfo,
@@ -286,41 +287,6 @@ export const SettingsGeneralFragment = observer(() => {
           className: `eph-force-${lang.name}`,
         }))}
       />
-      <WithHelper helper={t("settings.downloadProvider.description")}>
-        <Select
-          value={configStore.downloadProvider}
-          label={t("settings.downloadProvider")}
-          options={[
-            {
-              value: "official",
-              text: t("settings.downloadProvider.official"),
-            },
-            { value: "bmclapi", text: "BMCLAPI" },
-            { value: "mcbbs", text: "MCBBS" },
-          ]}
-          onChange={(provider) =>
-            setConfig(
-              (cfg) =>
-                (cfg.downloadProvider = provider as MinecraftDownloadProvider)
-            )
-          }
-        />
-      </WithHelper>
-      <TextField
-        min={1}
-        max={10}
-        value={configStore.downloadConcurrency.toString()}
-        type="number"
-        label={t("settings.downloadConcurrency")}
-        helperText={t("settings.downloadCurrency.description")}
-        fieldClassName="w-32"
-        onChange={(concurrency) => {
-          const value = +concurrency;
-          value > 0 &&
-            value < 11 &&
-            setConfig((cfg) => (cfg.downloadConcurrency = value));
-        }}
-      />
       <Button onClick={handleManageJava}>
         <FaJava /> {t("java.manage")}
       </Button>
@@ -483,6 +449,46 @@ export const SettingsAppearanceFragment = observer(() => {
   );
 });
 
+export const SettingsDownloadFragment = observer(() => (
+  <div className="space-y-3">
+    <WithHelper helper={t("settings.downloadProvider.description")}>
+      <Select
+        value={configStore.downloadProvider}
+        label={t("settings.downloadProvider")}
+        options={[
+          {
+            value: "official",
+            text: t("settings.downloadProvider.official"),
+          },
+          { value: "bmclapi", text: "BMCLAPI" },
+          { value: "mcbbs", text: "MCBBS" },
+        ]}
+        onChange={(provider) =>
+          setConfig(
+            (cfg) =>
+              (cfg.downloadProvider = provider as MinecraftDownloadProvider)
+          )
+        }
+      />
+    </WithHelper>
+    <TextField
+      min={1}
+      max={10}
+      value={configStore.downloadConcurrency.toString()}
+      type="number"
+      label={t("settings.downloadConcurrency")}
+      helperText={t("settings.downloadCurrency.description")}
+      fieldClassName="w-32"
+      onChange={(concurrency) => {
+        const value = +concurrency;
+        value > 0 &&
+          value < 11 &&
+          setConfig((cfg) => (cfg.downloadConcurrency = value));
+      }}
+    />
+  </div>
+));
+
 export const SettingsAboutFragment = (): JSX.Element => (
   <div className="space-y-3">
     <Card className="flex items-center space-x-3">
@@ -565,6 +571,10 @@ const SettingsPage = observer(() => {
           {t("appearance")}
         </TabBarItem>
         <TabBarItem value={2}>
+          <MdDownload />
+          {t("download")}
+        </TabBarItem>
+        <TabBarItem value={3}>
           <MdInfo />
           {t("about")}
         </TabBarItem>
@@ -572,6 +582,7 @@ const SettingsPage = observer(() => {
       <TabBody className="overflow-y-auto">
         <SettingsGeneralFragment />
         <SettingsAppearanceFragment />
+        <SettingsDownloadFragment />
         <SettingsAboutFragment />
       </TabBody>
     </TabController>
