@@ -16,7 +16,9 @@ import {
   MdApps,
   MdClose,
   MdGamepad,
+  MdMore,
   MdMoreHoriz,
+  MdMoreVert,
   MdPlayArrow,
   MdRefresh,
   MdSettings,
@@ -282,6 +284,7 @@ const HomePage = observer(() => {
                     </Button>
                   ) : (
                     <Button
+                      variant="pill"
                       onClick={() => {
                         homePageStore.launch(account, profile);
                       }}
@@ -304,7 +307,7 @@ const HomePage = observer(() => {
               </>
             )}
           </div>
-          <div className="border-t border-divider text-contrast flex">
+          <div className="text-contrast flex">
             <TinyButton
               className="m-1"
               onClick={() =>
@@ -354,9 +357,14 @@ const HomePage = observer(() => {
                 ))}
               </div>
             )}
-            <div className="flex">
-              <TinyButton
-                className="m-1"
+            <div className="flex-grow" />
+            <div className="flex p-1 space-x-3 items-center">
+              <MdRefresh
+                className="cursor-pointer text-contrast"
+                onClick={homePageStore.reloadNews}
+              />
+              <MdMoreVert
+                className="cursor-pointer text-contrast"
                 onClick={() =>
                   showOverlay({
                     type: "sheet",
@@ -364,15 +372,6 @@ const HomePage = observer(() => {
                     content: NewsView,
                   })
                 }
-              >
-                <MdMoreHoriz /> {t("expand")}
-              </TinyButton>
-            </div>
-            <div className="flex-grow" />
-            <div className="flex border-t border-divider p-1">
-              <MdRefresh
-                className="cursor-pointer text-contrast"
-                onClick={homePageStore.reloadNews}
               />
               <div className="flex-grow" />
               <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>

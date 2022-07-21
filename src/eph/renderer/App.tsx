@@ -32,11 +32,12 @@ import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
 import ModpackExportPage from "eph/views/ModpackExportPage";
 import { checkEphUpdate } from "./updater";
 import ExtensionStore from "eph/views/ExtensionStore";
-import { BsPersonCircle } from "react-icons/bs";
+import { BsPersonCircle, BsServer } from "react-icons/bs";
 import LoginPage from "eph/views/LoginPage";
 import PersonalCenterPage from "eph/views/PersonalCenterPage";
 import { TaskPanelShower } from "eph/components/TaskPanel";
 import { PersonalPanelShower } from "eph/components/PersonalPanel";
+import ServerControlPage from "eph/views/ServerControlPage";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -76,6 +77,11 @@ export const EphAppBar = observer(
         icon: <MdSettings />,
         text: t("settings"),
         action: () => historyStore.push("settings"),
+      },
+      {
+        icon: <BsServer />,
+        text: t("serverControl"),
+        action: () => historyStore.push("serverControl"),
       },
       {
         icon: <BsPersonCircle />,
@@ -201,6 +207,8 @@ export function RouterView({
           <LoginPage />
         ) : pathname === "ephPersonalCenter" ? (
           <PersonalCenterPage />
+        ) : pathname === "serverControl" ? (
+          <ServerControlPage />
         ) : (
           <></>
         )}

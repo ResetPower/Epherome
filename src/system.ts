@@ -7,7 +7,7 @@ import { default as log4jsConfiguration } from "./common/utils/logging";
 
 // base information
 const version = app.getVersion();
-const codeName = "Prismarine";
+const codeName = "Netherite";
 const userDataPath = app.getPath("userData");
 
 const configPath = path.join(userDataPath, "settings.json");

@@ -243,6 +243,7 @@ const jaJp: Language = {
     "token.available.false": "トークンは利用できません。",
     "profiles.dirUnavailable": "パスは利用できません。",
     "profiles.searchVersion": "探す",
+    serverControl: "サーバー制御",
   },
 };
 

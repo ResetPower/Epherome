@@ -216,4 +216,5 @@ export interface LanguageDefinition {
   "token.available.false": string;
   "profiles.searchVersion": string;
   "profiles.dirUnavailable": string;
+  serverControl: string;
 }

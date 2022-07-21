@@ -241,6 +241,7 @@ const enUs: Language = {
     "token.available.false": "Token is not available.",
     "profiles.dirUnavailable": "Directory is unavailable.",
     "profiles.searchVersion": "Search",
+    serverControl: "Server Control",
   },
 };
 

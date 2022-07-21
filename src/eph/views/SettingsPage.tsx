@@ -486,8 +486,12 @@ export const SettingsAppearanceFragment = observer(() => {
 export const SettingsAboutFragment = (): JSX.Element => (
   <div className="space-y-3">
     <Card className="flex items-center space-x-3">
-      <img src={EpheromeLogo} alt="EpheromeLogo" className="w-16 h-16" />
-      <div>
+      <img
+        src={EpheromeLogo}
+        alt="EpheromeLogo"
+        className="w-16 h-16 select-none"
+      />
+      <div className="select-none">
         <p className="space-x-1 text-lg">
           <span className="font-semibold">Epherome</span>
           <span className="font-light">{codeName ?? ""}</span>

@@ -228,6 +228,7 @@ const zhCn: Language = {
     "token.available.false": "令牌不可用。",
     "profiles.dirUnavailable": "路径不可用。",
     "profiles.searchVersion": "检索",
+    serverControl: "服务器控制",
   },
 };
 
