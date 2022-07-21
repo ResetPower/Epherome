@@ -100,8 +100,6 @@ const enUs: Language = {
     "settings.downloadProvider.official": "Official",
     "settings.downloadConcurrency": "Download Concurrency",
     "settings.hitokoto": "Hitokoto",
-    "settings.hitokoto.description":
-      "Display a random line of text provided by Epherome on your homepage.",
     "settings.theme": "Theme",
     "settings.theme.followOS": "Follow OS",
     "settings.titleBar": "Title Bar",

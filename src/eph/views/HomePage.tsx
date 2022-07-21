@@ -208,9 +208,9 @@ const HomePage = observer(() => {
 
   return (
     <div className="px-5">
-      <Card className="my-3 p-9 flex shadow-sm">
-        <div className="p-3 flex-grow flex flex-col">
-          <div className="flex-grow">
+      <Card className="my-3 p-9 shadow-sm">
+        <div className="flex">
+          <div className="p-3 flex-grow">
             <p className="text-shallow mt-0">{t("hello")}</p>
             <p className="text-2xl">
               {account?.name ?? t("account.notSelected")}
@@ -224,28 +224,28 @@ const HomePage = observer(() => {
               </div>
             )}
           </div>
-          <div className="flex">
-            <Button onClick={() => historyStore.push("accounts")}>
-              <MdAccountCircle /> {t("accounts")}
-            </Button>
-            <Button onClick={() => historyStore.push("profiles")}>
-              <MdGamepad /> {t("profiles")}
-            </Button>
-            <div className="flex-grow" />
-            {configStore.hitokoto && (
-              <IconButton onClick={homePageStore.reloadHitokoto}>
-                <MdRefresh />
-              </IconButton>
-            )}
+          <div>
+            <IconButton onClick={() => historyStore.push("processes")}>
+              <MdViewCarousel />
+            </IconButton>
+            <IconButton onClick={() => historyStore.push("extensions")}>
+              <MdApps />
+            </IconButton>
           </div>
         </div>
-        <div>
-          <IconButton onClick={() => historyStore.push("processes")}>
-            <MdViewCarousel />
-          </IconButton>
-          <IconButton onClick={() => historyStore.push("extensions")}>
-            <MdApps />
-          </IconButton>
+        <div className="flex">
+          <Button onClick={() => historyStore.push("accounts")}>
+            <MdAccountCircle /> {t("accounts")}
+          </Button>
+          <Button onClick={() => historyStore.push("profiles")}>
+            <MdGamepad /> {t("profiles")}
+          </Button>
+          <div className="flex-grow" />
+          {configStore.hitokoto && (
+            <IconButton onClick={homePageStore.reloadHitokoto}>
+              <MdRefresh />
+            </IconButton>
+          )}
           <IconButton onClick={() => historyStore.push("settings")}>
             <MdSettings />
           </IconButton>

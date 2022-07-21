@@ -89,7 +89,6 @@ export interface LanguageDefinition {
   "settings.downloadProvider.official": string;
   "settings.downloadConcurrency": string;
   "settings.hitokoto": string;
-  "settings.hitokoto.description": string;
   "settings.theme": string;
   "settings.theme.followOS": string;
   "settings.titleBar": string;

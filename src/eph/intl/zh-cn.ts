@@ -96,8 +96,6 @@ const zhCn: Language = {
     "settings.downloadProvider.official": "官方",
     "settings.downloadConcurrency": "下载并发数",
     "settings.hitokoto": "一言",
-    "settings.hitokoto.description":
-      "在您的首页显示一条由 Epherome 提供的随机一行文本。",
     "settings.theme": "主题",
     "settings.theme.followOS": "跟随操作系统",
     "settings.titleBar": "标题栏",

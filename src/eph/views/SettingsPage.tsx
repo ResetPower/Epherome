@@ -344,14 +344,40 @@ export const SettingsGeneralFragment = observer(() => {
       >
         {t("settings.autoCheckUpdate")}
       </Checkbox>
-      <WithHelper helper={t("settings.hitokoto.description")}>
+      <div>
         <Checkbox
           checked={configStore.hitokoto}
           onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
         >
           {t("settings.hitokoto")}
         </Checkbox>
-      </WithHelper>
+        <div className="text-sm text-shallow">
+          {intlStore.language?.name === "zh-cn" ? (
+            <p>
+              在您的首页显示一条由{" "}
+              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+                Hitokoto
+              </Hyperlink>{" "}
+              提供的随机文本
+            </p>
+          ) : intlStore.language?.name === "ja-jp" ? (
+            <p>
+              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+                Hitokoto
+              </Hyperlink>{" "}
+              が提供するランダムなテキストをホームページに表示します。
+            </p>
+          ) : (
+            <p>
+              Display a random line of text provided by{" "}
+              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+                Hitokoto
+              </Hyperlink>{" "}
+              on your homepage.
+            </p>
+          )}
+        </div>
+      </div>
       <div className="flex my-3 items-center space-x-3">
         <Button
           variant="contained"

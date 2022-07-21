@@ -101,8 +101,6 @@ const jaJp: Language = {
     "settings.downloadProvider.official": "公式",
     "settings.downloadConcurrency": "ダウンロード並行数",
     "settings.hitokoto": "一言",
-    "settings.hitokoto.description":
-      "Epherome が提供するランダムなテキストをホームページに表示します。",
     "settings.theme": "テーマ",
     "settings.theme.followOS": "システム従う",
     "settings.titleBar": "タイトルバー",

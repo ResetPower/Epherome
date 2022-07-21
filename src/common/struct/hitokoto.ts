@@ -9,9 +9,10 @@ export interface Hitokoto {
 export async function fetchHitokoto(): Promise<Hitokoto | null> {
   rendererLogger.info("Fetching hitokoto...");
   try {
-    const { body } = await got("https://epherome.com/api/hitokoto");
+    const { body } = await got("https://v1.hitokoto.cn");
     rendererLogger.info("Fetched hitokoto");
-    return JSON.parse(body);
+    const params = JSON.parse(body);
+    return { content: params.hitokoto, from: params.from };
   } catch {
     rendererLogger.warn("Unable to fetch hitokoto");
     return null;
