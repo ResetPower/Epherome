@@ -86,6 +86,13 @@ async function launchEpherome() {
   extensionStore.load(e, s);
   rendererLogger.info(`Loaded extensions (Total ${e.length})`);
 
+  // render app
+  const root = createRoot(container);
+  root.render(<App />);
+
+  // load epherome account avatar
+  personalStore.updateHead();
+
   // login epherome account
   if (configStore.epheromeToken !== "") {
     rendererLogger.info("Validating Epherome account token");
@@ -99,13 +106,6 @@ async function launchEpherome() {
       personalStore.autoLogin();
     }
   }
-
-  // load epherome account avatar
-  personalStore.updateHead();
-
-  // render app
-  const root = createRoot(container);
-  root.render(<App />);
 }
 
 launchEpherome();
