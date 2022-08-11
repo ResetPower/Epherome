@@ -72,15 +72,18 @@ export async function downloadMinecraft(
             {
               url: client.url,
               target: jarPath,
+              size: client.size,
             },
           ]),
       ...libraries.missing.map((i) => ({
         url: i.url,
         target: i.path,
+        size: i.size,
       })),
       ...assets.missing.map((i) => ({
         url: i.url,
         target: i.path,
+        size: i.size,
       })),
     ],
     (tasks, totalPercentage) => {

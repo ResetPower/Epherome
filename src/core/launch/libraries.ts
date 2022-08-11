@@ -10,7 +10,7 @@ import {
   ClientJsonLibraries,
   ClientLibraryResult,
 } from "./struct";
-import { calculateHash, downloadFile } from "common/utils/files";
+import { calculateHash, downloadFile, fetchSize } from "common/utils/files";
 import { MinecraftUrlUtil } from "core/url";
 import { Canceller } from "common/task/cancel";
 
@@ -65,6 +65,7 @@ export async function analyzeLibrary(
                   path: `${dir}/libraries/${nativeObj.path}`,
                   url: nativeObj.url,
                   sha1: nativeObj.sha1,
+                  size: nativeObj.size,
                 });
               natives.push(file);
             }
@@ -89,6 +90,7 @@ export async function analyzeLibrary(
             path: `${dir}/libraries/${ar.path}`,
             url: ar.url,
             sha1: ar.sha1,
+            size: ar.size,
           });
         classpath.push(file);
       }
@@ -115,10 +117,13 @@ export async function analyzeLibrary(
           urlObject += `${name[0].split(".").join("/")}/${name[1]}/${name[2]}/${
             name[1]
           }-${name[2]}.jar`;
+          const filename = `${name[1]}-${name[2]}.jar`;
+          const size = await fetchSize(urlObject, filename);
           missing.push({
-            name: `${name[1]}-${name[2]}.jar`,
+            name: filename,
             url: urlObject,
             path: p,
+            size,
           });
         }
       }
@@ -152,7 +157,10 @@ export async function analyzeAssets(
     fs.readFileSync(assetIndexPath).toString()
   );
   for (const k in parsedAssetIndex.objects) {
-    const hash = parsedAssetIndex.objects[k].hash;
+    // Never try to optimize here. parsedAssetIndex.objects is not iterable.
+    const obj = parsedAssetIndex.objects[k];
+    const hash = obj.hash;
+    const size = obj.size;
     const startHash = hash.slice(0, 2);
     const p = path.join(dir, "assets/objects", startHash, hash);
     let miss = false;
@@ -168,6 +176,7 @@ export async function analyzeAssets(
         path: p,
         url: MinecraftUrlUtil.fromDefault().assetObject(startHash, hash),
         hash,
+        size,
       });
   }
 

@@ -153,6 +153,7 @@ export async function launchMinecraft(
   const missingLibList = analyzedLibrary.missing.map((val) => ({
     url: val.url,
     target: val.path,
+    size: val.size,
   }));
   if (missingLibList.length > 0) {
     setHelper(`${t("launching.downloadingLib")} (0%)`);
@@ -172,6 +173,7 @@ export async function launchMinecraft(
   const missingAssetList = analyzedAssets.missing.map((val) => ({
     url: val.url,
     target: val.path,
+    size: val.size,
   }));
   if (missingAssetList.length > 0) {
     setHelper(`${t("launching.downloadingAsset")} (0%)`);

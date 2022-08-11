@@ -92,6 +92,7 @@ export interface ClientAnalyzedAsset {
   path: string;
   url: string;
   hash: string;
+  size: number;
 }
 
 export interface ClientAnalyzedLibrary {
@@ -99,6 +100,7 @@ export interface ClientAnalyzedLibrary {
   path: string;
   url: string;
   sha1?: string;
+  size: number;
 }
 
 export interface ClientAssetsResult {

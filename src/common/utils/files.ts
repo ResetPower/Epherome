@@ -8,7 +8,7 @@ import got from "got";
 import stream from "stream";
 import { promisify } from "util";
 import pLimit from "p-limit";
-import { rendererLogger } from "common/loggers";
+import { coreLogger, rendererLogger } from "common/loggers";
 import { shortid } from "./ids";
 import { Canceller } from "common/task/cancel";
 import { SubTask } from "common/task";
@@ -24,6 +24,7 @@ export interface ParallelDownloadItem {
   unique: number;
   url: string;
   target: string;
+  size: number;
 }
 
 export type ParallelDownloadItemWithoutUnique = Omit<
@@ -80,14 +81,16 @@ export async function parallelDownload(
   // task unique identifier
   const id = shortid();
 
-  const updateUI = () =>
+  const updateUI = () => {
+    const totalSize = details.map((i) => i.size).reduce((a, b) => a + b);
+    const downloaded = details
+      .map((i) => i.percentage * i.size)
+      .reduce((a, b) => a + b);
     onDetailsChange(
       new ObjectWrapper<SubTask[]>(details),
-      Math.floor(
-        details.map((i) => i.percentage).reduce((a, b) => a + b) /
-          details.length
-      )
+      Math.floor(downloaded / totalSize)
     );
+  };
 
   const limit = pLimit(concurrency);
   const promises = items.map((item) =>
@@ -201,4 +204,19 @@ export async function rmFolder(src: string): Promise<void> {
     }
   }
   fs.rmdirSync(src);
+}
+
+export async function fetchSize(
+  url: string,
+  filename: string
+): Promise<number> {
+  const resp = await got(url, { method: "HEAD" });
+  const length = resp.headers["content-length"];
+  if (length) {
+    return parseInt(length);
+  } else {
+    // Default 1000000
+    coreLogger.warn(`Unable to find size of file ${filename}, using default.`);
+    return 1000000;
+  }
 }
