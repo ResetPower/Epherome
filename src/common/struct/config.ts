@@ -17,6 +17,7 @@ import fs from "fs";
 import { ensureDir } from "common/utils/files";
 import { RCSTheme } from "@resetpower/rcs";
 import { MinecraftServer } from "./server";
+import { platform } from "os";
 
 export type TitleBarStyle = "os" | "eph";
 
@@ -45,14 +46,15 @@ export class ConfigStore {
   @observable javas: Java[] = [];
   @observable theme = "RCS Light";
   @observable themeList: RCSTheme[] = [];
-  @observable themeFollowOs = false;
+  @observable themeFollowOs = true;
   @observable language = getSystemPreferredLanguage();
   @observable news = true;
   @observable hitokoto = false;
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
   @observable developerMode = false;
-  @observable titleBarStyle: TitleBarStyle = "os";
+  @observable titleBarStyle: TitleBarStyle =
+    platform() === "win32" ? "eph" : "os";
   @observable checkUpdate = true;
   @observable epheromeToken = "";
   constructor(preferred: Partial<unknown>) {
