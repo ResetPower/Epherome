@@ -10,9 +10,13 @@ import { createServer } from "common/struct/server";
 import { DefaultFn } from "common/utils";
 import { _ } from "common/utils/arrays";
 import { t } from "eph/intl";
+import { showOverlay } from "eph/overlay";
+import { JavaStatusResponse } from "minecraft-server-util";
 import { observer } from "mobx-react-lite";
+import { useMemo } from "react";
 import { useState } from "react";
 import { MdAdd } from "react-icons/md";
+import ServerManagerFragment from "./ServerManagerFragment";
 
 function CreateServerFragment(props: { onClose: DefaultFn }): JSX.Element {
   const [name, setName] = useState("");
@@ -24,7 +28,7 @@ function CreateServerFragment(props: { onClose: DefaultFn }): JSX.Element {
   };
 
   return (
-    <div className="p-9">
+    <div className="p-3">
       <TextField
         value={name}
         onChange={setName}
@@ -52,18 +56,41 @@ function CreateServerFragment(props: { onClose: DefaultFn }): JSX.Element {
   );
 }
 
+export type PanServerResponse = JavaStatusResponse | undefined | null;
+
+export class ServerResponseStore {
+  private data: { [key: string]: PanServerResponse } = {};
+  get(ip: string) {
+    return this.data[ip];
+  }
+  put(ip: string, resp: PanServerResponse) {
+    this.data[ip] = resp;
+  }
+}
+
 const ServerControlPage = observer(() => {
   const [creating, setCreating] = useState(false);
+  const store = useMemo(() => new ServerResponseStore(), []);
 
   const servers = configStore.servers;
   const current = _.selected(servers);
+
+  const onRemove = () =>
+    showOverlay({
+      type: "dialog",
+      title: t("remove"),
+      message: t("confirmRemoving"),
+      cancellable: true,
+      dangerous: true,
+      action: () => current && _.remove(servers, current),
+    });
 
   return (
     <div className="flex eph-h-full">
       <div className="w-1/4 bg-card">
         <div
           onClick={() => setCreating(true)}
-          className={`rcs-hover flex items-center select-none cursor-pointer p-3 mb-3 ${
+          className={`rcs-hover flex items-center select-none cursor-pointer font-semibold p-3 mb-3 ${
             creating && "rcs-hover-active"
           }`}
         >
@@ -85,12 +112,18 @@ const ServerControlPage = observer(() => {
           </ListItem>
         ))}
       </div>
-      <div className="flex-grow">
+      <div className="flex-grow eph-h-full p-3">
         {creating ? (
           <CreateServerFragment onClose={() => setCreating(false)} />
+        ) : current ? (
+          <ServerManagerFragment
+            store={store}
+            server={current}
+            onRemove={onRemove}
+          />
         ) : (
           <Center>
-            <p className="text-shallow">{t("notSupportedYet")}</p>
+            <p className="text-shallow">{t("notSelected")}</p>
           </Center>
         )}
       </div>

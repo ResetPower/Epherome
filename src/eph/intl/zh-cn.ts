@@ -229,6 +229,7 @@ const zhCn: Language = {
     "profiles.dirUnavailable": "路径不可用。",
     "profiles.searchVersion": "检索",
     serverControl: "服务器控制",
+    "server.removing": "移除服务器",
   },
 };
 

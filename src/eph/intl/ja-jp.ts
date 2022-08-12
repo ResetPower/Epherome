@@ -244,6 +244,7 @@ const jaJp: Language = {
     "profiles.dirUnavailable": "パスは利用できません。",
     "profiles.searchVersion": "探す",
     serverControl: "サーバー制御",
+    "server.removing": "サーバーを削除",
   },
 };
 

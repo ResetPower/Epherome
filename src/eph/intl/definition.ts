@@ -217,4 +217,5 @@ export interface LanguageDefinition {
   "profiles.searchVersion": string;
   "profiles.dirUnavailable": string;
   serverControl: string;
+  "server.removing": string;
 }

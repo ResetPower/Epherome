@@ -99,6 +99,7 @@
     "@resetpower/rcs": "^0.1.5",
     "got": "^12.3.1",
     "log4js": "^6.6.1",
+    "minecraft-server-util": "^5.3.0",
     "mobx": "^6.6.1",
     "mobx-react-lite": "^3.4.0",
     "nanoid": "^4.0.0",

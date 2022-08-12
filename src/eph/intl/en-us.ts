@@ -242,6 +242,7 @@ const enUs: Language = {
     "profiles.dirUnavailable": "Directory is unavailable.",
     "profiles.searchVersion": "Search",
     serverControl: "Server Control",
+    "server.removing": "Remove Server",
   },
 };
 

@@ -16,8 +16,6 @@ import {
   MdApps,
   MdClose,
   MdGamepad,
-  MdMore,
-  MdMoreHoriz,
   MdMoreVert,
   MdPlayArrow,
   MdRefresh,
@@ -40,6 +38,7 @@ import { MinecraftProfile } from "common/struct/profiles";
 import { openInBrowser } from "common/utils/open";
 import { Canceller } from "common/task/cancel";
 import TinyButton from "eph/components/TinyButton";
+import { BsServer } from "react-icons/bs";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -236,12 +235,16 @@ const HomePage = observer(() => {
           </div>
         </div>
         <div className="flex">
-          <Button onClick={() => historyStore.push("accounts")}>
-            <MdAccountCircle /> {t("accounts")}
-          </Button>
-          <Button onClick={() => historyStore.push("profiles")}>
-            <MdGamepad /> {t("profiles")}
-          </Button>
+          <IconButton onClick={() => historyStore.push("accounts")}>
+            <MdAccountCircle />
+          </IconButton>
+          <IconButton onClick={() => historyStore.push("profiles")}>
+            <MdGamepad />
+          </IconButton>
+
+          <IconButton onClick={() => historyStore.push("serverControl")}>
+            <BsServer size="1.2em" />
+          </IconButton>
           <div className="flex-grow" />
           {configStore.hitokoto && (
             <IconButton onClick={homePageStore.reloadHitokoto}>
