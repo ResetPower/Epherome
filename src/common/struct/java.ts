@@ -7,8 +7,12 @@ if (configStore.javas.length === 0) {
   const javas = window.native.findJavas();
   if (javas) {
     javas.forEach((i) => {
-      const java = window.native.checkJava(i);
-      java && createJava(java, false);
+      try {
+        const java = window.native.checkJava(i);
+        java && createJava(java, false);
+      } catch (e) {
+        console.error(e);
+      }
     });
     configStore.save();
   }

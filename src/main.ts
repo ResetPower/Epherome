@@ -11,6 +11,7 @@ import getTouchBar from "./touchbar";
 import path from "path";
 import "./loader";
 import EpheromeLogo from "./assets/Epherome.png";
+import { osName } from "core/launch/rules";
 
 const prod = process.env.NODE_ENV !== "development";
 
@@ -20,7 +21,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 app.setName("Epherome");
 
 function createWindow() {
-  const isTitleBarEph = parsed.titleBarStyle === "eph";
+  const isTitleBarEph = parsed.titleBarStyle === "eph" ?? osName === "win32";
   const win = new BrowserWindow({
     width: 800,
     height: 600,

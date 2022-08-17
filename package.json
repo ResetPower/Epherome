@@ -34,7 +34,7 @@
     "compression": "maximum",
     "icon": "src/assets/Epherome.png",
     "win": {
-      "target": "msi"
+      "target": "nsis"
     },
     "mac": {
       "target": "dmg"
