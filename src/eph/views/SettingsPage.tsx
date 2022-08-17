@@ -50,7 +50,12 @@ import { observer } from "mobx-react-lite";
 import { MinecraftDownloadProvider } from "core/url";
 import EpheromeLogo from "assets/Epherome.png";
 import { ipcRenderer } from "electron";
-import { codeName, ephVersion, userDataPath } from "common/utils/info";
+import {
+  codeName,
+  ephDefaultDotMinecraft,
+  ephVersion,
+  userDataPath,
+} from "common/utils/info";
 import { overlayStore, showOverlay } from "eph/overlay";
 import { historyStore } from "eph/renderer/history";
 import { adapt, apply } from "common/utils";
@@ -178,7 +183,7 @@ export const JavaManagementSheet = observer(() => {
           </div>
         ))}
       </List>
-      <div>
+      <div className="mt-3">
         <TextField
           value={newJavaPath}
           onChange={(ev) => {
@@ -415,7 +420,9 @@ export const SettingsAppearanceFragment = observer(() => {
   return (
     <div className="space-y-3">
       <div>
+        <p className="font-medium text-lg mb-3">Window</p>
         <Select
+          className="mb-3"
           value={configStore.titleBarStyle}
           label={t("settings.titleBar")}
           options={[
@@ -424,6 +431,16 @@ export const SettingsAppearanceFragment = observer(() => {
           ]}
           onChange={handleChangeTitleBarStyle}
         />
+        <WithHelper helper="Your window will be default size next time if you unchecked it.">
+          <Checkbox
+            checked={configStore.rememberWindowSize}
+            onChange={(checked) =>
+              setConfig((cfg) => (cfg.rememberWindowSize = checked))
+            }
+          >
+            Remember Window Size
+          </Checkbox>
+        </WithHelper>
       </div>
       <div>
         <p className="font-medium text-lg mb-3">Background Photo</p>
@@ -434,7 +451,7 @@ export const SettingsAppearanceFragment = observer(() => {
           Enable Background Photo
         </Checkbox>
         {configStore.enableBg && (
-          <>
+          <div className="mt-3">
             <Select
               label="Function Board Placement"
               options={[
@@ -462,7 +479,7 @@ export const SettingsAppearanceFragment = observer(() => {
                 </Hyperlink>
               }
             />
-          </>
+          </div>
         )}
       </div>
       <div>
@@ -521,45 +538,71 @@ export const SettingsAppearanceFragment = observer(() => {
   );
 });
 
-export const SettingsDownloadFragment = observer(() => (
-  <div className="space-y-3">
-    <WithHelper helper={t("settings.downloadProvider.description")}>
-      <Select
-        value={configStore.downloadProvider}
-        label={t("settings.downloadProvider")}
-        options={[
-          {
-            value: "official",
-            text: t("settings.downloadProvider.official"),
-          },
-          { value: "bmclapi", text: "BMCLAPI" },
-          { value: "mcbbs", text: "MCBBS" },
-        ]}
-        onChange={(provider) =>
-          setConfig(
-            (cfg) =>
-              (cfg.downloadProvider = provider as MinecraftDownloadProvider)
-          )
-        }
+export const SettingsDownloadFragment = observer(() => {
+  const handleOpenTarget = () =>
+    ipcRenderer
+      .invoke("open-directory")
+      .then((value) => setConfig((cfg) => (cfg.downloadTarget = value)));
+  const handleRestore = () =>
+    setConfig((cfg) => (cfg.downloadTarget = ephDefaultDotMinecraft));
+
+  return (
+    <div className="space-y-3">
+      <WithHelper helper={t("settings.downloadProvider.description")}>
+        <Select
+          value={configStore.downloadProvider}
+          label={t("settings.downloadProvider")}
+          options={[
+            {
+              value: "official",
+              text: t("settings.downloadProvider.official"),
+            },
+            { value: "bmclapi", text: "BMCLAPI" },
+            { value: "mcbbs", text: "MCBBS" },
+          ]}
+          onChange={(provider) =>
+            setConfig(
+              (cfg) =>
+                (cfg.downloadProvider = provider as MinecraftDownloadProvider)
+            )
+          }
+        />
+      </WithHelper>
+      <TextField
+        min={1}
+        max={10}
+        value={configStore.downloadConcurrency.toString()}
+        type="number"
+        label={t("settings.downloadConcurrency")}
+        helperText={t("settings.downloadCurrency.description")}
+        fieldClassName="w-32"
+        onChange={(concurrency) => {
+          const value = +concurrency;
+          value > 0 &&
+            value < 11 &&
+            setConfig((cfg) => (cfg.downloadConcurrency = value));
+        }}
       />
-    </WithHelper>
-    <TextField
-      min={1}
-      max={10}
-      value={configStore.downloadConcurrency.toString()}
-      type="number"
-      label={t("settings.downloadConcurrency")}
-      helperText={t("settings.downloadCurrency.description")}
-      fieldClassName="w-32"
-      onChange={(concurrency) => {
-        const value = +concurrency;
-        value > 0 &&
-          value < 11 &&
-          setConfig((cfg) => (cfg.downloadConcurrency = value));
-      }}
-    />
-  </div>
-));
+      <WithHelper helper="The target minecraft (or .minecraft) folder of Minecraft installations.">
+        <TextField
+          label="Download Target"
+          value={configStore.downloadTarget}
+          onChange={(value) => setConfig((cfg) => (cfg.downloadTarget = value))}
+          trailing={
+            <div className="flex items-center">
+              <Hyperlink button onClick={handleOpenTarget}>
+                {t("profile.openDirectory")}
+              </Hyperlink>
+            </div>
+          }
+        />
+        <Button variant="pill" onClick={handleRestore}>
+          Restore Default
+        </Button>
+      </WithHelper>
+    </div>
+  );
+});
 
 export const SettingsAboutFragment = (): JSX.Element => (
   <div className="space-y-3">

@@ -1,3 +1,5 @@
+import { configStore, setConfig } from "common/struct/config";
+import { ipcRenderer } from "electron";
 import { KeyOfLanguageDefinition } from "eph/intl";
 import { action, makeObservable, observable } from "mobx";
 
@@ -27,3 +29,17 @@ export class HistoryStore {
 }
 
 export const historyStore = new HistoryStore();
+
+ipcRenderer.on("history-back", () => historyStore.back());
+
+window.addEventListener("beforeunload", () => {
+  if (configStore.rememberWindowSize) {
+    setConfig(
+      (cfg) =>
+        (cfg.windowSize = {
+          height: window.outerHeight,
+          width: window.outerWidth,
+        })
+    );
+  }
+});

@@ -72,7 +72,7 @@ function MetroCard(props: {
     <div
       className={`${props.className} ${
         enableBg && "bg-opacity-50"
-      } rounded text-white flex items-center shadow-sm hover:shadow cursor-pointer select-none p-3 space-x-3`}
+      } rounded text-white flex items-center shadow-sm hover:shadow-md transition-shadow cursor-pointer select-none p-3 space-x-3`}
       onClick={() => historyStore.push(props.target)}
       style={
         enableBg
@@ -275,7 +275,9 @@ const HomePage = observer(() => {
       style={
         configStore.enableBg
           ? {
-              backgroundImage: `url(resource://${configStore.bgPath})`,
+              backgroundImage: `url(resource://${encodeURI(
+                configStore.bgPath
+              )})`,
               backgroundPosition: "center",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",

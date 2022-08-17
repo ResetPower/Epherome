@@ -3,6 +3,7 @@ import {
   Center,
   ListItem,
   ListItemText,
+  TabContext,
   TextField,
 } from "@resetpower/rcs";
 import { configStore } from "common/struct/config";
@@ -13,7 +14,7 @@ import { t } from "eph/intl";
 import { showOverlay } from "eph/overlay";
 import { JavaStatusResponse } from "minecraft-server-util";
 import { observer } from "mobx-react-lite";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import ServerManagerFragment from "./ServerManagerFragment";
@@ -69,6 +70,7 @@ export class ServerResponseStore {
 }
 
 const ServerControlPage = observer(() => {
+  const tabRef = useRef<TabContext>();
   const [creating, setCreating] = useState(false);
   const store = useMemo(() => new ServerResponseStore(), []);
 
@@ -99,9 +101,10 @@ const ServerControlPage = observer(() => {
         {servers.map((value, index) => (
           <ListItem
             active={!creating && value.selected}
-            onClick={() =>
-              value.selected ? _.deselect(servers) : _.select(servers, value)
-            }
+            onClick={() => {
+              value.selected ? _.deselect(servers) : _.select(servers, value),
+                tabRef.current?.setValue(0);
+            }}
             key={index}
             dependent
           >
@@ -120,6 +123,7 @@ const ServerControlPage = observer(() => {
             store={store}
             server={current}
             onRemove={onRemove}
+            tabRef={tabRef}
           />
         ) : (
           <Center>

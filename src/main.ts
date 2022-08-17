@@ -23,8 +23,10 @@ app.setName("Epherome");
 function createWindow() {
   const isTitleBarEph = parsed.titleBarStyle === "eph" ?? osName === "win32";
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width:
+      (parsed.rememberWindowSize ? parsed.windowSize.width : undefined) ?? 800,
+    height:
+      (parsed.rememberWindowSize ? parsed.windowSize.height : undefined) ?? 600,
     autoHideMenuBar: true,
     icon: EpheromeLogo,
     title: "Epherome",
@@ -39,7 +41,7 @@ function createWindow() {
 
   if (process.platform === "darwin") {
     // is macos, set touch bar
-    win.setTouchBar(getTouchBar());
+    win.setTouchBar(getTouchBar(win.webContents));
     mainLogger.info("macOS Detected, set touch bar");
     mainLogger.info("Wish your Mac has a touch bar...");
   }
@@ -60,7 +62,7 @@ app.whenReady().then(() => {
     "resource",
     (req: ProtocolRequest, callback: (filePath: string) => void) => {
       const url = req.url.slice(11);
-      callback(url);
+      callback(decodeURI(url));
     }
   );
   createWindow();

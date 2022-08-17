@@ -39,6 +39,11 @@ export function getSystemPreferredLanguage(): string {
 
 export type FnBoardPlacement = "top" | "right" | "off";
 
+export interface Dimension {
+  width?: number;
+  height?: number;
+}
+
 // read config
 
 export class ConfigStore {
@@ -62,6 +67,9 @@ export class ConfigStore {
   @observable enableBg = false;
   @observable bgPath = "";
   @observable fnBoardPlacement: FnBoardPlacement = "top";
+  @observable downloadTarget: string = ephDefaultDotMinecraft;
+  @observable rememberWindowSize = false;
+  @observable windowSize: Dimension = {};
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });

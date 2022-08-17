@@ -1,4 +1,4 @@
-import { Button, FloatingView, IconButton } from "@resetpower/rcs";
+import { FloatingView, Hyperlink, IconButton } from "@resetpower/rcs";
 import { configStore } from "common/struct/config";
 import { DefaultFn } from "common/utils";
 import { historyStore } from "eph/renderer/history";
@@ -48,7 +48,7 @@ export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
       <p className="text-sm text-shallow">ID: {userInfo.id}</p>
     </div>
   ) : (
-    <p>NOT LOGGED IN</p>
+    <></>
   );
 }
 
@@ -57,9 +57,10 @@ export function PersonalPanel(props: {
   userInfo: EphUserInfo | null;
 }) {
   return props.userInfo ? (
-    <>
+    <div>
       <PersonalTile />
-      <Button
+      <Hyperlink
+        button
         onClick={() => {
           historyStore.push("ephPersonalCenter");
           props.onClose();
@@ -67,12 +68,13 @@ export function PersonalPanel(props: {
         className="justify-center w-full"
       >
         {t("personal.openPersonalCenter")}
-      </Button>
-    </>
+      </Hyperlink>
+    </div>
   ) : (
-    <>
-      <p className="text-center py-3">{t("personal.notLoggedIn")}</p>
-      <Button
+    <div>
+      <p className="text-center py-1">{t("personal.notLoggedIn")}</p>
+      <Hyperlink
+        button
         onClick={() => {
           historyStore.push("ephLogin");
           props.onClose();
@@ -80,8 +82,8 @@ export function PersonalPanel(props: {
         className="justify-center w-full"
       >
         {t("personal.loginTo")}
-      </Button>
-    </>
+      </Hyperlink>
+    </div>
   );
 }
 

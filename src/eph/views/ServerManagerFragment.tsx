@@ -1,21 +1,25 @@
 import {
   Button,
+  Center,
   Info,
+  ListItem,
   TabBar,
   TabBarItem,
   TabBody,
+  TabContext,
   TabController,
 } from "@resetpower/rcs";
 import { MinecraftServer } from "common/struct/server";
 import { DefaultFn } from "common/utils";
 import { t } from "eph/intl";
-import { ReactNode } from "react";
+import { MutableRefObject, ReactNode } from "react";
 import { MdRefresh, MdRemoveCircle } from "react-icons/md";
-import { status } from "minecraft-server-util";
+import { JavaStatusResponse, status } from "minecraft-server-util";
 import { Card } from "eph/components/layouts";
 import { ServerResponseStore } from "./ServerControlPage";
 import { useReducer } from "react";
 import { useEffect } from "react";
+import { Avatar } from "eph/components/skin";
 
 function Dot(props: {
   variant: "connecting" | "online" | "offline";
@@ -37,10 +41,37 @@ function Dot(props: {
   );
 }
 
+function PlayerList(props: { state: JavaStatusResponse }): JSX.Element {
+  const state = props.state;
+  const list =
+    state.players?.sample?.map((value, index) => (
+      <ListItem key={index}>
+        <Avatar uuid={value.id} />
+        <p className="ml-3">{value.name}</p>
+      </ListItem>
+    )) ?? [];
+  return (
+    <div className="h-full">
+      {list.length === 0 ? (
+        state.players?.online === 0 ? (
+          <Center className="text-shallow">No players online.</Center>
+        ) : (
+          <Center className="text-shallow">
+            Unable to show too many players.
+          </Center>
+        )
+      ) : (
+        list
+      )}
+    </div>
+  );
+}
+
 export default function ServerManagerFragment(props: {
   server: MinecraftServer;
   store: ServerResponseStore;
   onRemove: DefaultFn;
+  tabRef: MutableRefObject<TabContext | undefined>;
 }): JSX.Element {
   const [state, dispatch] = useReducer(
     () => props.store.get(props.server.ip),
@@ -50,7 +81,7 @@ export default function ServerManagerFragment(props: {
   const onRefresh = () => {
     props.store.put(props.server.ip, undefined);
     dispatch();
-    status(props.server.ip)
+    status(props.server.ip, undefined, { enableSRV: false })
       .then((resp) => {
         props.store.put(props.server.ip, resp);
         dispatch();
@@ -68,10 +99,14 @@ export default function ServerManagerFragment(props: {
   useEffect(dispatch, [props.server, dispatch]);
 
   return (
-    <TabController className="h-full" orientation="horizontal">
+    <TabController
+      contextRef={props.tabRef}
+      className="h-full"
+      orientation="horizontal"
+    >
       <TabBar>
         <TabBarItem value={0}>{t("general")}</TabBarItem>
-        <TabBarItem value={1}>Haha</TabBarItem>
+        <TabBarItem value={1}>Players</TabBarItem>
       </TabBar>
       <TabBody>
         <div className="h-full flex flex-col">
@@ -118,15 +153,19 @@ export default function ServerManagerFragment(props: {
                 disabled={state === undefined}
                 onClick={onRefresh}
               >
-                <MdRefresh /> Retry
+                <MdRefresh /> {t("refresh")}
               </Button>
               <Button onClick={props.onRemove} className="text-red-400">
-                <MdRemoveCircle /> Remove
+                <MdRemoveCircle /> {t("remove")}
               </Button>
             </div>
           </Card>
         </div>
-        <div></div>
+        {state ? (
+          <PlayerList state={state} />
+        ) : (
+          <Center className="text-shallow">Server is offline.</Center>
+        )}
       </TabBody>
     </TabController>
   );

@@ -1,10 +1,13 @@
-import { TouchBar } from "electron";
-const { TouchBarLabel } = TouchBar;
+import { TouchBar, WebContents } from "electron";
 
-export default function getTouchBar(): TouchBar {
+export default function getTouchBar(webContents: WebContents): TouchBar {
   return new TouchBar({
     items: [
-      new TouchBarLabel({
+      new TouchBar.TouchBarButton({
+        label: "Back",
+        click: () => webContents.send("history-back"),
+      }),
+      new TouchBar.TouchBarLabel({
         label: "Welcome to Epherome!",
       }),
     ],

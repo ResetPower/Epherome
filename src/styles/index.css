@@ -41,6 +41,10 @@
   width: 0;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 #root {
   height: calc(100vh);
   overflow-x: hidden;

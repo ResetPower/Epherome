@@ -74,14 +74,14 @@ export const EphAppBar = observer(
         action: () => historyStore.push("extensions"),
       },
       {
-        icon: <MdSettings />,
-        text: t("settings"),
-        action: () => historyStore.push("settings"),
-      },
-      {
         icon: <BsServer />,
         text: t("serverControl"),
         action: () => historyStore.push("serverControl"),
+      },
+      {
+        icon: <MdSettings />,
+        text: t("settings"),
+        action: () => historyStore.push("settings"),
       },
       {
         icon: <BsPersonCircle />,
@@ -95,25 +95,37 @@ export const EphAppBar = observer(
 
     return (
       <AppBar className={`${isTitleBarEph && "eph-drag"}`}>
-        <div className="eph-no-drag">
-          {isAtHome ? (
-            <Menu padding={3} items={popMenuItems}>
-              {(open) => (
-                <IconButton active={open}>
-                  <MdMenu />
-                </IconButton>
-              )}
-            </Menu>
-          ) : (
-            <IconButton
-              onClick={isAtHome ? undefined : () => historyStore.back()}
+        {isAtHome ? (
+          <Menu padding={3} items={popMenuItems}>
+            {(open) => (
+              <IconButton active={open}>
+                <MdMenu />
+              </IconButton>
+            )}
+          </Menu>
+        ) : (
+          <div className="eph-no-drag flex">
+            {!isAtHome && (
+              <IconButton
+                onClick={isAtHome ? undefined : () => historyStore.back()}
+              >
+                {<MdArrowBack />}
+              </IconButton>
+            )}
+          </div>
+        )}
+        {isAtHome ? (
+          <AppBarTitle>{title}</AppBarTitle>
+        ) : (
+          <div className="flex-grow">
+            <Menu
+              wrapperClassName="select-none pl-3 text-xl font-medium cursor-pointer"
+              items={popMenuItems}
             >
-              {<MdArrowBack />}
-            </IconButton>
-          )}
-        </div>
-        <AppBarTitle>{title}</AppBarTitle>
-
+              {title}
+            </Menu>
+          </div>
+        )}
         <div className="eph-no-drag flex">
           <PersonalPanelShower />
           <TaskPanelShower />

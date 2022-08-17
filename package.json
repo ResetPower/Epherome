@@ -93,7 +93,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^1.0.0",
-    "@resetpower/rcs": "^0.1.8",
+    "@resetpower/rcs": "^0.1.9",
     "got": "^12.3.1",
     "log4js": "^6.6.1",
     "minecraft-server-util": "^5.3.0",

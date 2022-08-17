@@ -12,7 +12,7 @@ export default function Image(props: {
   return (
     <img
       className={`${props.className ?? ""} ${
-        props.rounded ? "rounded-lg" : ""
+        props.rounded ? "rounded-md" : ""
       } ${status !== "done" ? "invisible" : ""}`}
       src={props.src}
       onLoad={() => setStatus("done")}
