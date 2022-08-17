@@ -20,6 +20,7 @@ import {
 } from "@resetpower/rcs";
 import {
   configStore,
+  FnBoardPlacement,
   setConfig,
   TitleBarStyle,
 } from "../../common/struct/config";
@@ -298,12 +299,38 @@ export const SettingsGeneralFragment = observer(() => {
       >
         {t("settings.devMode")}
       </Checkbox>
-      <Checkbox
-        checked={configStore.news}
-        onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
-      >
-        {t("settings.showNews")}
-      </Checkbox>
+      <div>
+        <Checkbox
+          checked={configStore.news}
+          onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
+        >
+          {t("settings.showNews")}
+        </Checkbox>
+        <div className="text-sm text-shallow">
+          {intlStore.language?.name === "zh-cn" ? (
+            <p>
+              来自{" "}
+              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                MCBBS
+              </Hyperlink>
+            </p>
+          ) : intlStore.language?.name === "ja-jp" ? (
+            <p>
+              出典{" "}
+              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                MCBBS
+              </Hyperlink>
+            </p>
+          ) : (
+            <p>
+              From{" "}
+              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                MCBBS
+              </Hyperlink>
+            </p>
+          )}
+        </div>
+      </div>
       <Checkbox
         checked={configStore.checkUpdate}
         onChange={(checked) => setConfig((cfg) => (cfg.checkUpdate = checked))}
@@ -379,6 +406,11 @@ export const SettingsAppearanceFragment = observer(() => {
       showOverlay({ message: t("settings.titleBar.message") });
     }
   };
+  const handleOpenBgPath = () => {
+    ipcRenderer
+      .invoke("open-image")
+      .then((value) => setConfig((cfg) => (cfg.bgPath = value)));
+  };
 
   return (
     <div className="space-y-3">
@@ -387,14 +419,54 @@ export const SettingsAppearanceFragment = observer(() => {
           value={configStore.titleBarStyle}
           label={t("settings.titleBar")}
           options={[
-            { value: "os", text: t("os") },
-            { value: "eph", text: t("epherome") },
+            { value: "os", text: "OS" },
+            { value: "eph", text: "Eph" },
           ]}
           onChange={handleChangeTitleBarStyle}
         />
       </div>
       <div>
-        <p className="font-semibold text-lg mb-3">{t("settings.theme")}</p>
+        <p className="font-medium text-lg mb-3">Background Photo</p>
+        <Checkbox
+          checked={configStore.enableBg}
+          onChange={(checked) => setConfig((cfg) => (cfg.enableBg = checked))}
+        >
+          Enable Background Photo
+        </Checkbox>
+        {configStore.enableBg && (
+          <>
+            <Select
+              label="Function Board Placement"
+              options={[
+                {
+                  value: "off",
+                  text: "Off",
+                },
+                { value: "top", text: "Top" },
+                { value: "right", text: "Right" },
+              ]}
+              value={configStore.fnBoardPlacement}
+              onChange={(value) =>
+                setConfig(
+                  (cfg) => (cfg.fnBoardPlacement = value as FnBoardPlacement)
+                )
+              }
+            />
+            <TextField
+              value={configStore.bgPath}
+              onChange={(value) => setConfig((cfg) => (cfg.bgPath = value))}
+              label="File Path"
+              trailing={
+                <Hyperlink button onClick={handleOpenBgPath}>
+                  {t("profile.openDirectory")}
+                </Hyperlink>
+              }
+            />
+          </>
+        )}
+      </div>
+      <div>
+        <p className="font-medium text-lg mb-3">{t("settings.theme")}</p>
         <Checkbox
           checked={configStore.themeFollowOs}
           onChange={handleThemeFollowOs}
@@ -499,8 +571,8 @@ export const SettingsAboutFragment = (): JSX.Element => (
       />
       <div className="select-none">
         <p className="space-x-1 text-lg">
-          <span className="font-semibold">Epherome</span>
-          <span className="font-light">{codeName ?? ""}</span>
+          <span className="font-medium">Epherome</span>
+          <span>{codeName ?? ""}</span>
         </p>
         <p className="space-x-1 text-sm">
           <span>{t("version")}</span>
@@ -561,7 +633,7 @@ const SettingsPage = observer(() => {
 
   return (
     <TabController className="eph-h-full" orientation="vertical">
-      <TabBar className="shadow-md">
+      <TabBar>
         <TabBarItem value={0}>
           <MdTune />
           {t("general")}

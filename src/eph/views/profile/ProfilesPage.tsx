@@ -76,7 +76,7 @@ export function ImportModpackFragment(props: {
 
   return (
     <div className="p-5 py-16 flex flex-col h-full">
-      <p className="font-semibold text-xl pb-3">{t("modpack.import")}</p>
+      <p className="font-medium text-xl pb-3">{t("modpack.import")}</p>
       <TextField
         value={value}
         onChange={setValue}

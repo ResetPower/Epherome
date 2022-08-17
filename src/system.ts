@@ -7,7 +7,7 @@ import { default as log4jsConfiguration } from "./common/utils/logging";
 
 // base information
 const version = app.getVersion();
-const codeName = "Netherite";
+const codeName = "Granite";
 const userDataPath = app.getPath("userData");
 
 const configPath = path.join(userDataPath, "settings.json");
@@ -63,7 +63,7 @@ ipcMain.handle("open-java", async () => {
   } else return undefined;
 });
 
-ipcMain.handle("open-avatar", async () => {
+ipcMain.handle("open-image", async () => {
   const files = await dialog.showOpenDialog({
     properties: ["openFile"],
     filters: [{ extensions: ["jpg", "jpeg", "png"], name: "Image" }],

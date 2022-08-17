@@ -90,7 +90,7 @@ const ServerControlPage = observer(() => {
       <div className="w-1/4 bg-card">
         <div
           onClick={() => setCreating(true)}
-          className={`rcs-hover flex items-center select-none cursor-pointer font-semibold p-3 mb-3 ${
+          className={`rcs-hover flex items-center select-none cursor-pointer font-medium p-3 mb-3 ${
             creating && "rcs-hover-active"
           }`}
         >

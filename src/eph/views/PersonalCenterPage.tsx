@@ -52,7 +52,7 @@ export default function PersonalCenterPage(): JSX.Element {
   };
   const handleChangeAvatar = () => {
     setStat(true);
-    ipcRenderer.invoke("open-avatar").then((file) => {
+    ipcRenderer.invoke("open-image").then((file) => {
       if (file) {
         const content = fs.readFileSync(file);
         const byteLength = content.byteLength;

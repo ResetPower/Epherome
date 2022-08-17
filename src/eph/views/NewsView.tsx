@@ -11,7 +11,10 @@ export default function NewsView(): JSX.Element {
           onClick={() => openInBrowser(val.url)}
           key={index}
         >
-          <p className="text-lg font-semibold">{val.title}</p>
+          <p
+            className="text-lg font-medium"
+            dangerouslySetInnerHTML={{ __html: val.title }}
+          />
           <div className="flex-grow" />
           <div className="flex flex-col items-end">
             <p>{val.author}</p>

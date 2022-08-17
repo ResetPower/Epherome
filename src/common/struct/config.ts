@@ -37,6 +37,8 @@ export function getSystemPreferredLanguage(): string {
   }
 }
 
+export type FnBoardPlacement = "top" | "right" | "off";
+
 // read config
 
 export class ConfigStore {
@@ -57,6 +59,9 @@ export class ConfigStore {
     platform() === "win32" ? "eph" : "os";
   @observable checkUpdate = true;
   @observable epheromeToken = "";
+  @observable enableBg = false;
+  @observable bgPath = "";
+  @observable fnBoardPlacement: FnBoardPlacement = "top";
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });

@@ -63,7 +63,7 @@ export default function ModpackExportPage({
       <div className="flex-grow">
         {stage === 0 ? (
           <div className="space-y-1">
-            <p className="font-semibold text-xl mb-3">{t("modpack.info")}</p>
+            <p className="font-medium text-xl mb-3">{t("modpack.info")}</p>
             <TextField
               value={name}
               onChange={setName}
@@ -85,7 +85,7 @@ export default function ModpackExportPage({
           </div>
         ) : (
           <div>
-            <p className="font-semibold text-xl mb-3">
+            <p className="font-medium text-xl mb-3">
               {t("modpack.selectFiles")}...
             </p>
             <div className="overflow-auto">

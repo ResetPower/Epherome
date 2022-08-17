@@ -51,7 +51,7 @@ export function InstallerView({
 
   return (
     <div className="p-9">
-      <p className="text-xl font-semibold py-3">
+      <p className="text-xl font-medium py-3">
         {t("profile.installerAdaptToSomething", version, type)}
       </p>
       <div
@@ -159,7 +159,7 @@ export default function ProfileInstallPage({
           />
         ) : (
           <div className="p-9">
-            <p className="text-xl font-semibold">
+            <p className="text-xl font-medium">
               {t("profile.installForMinecraft", versionId)}
             </p>
             <p className="text-shallow">{t("profile.selectInstallContent")}</p>

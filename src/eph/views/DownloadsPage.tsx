@@ -98,7 +98,7 @@ export function DownloadingFragment(props: {
 
   return (
     <div className="p-9 h-full flex flex-col">
-      <p className="font-semibold text-xl py-3">
+      <p className="font-medium text-xl py-3">
         {t("download")} Minecraft {props.version.id}
       </p>
       <TextField

@@ -45,7 +45,7 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <div className="p-9 space-y-3">
-      <p className="font-semibold text-xl">{t("personal.loginTo")}</p>
+      <p className="font-medium text-xl">{t("personal.loginTo")}</p>
       <TextField
         label={t("username")}
         placeholder={t("username")}

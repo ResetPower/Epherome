@@ -8,7 +8,7 @@ const zhCn: Language = {
     home: "主页",
     epherome: "Epherome",
     accounts: "账户",
-    profiles: "档案",
+    profiles: "配置",
     settings: "设定",
     launch: "启动",
     launching: "启动中",
@@ -56,8 +56,8 @@ const zhCn: Language = {
     "account.skin": "皮肤",
     "account.skin.notSupportedExcludeMojangMs":
       "仅支持查看 Mojang 或微软账户的皮肤。",
-    "profile.removing": "移除档案",
-    "profile.notSelected": "未选择档案",
+    "profile.removing": "移除配置",
+    "profile.notSelected": "未选择游戏配置",
     "profile.openDirectory": "浏览",
     "profile.usuallyDotMinecraftEtc":
       "在 Windows 下通常是「.minecraft」，在 macOS 与 Linux 下通常是「minecraft」。",
@@ -118,7 +118,7 @@ const zhCn: Language = {
     download: "下载",
     downloading: "下载中",
     downloadingSomething: "正在下载 {0}",
-    "download.profileName": "档案名",
+    "download.profileName": "配置名",
     "download.preparing": "准备中",
     "download.notSelected": "未选择版本",
     "version.release": "正式版",
@@ -134,7 +134,7 @@ const zhCn: Language = {
       "强制终止进程可能导致你丢失一些重要数据，是否继续？",
     "processes.lookupLog": "查看日志",
     "processes.exportLog": "导出日志",
-    "processes.lookupProfile": "查看档案",
+    "processes.lookupProfile": "查看游戏配置",
     "processes.notSelected": "未选择进程",
     extensions: "扩展",
     epheromeUpdate: "Epherome 更新",
@@ -142,7 +142,7 @@ const zhCn: Language = {
     "epheromeUpdate.available": "新版本 {0} 现在可用。",
     "epheromeUpdate.availableMessage": "请前往 Epherome 官方网站下载最新版本。",
     "epheromeUpdate.needNot": "Epherome 已是最新版本。",
-    "launching.noAccOrProSelected": "账户或档案未选择。",
+    "launching.noAccOrProSelected": "账户或游戏配置未选择。",
     "launching.considerUsingJava17":
       "从 Minecraft 1.18 开始，启动 Minecraft 需要 Java 17",
     "launching.considerUsingJava16":

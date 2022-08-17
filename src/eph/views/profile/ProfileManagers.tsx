@@ -300,7 +300,7 @@ export const ProfileSettingsFragment = observer(
 
     return (
       <div className="text-sm">
-        <p>
+        <p className="mb-3">
           {t("profile.gameOptionsPath")}:{" "}
           <Hyperlink onClick={() => openItemInFinder(manager.optionsTxtPath)}>
             {manager.optionsTxtPath}

@@ -86,15 +86,18 @@ export function CreateAccountFragment(props: {
             <Alert severity="warn">{t("account.msAccNoMinecraft")}</Alert>
           </div>
         )}
-        <Select
-          value={value}
-          options={[
-            { value: "microsoft", text: t("account.microsoft") },
-            { value: "authlib", text: t("account.authlib") },
-            { value: "offline", text: t("account.offline") },
-          ]}
-          onChange={setValue}
-        />
+        <div className="w-1/2">
+          <Select
+            fullWidth
+            value={value}
+            options={[
+              { value: "microsoft", text: t("account.microsoft") },
+              { value: "authlib", text: t("account.authlib") },
+              { value: "offline", text: t("account.offline") },
+            ]}
+            onChange={setValue}
+          />
+        </div>
         <div hidden={value !== "microsoft"}>
           <p>{t("account.clickToLogin")}</p>
         </div>

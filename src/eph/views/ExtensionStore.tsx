@@ -88,7 +88,7 @@ function Panel(props: {
     <div>
       {!props.forceOpen && (
         <div
-          className="flex bg-slate-500 bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 cursor-pointer select-none transition-colors text-sm font-semibold px-1 "
+          className="flex bg-slate-500 bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 cursor-pointer select-none transition-colors text-sm font-medium px-1 "
           onClick={() => setExpanded(!expanded)}
         >
           <p>{props.label}</p>
@@ -257,7 +257,7 @@ export default function ExtensionStore(): JSX.Element {
             <div className="flex items-center px-6 py-3 border-b border-divider top-0 sticky bg-background space-x-3">
               <VscExtensions size="2em" />
               <div className="flex-grow">
-                <p className="font-semibold text-lg">{current.meta.name}</p>
+                <p className="font-medium text-lg">{current.meta.name}</p>
                 <p className="text-shallow text-xs">ID: {current.id}</p>
               </div>
               {pending && <Spinner />}

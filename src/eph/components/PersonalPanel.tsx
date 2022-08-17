@@ -36,7 +36,7 @@ export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
     <div className="p-3">
       <PersonalHead lg />
       <div className="flex items-center space-x-1">
-        <p className="font-semibold text-lg">{userInfo.name}</p>
+        <p className="font-medium text-lg">{userInfo.name}</p>
         {userInfo.verified && <VerifiedBadge />}
         {userInfo.plan === "ultimate" &&
           (props.bottomPop ? (

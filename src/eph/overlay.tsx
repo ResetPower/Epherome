@@ -81,7 +81,7 @@ export const GlobalOverlay = observer(() => {
             ) : (
               <div className={`m-auto zoom-${state}`}>
                 <Dialog>
-                  <p className="font-semibold text-xl">{o.title ?? t("tip")}</p>
+                  <p className="font-medium text-xl">{o.title ?? t("tip")}</p>
                   {o.message && <p>{o.message}</p>}
                   {o.check && (
                     <Checkbox checked={checked} onChange={setChecked}>
@@ -168,7 +168,7 @@ function BottomSheetTitle({
 }): JSX.Element {
   return (
     <div className="flex items-center bg-card z-10 py-3 px-9 mb-3 shadow-sm top-0 sticky">
-      <p className="font-semibold text-xl flex-grow">{children}</p>
+      <p className="font-medium text-xl flex-grow">{children}</p>
       <IconButton onClick={close}>
         <MdArrowDownward />
       </IconButton>

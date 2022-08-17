@@ -3,27 +3,31 @@ import {
   Button,
   IconButton,
   TextField,
-  Hyperlink,
   ProgressBar,
+  BadgeButton,
 } from "@resetpower/rcs";
-import { useEffect, useMemo, useState } from "react";
-import { configStore, setConfig } from "common/struct/config";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { configStore, FnBoardPlacement, setConfig } from "common/struct/config";
 import { launchMinecraft } from "core/launch";
 import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
-import { Card } from "../components/layouts";
 import {
   MdAccountCircle,
   MdApps,
-  MdClose,
   MdGamepad,
   MdMoreVert,
-  MdPlayArrow,
   MdRefresh,
   MdSettings,
   MdViewCarousel,
 } from "react-icons/md";
 import { showOverlay } from "../overlay";
-import { t } from "../intl";
+import { KeyOfLanguageDefinition, t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -35,9 +39,7 @@ import { historyStore } from "eph/renderer/history";
 import { apply, DefaultFn } from "common/utils";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
-import { openInBrowser } from "common/utils/open";
 import { Canceller } from "common/task/cancel";
-import TinyButton from "eph/components/TinyButton";
 import { BsServer } from "react-icons/bs";
 
 export function RequestPasswordDialog(props: {
@@ -54,6 +56,35 @@ export function RequestPasswordDialog(props: {
       helperText={props.again ? t("account.wrongPassword") : ""}
       error={props.again}
     />
+  );
+}
+
+const MetroCardContext = createContext(false);
+
+function MetroCard(props: {
+  icon: ReactNode;
+  target: KeyOfLanguageDefinition;
+  className: string;
+}) {
+  const enableBg = useContext(MetroCardContext);
+
+  return (
+    <div
+      className={`${props.className} ${
+        enableBg && "bg-opacity-50"
+      } rounded text-white flex items-center shadow-sm hover:shadow cursor-pointer select-none p-3 space-x-3`}
+      onClick={() => historyStore.push(props.target)}
+      style={
+        enableBg
+          ? {
+              backdropFilter: "blur(10px)",
+            }
+          : {}
+      }
+    >
+      <div className="text-2xl">{props.icon}</div>
+      {!enableBg && <div>{t(props.target)}</div>}
+    </div>
   );
 }
 
@@ -185,6 +216,38 @@ export class HomePageStore {
 
 export const homePageStore = new HomePageStore();
 
+function MetroCardProvider(props: {
+  value: boolean;
+  children: ReactNode;
+  placement: FnBoardPlacement;
+}): JSX.Element {
+  return props.value ? (
+    props.placement === "top" ? (
+      <div className="p-6 flex justify-center space-x-2 slideInDown">
+        <MetroCardContext.Provider value={configStore.enableBg}>
+          {props.children}
+        </MetroCardContext.Provider>
+      </div>
+    ) : props.placement === "right" ? (
+      <div className="flex h-full justify-end">
+        <div className="flex flex-col justify-center space-y-2 mr-3 slideInRight">
+          <MetroCardContext.Provider value={configStore.enableBg}>
+            {props.children}
+          </MetroCardContext.Provider>
+        </div>
+      </div>
+    ) : (
+      <div></div>
+    )
+  ) : (
+    <div className="grid grid-cols-2 gap-5 p-6">
+      <MetroCardContext.Provider value={false}>
+        {props.children}
+      </MetroCardContext.Provider>
+    </div>
+  );
+}
+
 const HomePage = observer(() => {
   const account = useMemo(() => _.selected(configStore.accounts), []);
   const profiles = configStore.profiles;
@@ -208,125 +271,124 @@ const HomePage = observer(() => {
   }, []);
 
   return (
-    <div className="px-5">
-      <Card className="my-3 p-9 shadow-sm">
-        <div className="flex">
-          <div className="p-3 flex-grow">
-            <p className="text-shallow mt-0">{t("hello")}</p>
-            <p className="text-2xl">
-              {account?.name ?? t("account.notSelected")}
-            </p>
-            {configStore.hitokoto && (
+    <div
+      style={
+        configStore.enableBg
+          ? {
+              backgroundImage: `url(resource://${configStore.bgPath})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }
+          : {}
+      }
+      className="eph-h-full flex"
+    >
+      <div
+        style={{
+          backdropFilter: "blur(10px)",
+        }}
+        className={`bg-gray-200 dark:bg-slate-700 bg-opacity-70 dark:bg-opacity-70 w-1/3 p-6 flex flex-col ${
+          configStore.enableBg && "slideInLeft"
+        }`}
+      >
+        <div className="flex-grow">
+          <p className="text-lg font-medium text-gray-600 dark:text-gray-400">
+            {t("hello")}
+          </p>
+          <p className="text-2xl font-medium">
+            {account?.name ?? t("account.notSelected")}
+          </p>
+          {configStore.hitokoto && (
+            <>
               <div className="eph-force-zh-cn">
                 <p className="text-sm">{homePageStore.hitokoto.content}</p>
-                <p className="text-sm text-shallow">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {homePageStore.hitokoto.from}
                 </p>
               </div>
-            )}
-          </div>
-          <div>
-            <IconButton onClick={() => historyStore.push("processes")}>
-              <MdViewCarousel />
-            </IconButton>
-            <IconButton onClick={() => historyStore.push("extensions")}>
-              <MdApps />
-            </IconButton>
-          </div>
-        </div>
-        <div className="flex">
-          <IconButton onClick={() => historyStore.push("accounts")}>
-            <MdAccountCircle />
-          </IconButton>
-          <IconButton onClick={() => historyStore.push("profiles")}>
-            <MdGamepad />
-          </IconButton>
-
-          <IconButton onClick={() => historyStore.push("serverControl")}>
-            <BsServer size="1.2em" />
-          </IconButton>
-          <div className="flex-grow" />
-          {configStore.hitokoto && (
-            <IconButton onClick={homePageStore.reloadHitokoto}>
-              <MdRefresh />
-            </IconButton>
+              <div className="flex justify-end">
+                <IconButton
+                  className="w-7 h-7"
+                  onClick={homePageStore.reloadHitokoto}
+                >
+                  <MdRefresh />
+                </IconButton>
+              </div>
+            </>
           )}
-          <IconButton onClick={() => historyStore.push("settings")}>
-            <MdSettings />
-          </IconButton>
         </div>
-      </Card>
-      <div className="flex space-x-6">
-        <Card
-          className={`${
-            configStore.news ? "w-1/2" : "w-full"
-          } flex flex-col p-3`}
-        >
-          <div className="flex flex-col flex-grow justify-center">
-            {profile && value !== null ? (
-              <>
-                <Select
-                  value={value}
-                  options={_.map(profiles, (i, id) => ({
-                    value: id,
-                    text: i.name,
-                  }))}
-                  onChange={handleChange}
-                  disabled={homePageStore.isLaunching}
-                  className="overflow-ellipsis mb-1"
-                />
-                <div className="flex space-x-3 p-1">
-                  <p className="text-shallow">{t("version")}</p>
-                  <p>{profile.ver}</p>
+        <div className="flex-grow">
+          {configStore.news && (
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold">{t("news")}</p>
+              {homePageStore.news === null ? (
+                <p>
+                  ...
+                  <br />
+                  <br />
+                </p>
+              ) : homePageStore.news === undefined ? (
+                <p>
+                  {t("internetNotAvailable")}
+                  <br />
+                  <br />
+                </p>
+              ) : (
+                <div className="eph-force-zh-cn">
+                  {homePageStore.news.slice(0, 2).map((val, index) => (
+                    <p
+                      key={index}
+                      dangerouslySetInnerHTML={{ __html: val.title }}
+                    />
+                  ))}
                 </div>
-                <div>
-                  {homePageStore.isLaunching ? (
-                    <Button onClick={homePageStore.cancel}>
-                      <MdClose />
-                      {t("cancel")}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="pill"
-                      onClick={() => {
-                        homePageStore.launch(account, profile);
-                      }}
-                    >
-                      <MdPlayArrow />
-                      {t("launch")}
-                    </Button>
-                  )}
-                </div>
-              </>
-            ) : (
-              <p className="p-1 m-auto text-shallow">
-                {t("profile.notSelected")}
-              </p>
-            )}
-            {homePageStore.isLaunching && (
-              <>
-                <p className="text-sm">{homePageStore.launchingHelper}</p>
-                <ProgressBar unlimited />
-              </>
-            )}
-          </div>
-          <div className="text-contrast flex">
-            <TinyButton
-              className="m-1"
-              onClick={() =>
-                showOverlay({
-                  type: "sheet",
-                  title: t("java.manage"),
-                  content: JavaManagementSheet,
-                })
-              }
-            >
-              {t("java.manage")}
-            </TinyButton>
-            <div className="flex-grow" />
-            <p className="text-shallow">
-              Java:{" "}
-              {apply(_.selected(configStore.javas), (j) =>
+              )}
+              <div className="flex-grow" />
+              <div className="flex justify-end p-1 space-x-3 items-center">
+                <IconButton
+                  className="w-7 h-7"
+                  onClick={homePageStore.reloadNews}
+                >
+                  <MdRefresh />
+                </IconButton>
+                <IconButton
+                  className="w-7 h-7"
+                  onClick={() =>
+                    showOverlay({
+                      type: "sheet",
+                      title: t("news"),
+                      content: NewsView,
+                    })
+                  }
+                >
+                  <MdMoreVert />
+                </IconButton>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="text-contrast flex items-center">
+          <BadgeButton
+            className="whitespace-nowrap"
+            onClick={() =>
+              showOverlay({
+                type: "sheet",
+                title: t("java.manage"),
+                content: JavaManagementSheet,
+              })
+            }
+          >
+            {t("java.manage")}
+          </BadgeButton>
+          <div className="flex-grow" />
+          <p className="text-sm">
+            Java:{" "}
+            {apply(
+              (profile
+                ? configStore.javas.find((j) => j.nanoid === profile.java)
+                : undefined) ?? _.selected(configStore.javas),
+              (j) =>
                 j.nickname ? (
                   <>
                     {j.nickname} ({j.name})
@@ -334,54 +396,79 @@ const HomePage = observer(() => {
                 ) : (
                   j.name
                 )
-              ) ?? t("haveNot")}
-            </p>
-          </div>
-        </Card>
-        {configStore.news && (
-          <Card className="w-1/2 flex flex-col p-3">
-            <p className="text-xl font-semibold mb-1">{t("news")}</p>
-            {homePageStore.news === null ? (
-              <p>
-                ...
-                <br />
-                <br />
-              </p>
-            ) : homePageStore.news === undefined ? (
-              <p>
-                {t("internetNotAvailable")}
-                <br />
-                <br />
-              </p>
-            ) : (
-              <div className="eph-force-zh-cn">
-                {homePageStore.news.slice(0, 2).map((val, index) => (
-                  <p key={index}>{val.title}</p>
-                ))}
-              </div>
+            ) ?? t("haveNot")}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col flex-grow">
+        <div className="flex-grow">
+          <MetroCardProvider
+            value={configStore.enableBg}
+            placement={configStore.fnBoardPlacement}
+          >
+            <MetroCard
+              className="bg-orange-400"
+              icon={<MdAccountCircle />}
+              target="accounts"
+            />
+            <MetroCard
+              className="bg-green-600"
+              icon={<MdGamepad />}
+              target="profiles"
+            />
+            <MetroCard
+              className="bg-violet-700"
+              icon={<MdViewCarousel />}
+              target="processes"
+            />
+            <MetroCard
+              className="bg-sky-400"
+              icon={<MdApps />}
+              target="extensions"
+            />
+            <MetroCard
+              className="bg-teal-600"
+              icon={<BsServer />}
+              target="serverControl"
+            />
+            <MetroCard
+              className="bg-slate-700"
+              icon={<MdSettings />}
+              target="settings"
+            />
+          </MetroCardProvider>
+        </div>
+        {profile && value !== null ? (
+          <>
+            {homePageStore.isLaunching && (
+              <>
+                <p className="text-sm">{homePageStore.launchingHelper}</p>
+                <ProgressBar unlimited />
+              </>
             )}
-            <div className="flex-grow" />
-            <div className="flex p-1 space-x-3 items-center">
-              <MdRefresh
-                className="cursor-pointer text-contrast"
-                onClick={homePageStore.reloadNews}
+            <div className="flex items-center justify-end m-3">
+              <Select
+                value={value}
+                options={_.map(profiles, (i, id) => ({
+                  value: id,
+                  text: i.name,
+                }))}
+                onChange={handleChange}
+                disabled={homePageStore.isLaunching}
+                className="overflow-ellipsis"
+                placementTop
               />
-              <MdMoreVert
-                className="cursor-pointer text-contrast"
-                onClick={() =>
-                  showOverlay({
-                    type: "sheet",
-                    title: t("news"),
-                    content: NewsView,
-                  })
-                }
-              />
-              <div className="flex-grow" />
-              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                MCBBS
-              </Hyperlink>
+              <Button
+                onClick={() => homePageStore.launch(account, profile)}
+                variant="contained"
+                className="whitespace-nowrap"
+              >
+                {t("launch")}
+              </Button>
             </div>
-          </Card>
+          </>
+        ) : (
+          t("profile.notSelected")
         )}
       </div>
     </div>

@@ -1,9 +1,16 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  protocol,
+  ProtocolRequest,
+} from "electron";
 import { mainLogger, parsed } from "./system";
 import "./ms-auth";
 import getTouchBar from "./touchbar";
 import path from "path";
 import "./loader";
+import EpheromeLogo from "./assets/Epherome.png";
 
 const prod = process.env.NODE_ENV !== "development";
 
@@ -18,6 +25,7 @@ function createWindow() {
     width: 800,
     height: 600,
     autoHideMenuBar: true,
+    icon: EpheromeLogo,
     title: "Epherome",
     frame: !isTitleBarEph,
     transparent: isTitleBarEph,
@@ -46,7 +54,16 @@ function createWindow() {
   ipcMain.on("open-devtools", () => win.webContents.openDevTools());
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  protocol.interceptFileProtocol(
+    "resource",
+    (req: ProtocolRequest, callback: (filePath: string) => void) => {
+      const url = req.url.slice(11);
+      callback(url);
+    }
+  );
+  createWindow();
+});
 
 app.on("window-all-closed", app.quit);
 
