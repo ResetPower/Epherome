@@ -1,5 +1,4 @@
 import "@resetpower/rcs/styles/index.css";
-import "noto-provider";
 import "../styles/index.css";
 import { createRoot } from "react-dom/client";
 import App from "./renderer/App";
@@ -38,7 +37,6 @@ const manager = new ThemeManager(
   }
 );
 updateTheme();
-coordinateFont();
 
 export function updateTheme() {
   manager.responseSystemChange();
@@ -49,16 +47,6 @@ export function updateTheme() {
     if (t) {
       manager.apply(t);
     }
-  }
-}
-
-export function coordinateFont() {
-  if (configStore.language === "zh-cn") {
-    document.body.style.fontFamily = "Noto Sans SC, sans-serif";
-  } else if (configStore.language === "ja-jp") {
-    document.body.style.fontFamily = "Noto Sans JP, sans-serif";
-  } else {
-    document.body.style.fontFamily = "Noto Sans SC, sans-serif";
   }
 }
 
@@ -105,8 +93,8 @@ async function launchEpherome() {
       if (valid === 0) {
         rendererLogger.warn("Network not available, skipping check");
       }
-      personalStore.autoLogin();
     }
+    personalStore.autoLogin();
   }
 }
 

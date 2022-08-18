@@ -55,14 +55,14 @@ jobs:
         with:
           name: art
           retention-days: 1
-          path: package/Epherome-v${{ steps.ver.outputs.version }}.msi
+          path: package/Epherome-${{ steps.ver.outputs.version }}.exe
       - name: Upload Artifact
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v2
         with:
           name: art
           retention-days: 1
-          path: package/Epherome-v${{ steps.ver.outputs.version }}.dmg
+          path: package/Epherome-${{ steps.ver.outputs.version }}.dmg
       - name: Upload Artifact
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
@@ -70,10 +70,10 @@ jobs:
           name: art
           retention-days: 1
           path: |
-            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz
-            package/Epherome-v${{ steps.ver.outputs.version }}.deb
-            package/Epherome-v${{ steps.ver.outputs.version }}.rpm
-            package/Epherome-v${{ steps.ver.outputs.version }}.snap
+            package/Epherome-${{ steps.ver.outputs.version }}.tar.gz
+            package/Epherome-${{ steps.ver.outputs.version }}.deb
+            package/Epherome-${{ steps.ver.outputs.version }}.rpm
+            package/Epherome-${{ steps.ver.outputs.version }}.snap
   release:
     needs: [build]
     env:
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: "14"
+          node-version: "16"
       - name: Get Artifacts
         uses: actions/download-artifact@v2
         with:
@@ -97,22 +97,22 @@ jobs:
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.ver.outputs.version }}
-          name: Epherome v${{ steps.ver.outputs.version }}
+          tag_name: ${{ steps.ver.outputs.version }}
+          name: Epherome Beta ${{ steps.ver.outputs.version }}
           draft: true
           prerelease: true
           files: |
-            package/Epherome-v${{ steps.ver.outputs.version }}.msi
-            package/Epherome-v${{ steps.ver.outputs.version }}.msi.hash
-            package/Epherome-v${{ steps.ver.outputs.version }}.dmg
-            package/Epherome-v${{ steps.ver.outputs.version }}.dmg.hash
-            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz
-            package/Epherome-v${{ steps.ver.outputs.version }}.tar.gz.hash
-            package/Epherome-v${{ steps.ver.outputs.version }}.deb
-            package/Epherome-v${{ steps.ver.outputs.version }}.deb.hash
-            package/Epherome-v${{ steps.ver.outputs.version }}.rpm
-            package/Epherome-v${{ steps.ver.outputs.version }}.rpm.hash
-            package/Epherome-v${{ steps.ver.outputs.version }}.snap
-            package/Epherome-v${{ steps.ver.outputs.version }}.snap.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.exe
+            package/Epherome-${{ steps.ver.outputs.version }}.exe.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.dmg
+            package/Epherome-${{ steps.ver.outputs.version }}.dmg.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.tar.gz
+            package/Epherome-${{ steps.ver.outputs.version }}.tar.gz.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.deb
+            package/Epherome-${{ steps.ver.outputs.version }}.deb.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.rpm
+            package/Epherome-${{ steps.ver.outputs.version }}.rpm.hash
+            package/Epherome-${{ steps.ver.outputs.version }}.snap
+            package/Epherome-${{ steps.ver.outputs.version }}.snap.hash
       - name: Update Data on Official Site
-        run: curl https://epherome.com/admin/${{ secrets.SITE_ADMIN_TOKEN }}/release/v${{ steps.ver.outputs.version }}
+        run: curl -d '{"version":"${{ steps.ver.outputs.version }}", "token":"${{ env.SITE_ADMIN_TOKEN }}"}' -X PUT https://epherome.com/admin/version

@@ -3,7 +3,6 @@ import {
   Button,
   IconButton,
   TextField,
-  ProgressBar,
   BadgeButton,
 } from "@resetpower/rcs";
 import {
@@ -442,12 +441,6 @@ const HomePage = observer(() => {
         </div>
         {profile && value !== null ? (
           <>
-            {homePageStore.isLaunching && (
-              <>
-                <p className="text-sm">{homePageStore.launchingHelper}</p>
-                <ProgressBar unlimited />
-              </>
-            )}
             <div className="flex items-center justify-end m-3">
               <Select
                 value={value}
@@ -462,10 +455,11 @@ const HomePage = observer(() => {
               />
               <Button
                 onClick={() => homePageStore.launch(account, profile)}
+                disabled={homePageStore.isLaunching}
                 variant="contained"
                 className="whitespace-nowrap"
               >
-                {t("launch")}
+                {homePageStore.isLaunching ? t("launching") : t("launch")}
               </Button>
             </div>
           </>

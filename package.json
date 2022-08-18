@@ -26,7 +26,7 @@
   "build": {
     "productName": "Epherome",
     "copyright": "Copyright (C) 2021-2022 ResetPower.",
-    "artifactName": "Epherome-v${version}.${ext}",
+    "artifactName": "Epherome-${version}.${ext}",
     "directories": {
       "output": "package"
     },
@@ -35,6 +35,14 @@
     "icon": "src/assets/Epherome.png",
     "win": {
       "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "perMachine": true,
+      "unicode": true
     },
     "mac": {
       "target": "dmg"
@@ -55,19 +63,19 @@
   "homepage": "https://github.com/ResetPower/epherome#readme",
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
-    "@types/node": "^18.7.3",
+    "@types/node": "^18.7.6",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-transition-group": "^4.4.5",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
     "autoprefixer": "^10.4.8",
     "cargo-cp-artifact": "^0.1.6",
     "concurrently": "^7.3.0",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
     "cssnano": "^5.1.13",
-    "electron": "^20.0.2",
+    "electron": "^20.0.3",
     "electron-builder": "^23.3.3",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
@@ -100,7 +108,6 @@
     "mobx": "^6.6.1",
     "mobx-react-lite": "^3.4.0",
     "nanoid": "^4.0.0",
-    "noto-provider": "^1.0.2",
     "p-limit": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

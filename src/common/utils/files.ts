@@ -210,7 +210,7 @@ export async function fetchSize(
   url: string,
   filename: string
 ): Promise<number> {
-  const resp = await got(url, { method: "HEAD" });
+  const resp = await got.head(url);
   const length = resp.headers["content-length"];
   if (length) {
     return parseInt(length);

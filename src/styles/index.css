@@ -24,14 +24,6 @@
   }
 }
 
-.eph-force-zh-cn {
-  font-family: Noto Sans SC, sans-serif;
-}
-
-.eph-force-ja-jp {
-  font-family: Noto Sans JP, sans-serif;
-}
-
 :root {
   --eph-height: calc(100vh - 4rem);
   --animate-duration: 0.3s;
@@ -43,6 +35,7 @@
 
 body {
   overflow-x: hidden;
+  font-family: sans-serif;
 }
 
 #root {

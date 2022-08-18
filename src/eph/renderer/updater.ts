@@ -10,7 +10,7 @@ export interface EphUpdatableVersion {
 
 export async function checkEphUpdate(): Promise<EphUpdatableVersion | null> {
   try {
-    const resp = await got("https://epherome.com/api/version");
+    const resp = await got("https://api.epherome.com/version");
     const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(resp.body);
     const need = params.name !== `v${ephVersion}`;
     coreLogger.info(

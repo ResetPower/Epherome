@@ -24,4 +24,4 @@ function calculateHash(ext) {
 }
 
 // generate sha1
-["msi", "dmg", "tar.gz", "deb", "rpm", "snap"].forEach(calculateHash);
+["exe", "dmg", "tar.gz", "deb", "rpm", "snap"].forEach(calculateHash);

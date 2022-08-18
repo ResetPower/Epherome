@@ -51,7 +51,7 @@ export async function refresh(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ accessToken: token }),
+      json: { accessToken: token },
     });
     return {
       err: false,
@@ -72,7 +72,7 @@ export async function validate(token: string, url: string): Promise<boolean> {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ accessToken: token }),
+      json: { accessToken: token },
     });
     return true;
   } catch (e) {

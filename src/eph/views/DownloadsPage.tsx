@@ -59,7 +59,7 @@ export function DownloadingFragment(props: {
   const onError = (error: Error) => {
     task.current && task.current.err(error);
     update();
-    console.log(error);
+    console.error(error);
   };
 
   const handleCancel = () => {

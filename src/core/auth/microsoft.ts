@@ -86,10 +86,9 @@ async function authToken2XBLToken(token: string): Promise<XBLTokenResult> {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
+        json: {
           Properties: {
             AuthMethod: "RPS",
             SiteName: "user.auth.xboxlive.com",
@@ -97,7 +96,7 @@ async function authToken2XBLToken(token: string): Promise<XBLTokenResult> {
           },
           RelyingParty: "http://auth.xboxlive.com",
           TokenType: "JWT",
-        }),
+        },
       }
     );
     return JSON.parse(result.body);
@@ -115,14 +114,14 @@ async function XBLToken2XSTSToken(token: string): Promise<XSTSTokenResult> {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
+      json: {
         Properties: {
           SandboxId: "RETAIL",
           UserTokens: [token],
         },
         RelyingParty: "rp://api.minecraftservices.com/",
         TokenType: "JWT",
-      }),
+      },
     });
     return JSON.parse(result.body);
   } catch (error) {
@@ -143,9 +142,9 @@ async function XSTSToken2MinecraftToken(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
+        json: {
           identityToken: `XBL3.0 x=${uhs};${token}`,
-        }),
+        },
       }
     );
     return JSON.parse(result.body);

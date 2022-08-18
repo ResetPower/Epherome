@@ -22,22 +22,22 @@ export default function LoginPage(): JSX.Element {
     setMessage("Pending...");
     commonLogger.info(`Trying to login Epherome account. User: ${username}`);
     got
-      .post("https://epherome.com/auth/login", {
-        body: JSON.stringify({ username, password }),
+      .post("https://api.epherome.com/auth/login", {
+        json: { name: username, password },
       })
       .then((resp) => {
-        personalStore.login(JSON.parse(resp.body).token);
+        personalStore.login(JSON.parse(resp.body).accessToken);
         historyStore.back();
         historyStore.push("ephPersonalCenter");
         commonLogger.info(`Logged in.`);
       })
       .catch((error) => {
-        try {
-          setMessage(JSON.parse(error.response.body).message);
-        } catch {
+        if (error?.response?.statusCode === 403) {
+          setMessage("Password or username wrong.");
+        } else {
           setMessage(t("internetNotAvailable"));
         }
-        throw error;
+        console.error(error);
       });
   };
 

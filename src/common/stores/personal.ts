@@ -7,19 +7,22 @@ import { configStore, setConfig } from "../struct/config";
 import { Nullable, Trilean } from "common/utils";
 import { commonLogger } from "common/loggers";
 import Steve from "assets/Steve.png";
+import { Counter } from "common/utils/object";
 
 export interface EphUserInfo {
-  id: string;
+  uuid: string;
   name: string;
   email: string;
-  plan: "free" | "ultimate";
+  plan: "default" | "ultimate";
   verified: boolean;
 }
 
 export async function validateEphToken(token: string): Promise<Trilean> {
   try {
-    await got.post("https://epherome.com/auth/validate", {
-      body: JSON.stringify({ token }),
+    await got.post("https://api.epherome.com/auth/validate", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return 1;
   } catch (e) {
@@ -44,6 +47,7 @@ export function parseEphToken(token: string): Nullable<EphUserInfo> {
 export const currentHeadPath = path.join(userDataPath, "current_head");
 
 export class PersonalStore {
+  private counter = new Counter();
   @observable head: Nullable<string> = null;
   @observable userInfo: Nullable<EphUserInfo> = null;
   private defaultHead: string = Steve;
@@ -61,19 +65,12 @@ export class PersonalStore {
   }
   async updateHead(): Promise<void> {
     if (this.userInfo) {
-      const url = `https://epherome.com/api/head/${this.userInfo.id}`;
       try {
-        const resp = await got.get(url);
-        const mimeType = resp.headers["content-type"];
-        if (mimeType?.startsWith("image/")) {
-          const type = mimeType.slice("image/".length);
-          const data = `data:image/${type};base64,${Buffer.from(
-            resp.rawBody
-          ).toString("base64")}`;
-          this.setHead(data);
-          // save head to local
-          fs.writeFileSync(currentHeadPath, data);
-        }
+        this.setHead(
+          `https://api.epherome.com/users/avatar/${
+            this.userInfo.uuid
+          }?${this.counter.count()}`
+        );
       } catch {
         commonLogger.warn("Unable to fetch head, finding in file system");
         try {

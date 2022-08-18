@@ -1,17 +1,11 @@
 import { FloatingView, Hyperlink, IconButton } from "@resetpower/rcs";
-import { configStore } from "common/struct/config";
 import { DefaultFn } from "common/utils";
 import { historyStore } from "eph/renderer/history";
 import { observer } from "mobx-react-lite";
-import { useMemo } from "react";
 import VerifiedBadge from "./VerifiedBadge";
 import { BsFillXDiamondFill } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
-import {
-  EphUserInfo,
-  parseEphToken,
-  personalStore,
-} from "common/stores/personal";
+import { EphUserInfo, personalStore } from "common/stores/personal";
 import { t } from "eph/intl";
 
 const PersonalHead = observer((props: { lg?: boolean }) => {
@@ -29,10 +23,13 @@ const PersonalHead = observer((props: { lg?: boolean }) => {
   );
 });
 
-export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
-  const userInfo = personalStore.userInfo;
+export function PersonalTile(props: {
+  bottomPop?: boolean;
+  userInfo: EphUserInfo;
+}): JSX.Element {
+  const userInfo = props.userInfo;
 
-  return userInfo ? (
+  return (
     <div className="p-3">
       <PersonalHead lg />
       <div className="flex items-center space-x-1">
@@ -45,10 +42,8 @@ export function PersonalTile(props: { bottomPop?: boolean }): JSX.Element {
             <BsFillXDiamondFill color="#0abab5" />
           ))}
       </div>
-      <p className="text-sm text-shallow">ID: {userInfo.id}</p>
+      <p className="text-sm text-shallow">ID: {userInfo.uuid}</p>
     </div>
-  ) : (
-    <></>
   );
 }
 
@@ -58,7 +53,7 @@ export function PersonalPanel(props: {
 }) {
   return props.userInfo ? (
     <div>
-      <PersonalTile />
+      <PersonalTile userInfo={props.userInfo} />
       <Hyperlink
         button
         onClick={() => {
@@ -88,8 +83,7 @@ export function PersonalPanel(props: {
 }
 
 export const PersonalPanelShower = observer(() => {
-  const token = configStore.epheromeToken;
-  const userInfo = useMemo(() => parseEphToken(token), [token]);
+  const userInfo = personalStore.userInfo;
 
   return (
     <FloatingView

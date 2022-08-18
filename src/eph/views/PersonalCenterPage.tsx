@@ -11,6 +11,7 @@ import { historyStore } from "eph/renderer/history";
 import got from "got";
 import fs from "fs";
 import { ReactNode, useState } from "react";
+import path from "path";
 
 function Tile(props: {
   onClick: DefaultFn;
@@ -55,6 +56,7 @@ export default function PersonalCenterPage(): JSX.Element {
     ipcRenderer.invoke("open-image").then((file) => {
       if (file) {
         const content = fs.readFileSync(file);
+        const ext = path.extname(file).slice(1);
         const byteLength = content.byteLength;
         if (byteLength >= 256000) {
           showOverlay({
@@ -64,10 +66,10 @@ export default function PersonalCenterPage(): JSX.Element {
           return;
         }
         got
-          .post("https://epherome.com/api/set-head", {
+          .put(`https://api.epherome.com/users/avatar/${userInfo.uuid}`, {
             headers: {
               Authorization: `Bearer ${token}`,
-              "Content-Type": `image/png`,
+              "Content-Type": `image/${ext}`,
               "Content-Length": `${byteLength}`,
             },
             body: content,
@@ -81,9 +83,10 @@ export default function PersonalCenterPage(): JSX.Element {
             showOverlay({
               title: t("errorOccurred"),
               message: err.response
-                ? JSON.parse(err.response.body).message
+                ? `HTTP ${err.response.statusCode}`
                 : t("internetNotAvailable"),
             });
+            console.error(err);
           });
       } else {
         setStat(false);
@@ -94,7 +97,7 @@ export default function PersonalCenterPage(): JSX.Element {
   return (
     <div className="m-6 py-3 bg-card rounded-md border border-divider">
       <div className="px-3">
-        <PersonalTile bottomPop />
+        <PersonalTile userInfo={userInfo} bottomPop />
       </div>
       <JoinIn
         className="border-y border-divider"

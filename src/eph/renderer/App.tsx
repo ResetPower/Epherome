@@ -38,6 +38,7 @@ import PersonalCenterPage from "eph/views/PersonalCenterPage";
 import { TaskPanelShower } from "eph/components/TaskPanel";
 import { PersonalPanelShower } from "eph/components/PersonalPanel";
 import ServerControlPage from "eph/views/ServerControlPage";
+import { personalStore } from "common/stores/personal";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -87,7 +88,7 @@ export const EphAppBar = observer(
         icon: <BsPersonCircle />,
         text: t("ephPersonalCenter"),
         action: () =>
-          configStore.epheromeToken
+          personalStore.userInfo
             ? historyStore.push("ephPersonalCenter")
             : historyStore.push("ephLogin"),
       },
