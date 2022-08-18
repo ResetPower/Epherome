@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 function calculateHash(ext) {
-  const filename = `Epherome-v${pkg.version}.${ext}`;
+  const filename = `Epherome-${pkg.version}.${ext}`;
   const file = path.resolve(`package/${filename}`);
   try {
     const data = fs.readFileSync(file);
