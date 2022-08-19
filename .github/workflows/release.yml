@@ -115,4 +115,4 @@ jobs:
             package/Epherome-${{ steps.ver.outputs.version }}.snap
             package/Epherome-${{ steps.ver.outputs.version }}.snap.hash
       - name: Update Data on Official Site
-        run: curl -d '{"version":"${{ steps.ver.outputs.version }}", "token":"${{ env.SITE_ADMIN_TOKEN }}"}' -X PUT https://api.epherome.com/admin/version
+        run: curl -d '{"version":"${{ steps.ver.outputs.version }}", "token":"${{ env.SITE_ADMIN_TOKEN }}"}' -H 'Content-Type:application/json' -X PUT https://api.epherome.com/admin/version
