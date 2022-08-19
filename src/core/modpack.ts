@@ -1,4 +1,4 @@
-import { ephDefaultDotMinecraft, userDataPath } from "common/utils/info";
+import { userDataPath } from "common/utils/info";
 import { nanoid } from "nanoid";
 import fs from "fs";
 import path from "path";
@@ -14,6 +14,7 @@ import { coreLogger } from "common/loggers";
 import { ClientJson } from "./launch/struct";
 import { Task } from "common/task";
 import { taskStore } from "common/task/store";
+import { configStore } from "common/struct/config";
 
 export interface ModpackModLoader {
   id: string;
@@ -65,7 +66,7 @@ async function resolveModpack(
 
   const name = manifestJson.name;
   const mcVer = manifestJson.minecraft.version;
-  const mcDest = path.join(ephDefaultDotMinecraft, "versions", name);
+  const mcDest = path.join(configStore.downloadTarget, "versions", name);
 
   ensureDir(mcDest);
 
@@ -85,7 +86,7 @@ async function resolveModpack(
     name,
     ver: name,
     realVer: mcVer,
-    dir: ephDefaultDotMinecraft,
+    dir: configStore.downloadTarget,
     jvmArgs: defaultJvmArgs(),
     gameDirIsolation: true,
     safeLog4j: true,

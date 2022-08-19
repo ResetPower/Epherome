@@ -22,7 +22,7 @@ import {
   updateAccountToken,
 } from "common/struct/accounts";
 import { configStore, setConfig } from "common/struct/config";
-import { MdCheck, MdClear, MdCreate, MdDelete, MdEdit } from "react-icons/md";
+import { MdCheck, MdClear, MdCreate, MdDelete } from "react-icons/md";
 import { showOverlay } from "../overlay";
 import { useState } from "react";
 import { adapt, call, DefaultFn } from "common/utils";
@@ -30,10 +30,8 @@ import { t } from "../intl";
 import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
 import { useRef } from "react";
-import { downloadSkin } from "core/model/skin";
-import { BiExport, BiLogInCircle } from "react-icons/bi";
-import { commonLogger } from "common/loggers";
-import { Avatar, Body } from "eph/components/skin";
+import { BiLogInCircle } from "react-icons/bi";
+import { Avatar, Body, Cape } from "eph/components/skin";
 import { ipcRenderer } from "electron";
 import {
   authCode2AuthToken,
@@ -249,47 +247,16 @@ export function AccountGeneralFragment(props: {
 export function AccountSkinFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
-  const [exporting, setExporting] = useState(false);
-
   if (!adapt(props.current.mode, "mojang", "microsoft")) {
     return <p>{t("account.skin.notSupportedExcludeMojangMs")}</p>;
   }
 
   const uuid = props.current.uuid;
-  const handleExport = () => {
-    setExporting(true);
-    downloadSkin(uuid)
-      .then((target) => {
-        setExporting(false);
-        showOverlay({
-          message: t("exportedAt", target),
-        });
-      })
-      .catch((err) => {
-        commonLogger.warn("Error occurred downloading skin: " + err);
-        setExporting(false);
-        showOverlay({
-          message: t("internetNotAvailable"),
-        });
-      });
-  };
-  const handleEdit = () => {
-    showOverlay({
-      message: t("notSupportedYet"),
-    });
-  };
 
   return (
     <div className="flex justify-center space-x-9">
       <Body uuid={uuid} />
-      <div>
-        <Button disabled={exporting} onClick={handleExport}>
-          {exporting ? <Spinner indent /> : <BiExport />} {t("export")}
-        </Button>
-        <Button onClick={handleEdit}>
-          <MdEdit /> {t("edit")}
-        </Button>
-      </div>
+      <Cape uuid={uuid} />
     </div>
   );
 }

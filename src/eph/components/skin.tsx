@@ -3,7 +3,7 @@ import Image from "./Image";
 export function Avatar(props: { uuid: string }): JSX.Element {
   return (
     <Image
-      src={`https://mc-heads.net/avatar/${props.uuid}`}
+      src={`https://crafthead.net/avatar/${props.uuid}`}
       className="w-7 h-7"
       rounded
     />
@@ -12,10 +12,10 @@ export function Avatar(props: { uuid: string }): JSX.Element {
 
 export function Body(props: { uuid: string }): JSX.Element {
   return (
-    <Image
-      className="w-40"
-      src={`https://mc-heads.net/body/${props.uuid}`}
-      rounded
-    />
+    <Image src={`https://crafthead.net/armor/body/${props.uuid}`} rounded />
   );
+}
+
+export function Cape(props: { uuid: string }): JSX.Element {
+  return <Image src={`https://crafthead.net/cape/${props.uuid}`} rounded />;
 }

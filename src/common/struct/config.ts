@@ -71,6 +71,7 @@ export class ConfigStore {
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });
+    ensureDir(this.downloadTarget);
   }
   @action
   setConfig = (cb: (store: ConfigStore) => unknown, save = true): void => {

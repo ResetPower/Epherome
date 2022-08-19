@@ -28,13 +28,13 @@ import { MinecraftUrlUtil } from "core/url";
 import { defaultJvmArgs } from "common/struct/java";
 import { showOverlay } from "eph/overlay";
 import got from "got";
-import { ephDefaultDotMinecraft } from "common/utils/info";
 import { taskStore } from "common/task/store";
 import { historyStore } from "eph/renderer/history";
 import { adapt } from "common/utils";
 import { Task } from "common/task";
 import { observer } from "mobx-react-lite";
 import { Highlight, matchKeyword } from "eph/components/Highlight";
+import { configStore } from "common/struct/config";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;
@@ -82,7 +82,7 @@ export function DownloadingFragment(props: {
       .then(() => {
         createProfile({
           name,
-          dir: ephDefaultDotMinecraft,
+          dir: configStore.downloadTarget,
           ver: props.version.id,
           from: "download",
           jvmArgs: defaultJvmArgs(),

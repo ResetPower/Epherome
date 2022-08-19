@@ -12,7 +12,6 @@ import {
 } from "common/utils/files";
 import { coreLogger } from "common/loggers";
 import { MinecraftUrlUtil } from "core/url";
-import { ephDefaultDotMinecraft } from "common/utils/info";
 import { Task } from "common/task";
 import { taskStore } from "common/task/store";
 
@@ -25,7 +24,7 @@ export async function downloadMinecraft(
   const vid = dest ?? version.id;
   const urlUtil = MinecraftUrlUtil.fromDefault();
 
-  const versionDir = path.join(ephDefaultDotMinecraft, "versions", vid);
+  const versionDir = path.join(configStore.downloadTarget, "versions", vid);
   coreLogger.info(
     `Start downloading Minecraft ${version.id}${
       dest ? `(${dest})` : ""
@@ -45,13 +44,13 @@ export async function downloadMinecraft(
   // parse libraries
   const parsed: ClientJson = JSON.parse(data);
   const libraries = await analyzeLibrary(
-    ephDefaultDotMinecraft,
+    configStore.downloadTarget,
     parsed.libraries
   );
 
   // parse assets
   const assets = await analyzeAssets(
-    ephDefaultDotMinecraft,
+    configStore.downloadTarget,
     parsed.assetIndex,
     task.canceller
   );

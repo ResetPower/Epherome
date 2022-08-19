@@ -4,7 +4,6 @@ import got from "got";
 
 export interface EphUpdatableVersion {
   name: string;
-  log: string;
   need: boolean;
 }
 
@@ -12,7 +11,7 @@ export async function checkEphUpdate(): Promise<EphUpdatableVersion | null> {
   try {
     const resp = await got("https://api.epherome.com/version");
     const params: Omit<EphUpdatableVersion, "need"> = JSON.parse(resp.body);
-    const need = params.name !== `v${ephVersion}`;
+    const need = params.name !== ephVersion;
     coreLogger.info(
       `Fetched latest version: ${params.name}. Epherome ${
         need ? "isn't" : "is"

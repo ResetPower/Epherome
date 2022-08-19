@@ -37,5 +37,8 @@ export type KeyOfLanguageDefinition = keyof LanguageDefinition;
 
 // translator function
 export function t(key: KeyOfLanguageDefinition, ...args: string[]): string {
+  if (key === "exportedAt") {
+    console.log(format(intlStore.language?.definition[key] ?? "", ...args));
+  }
   return format(intlStore.language?.definition[key] ?? "", ...args);
 }
