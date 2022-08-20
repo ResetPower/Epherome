@@ -2,7 +2,7 @@
 
 [![build](https://github.com/ResetPower/Epherome/actions/workflows/build.yml/badge.svg)](https://github.com/ResetPower/Epherome/actions/workflows/build.yml)
 [![State-of-the-art Shitcode](https://img.shields.io/static/v1?label=State-of-the-art&message=Shitcode&color=7B5804)](https://github.com/trekhleb/state-of-the-art-shitcode)
-[![Discord](https://img.shields.io/discord/941245225588908044.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/jVvC7HfM6U)
+[![Discord](https://img.shields.io/discord/941245225588908044.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/ptPt44NPyR)
 
 Powerful Minecraft launcher
 
