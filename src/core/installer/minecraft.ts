@@ -69,7 +69,7 @@ export async function downloadMinecraft(
         ? []
         : [
             {
-              url: client.url,
+              url: urlUtil.clientJar(parsed),
               target: jarPath,
               size: client.size,
             },
