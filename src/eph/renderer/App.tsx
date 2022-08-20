@@ -97,7 +97,7 @@ export const EphAppBar = observer(
     return (
       <AppBar className={`${isTitleBarEph && "eph-drag"}`}>
         {isAtHome ? (
-          <Menu padding={3} items={popMenuItems}>
+          <Menu wrapperClassName="eph-no-drag" padding={3} items={popMenuItems}>
             {(open) => (
               <IconButton active={open}>
                 <MdMenu />

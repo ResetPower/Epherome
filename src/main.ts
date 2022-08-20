@@ -30,7 +30,6 @@ function createWindow() {
     icon: EpheromeLogo,
     title: "Epherome",
     frame: !isTitleBarEph,
-    transparent: isTitleBarEph,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
