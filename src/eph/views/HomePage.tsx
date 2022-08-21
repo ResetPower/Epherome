@@ -458,7 +458,9 @@ const HomePage = observer(() => {
                 variant="contained"
                 className="whitespace-nowrap"
               >
-                {homePageStore.isLaunching ? t("launching") : t("launch")}
+                {homePageStore.isLaunching
+                  ? homePageStore.launchingHelper
+                  : t("launch")}
               </Button>
             </div>
           </>
