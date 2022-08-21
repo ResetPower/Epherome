@@ -100,7 +100,7 @@ export const PersonalPanelShower = observer(() => {
       padding={3}
       className="p-3"
       opener={(open) => (
-        <IconButton className="flex" active={open}>
+        <IconButton active={open}>
           <PersonalHead />
         </IconButton>
       )}

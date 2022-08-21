@@ -1,17 +1,19 @@
 {
   "private": true,
   "name": "epherome",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Powerful Minecraft Launcher",
   "main": "dist/main.js",
   "scripts": {
     "build-native": "cd native && cargo-cp-artifact -nc ../dist/index.node -- cargo build --message-format=json-render-diagnostics",
+    "build-native-apple-darwin": "cd native && cargo-cp-artifact -nc ../dist/index.node -- cargo build --target aarch64-apple-darwin --message-format=json-render-diagnostics",
     "lint": "eslint ./src ./test --ext .js,.ts,.tsx --no-error-on-unmatched-pattern",
     "prettier": "prettier ./src ./test --write --no-error-on-unmatched-pattern",
     "electron": "webpack build --config ./scripts/webpack.main.js --env dev && electron . --remote-debugging-port=9222 --inspect=9223",
     "serve": "webpack serve --config ./scripts/webpack.renderer.js --env dev",
     "start": "concurrently --kill-others -n elect,serve npm:electron npm:serve",
     "prod": "webpack build --config ./scripts/webpack.main.js && webpack build --config ./scripts/webpack.renderer.js",
+    "prod-apple-darwin": "webpack build --config ./scripts/webpack.main.js --env arch=aarch64-apple-darwin && webpack build --config ./scripts/webpack.renderer.js",
     "make": "electron-builder"
   },
   "repository": {
@@ -46,15 +48,7 @@
     },
     "mac": {
       "artifactName": "Epherome-${version}-${arch}.${ext}",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ]
+      "target": "dmg"
     },
     "linux": {
       "target": [

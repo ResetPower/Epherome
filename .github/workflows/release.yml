@@ -39,16 +39,25 @@ jobs:
         run: npm run prod
       - name: Build Electron for Windows
         if: matrix.os == 'windows-latest'
-        run: npm run make -- --publish=never --windows
+        run: npm run make -- --windows
       - name: Build Electron for macOS
         if: matrix.os == 'macos-latest'
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-        run: npm run make -- --publish=never --macos
+        run: npm run make -- --macos --x64
+      - name: Build Webpack for Apple Silicon
+        if: matrix.os == 'macos-latest'
+        run: npm run prod-apple-darwin
+      - name: Build Electron for macOS Apple Silicon
+        if: matrix.os == 'macos-latest'
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+        run: npm run make -- --macos --arm64
       - name: Build Electron for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: npm run make -- --publish=never --linux
+        run: npm run make -- --linux
       - name: Upload Artifact
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v2
