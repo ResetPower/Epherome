@@ -1,4 +1,4 @@
-import { FloatingView, Hyperlink, IconButton } from "@resetpower/rcs";
+import { FloatingView, Hyperlink, IconButton, Spinner } from "@resetpower/rcs";
 import { DefaultFn } from "common/utils";
 import { historyStore } from "eph/renderer/history";
 import { observer } from "mobx-react-lite";
@@ -7,19 +7,29 @@ import { BsFillXDiamondFill } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import { EphUserInfo, personalStore } from "common/stores/personal";
 import { t } from "eph/intl";
+import { useState } from "react";
 
 const PersonalHead = observer((props: { lg?: boolean }) => {
+  const head = personalStore.head;
+  const dh = personalStore.getDefaultHead();
+  const [load, setLoad] = useState(false);
+
   if (personalStore.userInfo === null) {
     return <VscAccount />;
   }
-  const dh = personalStore.getDefaultHead();
 
   return (
-    <img
-      className={`${props.lg ? "w-14 h-14" : "w-8 h-8"} rounded-full`}
-      src={personalStore.head ?? dh}
-      onError={(ev) => (ev.currentTarget.src = dh)}
-    />
+    <>
+      {!load && <Spinner />}
+      <img
+        className={`${props.lg ? "w-14 h-14" : "w-8 h-8"} rounded-full ${
+          !load && "hidden"
+        }`}
+        src={head ?? dh}
+        onLoad={() => setLoad(true)}
+        onError={(ev) => (ev.currentTarget.src = dh)}
+      />
+    </>
   );
 });
 

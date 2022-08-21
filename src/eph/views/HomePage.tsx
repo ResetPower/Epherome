@@ -321,8 +321,8 @@ const HomePage = observer(() => {
         </div>
         <div className="flex-grow">
           {configStore.news && (
-            <div className="flex flex-col">
-              <p className="text-xl font-semibold">{t("news")}</p>
+            <div>
+              <p className="text-2xl font-semibold text-center">{t("news")}</p>
               {homePageStore.news === null ? (
                 <p>
                   ...
@@ -345,7 +345,6 @@ const HomePage = observer(() => {
                   ))}
                 </div>
               )}
-              <div className="flex-grow" />
               <div className="flex justify-end p-1 space-x-3 items-center">
                 <IconButton
                   className="w-7 h-7"
@@ -464,7 +463,14 @@ const HomePage = observer(() => {
             </div>
           </>
         ) : (
-          t("profile.notSelected")
+          <div
+            className="flex justify-end p-3 text-white"
+            style={{
+              textShadow: "0 0 2px black",
+            }}
+          >
+            {t("profile.notSelected")}
+          </div>
         )}
       </div>
     </div>

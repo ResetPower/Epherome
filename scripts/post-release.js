@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 function calculateHash(ext) {
-  const filename = `Epherome-${pkg.version}.${ext}`;
+  const filename = `Epherome-${pkg.version}${ext}`;
   const file = path.resolve(`package/${filename}`);
   try {
     const data = fs.readFileSync(file);
@@ -23,5 +23,7 @@ function calculateHash(ext) {
   } catch {}
 }
 
-// generate sha1
-["exe", "dmg", "tar.gz", "deb", "rpm", "snap"].forEach(calculateHash);
+// generate hash
+["-x64.dmg", "-arm64.dmg", ".exe", ".tar.gz", ".deb", ".rpm", ".snap"].forEach(
+  calculateHash
+);

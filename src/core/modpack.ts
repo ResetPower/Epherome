@@ -214,4 +214,7 @@ export async function exportModpack(
 
   // make zip
   await window.native.compressZip(temp, dest);
+
+  // do cleanup
+  await rmFolder(temp);
 }

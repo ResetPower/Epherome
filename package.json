@@ -45,7 +45,16 @@
       "unicode": true
     },
     "mac": {
-      "target": "dmg"
+      "artifactName": "Epherome-${version}-${arch}.${ext}",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
     "linux": {
       "target": [
