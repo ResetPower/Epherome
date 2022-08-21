@@ -31,7 +31,7 @@ import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
 import { useRef } from "react";
 import { BiLogInCircle } from "react-icons/bi";
-import { Avatar, Body, Cape } from "eph/components/skin";
+import { Avatar, Body } from "eph/components/skin";
 import { ipcRenderer } from "electron";
 import {
   authCode2AuthToken,
@@ -256,7 +256,6 @@ export function AccountSkinFragment(props: {
   return (
     <div className="flex justify-center space-x-9">
       <Body uuid={uuid} />
-      <Cape uuid={uuid} />
     </div>
   );
 }
@@ -295,7 +294,7 @@ const AccountsPage = observer(() => {
               {adapt(i.mode, "mojang", "microsoft") ? (
                 <Avatar uuid={i.uuid} />
               ) : (
-                <Avatar uuid="MHF_Steve" />
+                <Avatar uuid="Steve" />
               )}
               <p className="flex px-1 space-x-1">{i.name}</p>
             </ListItem>

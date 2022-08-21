@@ -1,9 +1,14 @@
 import Image from "./Image";
+import Steve from "../../assets/Steve.png";
 
 export function Avatar(props: { uuid: string }): JSX.Element {
   return (
     <Image
-      src={`https://crafthead.net/avatar/${props.uuid}`}
+      src={
+        props.uuid === "Steve"
+          ? Steve
+          : `https://crafatar.com/avatars/${props.uuid}`
+      }
       className="w-7 h-7"
       rounded
     />
@@ -12,10 +17,10 @@ export function Avatar(props: { uuid: string }): JSX.Element {
 
 export function Body(props: { uuid: string }): JSX.Element {
   return (
-    <Image src={`https://crafthead.net/armor/body/${props.uuid}`} rounded />
+    <Image
+      className="w-40"
+      src={`https://crafatar.com/renders/body/${props.uuid}`}
+      rounded
+    />
   );
-}
-
-export function Cape(props: { uuid: string }): JSX.Element {
-  return <Image src={`https://crafthead.net/cape/${props.uuid}`} rounded />;
 }
