@@ -40,6 +40,7 @@ import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { Canceller } from "common/task/cancel";
 import { BsServer } from "react-icons/bs";
+import ShadowText from "eph/components/ShadowText";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -439,8 +440,11 @@ const HomePage = observer(() => {
           </MetroCardProvider>
         </div>
         {profile && value !== null ? (
-          <>
-            <div className="flex items-center justify-end m-3">
+          <div>
+            {homePageStore.isLaunching && (
+              <ShadowText>{homePageStore.launchingHelper}</ShadowText>
+            )}
+            <div className="flex items-center justify-end mx-3 mb-3">
               <Select
                 value={value}
                 options={_.map(profiles, (i, id) => ({
@@ -452,27 +456,27 @@ const HomePage = observer(() => {
                 className="overflow-ellipsis"
                 placementTop
               />
-              <Button
-                onClick={() => homePageStore.launch(account, profile)}
-                disabled={homePageStore.isLaunching}
-                variant="contained"
-                className="whitespace-nowrap"
-              >
-                {homePageStore.isLaunching
-                  ? homePageStore.launchingHelper
-                  : t("launch")}
-              </Button>
+              {homePageStore.isLaunching ? (
+                <Button
+                  onClick={homePageStore.cancel}
+                  variant="contained"
+                  className="whitespace-nowrap"
+                >
+                  {t("cancel")}
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => homePageStore.launch(account, profile)}
+                  variant="contained"
+                  className="whitespace-nowrap"
+                >
+                  {t("launch")}
+                </Button>
+              )}
             </div>
-          </>
-        ) : (
-          <div
-            className="flex justify-end p-3 text-white"
-            style={{
-              textShadow: "0 0 2px black",
-            }}
-          >
-            {t("profile.notSelected")}
           </div>
+        ) : (
+          <ShadowText>{t("profile.notSelected")}</ShadowText>
         )}
       </div>
     </div>

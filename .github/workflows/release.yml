@@ -17,6 +17,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16"
+      - name: Install Apple Arch
+        uses: actions-rs/toolchain@v1
+        if: matrix.os == 'macos-latest'
+        with:
+          toolchain: stable
+          override: true
+          target: aarch64-apple-darwin
+          components: rustfmt, clippy
       - name: Cache node modules
         uses: actions/cache@v2
         env:
