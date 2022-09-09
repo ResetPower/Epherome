@@ -14,6 +14,7 @@ export function runMinecraft(
   let done = false;
   const raw = spawn(java, ["-Dfile.encoding=UTF-8", ...buff], {
     cwd: dir,
+    detached: true,
   });
   raw.stdout.setEncoding("utf8");
   raw.stderr.setEncoding("utf8");
