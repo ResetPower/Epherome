@@ -6,7 +6,12 @@ import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { ClientJsonArguments } from "./struct";
 import { isCompliant, osName } from "./rules";
 import { runMinecraft } from "./runner";
-import { ensureDir, downloadFile, parallelDownload } from "common/utils/files";
+import {
+  ensureDir,
+  downloadFile,
+  parallelDownload,
+  existsAndNotEmpty,
+} from "common/utils/files";
 import { adapt, DefaultFn } from "common/utils";
 import {
   isJava16Required,
@@ -72,7 +77,7 @@ export async function launchMinecraft(
   const setHelper = options.setHelper;
   const authlibInjectorPath = path.join(
     userDataPath,
-    "authlib-injector-1.1.35.jar"
+    "authlib-injector-1.2.1.jar"
   );
   const customResolution = profile.resolution;
 
@@ -137,7 +142,7 @@ export async function launchMinecraft(
   );
   ensureDir(nativeDir);
 
-  if (!fs.existsSync(clientJar) && parsed.inheritsFrom) {
+  if (!existsAndNotEmpty(clientJar) && parsed.inheritsFrom) {
     const inheritsFrom = parsed.inheritsFrom;
     clientJar = path.join(dir, "versions", inheritsFrom, `${inheritsFrom}.jar`);
   }
@@ -212,11 +217,13 @@ export async function launchMinecraft(
     ? path.join(dir, "versions", profile.ver)
     : dir;
 
+  const classpathSeparator = process.platform === "win32" ? ";" : ":";
+
   // === resolve arguments ===
   const argumentsMap = {
     // game args
     auth_player_name: account.name,
-    version_name: profile.ver,
+    version_name: parsed.inheritsFrom ?? profile.ver,
     auth_session: `token:${account.token}`,
     game_directory: gameDir,
     game_assets: assetsRoot,
@@ -233,7 +240,9 @@ export async function launchMinecraft(
     natives_directory: nativeDir,
     launcher_name: "Epherome",
     launcher_version: ephVersion,
-    classpath: cp.join(process.platform === "win32" ? ";" : ":"),
+    classpath: cp.join(classpathSeparator),
+    classpath_separator: classpathSeparator,
+    library_directory: path.join(gameDir, "libraries"),
     resolution_width: customResolution?.width,
     resolution_height: customResolution?.height,
   };
@@ -247,7 +256,7 @@ export async function launchMinecraft(
           return item;
         } else {
           coreLogger.warn(`key "${key}" not exist on arguments' map`);
-          return "undefined";
+          return undefined;
         }
       });
       buff.push(i);

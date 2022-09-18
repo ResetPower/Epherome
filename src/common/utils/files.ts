@@ -220,3 +220,7 @@ export async function fetchSize(
     return 1000000;
   }
 }
+
+export function existsAndNotEmpty(path: string) {
+  return fs.existsSync(path) && fs.statSync(path).size !== 0;
+}
