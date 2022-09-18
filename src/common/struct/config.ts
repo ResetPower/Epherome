@@ -68,6 +68,7 @@ export class ConfigStore {
   @observable downloadTarget: string = ephDefaultDotMinecraft;
   @observable rememberWindowSize = false;
   @observable windowSize: Dimension = {};
+  @observable newsTitleAmount = 2;
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });

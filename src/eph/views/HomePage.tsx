@@ -338,12 +338,14 @@ const HomePage = observer(() => {
                 </p>
               ) : (
                 <div className="eph-force-zh-cn">
-                  {homePageStore.news.slice(0, 2).map((val, index) => (
-                    <p
-                      key={index}
-                      dangerouslySetInnerHTML={{ __html: val.title }}
-                    />
-                  ))}
+                  {homePageStore.news
+                    .slice(0, configStore.newsTitleAmount)
+                    .map((val, index) => (
+                      <p
+                        key={index}
+                        dangerouslySetInnerHTML={{ __html: val.title }}
+                      />
+                    ))}
                 </div>
               )}
               <div className="flex justify-end p-1 space-x-3 items-center">

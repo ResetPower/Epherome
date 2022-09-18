@@ -310,6 +310,17 @@ export const SettingsGeneralFragment = observer(() => {
         >
           {t("settings.showNews")}
         </Checkbox>
+        <TextField
+          label="News Title Amount"
+          type="number"
+          value={configStore.newsTitleAmount.toString()}
+          onChange={(value) =>
+            setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
+          }
+          min={2}
+          max={20}
+          helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
+        />
         <div className="text-sm text-shallow">
           {intlStore.language?.name === "zh-cn" ? (
             <p>
