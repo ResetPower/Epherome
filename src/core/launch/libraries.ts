@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { isCompliant, equalOS } from "./rules";
 import { coreLogger } from "common/loggers";
@@ -14,11 +14,10 @@ import { calculateHash, downloadFile, fetchSize } from "common/utils/files";
 import { MinecraftUrlUtil } from "core/url";
 import { Canceller } from "common/task/cancel";
 
-function existsAsFileSync(filepath: string): boolean {
+async function existsAsFileSync(filepath: string): Promise<boolean> {
   return (
-    fs.existsSync(filepath) &&
-    fs.lstatSync(filepath).isFile() &&
-    fs.readFileSync(filepath).toString() !== ""
+    (await fs.lstat(filepath)).isFile() &&
+    (await fs.readFile(filepath)).toString() !== ""
   );
 }
 
@@ -48,7 +47,7 @@ export async function analyzeLibrary(
               const nativeObj = classifiers[native];
               const file = `${dir}/libraries/${nativeObj.path}`;
               let miss = false;
-              if (existsAsFileSync(file)) {
+              if (await existsAsFileSync(file)) {
                 if (
                   nativeObj.sha1 &&
                   nativeObj.sha1 !== calculateHash(file, "sha1")
@@ -76,7 +75,7 @@ export async function analyzeLibrary(
         const ar = downloads.artifact;
         const file = `${dir}/libraries/${ar.path}`;
         let miss = false;
-        if (existsAsFileSync(file)) {
+        if (await existsAsFileSync(file)) {
           if (ar.sha1 && ar.sha1 !== calculateHash(file, "sha1")) {
             miss = true;
           }
@@ -150,11 +149,11 @@ export async function analyzeAssets(
     `${assetIndex.id}.json`
   );
 
-  if (!fs.existsSync(assetIndexPath)) {
+  if (!(await existsAsFileSync(assetIndexPath))) {
     await downloadFile(assetIndex.url, assetIndexPath, canceller);
   }
   const parsedAssetIndex = JSON.parse(
-    fs.readFileSync(assetIndexPath).toString()
+    (await fs.readFile(assetIndexPath)).toString()
   );
   for (const k in parsedAssetIndex.objects) {
     // Never try to optimize here. parsedAssetIndex.objects is not iterable.
@@ -164,7 +163,7 @@ export async function analyzeAssets(
     const startHash = hash.slice(0, 2);
     const p = path.join(dir, "assets/objects", startHash, hash);
     let miss = false;
-    if (fs.existsSync(p)) {
+    if (await existsAsFileSync(p)) {
       if (hash && hash !== calculateHash(p, "sha1")) {
         miss = true;
       }
