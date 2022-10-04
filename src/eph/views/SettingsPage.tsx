@@ -35,8 +35,6 @@ import {
   MdFolderOpen,
   MdInfo,
   MdPalette,
-  MdRadioButtonChecked,
-  MdRadioButtonUnchecked,
   MdTune,
 } from "react-icons/md";
 import { checkEphUpdate } from "../renderer/updater";
@@ -62,6 +60,7 @@ import { adapt, apply } from "common/utils";
 import { openInBrowser, openInFinder } from "common/utils/open";
 import { updateTheme } from "..";
 import NewThemeView from "./NewThemeView";
+import RadioButton from "eph/components/RadioButton";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
   const href = "https://epherome.com/downloads";
@@ -124,16 +123,10 @@ export const JavaManagementSheet = observer(() => {
       <List className="overflow-y-auto flex-grow">
         {javas.map((value, index) => (
           <div className="flex items-center space-x-2" key={index}>
-            <div
-              className="text-pink-400 hover:text-pink-500 cursor-pointer"
+            <RadioButton
+              active={_.selected(javas) === value}
               onClick={() => setConfig(() => _.select(javas, value))}
-            >
-              {_.selected(javas) === value ? (
-                <MdRadioButtonChecked />
-              ) : (
-                <MdRadioButtonUnchecked />
-              )}
-            </div>
+            />
             <div className="flex flex-col flex-grow w-3/4">
               <div className="flex">
                 {editing === value.nanoid ? (
