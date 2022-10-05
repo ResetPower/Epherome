@@ -113,6 +113,7 @@ const jaJp: Language = {
       "同時にダウンロードできるファイルの数。",
     "settings.showNews": "お知らせを表示",
     "settings.autoCheckUpdate": "更新を自動的にチェック",
+    display: "表示",
     "java.executablePath": "Java 実行可能ファイルパス",
     "java.manage": "Java を管理",
     "java.invalidPath": "間違ったパス",

@@ -116,3 +116,7 @@ export function match<T, V>(value: T, ...cases: [T, V][]): V | undefined {
     }
   }
 }
+
+export function randomNumberInClosedInterval(min: number, max: number): number {
+  return Math.round(Math.random() * (max - min)) + min;
+}

@@ -35,7 +35,7 @@ import { fetchNews, NewItem } from "../../common/struct/news";
 import { JavaManagementSheet } from "./SettingsPage";
 import { ObjectWrapper } from "common/utils/object";
 import { historyStore } from "eph/renderer/history";
-import { apply, DefaultFn } from "common/utils";
+import { apply, DefaultFn, randomNumberInClosedInterval } from "common/utils";
 import { MinecraftAccount } from "common/struct/accounts";
 import { MinecraftProfile } from "common/struct/profiles";
 import { Canceller } from "common/task/cancel";
@@ -110,15 +110,25 @@ export class HomePageStore {
   };
   @action
   reloadHitokoto = (): void => {
-    this.hitokoto = { content: "...", from: "..." };
-    fetchHitokoto().then((hk) =>
-      runInAction(() => {
-        this.hitokoto = hk ?? {
-          content: t("internetNotAvailable"),
-          from: "",
-        };
-      })
-    );
+    if (configStore.hitokoto === "custom") {
+      this.hitokoto =
+        configStore.customHitokotoList[
+          randomNumberInClosedInterval(
+            0,
+            configStore.customHitokotoList.length - 1
+          )
+        ];
+    } else {
+      this.hitokoto = { content: "...", from: "..." };
+      fetchHitokoto().then((hk) =>
+        runInAction(() => {
+          this.hitokoto = hk ?? {
+            content: t("internetNotAvailable"),
+            from: "",
+          };
+        })
+      );
+    }
   };
   @action
   reloadNews = (): void => {

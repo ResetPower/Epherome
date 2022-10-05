@@ -35,6 +35,7 @@ import {
   MdFolderOpen,
   MdInfo,
   MdPalette,
+  MdRemoveCircle,
   MdTune,
 } from "react-icons/md";
 import { checkEphUpdate } from "../renderer/updater";
@@ -345,40 +346,7 @@ export const SettingsGeneralFragment = observer(() => {
       >
         {t("settings.autoCheckUpdate")}
       </Checkbox>
-      <div>
-        <Checkbox
-          checked={configStore.hitokoto}
-          onChange={(checked) => setConfig((cfg) => (cfg.hitokoto = checked))}
-        >
-          {t("settings.hitokoto")}
-        </Checkbox>
-        <div className="text-sm text-shallow">
-          {intlStore.language?.name === "zh-cn" ? (
-            <p>
-              在您的首页显示一条由{" "}
-              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
-                Hitokoto
-              </Hyperlink>{" "}
-              提供的随机文本
-            </p>
-          ) : intlStore.language?.name === "ja-jp" ? (
-            <p>
-              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
-                Hitokoto
-              </Hyperlink>{" "}
-              が提供するランダムなテキストをホームページに表示します。
-            </p>
-          ) : (
-            <p>
-              Display a random line of text provided by{" "}
-              <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
-                Hitokoto
-              </Hyperlink>{" "}
-              on your homepage.
-            </p>
-          )}
-        </div>
-      </div>
+
       <div className="flex my-3 items-center space-x-3">
         <Button
           variant="contained"
@@ -388,6 +356,99 @@ export const SettingsGeneralFragment = observer(() => {
           {t("epheromeUpdate.check")}
         </Button>
         <p>{result !== null ? result : <Spinner />}</p>
+      </div>
+    </div>
+  );
+});
+
+export const SettingsDisplayFragment = observer(() => {
+  return (
+    <div className="space-y-2">
+      <p className="text-xl font-semibold">{t("settings.hitokoto")}</p>
+      <div className="flex">
+        <RadioButton
+          active={configStore.hitokoto === false}
+          onClick={() => setConfig((cfg) => (cfg.hitokoto = false))}
+        />
+        Disable
+      </div>
+      <div className="flex">
+        <RadioButton
+          active={configStore.hitokoto === true}
+          onClick={() => setConfig((cfg) => (cfg.hitokoto = true))}
+        />
+        {t("settings.hitokoto")}
+      </div>
+      <div className="text-sm text-shallow">
+        {intlStore.language?.name === "zh-cn" ? (
+          <p>
+            在您的首页显示一条由{" "}
+            <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+              Hitokoto
+            </Hyperlink>{" "}
+            提供的随机文本 (中文简体)
+          </p>
+        ) : intlStore.language?.name === "ja-jp" ? (
+          <p>
+            <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+              Hitokoto
+            </Hyperlink>{" "}
+            が提供するランダムなテキストをホームページに表示します。 (日本語)
+          </p>
+        ) : (
+          <p>
+            Display a random line of text provided by{" "}
+            <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
+              Hitokoto
+            </Hyperlink>{" "}
+            on your homepage. (English)
+          </p>
+        )}
+      </div>
+      <div className="flex">
+        <RadioButton
+          active={configStore.hitokoto === "custom"}
+          onClick={() => setConfig((cfg) => (cfg.hitokoto = "custom"))}
+        />
+        Custom
+      </div>
+      <div className="py-1">
+        {configStore.customHitokotoList.map((value, index) => (
+          <div className="flex py-1 space-x-1" key={index}>
+            <TextField
+              value={value.content}
+              onChange={(v) => setConfig(() => (value.content = v))}
+              className="flex-grow"
+            />
+            <TextField
+              value={value.from}
+              onChange={(v) => setConfig(() => (value.from = v))}
+            />
+            <IconButton
+              onClick={() =>
+                setConfig(
+                  (cfg) =>
+                    (cfg.customHitokotoList = cfg.customHitokotoList.filter(
+                      (hk) => hk !== value
+                    ))
+                )
+              }
+              className="text-danger"
+            >
+              <MdRemoveCircle />
+            </IconButton>
+          </div>
+        ))}
+        <Button
+          onClick={() =>
+            setConfig((cfg) =>
+              cfg.customHitokotoList.push({ content: "Content", from: "From" })
+            )
+          }
+          className="w-full"
+        >
+          <MdAdd /> {t("add")}
+        </Button>
       </div>
     </div>
   );
@@ -627,8 +688,12 @@ export const SettingsAboutFragment = (): JSX.Element => (
       </div>
     </Card>
     <Card>
-      <Info className="capitalize" title={t("os")}>
-        {os.platform()} {os.arch()} {os.release()}
+      <Info title={t("os")}>
+        <div className="flex space-x-1">
+          <p className="capitalize">{os.platform()}</p>
+          <p>{os.arch()}</p>
+          <p>{os.release()}</p>
+        </div>
       </Info>
       <Info title={t("versionOfSomething", "Electron")}>
         {process.versions.electron}
@@ -685,20 +750,25 @@ const SettingsPage = observer(() => {
           {t("general")}
         </TabBarItem>
         <TabBarItem value={1}>
+          <MdTune />
+          {t("display")}
+        </TabBarItem>
+        <TabBarItem value={2}>
           <MdPalette />
           {t("appearance")}
         </TabBarItem>
-        <TabBarItem value={2}>
+        <TabBarItem value={3}>
           <MdDownload />
           {t("download")}
         </TabBarItem>
-        <TabBarItem value={3}>
+        <TabBarItem value={4}>
           <MdInfo />
           {t("about")}
         </TabBarItem>
       </TabBar>
       <TabBody className="overflow-y-auto">
         <SettingsGeneralFragment />
+        <SettingsDisplayFragment />
         <SettingsAppearanceFragment />
         <SettingsDownloadFragment />
         <SettingsAboutFragment />

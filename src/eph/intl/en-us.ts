@@ -112,6 +112,7 @@ const enUs: Language = {
       "The number of files that can be downloaded at the same time.",
     "settings.showNews": "Show News",
     "settings.autoCheckUpdate": "Automatically check for updates",
+    display: "Display",
     "java.executablePath": "Java Executable Path",
     "java.manage": "Manage Java",
     "java.invalidPath": "Invalid Path",

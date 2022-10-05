@@ -77,7 +77,7 @@ const ruRu: Language = {
     "profile.gameDirIsolation.description":
       "Для каждой версии игры будет использоваться разное расположение.",
     "profile.showEpherome.description":
-      'Отображение «Epherome» в левом нижнем углу на главной странице Minecraft.',
+      "Отображение «Epherome» в левом нижнем углу на главной странице Minecraft.",
     "profile.install": "Установить",
     "profile.installing": "Установка",
     "profile.installForMinecraft": "Установка для Minecraft {0}",
@@ -85,17 +85,18 @@ const ruRu: Language = {
     "profile.installerAdaptToSomething": "{1} для Minecraft {0}",
     "profile.noInstallerAdaptToSomething": "Не найдено {1} для Minecraft {0}",
     "profile.canOnlyInstallOnVanilla":
-      '«Установка» доступна только для ванильного Minecraft.',
+      "«Установка» доступна только для ванильного Minecraft.",
     "profile.safeLog4j": "Безопасный Log4J",
     "profile.safeLog4j.description":
-      'Включите «formatMsgNoLookups», чтобы предотвратить проблемы с Log4J.',
+      "Включите «formatMsgNoLookups», чтобы предотвратить проблемы с Log4J.",
     "profile.exportModpack": "Экспорт модпака",
     "profile.gameOptionsPath": "Путь к параметрам игры",
     "profile.resourceType.resourcePack": "Набор текстур",
     "profile.resourceType.shaderPack": "Набор шейдеров",
     "settings.epheromePath": "Путь к Epherome",
     "settings.officialSite": "Официальный сайт",
-    "settings.openSourceSoftware": "Программное обеспечение с открытым исходным кодом",
+    "settings.openSourceSoftware":
+      "Программное обеспечение с открытым исходным кодом",
     "settings.downloadProvider": "Поставщик услуг скачивания",
     "settings.downloadProvider.official": "Официальный",
     "settings.downloadConcurrency": "Параллельное скачивание",
@@ -112,6 +113,7 @@ const ruRu: Language = {
       "Количество файлов, которые можно скачать одновременно.",
     "settings.showNews": "Показывать новости",
     "settings.autoCheckUpdate": "Автопроверка обновлений",
+    display: "Отображать",
     "java.executablePath": "Путь к исполняемому файлу Java",
     "java.manage": "Управление Java",
     "java.invalidPath": "Неверный путь",
@@ -200,8 +202,7 @@ const ruRu: Language = {
       "Интернет для вас отличается, невозможно подключиться к Интернету.",
     errorOccurred: "Возникла ошибка",
     notSupportedYet: "К сожалению, эта функция пока не поддерживается.",
-    confirmRemoving:
-      "Уверены что хотите удалить? Операция необратима.",
+    confirmRemoving: "Уверены что хотите удалить? Операция необратима.",
     continueAnyway: "Продолжить в любом случае",
     moveToTrash: "Переместить в корзину",
     confirmMoveSomethingToTrash:

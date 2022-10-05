@@ -98,6 +98,7 @@ export interface LanguageDefinition {
   "settings.downloadCurrency.description": string;
   "settings.showNews": string;
   "settings.autoCheckUpdate": string;
+  display: string;
   "java.executablePath": string;
   "java.manage": string;
   "java.invalidPath": string;

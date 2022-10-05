@@ -17,6 +17,7 @@ import fs from "fs";
 import { ensureDir } from "common/utils/files";
 import { RCSTheme } from "@resetpower/rcs";
 import { MinecraftServer } from "./server";
+import { Hitokoto } from "./hitokoto";
 
 export type TitleBarStyle = "os" | "eph";
 
@@ -55,7 +56,8 @@ export class ConfigStore {
   @observable themeFollowOs = true;
   @observable language = getSystemPreferredLanguage();
   @observable news = true;
-  @observable hitokoto = false;
+  @observable hitokoto: boolean | "custom" = false;
+  @observable customHitokotoList: Hitokoto[] = [];
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
   @observable developerMode = false;

@@ -105,6 +105,7 @@ const zhCn: Language = {
     "settings.downloadCurrency.description": "可同时下载的最大文件数量。",
     "settings.showNews": "显示新闻",
     "settings.autoCheckUpdate": "自动检查更新",
+    display: "显示",
     "java.executablePath": "Java 可执行文件路径",
     "java.manage": "管理 Java",
     "java.invalidPath": "路径不可用",
