@@ -290,7 +290,7 @@ const HomePage = observer(() => {
         style={{
           backdropFilter: "blur(10px)",
         }}
-        className={`bg-gray-200 dark:bg-slate-700 bg-opacity-70 dark:bg-opacity-70 w-1/3 p-6 flex flex-col ${
+        className={`bg-gray-200 dark:bg-slate-700 bg-opacity-70 dark:bg-opacity-70 w-1/3 p-6 flex flex-col overflow-auto ${
           configStore.enableBg && "slideInLeft"
         }`}
       >

@@ -5,6 +5,7 @@ import jaJp from "./ja-jp";
 import { LanguageDefinition } from "./definition";
 import zhCn from "./zh-cn";
 import { action, makeObservable, observable } from "mobx";
+import ruRu from "./ru-ru";
 
 export interface Language {
   name: string; // eg `en-us`
@@ -29,7 +30,7 @@ export class IntlStore {
 
 // the only instance of IntlStore
 export const intlStore = new IntlStore(
-  [enUs, jaJp, zhCn],
+  [enUs, jaJp, zhCn, ruRu],
   configStore.language
 );
 
