@@ -244,6 +244,7 @@ const ruRu: Language = {
     "profiles.searchVersion": "Поиск",
     serverControl: "Управление сервером",
     "server.removing": "Удалить сервер",
+    marketplace: "Рынок",
   },
 };
 

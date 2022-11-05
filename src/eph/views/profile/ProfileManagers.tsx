@@ -31,6 +31,7 @@ import path from "path";
 import { _ } from "common/utils/arrays";
 import { configStore } from "common/struct/config";
 import { Highlight, matchKeyword } from "eph/components/Highlight";
+import { AiFillShopping } from "react-icons/ai";
 
 export function showMoveToTrashAlert(filepath: string): Promise<void> {
   return new Promise((resolve) => {
@@ -131,6 +132,12 @@ export function ProfileGeneralFragment({
       <div className="flex">
         <Button variant="contained" onClick={handleGoToInstall}>
           <VscPackage /> {t("profile.install")}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => historyStore.push("marketplace")}
+        >
+          <AiFillShopping /> {t("marketplace")}
         </Button>
         <Button onClick={handleExport}>
           <BiExport /> {t("profile.exportModpack")}

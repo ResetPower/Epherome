@@ -219,4 +219,5 @@ export interface LanguageDefinition {
   "profiles.dirUnavailable": string;
   serverControl: string;
   "server.removing": string;
+  marketplace: string;
 }

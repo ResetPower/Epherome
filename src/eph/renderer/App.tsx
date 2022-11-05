@@ -39,6 +39,7 @@ import { TaskPanelShower } from "eph/components/TaskPanel";
 import { PersonalPanelShower } from "eph/components/PersonalPanel";
 import ServerControlPage from "eph/views/ServerControlPage";
 import { personalStore } from "common/stores/personal";
+import Marketplace from "eph/views/Marketplace";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -222,6 +223,8 @@ export function RouterView({
           <PersonalCenterPage />
         ) : pathname === "serverControl" ? (
           <ServerControlPage />
+        ) : pathname === "marketplace" ? (
+          <Marketplace />
         ) : (
           <></>
         )}

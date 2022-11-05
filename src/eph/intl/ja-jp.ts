@@ -246,6 +246,7 @@ const jaJp: Language = {
     "profiles.searchVersion": "探す",
     serverControl: "サーバー制御",
     "server.removing": "サーバーを削除",
+    marketplace: "マーケット",
   },
 };
 

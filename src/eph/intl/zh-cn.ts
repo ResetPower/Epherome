@@ -231,6 +231,7 @@ const zhCn: Language = {
     "profiles.searchVersion": "检索",
     serverControl: "服务器控制",
     "server.removing": "移除服务器",
+    marketplace: "资源广场",
   },
 };
 

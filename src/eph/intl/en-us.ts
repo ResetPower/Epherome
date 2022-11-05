@@ -244,6 +244,7 @@ const enUs: Language = {
     "profiles.searchVersion": "Search",
     serverControl: "Server Control",
     "server.removing": "Remove Server",
+    marketplace: "Marketplace",
   },
 };
 

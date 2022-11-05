@@ -297,49 +297,6 @@ export const SettingsGeneralFragment = observer(() => {
       >
         {t("settings.devMode")}
       </Checkbox>
-      <div>
-        <Checkbox
-          checked={configStore.news}
-          onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
-        >
-          {t("settings.showNews")}
-        </Checkbox>
-        <TextField
-          label="News Title Amount"
-          type="number"
-          value={configStore.newsTitleAmount.toString()}
-          onChange={(value) =>
-            setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
-          }
-          min={2}
-          max={20}
-          helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
-        />
-        <div className="text-sm text-shallow">
-          {intlStore.language?.name === "zh-cn" ? (
-            <p>
-              来自{" "}
-              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                MCBBS
-              </Hyperlink>
-            </p>
-          ) : intlStore.language?.name === "ja-jp" ? (
-            <p>
-              出典{" "}
-              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                MCBBS
-              </Hyperlink>
-            </p>
-          ) : (
-            <p>
-              From{" "}
-              <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                MCBBS
-              </Hyperlink>
-            </p>
-          )}
-        </div>
-      </div>
       <Checkbox
         checked={configStore.checkUpdate}
         onChange={(checked) => setConfig((cfg) => (cfg.checkUpdate = checked))}
@@ -364,6 +321,48 @@ export const SettingsGeneralFragment = observer(() => {
 export const SettingsDisplayFragment = observer(() => {
   return (
     <div className="space-y-2">
+        <p className="text-xl font-semibold">News</p>
+            <Checkbox
+                checked={configStore.news}
+                onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
+                >
+                {t("settings.showNews")}
+            </Checkbox>
+            <TextField
+                label="News Title Amount"
+                type="number"
+                value={configStore.newsTitleAmount.toString()}
+                onChange={(value) =>
+                setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
+            }
+                min={2}
+                max={20}
+                helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
+            />
+            <div className="text-sm text-shallow">
+                {intlStore.language?.name === "zh-cn" ? (
+                        <p>
+                            来自{" "}
+                            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                                MCBBS
+                            </Hyperlink>
+                        </p>
+                        ) : intlStore.language?.name === "ja-jp" ? (
+                                <p>
+                                    出典{" "}
+                                    <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                                        MCBBS
+                                    </Hyperlink>
+                                </p>
+                                ) : (
+                                        <p>
+                                            From{" "}
+                                            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+                                                MCBBS
+                                            </Hyperlink>
+                                        </p>
+                                        )}
+            </div>
       <p className="text-xl font-semibold">{t("settings.hitokoto")}</p>
       <div className="flex">
         <RadioButton
