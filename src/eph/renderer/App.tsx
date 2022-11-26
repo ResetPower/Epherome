@@ -13,6 +13,7 @@ import {
   MdMenu,
   MdRefresh,
   MdSettings,
+  MdStore,
   MdViewCarousel,
 } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
@@ -28,7 +29,13 @@ import { historyStore } from "./history";
 import { observer } from "mobx-react-lite";
 import { GlobalOverlay } from "eph/overlay";
 import JavaInstallPage from "eph/views/JavaInstallPage";
-import { IconButton, AppBar, Menu, AppBarTitle } from "@resetpower/rcs";
+import {
+  IconButton,
+  AppBar,
+  Menu,
+  AppBarTitle,
+  MenuItem,
+} from "@resetpower/rcs";
 import ModpackExportPage from "eph/views/ModpackExportPage";
 import { checkEphUpdate } from "./updater";
 import ExtensionStore from "eph/views/ExtensionStore";
@@ -40,6 +47,7 @@ import { PersonalPanelShower } from "eph/components/PersonalPanel";
 import ServerControlPage from "eph/views/ServerControlPage";
 import { personalStore } from "common/stores/personal";
 import Marketplace from "eph/views/Marketplace";
+import { adapt } from "common/utils";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -54,37 +62,21 @@ export const EphAppBar = observer(
     const title = t(props.pathname);
     const isAtHome = props.pathname === "home";
 
-    const popMenuItems = [
-      {
-        icon: <MdAccountCircle />,
-        text: t("accounts"),
-        action: () => historyStore.push("accounts"),
-      },
-      {
-        icon: <MdGamepad />,
-        text: t("profiles"),
-        action: () => historyStore.push("profiles"),
-      },
-      {
-        icon: <MdViewCarousel />,
-        text: t("processes"),
-        action: () => historyStore.push("processes"),
-      },
-      {
-        icon: <MdApps />,
-        text: t("extensions"),
-        action: () => historyStore.push("extensions"),
-      },
-      {
-        icon: <BsServer />,
-        text: t("serverControl"),
-        action: () => historyStore.push("serverControl"),
-      },
-      {
-        icon: <MdSettings />,
-        text: t("settings"),
-        action: () => historyStore.push("settings"),
-      },
+    const popMenuItems: MenuItem[] = [
+      ...Object.entries({
+        accounts: <MdAccountCircle />,
+        profiles: <MdGamepad />,
+        processes: <MdViewCarousel />,
+        extensions: <MdApps />,
+        marketplace: <MdStore />,
+        serverControl: <BsServer />,
+        settings: <MdSettings />,
+      }).map((value) => ({
+        icon: value[1],
+        text: t(value[0] as KeyOfLanguageDefinition),
+        action: () => historyStore.push(value[0] as KeyOfLanguageDefinition),
+        active: historyStore.current === value[0],
+      })),
       {
         icon: <BsPersonCircle />,
         text: t("ephPersonalCenter"),
@@ -92,6 +84,7 @@ export const EphAppBar = observer(
           personalStore.userInfo
             ? historyStore.push("ephPersonalCenter")
             : historyStore.push("ephLogin"),
+        active: adapt(historyStore.current, "ephPersonalCenter", "ephLogin"),
       },
     ];
 

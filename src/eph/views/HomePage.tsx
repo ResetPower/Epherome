@@ -19,10 +19,12 @@ import { fetchHitokoto, Hitokoto } from "common/struct/hitokoto";
 import {
   MdAccountCircle,
   MdApps,
+  MdBugReport,
   MdGamepad,
   MdMoreVert,
   MdRefresh,
   MdSettings,
+  MdStore,
   MdViewCarousel,
 } from "react-icons/md";
 import { showOverlay } from "../overlay";
@@ -380,6 +382,17 @@ const HomePage = observer(() => {
               </div>
             </div>
           )}
+        </div>
+        <div className="flex">
+          <Button
+            className="flex-grow text-center"
+            onClick={() => historyStore.push("marketplace")}
+          >
+            <MdStore /> {t("marketplace")}
+          </Button>
+          <Button className="flex-grow text-center">
+            <MdBugReport /> Bug Report
+          </Button>
         </div>
         <div className="text-contrast flex items-center">
           <BadgeButton
