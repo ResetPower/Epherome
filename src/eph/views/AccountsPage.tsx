@@ -19,7 +19,6 @@ import {
   CreateAccountImplResult,
   MinecraftAccount,
   removeAccount,
-  updateAccountToken,
 } from "common/struct/accounts";
 import { configStore, setConfig } from "common/struct/config";
 import { MdCheck, MdClear, MdCreate, MdDelete } from "react-icons/md";
@@ -32,12 +31,7 @@ import { observer } from "mobx-react-lite";
 import { useRef } from "react";
 import { BiLogInCircle } from "react-icons/bi";
 import { Avatar, Body } from "eph/components/skin";
-import { ipcRenderer } from "electron";
-import {
-  authCode2AuthToken,
-  authToken2MinecraftTokenDirectly,
-  validateMicrosoft,
-} from "core/auth/microsoft";
+import { validateMicrosoft } from "core/auth/microsoft";
 import { GiSpanner } from "react-icons/gi";
 
 export function CreateAccountFragment(props: {
@@ -133,7 +127,9 @@ export function CreateAccountFragment(props: {
 export function AccountGeneralFragment(props: {
   current: MinecraftAccount;
 }): JSX.Element {
-  const [stat, setStat] = useState<boolean | "err" | "succ">(false);
+  const [stat, setStat] = useState<boolean | "err" | "msAccNoMc" | "succ">(
+    false
+  );
   const [ctaResult, setCtaResult] = useState<boolean | null>(null);
   const handleRemove = (selected: MinecraftAccount) =>
     showOverlay({
@@ -148,36 +144,19 @@ export function AccountGeneralFragment(props: {
   const handleLoginAgain = () => {
     if (props.current.mode === "microsoft") {
       setStat(true);
-      ipcRenderer.invoke("ms-auth").then(async (result) => {
-        let code = "";
-        const split = result.split("&");
-        for (const i of split) {
-          const j = i.split("=");
-          if (j[0] === "code") {
-            code = j[1];
-          }
-        }
-        if (code) {
-          const authTokenResult = await authCode2AuthToken(code);
-          const accessToken = authTokenResult.access_token;
-          const refreshToken = authTokenResult.refresh_token;
-          if (accessToken && refreshToken) {
-            const mcTokenResult = await authToken2MinecraftTokenDirectly(
-              accessToken
-            );
-            if (mcTokenResult.token) {
-              updateAccountToken(
-                props.current,
-                mcTokenResult.token,
-                authTokenResult.refresh_token
-              );
-              setStat("succ");
-              return;
+      createAccount("microsoft", "", "", "", props.current).then(
+        (value: CreateAccountImplResult) => {
+          if (value.success) {
+            setStat("succ");
+          } else {
+            if (value.message === "msAccNoMinecraft") {
+              setStat("msAccNoMc");
+            } else {
+              setStat("err");
             }
           }
-          setStat("err");
         }
-      });
+      );
     }
   };
 

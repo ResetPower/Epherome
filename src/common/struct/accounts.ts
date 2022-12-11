@@ -37,7 +37,8 @@ export async function createAccount(
   mode: string,
   username: string,
   password: string,
-  authserver: string
+  authserver: string,
+  replace?: MinecraftAccount
 ): Promise<CreateAccountImplResult> {
   const unsuccessfulResult: CreateAccountImplResult = { success: false };
   const successfulResult: CreateAccountImplResult = { success: true };
@@ -98,14 +99,26 @@ export async function createAccount(
       if (prof.error || !uuid || !name) {
         throw new Error("Unable to get Minecraft profile");
       } else {
-        appendAccount({
+        const accountProperties: MinecraftAccount = {
           email: username,
           name,
           uuid,
           token: minecraftToken,
           refreshToken,
           mode: "microsoft",
-        });
+        };
+        if (replace) {
+          setConfig((cfg) =>
+            cfg.accounts.forEach((value) => {
+              if (value === replace) {
+                Object.assign(value, accountProperties);
+              }
+            })
+          );
+          commonLogger.info(`Updated account access token`);
+        } else {
+          appendAccount(accountProperties);
+        }
         return successfulResult;
       }
     } else {
