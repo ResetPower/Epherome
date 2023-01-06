@@ -3,7 +3,6 @@ import { nanoid } from "nanoid";
 import fs from "fs";
 import path from "path";
 import { MinecraftProfile } from "common/struct/profiles";
-import { defaultJvmArgs } from "common/struct/java";
 import { copyFolder, ensureDir, rmFolder } from "common/utils/files";
 import { downloadMinecraft } from "./installer/minecraft";
 import { MinecraftUrlUtil } from "./url";
@@ -15,6 +14,8 @@ import { ClientJson } from "./launch/struct";
 import { Task } from "common/task";
 import { taskStore } from "common/task/store";
 import { configStore } from "common/struct/config";
+import { defaultJvmArgs } from "./java";
+import { compressZip, extractZip } from "./zip";
 
 export interface ModpackModLoader {
   id: string;
@@ -134,7 +135,7 @@ export async function importModpack(
   ensureDir(destination);
   task.hashMap.put("helper", "Unzipping");
   task.signal();
-  await window.native.extractZip(filename, destination);
+  await extractZip(filename, destination);
   const manifest = path.join(destination, "manifest.json");
   const bbsMeta = path.join(destination, "mcbbs.packmeta");
   if (!fs.existsSync(manifest) || !fs.existsSync(bbsMeta)) {
@@ -213,7 +214,7 @@ export async function exportModpack(
   copyFolder(realGameDir, path.join(temp, "overrides"), noGoodList);
 
   // make zip
-  await window.native.compressZip(temp, dest);
+  await compressZip(temp, dest);
 
   // do cleanup
   await rmFolder(temp);

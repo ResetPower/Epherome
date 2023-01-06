@@ -25,7 +25,6 @@ import { t } from "../intl";
 import { MdClose, MdFileDownload, MdGamepad } from "react-icons/md";
 import { downloadMinecraft } from "core/installer/minecraft";
 import { MinecraftUrlUtil } from "core/url";
-import { defaultJvmArgs } from "common/struct/java";
 import { showOverlay } from "eph/overlay";
 import got from "got";
 import { taskStore } from "common/task/store";
@@ -35,6 +34,7 @@ import { Task } from "common/task";
 import { observer } from "mobx-react-lite";
 import { Highlight, matchKeyword } from "eph/components/Highlight";
 import { configStore } from "common/struct/config";
+import { defaultJvmArgs } from "core/java";
 
 export function DownloadingFragment(props: {
   version: MinecraftVersion;

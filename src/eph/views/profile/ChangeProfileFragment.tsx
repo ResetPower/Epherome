@@ -7,13 +7,13 @@ import {
   TextField,
 } from "@resetpower/rcs";
 import { configStore } from "common/struct/config";
-import { defaultJvmArgs } from "common/struct/java";
 import {
   createProfile,
   editProfile,
   MinecraftProfile,
 } from "common/struct/profiles";
 import { call, DefaultFn } from "common/utils";
+import { defaultJvmArgs } from "core/java";
 import { ipcRenderer } from "electron";
 import { t } from "eph/intl";
 import { useCallback, useEffect, useRef, useState } from "react";

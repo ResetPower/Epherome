@@ -22,9 +22,6 @@ window.addEventListener("error", (event) => {
   );
 });
 
-// To see if Rust addon works well.
-console.log(window.native.hello());
-
 // load theme before splash
 const manager = new ThemeManager(
   () => configStore.themeFollowOs,

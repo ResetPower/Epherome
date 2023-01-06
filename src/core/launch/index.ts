@@ -26,11 +26,12 @@ import { configStore } from "common/struct/config";
 import { MinecraftDownloadProvider, MinecraftUrlUtil } from "core/url";
 import { parseJson } from "./parser";
 import { coreLogger } from "common/loggers";
-import { parseJvmArgs } from "common/struct/java";
 import { Process } from "common/stores/process";
 import { refreshMicrosoft, validateMicrosoft } from "core/auth/microsoft";
 import { authenticate, refresh, validate } from "core/auth/yggdrasil";
 import { Canceller } from "common/task/cancel";
+import { parseJvmArgs } from "core/java";
+import { extractZip } from "core/zip";
 
 export type LaunchOnDone = (process: Process | null) => void;
 
@@ -210,7 +211,7 @@ export async function launchMinecraft(
   // unzip native libraries
   for (const i of analyzedLibrary.natives) {
     // 借助 Rust 神力解压，法力无边。
-    await window.native.extractZip(i, nativeDir);
+    await extractZip(i, nativeDir);
   }
 
   const gameDir = profile.gameDirIsolation

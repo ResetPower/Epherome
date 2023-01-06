@@ -62,6 +62,8 @@ import { openInBrowser, openInFinder } from "common/utils/open";
 import { updateTheme } from "..";
 import NewThemeView from "./NewThemeView";
 import RadioButton from "eph/components/RadioButton";
+import { checkJava } from "core/java";
+import { findJavaHome, parseJavaExecutablePath } from "core/java/finder";
 
 export function UpdateAvailableDialog(props: { version: string }): JSX.Element {
   const href = "https://epherome.com/downloads";
@@ -95,11 +97,11 @@ export const JavaManagementSheet = observer(() => {
     }
     return false;
   };
-  const handleAddJava = (value?: string, save = true) => {
+  const handleAddJava = async (value?: string, save = true) => {
     try {
-      const val = window.native.findJavaExecutable(value ?? newJavaPath);
+      const val = parseJavaExecutablePath(value ?? newJavaPath);
       if (checkDuplicate(val)) return;
-      const java = window.native.checkJava(val);
+      const java = await checkJava(val);
       if (java) {
         createJava(java, save);
         setNewJavaPath("");
@@ -211,9 +213,9 @@ export const JavaManagementSheet = observer(() => {
           <Button
             onClick={() => {
               try {
-                window.native
-                  .findJavas()
-                  .forEach((i) => handleAddJava(i, false));
+                findJavaHome().then((javas) =>
+                  javas.forEach((i) => handleAddJava(i, false))
+                );
                 configStore.save();
               } catch {
                 setErr(t("java.invalidPath"));
@@ -321,48 +323,48 @@ export const SettingsGeneralFragment = observer(() => {
 export const SettingsDisplayFragment = observer(() => {
   return (
     <div className="space-y-2">
-        <p className="text-xl font-semibold">News</p>
-            <Checkbox
-                checked={configStore.news}
-                onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
-                >
-                {t("settings.showNews")}
-            </Checkbox>
-            <TextField
-                label="News Title Amount"
-                type="number"
-                value={configStore.newsTitleAmount.toString()}
-                onChange={(value) =>
-                setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
-            }
-                min={2}
-                max={20}
-                helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
-            />
-            <div className="text-sm text-shallow">
-                {intlStore.language?.name === "zh-cn" ? (
-                        <p>
-                            来自{" "}
-                            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                                MCBBS
-                            </Hyperlink>
-                        </p>
-                        ) : intlStore.language?.name === "ja-jp" ? (
-                                <p>
-                                    出典{" "}
-                                    <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                                        MCBBS
-                                    </Hyperlink>
-                                </p>
-                                ) : (
-                                        <p>
-                                            From{" "}
-                                            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-                                                MCBBS
-                                            </Hyperlink>
-                                        </p>
-                                        )}
-            </div>
+      <p className="text-xl font-semibold">News</p>
+      <Checkbox
+        checked={configStore.news}
+        onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
+      >
+        {t("settings.showNews")}
+      </Checkbox>
+      <TextField
+        label="News Title Amount"
+        type="number"
+        value={configStore.newsTitleAmount.toString()}
+        onChange={(value) =>
+          setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
+        }
+        min={2}
+        max={20}
+        helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
+      />
+      <div className="text-sm text-shallow">
+        {intlStore.language?.name === "zh-cn" ? (
+          <p>
+            来自{" "}
+            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+              MCBBS
+            </Hyperlink>
+          </p>
+        ) : intlStore.language?.name === "ja-jp" ? (
+          <p>
+            出典{" "}
+            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+              MCBBS
+            </Hyperlink>
+          </p>
+        ) : (
+          <p>
+            From{" "}
+            <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
+              MCBBS
+            </Hyperlink>
+          </p>
+        )}
+      </div>
       <p className="text-xl font-semibold">{t("settings.hitokoto")}</p>
       <div className="flex">
         <RadioButton
