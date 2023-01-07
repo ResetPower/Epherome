@@ -17,14 +17,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - name: Install Apple Arch
-        uses: actions-rs/toolchain@v1
-        if: matrix.os == 'macos-latest'
-        with:
-          toolchain: stable
-          override: true
-          target: aarch64-apple-darwin
-          components: rustfmt, clippy
       - name: Cache node modules
         uses: actions/cache@v2
         env:
@@ -54,9 +46,6 @@ jobs:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: npm run make -- --macos --x64
-      - name: Build Webpack for Apple Silicon
-        if: matrix.os == 'macos-latest'
-        run: npm run prod-apple-darwin
       - name: Build Electron for macOS Apple Silicon
         if: matrix.os == 'macos-latest'
         env:
@@ -135,5 +124,3 @@ jobs:
             package/Epherome-${{ steps.ver.outputs.version }}.rpm.hash
             package/Epherome-${{ steps.ver.outputs.version }}.snap
             package/Epherome-${{ steps.ver.outputs.version }}.snap.hash
-      - name: Update Data on Official Site
-        run: curl -d '{"version":"${{ steps.ver.outputs.version }}", "token":"${{ secrets.SITE_ADMIN_TOKEN }}"}' -H 'Content-Type:application/json' -X PUT https://api.epherome.com/admin/version

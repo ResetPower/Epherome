@@ -1,9 +1,9 @@
-const pkg = require("../package.json");
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
+import pkg from "../package.json";
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
 
-function calculateHash(ext) {
+function calculateHash(ext: string) {
   const filename = `Epherome-${pkg.version}${ext}`;
   const file = path.resolve(`package/${filename}`);
   try {
@@ -20,7 +20,9 @@ function calculateHash(ext) {
         `SHA256\n${sha256}\n` +
         `SHA512\n${sha512}\n`
     );
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 // generate hash

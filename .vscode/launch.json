@@ -14,12 +14,6 @@
       "name": "Electron Render",
       "port": 9222,
       "webRoot": "${workspaceFolder}"
-    },
-    {
-      "type": "lldb",
-      "request": "attach",
-      "name": "LLDB",
-      "pid": "${command:pickProcess}"
     }
   ],
   "compounds": [

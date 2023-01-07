@@ -1,21 +1,27 @@
-const path = require("path");
-const ForkTsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import path from "path";
+import ForkTsCheckerPlugin from "fork-ts-checker-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import tsconfig from "../tsconfig.json";
+import { WebpackPluginInstance } from "webpack";
+import { WebpackConfiguration } from "webpack-dev-server";
 
 function resolveTsconfigPathsToAlias() {
-  const { paths, baseUrl } = require("../tsconfig.json").compilerOptions;
-  const aliases = {};
-  Object.keys(paths).forEach((item) => {
+  const { paths, baseUrl } = tsconfig.compilerOptions;
+  const aliases: { [key: string]: string } = {};
+  Object.entries(paths).forEach(([item, value]) => {
     const key = item.replace("/*", "");
     aliases[key] = path.resolve(
       baseUrl,
-      paths[item][0].replace("/*", "").replace("*", "")
+      value[0].replace("/*", "").replace("*", "")
     );
   });
   return aliases;
 }
 
-module.exports = ({ dev }, morePlugins = []) => ({
+const config: (
+  env: { dev: boolean },
+  morePlugins?: WebpackPluginInstance[]
+) => WebpackConfiguration = ({ dev }, morePlugins = []) => ({
   mode: dev ? "development" : "production",
   devtool: dev ? "inline-source-map" : undefined,
   module: {
@@ -37,14 +43,10 @@ module.exports = ({ dev }, morePlugins = []) => ({
         test: /\.(png|jpe?g|gif|svg)$/i,
         loader: "file-loader",
       },
-      {
-        test: /\.node$/,
-        loader: "node-loader",
-      },
     ],
   },
   resolve: {
-    extensions: [".js", ".ts", ".tsx", ".node"],
+    extensions: [".js", ".ts", ".tsx"],
     alias: resolveTsconfigPathsToAlias(),
   },
   output: {
@@ -53,3 +55,5 @@ module.exports = ({ dev }, morePlugins = []) => ({
   },
   plugins: [new ForkTsCheckerPlugin(), ...morePlugins],
 });
+
+export default config;

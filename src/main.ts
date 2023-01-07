@@ -8,7 +8,6 @@ import {
 import { mainLogger, parsed } from "./system";
 import "./ms-auth";
 import getTouchBar from "./touchbar";
-import path from "path";
 import "./loader";
 import EpheromeLogo from "./assets/Epherome.png";
 
@@ -33,7 +32,6 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      preload: path.join(app.getAppPath(), "dist/preload.js"),
     },
   });
 

@@ -1,11 +1,13 @@
 {
   "ts-node": {
-    "files": true
+    "files": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   },
   "compilerOptions": {
-    "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

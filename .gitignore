@@ -1,11 +1,6 @@
 # Editor/IDEs
 .idea
 
-# Rust
-native/target
-native/artifacts.json
-native/index.node
-
 # Logs
 logs
 *.log
