@@ -6,9 +6,7 @@
 
 Powerful Minecraft launcher
 
-[简体中文](docs/README_zh_cn.md) | English
-
-[Official Site](https://epherome.com) · [Releases](https://github.com/ResetPower/Epherome/releases) · [Documents](https://epherome.com/docs)
+[Official Site](https://epherome.com) · [Releases](https://github.com/ResetPower/Epherome/releases)
 
 ## Brief
 
@@ -16,16 +14,9 @@ Powerful Minecraft launcher
 
 _Epherome, which shocks the world, always surprises you by bringing you appalling new features._
 
-## Extensions
-
-Extension is available at version 0.3.0 or higher. Docs [here](https://epherome.com/docs).
-
-We encourage people contribute to this project by developing extensions.
-
 ## Related
 
-- [epherome-ext](https://github.com/ResetPower/epherome-ext) - Epherome extension API, CLI toolkit, and Scaffold
-- [eph-ext-square](https://github.com/ResetPower/eph-ext-square) - Installing, managing, and publishing Epherome extensions
+- [rcs](https://github.com/ResetPower/rcs) - The front-end UI library built for Epherome. Stands for ResetPower's Component Set.
 
 ## Contribution
 
