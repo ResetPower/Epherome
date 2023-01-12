@@ -4,6 +4,7 @@ import {
   IconButton,
   TextField,
   BadgeButton,
+  Hyperlink,
 } from "@resetpower/rcs";
 import {
   createContext,
@@ -34,7 +35,7 @@ import { action, makeObservable, observable, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import NewsView from "./NewsView";
 import { fetchNews, NewItem } from "../../common/struct/news";
-import { JavaManagementSheet } from "./SettingsPage";
+import JavaManagementSheet from "./settings/JavaManagementSheet";
 import { ObjectWrapper } from "common/utils/object";
 import { historyStore } from "eph/renderer/history";
 import { apply, DefaultFn, randomNumberInClosedInterval } from "common/utils";
@@ -43,6 +44,7 @@ import { MinecraftProfile } from "common/struct/profiles";
 import { Canceller } from "common/task/cancel";
 import { BsServer } from "react-icons/bs";
 import ShadowText from "eph/components/ShadowText";
+import { openInBrowser } from "common/utils/open";
 
 export function RequestPasswordDialog(props: {
   again: boolean;
@@ -390,7 +392,28 @@ const HomePage = observer(() => {
           >
             <MdStore /> {t("marketplace")}
           </Button>
-          <Button className="flex-grow text-center">
+          <Button
+            className="flex-grow text-center"
+            onClick={() =>
+              showOverlay({
+                content: () => (
+                  <div>
+                    Please move to{" "}
+                    <Hyperlink
+                      onClick={() =>
+                        openInBrowser(
+                          "https://github.com/ResetPower/Epherome/issues"
+                        )
+                      }
+                    >
+                      GitHub Issues
+                    </Hyperlink>
+                    .
+                  </div>
+                ),
+              })
+            }
+          >
             <MdBugReport /> Bug Report
           </Button>
         </div>

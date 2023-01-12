@@ -1,7 +1,7 @@
 import HomePage from "../views/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/profile/ProfilesPage";
-import SettingsPage, { UpdateAvailableDialog } from "../views/SettingsPage";
+import UpdateAvailableDialog from "../views/settings/UpdateAvailableDialog";
 import DownloadsPage from "../views/DownloadsPage";
 import { showOverlay } from "../overlay";
 import {
@@ -48,6 +48,7 @@ import ServerControlPage from "eph/views/ServerControlPage";
 import { personalStore } from "common/stores/personal";
 import Marketplace from "eph/views/Marketplace";
 import { adapt } from "common/utils";
+import SettingsPage from "eph/views/settings/SettingsPage";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {

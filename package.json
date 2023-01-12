@@ -24,7 +24,7 @@
   },
   "build": {
     "productName": "Epherome",
-    "copyright": "Copyright (C) 2021-2022 ResetPower.",
+    "copyright": "Copyright (C) 2021-2023 ResetPower.",
     "artifactName": "Epherome-${version}.${ext}",
     "directories": {
       "output": "package"
@@ -104,7 +104,7 @@
   },
   "dependencies": {
     "@floating-ui/react-dom": "^1.1.1",
-    "@resetpower/rcs": "^0.1.9",
+    "@resetpower/rcs": "^0.1.10",
     "adm-zip": "^0.5.10",
     "got": "^12.5.3",
     "log4js": "^6.7.1",
