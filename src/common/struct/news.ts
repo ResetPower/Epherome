@@ -1,26 +1,18 @@
+import got from "got";
+
 export interface NewItem {
   title: string;
   author: string;
   time: string;
-  url: string;
+  url?: string;
 }
 
 export async function fetchNews(): Promise<NewItem[] | null> {
-  /**rendererLogger.info("Fetching news...");
   try {
-    const result = await window.native.fetchNews();
-    rendererLogger.info("Fetched news");
-    return result ?? [];
-  } catch {
-    rendererLogger.warn("Unable to fetch news");
+    const resp = await got("https://epherome.com/news.json");
+    return JSON.parse(resp.body);
+  } catch (e) {
+    console.error(e);
     return null;
-  }**/
-  return [
-    {
-      title: "The news is down due to some reason...",
-      author: "Epherome",
-      time: "Whenever",
-      url: "https://epherome.com",
-    },
-  ];
+  }
 }

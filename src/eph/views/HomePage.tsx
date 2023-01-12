@@ -308,7 +308,7 @@ const HomePage = observer(() => {
           configStore.enableBg && "slideInLeft"
         }`}
       >
-        <div className="flex-grow">
+        <div>
           <p className="text-lg font-medium text-gray-600 dark:text-gray-400">
             {t("hello")}
           </p>
@@ -323,18 +323,22 @@ const HomePage = observer(() => {
                   {homePageStore.hitokoto.from}
                 </p>
               </div>
-              <div className="flex justify-end">
-                <IconButton
-                  className="w-7 h-7"
-                  onClick={homePageStore.reloadHitokoto}
-                >
-                  <MdRefresh />
-                </IconButton>
-              </div>
+              {configStore.hitokotoRefreshButton ? (
+                <div className="flex justify-end">
+                  <IconButton
+                    className="w-7 h-7"
+                    onClick={homePageStore.reloadHitokoto}
+                  >
+                    <MdRefresh />
+                  </IconButton>
+                </div>
+              ) : (
+                <div className="h-3" />
+              )}
             </>
           )}
         </div>
-        <div className="flex-grow">
+        <div>
           {configStore.news && (
             <div>
               <p className="text-2xl font-semibold text-center">{t("news")}</p>
@@ -385,6 +389,7 @@ const HomePage = observer(() => {
             </div>
           )}
         </div>
+        <div className="flex-grow" />
         <div className="flex">
           <Button
             className="flex-grow text-center"

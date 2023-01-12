@@ -57,6 +57,7 @@ export class ConfigStore {
   @observable language = getSystemPreferredLanguage();
   @observable news = true;
   @observable hitokoto: boolean | "custom" = false;
+  @observable hitokotoRefreshButton = true;
   @observable customHitokotoList: Hitokoto[] = [];
   @observable downloadProvider: MinecraftDownloadProvider = "official";
   @observable downloadConcurrency = 7;
@@ -77,9 +78,10 @@ export class ConfigStore {
     ensureDir(this.downloadTarget);
   }
   @action
-  setConfig = (cb: (store: ConfigStore) => unknown, save = true): void => {
+  setConfig = (cb: (store: ConfigStore) => unknown, save = true): boolean => {
     runInAction(() => cb(this));
     save && this.save();
+    return true;
   };
   save(): void {
     commonLogger.info("Saving config");

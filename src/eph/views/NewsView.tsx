@@ -8,7 +8,7 @@ export default function NewsView(): JSX.Element {
       {homePageStore.news?.map((val, index) => (
         <ListItem
           className="rounded-lg items-center px-9 m-1"
-          onClick={() => openInBrowser(val.url)}
+          onClick={() => val.url && openInBrowser(val.url)}
           key={index}
         >
           <p

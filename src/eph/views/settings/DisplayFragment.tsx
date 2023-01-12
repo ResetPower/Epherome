@@ -5,25 +5,28 @@ import {
   Hyperlink,
   TextField,
   TinyTextField,
+  WithHelper,
 } from "@resetpower/rcs";
 import { configStore, setConfig } from "common/struct/config";
 import { openInBrowser } from "common/utils/open";
-import RadioButton from "eph/components/RadioButton";
 import SectionTitle from "eph/components/SectionTitle";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import { MdAdd } from "react-icons/md";
+import { homePageStore } from "../HomePage";
 
 const SettingsDisplayFragment = observer(() => {
   return (
     <div className="space-y-2">
       <SectionTitle>News</SectionTitle>
-      <Checkbox
-        checked={configStore.news}
-        onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
-      >
-        {t("settings.showNews")}
-      </Checkbox>
+      <WithHelper helper="News are provided by Epherome. Minecraft and Epherome news involved.">
+        <Checkbox
+          checked={configStore.news}
+          onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}
+        >
+          {t("settings.showNews")}
+        </Checkbox>
+      </WithHelper>
       <TextField
         label="News Title Amount"
         type="number"
@@ -31,31 +34,37 @@ const SettingsDisplayFragment = observer(() => {
         onChange={(value) =>
           setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
         }
-        min={2}
+        min={1}
         max={20}
-        helperText="How many news titles are there on your home page? Accepted values are from 2 to 20."
+        helperText="How many news titles are there on your home page? Accepted values are in [1, 20]."
       />
-      <div className="text-sm text-shallow">
-        From{" "}
-        <Hyperlink onClick={() => openInBrowser("https://www.mcbbs.net")}>
-          MCBBS
-        </Hyperlink>
-      </div>
       <SectionTitle>{t("settings.hitokoto")}</SectionTitle>
-      <div className="flex">
-        <RadioButton
-          active={configStore.hitokoto === false}
-          onClick={() => setConfig((cfg) => (cfg.hitokoto = false))}
-        />
+      <Checkbox
+        checked={configStore.hitokotoRefreshButton}
+        onChange={(value) =>
+          setConfig((cfg) => (cfg.hitokotoRefreshButton = value))
+        }
+      >
+        Show Refresh Button
+      </Checkbox>
+      <Checkbox
+        checked={configStore.hitokoto === false}
+        onChange={(value) =>
+          value && setConfig((cfg) => (cfg.hitokoto = false))
+        }
+      >
         Disable
-      </div>
-      <div className="flex">
-        <RadioButton
-          active={configStore.hitokoto === true}
-          onClick={() => setConfig((cfg) => (cfg.hitokoto = true))}
-        />
+      </Checkbox>
+      <Checkbox
+        checked={configStore.hitokoto === true}
+        onChange={(value) =>
+          value &&
+          setConfig((cfg) => (cfg.hitokoto = true)) &&
+          homePageStore.reloadHitokoto()
+        }
+      >
         {t("settings.hitokoto")}
-      </div>
+      </Checkbox>
       <div className="text-sm text-shallow">
         Display a random line of text provided by{" "}
         <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
@@ -63,13 +72,16 @@ const SettingsDisplayFragment = observer(() => {
         </Hyperlink>{" "}
         on your homepage. (Chinese Simplified Contents)
       </div>
-      <div className="flex">
-        <RadioButton
-          active={configStore.hitokoto === "custom"}
-          onClick={() => setConfig((cfg) => (cfg.hitokoto = "custom"))}
-        />
+      <Checkbox
+        checked={configStore.hitokoto === "custom"}
+        onChange={(value) =>
+          value &&
+          setConfig((cfg) => (cfg.hitokoto = "custom")) &&
+          homePageStore.reloadHitokoto()
+        }
+      >
         Custom
-      </div>
+      </Checkbox>
       <div className="py-1">
         {configStore.customHitokotoList.map((value, index) => (
           <div className="flex items-center w-full py-1 space-x-1" key={index}>
