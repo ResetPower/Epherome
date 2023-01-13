@@ -1,4 +1,5 @@
-import fs from "fs/promises";
+import fs from "fs";
+import fsP from "fs/promises";
 import path from "path";
 import { isCompliant, equalOS } from "./rules";
 import { coreLogger } from "common/loggers";
@@ -16,8 +17,9 @@ import { Canceller } from "common/task/cancel";
 
 async function existsAsFileSync(filepath: string): Promise<boolean> {
   return (
-    (await fs.lstat(filepath)).isFile() &&
-    (await fs.readFile(filepath)).toString() !== ""
+    fs.existsSync(filepath) &&
+    (await fsP.lstat(filepath)).isFile() &&
+    (await fsP.readFile(filepath)).toString() !== ""
   );
 }
 
@@ -153,7 +155,7 @@ export async function analyzeAssets(
     await downloadFile(assetIndex.url, assetIndexPath, canceller);
   }
   const parsedAssetIndex = JSON.parse(
-    (await fs.readFile(assetIndexPath)).toString()
+    (await fsP.readFile(assetIndexPath)).toString()
   );
   for (const k in parsedAssetIndex.objects) {
     // Never try to optimize here. parsedAssetIndex.objects is not iterable.
