@@ -45,6 +45,10 @@ ipcMain.on("get-info", (ev) => {
   };
 });
 
+ipcMain.on("get-java-home", (ev) => {
+  ev.returnValue = process.env.JAVA_HOME;
+});
+
 ipcMain.handle("open-directory", async () => {
   const files = await dialog.showOpenDialog({
     properties: ["openDirectory"],

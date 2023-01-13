@@ -46,17 +46,15 @@ export async function findJavaHome(): Promise<string[]> {
   return Array.from(new Set(javas));
 }
 
-function findInPath() {
-  return new Promise<string | null>((resolve) => {
-    which(javaFilename, (err, path) => {
-      if (err || !path) {
-        return resolve(null);
-      }
-      // resolve symlinks
-      path = fs.realpathSync(path);
-      resolve(path);
-    });
-  });
+async function findInPath(): Promise<string | null> {
+  try {
+    const result = await which(javaFilename);
+    // resolve symlinks
+    const filepath = fs.realpathSync(result);
+    return filepath;
+  } catch {
+    return null;
+  }
 }
 
 async function findInRegistry(keyPaths: string[]): Promise<string[]> {

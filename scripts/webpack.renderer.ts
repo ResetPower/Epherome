@@ -7,7 +7,7 @@ import { WebpackConfiguration } from "webpack-dev-server";
 
 const config: (env: { dev: boolean }) => WebpackConfiguration = ({ dev }) => ({
   entry: {
-    app: "./src/eph",
+    app: "./src/eph/main",
   },
   target: "electron-renderer",
   devServer: {

@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { configStore, setConfig } from "./config";
 
 // initialize java config
-async function initialize() {
+export async function initializeJava() {
   if (configStore.javas.length === 0) {
     const javas = await findJavaHome();
     if (javas) {
@@ -19,10 +19,13 @@ async function initialize() {
       }
       configStore.save();
     }
+
+    // select the first java instance as initialization
+    if (configStore.javas.length !== 0) {
+      _.select(configStore.javas, configStore.javas[0]);
+    }
   }
 }
-
-initialize();
 
 // process java instances of old epherome
 for (const i of configStore.javas) {
