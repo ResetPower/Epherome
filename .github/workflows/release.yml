@@ -100,8 +100,10 @@ jobs:
       - name: Extract version
         id: ver
         uses: Saionaro/extract-package-version@v1.0.6
+      - name: Install Dependencies
+        run: npm install
       - name: Run Post Release Script
-        run: node scripts/post-release.js
+        run: npx ts-node scripts/post-release.ts
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -124,3 +126,5 @@ jobs:
             package/Epherome-${{ steps.ver.outputs.version }}.rpm.hash
             package/Epherome-${{ steps.ver.outputs.version }}.snap
             package/Epherome-${{ steps.ver.outputs.version }}.snap.hash
+      - name: Update Data on Official Site
+        run: curl -d '{"version":"${{ steps.ver.outputs.version }}", "token":"${{ secrets.SITE_ADMIN_TOKEN }}"}' -H 'Content-Type:application/json' -X PUT https://api.epherome.com/admin/version
