@@ -5,6 +5,7 @@ import { Card } from "eph/components/layouts";
 import { t } from "eph/intl";
 import os from "os";
 import EpheromeLogo from "assets/Epherome.png";
+import pkg from "../../../../package.json";
 
 const SettingsAboutFragment = (): JSX.Element => (
   <div className="space-y-3">
@@ -70,7 +71,7 @@ const SettingsAboutFragment = (): JSX.Element => (
           https://github.com/ResetPower/Epherome
         </Hyperlink>
       </p>
-      <p>Copyright © 2021-2023 ResetPower.</p>
+      <p>{pkg.build.copyright}</p>
       <p>{t("settings.openSourceSoftware")} | GNU General Public License 3.0</p>
     </Card>
   </div>

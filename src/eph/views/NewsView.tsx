@@ -1,5 +1,5 @@
 import { List, ListItem } from "@resetpower/rcs";
-import { homePageStore } from "./HomePage";
+import { homePageStore } from "./home/store";
 import { openInBrowser } from "common/utils/open";
 
 export default function NewsView(): JSX.Element {

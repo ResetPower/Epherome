@@ -20,16 +20,13 @@ export function runMinecraft(
   raw.stderr.setEncoding("utf8");
   const proc = new Process(profile, raw);
   processStore.register(proc);
-  raw.stdout.on(
-    "data",
-    () =>
-      !done &&
-      (done = true) &&
-      (() => {
-        onDone(proc);
-        coreLogger.info("Minecraft is running");
-      })()
-  );
+  raw.stdout.on("data", () => {
+    if (!done) {
+      done = true;
+      onDone(proc);
+      coreLogger.info("Minecraft is running");
+    }
+  });
   raw.stderr.on("data", (chunk) => {
     if (!proc.crash) {
       !proc.crash && (proc.crash = true);

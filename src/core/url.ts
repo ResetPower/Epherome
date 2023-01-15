@@ -55,11 +55,11 @@ export class MinecraftUrlUtil {
   authlibInjector(): string {
     switch (this.provider) {
       case "bmclapi":
-        return "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/35/authlib-injector-1.1.35.jar";
+        return "https://bmclapi2.bangbang93.com/mirrors/authlib-injector/artifact/49/authlib-injector-1.2.1.jar";
       case "mcbbs":
-        return "https://download.mcbbs.net/mirrors/authlib-injector/artifact/35/authlib-injector-1.1.35.jar";
+        return "https://download.mcbbs.net/mirrors/authlib-injector/artifact/49/authlib-injector-1.2.1.jar";
       default:
-        return "https://authlib-injector.yushi.moe/artifact/35/authlib-injector-1.1.35.jar";
+        return "https://authlib-injector.yushi.moe/artifact/49/authlib-injector-1.2.1.jar";
     }
   }
   library(source: string): string {

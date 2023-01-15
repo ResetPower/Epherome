@@ -1,4 +1,4 @@
-import HomePage from "../views/HomePage";
+import HomePage from "../views/home/HomePage";
 import AccountsPage from "../views/AccountsPage";
 import ProfilesPage from "../views/profile/ProfilesPage";
 import UpdateAvailableDialog from "../views/settings/UpdateAvailableDialog";

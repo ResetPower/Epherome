@@ -13,7 +13,7 @@ import SectionTitle from "eph/components/SectionTitle";
 import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import { MdAdd } from "react-icons/md";
-import { homePageStore } from "../HomePage";
+import { homePageStore } from "../home/store";
 
 const SettingsDisplayFragment = observer(() => {
   return (

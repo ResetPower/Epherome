@@ -3,6 +3,7 @@ import os from "os";
 import fs from "fs";
 import path from "path";
 import log4js from "log4js";
+import pkg from "../package.json";
 import { default as log4jsConfiguration } from "./common/utils/logging";
 
 // base information
@@ -116,7 +117,7 @@ const release = os.release();
 
 // output basic information
 mainLogger.info(`*** Epherome ${version} ***`);
-mainLogger.info(`Epherome  Copyright (C) 2021  ResetPower`);
+mainLogger.info(`Epherome  ${pkg.build.copyright}`);
 mainLogger.info(`Epherome is running on ${process.env.NODE_ENV} mode`);
 mainLogger.info(`Operating System: ${platform} ${arch} ${release}`);
 mainLogger.info(`Node.js Version: ${process.versions.node}`);

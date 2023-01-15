@@ -71,7 +71,6 @@ export async function launchMinecraft(
     return ["jRequired", null];
   }
 
-  const defaultHelper = t("launching");
   coreLogger.info("Launching Minecraft ...");
   const account = options.account;
   const profile = options.profile;
@@ -84,9 +83,9 @@ export async function launchMinecraft(
 
   const buff: string[] = [];
 
-  setHelper(defaultHelper);
-
   // === authenticating ===
+  setHelper("Authenticating");
+
   if (navigator.onLine) {
     if (account.mode === "authlib") {
       const server = account.authserver ?? "";
@@ -127,6 +126,8 @@ export async function launchMinecraft(
   } else {
     coreLogger.info("Network not available, account validating skipped");
   }
+
+  setHelper("Parsing resources");
 
   // === parsing json file ===
   const dir = path.resolve(profile.dir);
@@ -194,23 +195,22 @@ export async function launchMinecraft(
     canceller.clear();
   }
 
-  setHelper(defaultHelper);
-
   // inject authlib injector
   if (account.mode === "authlib") {
     try {
       fs.accessSync(authlibInjectorPath);
     } catch (e) {
-      setHelper(`${t("downloading")}: authlib-injector`);
+      setHelper(`Downloading authlib-injector`);
       // TODO Need to optimize more here
       await downloadFile(urlUtil.authlibInjector(), authlibInjectorPath);
     }
     buff.push(`-javaagent:${authlibInjectorPath}=${account.authserver}`);
   }
 
+  setHelper("Waiting for launch");
+
   // unzip native libraries
   for (const i of analyzedLibrary.natives) {
-    // 借助 Rust 神力解压，法力无边。
     await extractZip(i, nativeDir);
   }
 
