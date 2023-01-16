@@ -49,7 +49,7 @@ const SettingsGeneralFragment = observer(() => {
 
   return (
     <div className="space-y-2">
-      <WithHelper helper="Only English is fully translated. Other translations are provided by nice volunteers.">
+      <WithHelper helper={t("settings.languageHelper")}>
         <Select
           value={intlStore.language?.name ?? ""}
           label={t("language")}
@@ -78,7 +78,7 @@ const SettingsGeneralFragment = observer(() => {
           setConfig((cfg) => (cfg.allowNotificationDot = checked))
         }
       >
-        Allow notification dot
+        {t("settings.allowNotificationDot")}
       </Checkbox>
       <Checkbox
         checked={configStore.checkUpdate}

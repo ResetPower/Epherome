@@ -18,7 +18,7 @@ import { homePageStore } from "../home/store";
 const SettingsDisplayFragment = observer(() => {
   return (
     <div className="space-y-2">
-      <SectionTitle>News</SectionTitle>
+      <SectionTitle>{t("news")}</SectionTitle>
       <WithHelper helper="News are provided by Epherome. Minecraft and Epherome news involved.">
         <Checkbox
           checked={configStore.news}
@@ -28,7 +28,7 @@ const SettingsDisplayFragment = observer(() => {
         </Checkbox>
       </WithHelper>
       <TextField
-        label="News Title Amount"
+        label={t("newsTitleAmount")}
         type="number"
         value={configStore.newsTitleAmount.toString()}
         onChange={(value) =>
@@ -36,7 +36,7 @@ const SettingsDisplayFragment = observer(() => {
         }
         min={1}
         max={10}
-        helperText="How many news titles are there on your home page? Accepted values are in [1, 10]."
+        helperText={t("newsTitleAmount.description", "[1, 10]")}
       />
       <SectionTitle>{t("settings.hitokoto")}</SectionTitle>
       <Checkbox
@@ -45,7 +45,7 @@ const SettingsDisplayFragment = observer(() => {
           setConfig((cfg) => (cfg.hitokotoRefreshButton = value))
         }
       >
-        Show Refresh Button
+        {t("showRefreshButton")}
       </Checkbox>
       <Checkbox
         checked={configStore.hitokoto === false}
@@ -53,7 +53,7 @@ const SettingsDisplayFragment = observer(() => {
           value && setConfig((cfg) => (cfg.hitokoto = false))
         }
       >
-        Disable
+        {t("disabled")}
       </Checkbox>
       <Checkbox
         checked={configStore.hitokoto === true}
@@ -80,7 +80,7 @@ const SettingsDisplayFragment = observer(() => {
           homePageStore.reloadHitokoto()
         }
       >
-        Custom
+        {t("custom")}
       </Checkbox>
       <div className="py-1">
         {configStore.customHitokotoList.map((value, index) => (
@@ -105,7 +105,7 @@ const SettingsDisplayFragment = observer(() => {
                 )
               }
             >
-              Remove
+              {t("remove")}
             </BadgeButton>
           </div>
         ))}

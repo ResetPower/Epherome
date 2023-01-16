@@ -26,17 +26,6 @@ export type TitleBarStyle = "os" | "eph";
 // configure log4js
 log4js.configure(log4jsConfiguration(ephLatestLog));
 
-export function getSystemPreferredLanguage(): string {
-  const lang = navigator.language.toLowerCase();
-  if (lang.startsWith("zh")) {
-    return "zh-cn";
-  } else if (lang.startsWith("ja")) {
-    return "ja-jp";
-  } else {
-    return "en-us";
-  }
-}
-
 export type FnBoardPlacement = "top" | "right" | "off";
 
 export interface Dimension {
@@ -54,7 +43,7 @@ export class ConfigStore {
   @observable theme = "RCS Light";
   @observable themeList: RCSTheme[] = [];
   @observable themeFollowOs = true;
-  @observable language = getSystemPreferredLanguage();
+  @observable language = "en-us";
   @observable news = true;
   @observable hitokoto: boolean | "custom" = false;
   @observable hitokotoRefreshButton = true;

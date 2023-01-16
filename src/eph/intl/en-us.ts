@@ -1,6 +1,7 @@
-import { Language } from ".";
+// NOTE: This file affects the definition of these types:
+// [LanguageDefinition, KeyOfLanguageDefinition]
 
-const enUs: Language = {
+const enUs = {
   name: "en-us",
   nativeName: "English",
   definition: {
@@ -112,6 +113,9 @@ const enUs: Language = {
       "The number of files that can be downloaded at the same time.",
     "settings.showNews": "Show News",
     "settings.autoCheckUpdate": "Automatically check for updates",
+    "settings.allowNotificationDot": "Allow notification dot",
+    "settings.languageHelper":
+      "Only English is fully translated. Other translations are provided by nice volunteers.",
     display: "Display",
     "java.executablePath": "Java Executable Path",
     "java.manage": "Manage Java",
@@ -245,6 +249,12 @@ const enUs: Language = {
     serverControl: "Server Control",
     "server.removing": "Remove Server",
     marketplace: "Marketplace",
+    showRefreshButton: "Show Refresh Button",
+    custom: "Custom",
+    disabled: "Disabled",
+    newsTitleAmount: "News Title Amount",
+    "newsTitleAmount.description":
+      "How many news titles are there on your home page? Accepted values are in {0}.",
   },
 };
 

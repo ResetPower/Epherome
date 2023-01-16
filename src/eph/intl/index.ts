@@ -1,16 +1,19 @@
 import { configStore, setConfig } from "common/struct/config";
-import { format } from "common/utils";
+import { format, StringMap } from "common/utils";
 import enUs from "./en-us";
 import jaJp from "./ja-jp";
-import { LanguageDefinition } from "./definition";
 import zhCn from "./zh-cn";
 import { action, makeObservable, observable } from "mobx";
 import ruRu from "./ru-ru";
 
+export type LanguageDefinition = typeof enUs.definition;
+
+export type KeyOfLanguageDefinition = keyof LanguageDefinition;
+
 export interface Language {
   name: string; // eg `en-us`
   nativeName: string; // eg `English`
-  definition: LanguageDefinition;
+  definition: StringMap;
 }
 
 export class IntlStore {
@@ -23,7 +26,7 @@ export class IntlStore {
   }
   @action
   setLanguage(name: string, save?: boolean): void {
-    this.language = this.languages.find((val) => val.name === name);
+    this.language = this.languages.find((val) => val.name === name) ?? enUs;
     setConfig((cfg) => (cfg.language = name), save);
   }
 }
@@ -34,12 +37,10 @@ export const intlStore = new IntlStore(
   configStore.language
 );
 
-export type KeyOfLanguageDefinition = keyof LanguageDefinition;
-
 // translator function
 export function t(key: KeyOfLanguageDefinition, ...args: string[]): string {
-  if (key === "exportedAt") {
-    console.log(format(intlStore.language?.definition[key] ?? "", ...args));
-  }
-  return format(intlStore.language?.definition[key] ?? "", ...args);
+  return format(
+    intlStore.language?.definition[key] ?? enUs.definition[key] ?? "",
+    ...args
+  );
 }

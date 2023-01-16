@@ -1,13 +1,13 @@
 import { configStore, FnBoardPlacement } from "common/struct/config";
-import { KeyOfLanguageDefinition, t } from "eph/intl";
-import { historyStore } from "eph/renderer/history";
+import { t } from "eph/intl";
+import { historyStore, Pathname } from "eph/renderer/history";
 import { createContext, ReactNode, useContext } from "react";
 
 const MetroCardContext = createContext(false);
 
 export function MetroCard(props: {
   icon: ReactNode;
-  target: KeyOfLanguageDefinition;
+  target: Pathname;
   className: string;
 }) {
   const enableBg = useContext(MetroCardContext);

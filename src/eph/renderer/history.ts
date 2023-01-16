@@ -1,7 +1,22 @@
 import { configStore, setConfig } from "common/struct/config";
 import { ipcRenderer } from "electron";
-import { KeyOfLanguageDefinition } from "eph/intl";
 import { action, makeObservable, observable } from "mobx";
+
+export type Pathname =
+  | "home"
+  | "accounts"
+  | "profiles"
+  | "profile.install"
+  | "profile.exportModpack"
+  | "settings"
+  | "extensions"
+  | "download"
+  | "java.installJava"
+  | "processes"
+  | "ephLogin"
+  | "ephPersonalCenter"
+  | "serverControl"
+  | "marketplace";
 
 export interface Location {
   pathname: string;
@@ -13,7 +28,7 @@ export class HistoryStore {
   constructor() {
     makeObservable(this);
   }
-  @action push(pathname: KeyOfLanguageDefinition, params?: string) {
+  @action push(pathname: Pathname, params?: string) {
     this.current !== pathname &&
       this.history.push({ pathname, params: params ?? "" });
   }
