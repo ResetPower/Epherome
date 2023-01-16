@@ -35,8 +35,8 @@ const SettingsDisplayFragment = observer(() => {
           setConfig((cfg) => (cfg.newsTitleAmount = parseInt(value)))
         }
         min={1}
-        max={20}
-        helperText="How many news titles are there on your home page? Accepted values are in [1, 20]."
+        max={10}
+        helperText="How many news titles are there on your home page? Accepted values are in [1, 10]."
       />
       <SectionTitle>{t("settings.hitokoto")}</SectionTitle>
       <Checkbox

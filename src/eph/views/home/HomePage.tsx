@@ -12,12 +12,13 @@ import {
   MdApps,
   MdBugReport,
   MdGamepad,
-  MdMoreVert,
   MdRefresh,
   MdSettings,
   MdStore,
   MdViewCarousel,
+  MdViewDay,
 } from "react-icons/md";
+import { IoRefresh } from "react-icons/io5";
 import { showOverlay } from "../../overlay";
 import { t } from "../../intl";
 import { _ } from "common/utils/arrays";
@@ -28,7 +29,6 @@ import { historyStore } from "eph/renderer/history";
 import { apply } from "common/utils";
 import { BsServer } from "react-icons/bs";
 import { openInBrowser } from "common/utils/open";
-import ShadowText from "eph/components/ShadowText";
 import { homePageStore } from "./store";
 import { MetroCardProvider, MetroCard } from "eph/components/MetroCard";
 import SlightText from "eph/components/SlightText";
@@ -62,6 +62,13 @@ const HomePage = observer(() => {
       homePageStore.reloadNews();
     }
   }, []);
+
+  const onEnterNews = () =>
+    showOverlay({
+      type: "sheet",
+      title: t("news"),
+      content: NewsView,
+    });
 
   return (
     <div
@@ -99,7 +106,7 @@ const HomePage = observer(() => {
           </SlightText>
           {configStore.hitokoto && (
             <>
-              <div className="eph-force-zh-cn">
+              <div>
                 <p className="text-sm">{homePageStore.hitokoto.content}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {homePageStore.hitokoto.from}
@@ -122,8 +129,18 @@ const HomePage = observer(() => {
         </div>
         <div>
           {configStore.news && (
-            <div>
-              <p className="text-2xl font-semibold text-center">{t("news")}</p>
+            <div className="mt-6">
+              <div className="flex items-center">
+                <div className="text-2xl font-medium flex-grow">
+                  {t("news")}
+                </div>
+                <IconButton onClick={onEnterNews}>
+                  <MdViewDay />
+                </IconButton>
+                <IconButton onClick={homePageStore.reloadNews}>
+                  <IoRefresh />
+                </IconButton>
+              </div>
               {homePageStore.news === null ? (
                 <p>
                   ...
@@ -137,7 +154,7 @@ const HomePage = observer(() => {
                   <br />
                 </p>
               ) : (
-                <div className="eph-force-zh-cn">
+                <div>
                   {homePageStore.news
                     .slice(0, configStore.newsTitleAmount)
                     .map((val, index) => (
@@ -145,26 +162,6 @@ const HomePage = observer(() => {
                     ))}
                 </div>
               )}
-              <div className="flex justify-end p-1 space-x-3 items-center">
-                <IconButton
-                  className="w-7 h-7"
-                  onClick={homePageStore.reloadNews}
-                >
-                  <MdRefresh />
-                </IconButton>
-                <IconButton
-                  className="w-7 h-7"
-                  onClick={() =>
-                    showOverlay({
-                      type: "sheet",
-                      title: t("news"),
-                      content: NewsView,
-                    })
-                  }
-                >
-                  <MdMoreVert />
-                </IconButton>
-              </div>
             </div>
           )}
         </div>
@@ -204,7 +201,14 @@ const HomePage = observer(() => {
             </div>
           </div>
         ) : (
-          <ShadowText>{t("profile.notSelected")}</ShadowText>
+          <div>
+            <SlightText
+              className="flex-grow"
+              onClick={() => historyStore.push("profiles")}
+            >
+              {t("profile.notSelected")}
+            </SlightText>
+          </div>
         )}
         <div className="flex">
           <Button

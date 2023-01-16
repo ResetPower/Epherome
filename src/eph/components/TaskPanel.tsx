@@ -35,7 +35,7 @@ const TaskPanelForwardRef = forwardRef(
         style={props.style}
         className={`bg-card text-contrast shadow-md z-20 rounded-md p-3 ${props.className}`}
       >
-        <p>{t("task.manager")}</p>
+        <p className="mb-3 text-lg font-medium">{t("task.manager")}</p>
         <JoinIn
           separator={<div className="border-t border-divider w-auto my-1" />}
         >

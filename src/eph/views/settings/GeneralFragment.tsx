@@ -73,6 +73,14 @@ const SettingsGeneralFragment = observer(() => {
         {t("settings.devMode")}
       </Checkbox>
       <Checkbox
+        checked={configStore.allowNotificationDot}
+        onChange={(checked) =>
+          setConfig((cfg) => (cfg.allowNotificationDot = checked))
+        }
+      >
+        Allow notification dot
+      </Checkbox>
+      <Checkbox
         checked={configStore.checkUpdate}
         onChange={(checked) => setConfig((cfg) => (cfg.checkUpdate = checked))}
       >

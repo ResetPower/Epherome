@@ -11,6 +11,7 @@ import {
   MdDeveloperBoard,
   MdGamepad,
   MdMenu,
+  MdNotificationAdd,
   MdRefresh,
   MdSettings,
   MdStore,
@@ -49,6 +50,8 @@ import { personalStore } from "common/stores/personal";
 import Marketplace from "eph/views/Marketplace";
 import { adapt } from "common/utils";
 import SettingsPage from "eph/views/settings/SettingsPage";
+import { NotificationPanelShower } from "eph/components/NotificationPanel";
+import { notificationStore } from "common/stores/notification";
 
 export const EphAppBar = observer(
   (props: { pathname: KeyOfLanguageDefinition }) => {
@@ -124,6 +127,7 @@ export const EphAppBar = observer(
         )}
         <div className="eph-no-drag flex">
           <PersonalPanelShower />
+          <NotificationPanelShower />
           <TaskPanelShower />
           {configStore.developerMode && (
             <Menu
@@ -138,6 +142,16 @@ export const EphAppBar = observer(
                   icon: <MdRefresh />,
                   text: "Reload Epherome",
                   action: () => location.reload(),
+                },
+                {
+                  icon: <MdNotificationAdd />,
+                  text: "Send Notification",
+                  action: () =>
+                    notificationStore.push({
+                      type: "info",
+                      message: "Hello, World!",
+                      source: "Epherome Developer Tools",
+                    }),
                 },
               ]}
             >

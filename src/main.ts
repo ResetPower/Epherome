@@ -22,9 +22,9 @@ function createWindow() {
   const isTitleBarEph = parsed.titleBarStyle === "eph" ?? false;
   const win = new BrowserWindow({
     width:
-      (parsed.rememberWindowSize ? parsed.windowSize.width : undefined) ?? 800,
+      (parsed.rememberWindowSize ? parsed.windowSize.width : undefined) ?? 985,
     height:
-      (parsed.rememberWindowSize ? parsed.windowSize.height : undefined) ?? 600,
+      (parsed.rememberWindowSize ? parsed.windowSize.height : undefined) ?? 715,
     autoHideMenuBar: true,
     icon: EpheromeLogo,
     title: "Epherome",

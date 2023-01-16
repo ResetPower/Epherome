@@ -72,6 +72,7 @@ export class ConfigStore {
   @observable rememberWindowSize = false;
   @observable windowSize: Dimension = {};
   @observable newsTitleAmount = 2;
+  @observable allowNotificationDot = true;
   constructor(preferred: Partial<unknown>) {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });
