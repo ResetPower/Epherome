@@ -3,7 +3,6 @@ import "../styles/index.css";
 import { createRoot } from "react-dom/client";
 import App from "./renderer/App";
 import { rendererLogger } from "common/loggers";
-import { ipcRenderer } from "electron";
 import path from "path";
 import { userDataPath } from "common/utils/info";
 import { extensionStore } from "common/stores/extension";
@@ -12,6 +11,7 @@ import { configStore, setConfig } from "common/struct/config";
 import { personalStore, validateEphToken } from "common/stores/personal";
 import { ensureDir } from "common/utils/files";
 import { initializeJava } from "common/struct/java";
+import { loadExtensions } from "./loader";
 
 console.log("Hello, World!");
 
@@ -54,8 +54,8 @@ export default async function launchEpherome(container: HTMLDivElement) {
 
   // load extensions
   rendererLogger.info("Loading extensions...");
-  const [e, s] = await ipcRenderer.invoke("load-extensions", extPath);
-  extensionStore.load(e, s);
+  const e = loadExtensions();
+  extensionStore.load(e);
   rendererLogger.info(`Loaded extensions (Total ${e.length})`);
 
   await initializeJava();

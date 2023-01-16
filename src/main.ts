@@ -8,7 +8,6 @@ import {
 import { mainLogger, parsed } from "./system";
 import "./ms-auth";
 import getTouchBar from "./touchbar";
-import "./loader";
 import EpheromeLogo from "./assets/Epherome.png";
 
 const prod = process.env.NODE_ENV !== "development";

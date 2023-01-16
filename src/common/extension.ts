@@ -1,12 +1,13 @@
-export interface EphExtensionMeta {
+export interface EphExtensionManifest {
   name: string;
   version: string;
   apiVersion: string;
-  introduction?: string;
+  entry: string;
 }
 
 export interface EphExtension {
   id: string;
-  meta: EphExtensionMeta;
-  runnable: string;
+  manifest: EphExtensionManifest;
+  pathname: string;
+  readme: string;
 }

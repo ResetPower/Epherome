@@ -1,10 +1,7 @@
-import { EphSubscription } from "common/bridge";
 import { EphExtension } from "common/extension";
 import { userDataPath } from "common/utils/info";
 import path from "path";
 import fs from "fs";
-
-export type EphSubscriptionMap = Record<string, EphSubscription[]>;
 
 export type EphExtStat =
   | "installed" // installed and loaded
@@ -14,10 +11,12 @@ export type EphExtStat =
 
 export class ExtensionStore {
   extensions: EphExtension[] = [];
-  subscriptionMap: EphSubscriptionMap = {};
-  load(extensions: EphExtension[], subscriptionMap: EphSubscriptionMap) {
+  imported: EphExtension[] = [];
+  load(extensions: EphExtension[]) {
     this.extensions = extensions;
-    this.subscriptionMap = subscriptionMap;
+  }
+  import(ext: EphExtension) {
+    this.imported.push(ext);
   }
   find(id: string): boolean {
     for (const i of this.extensions) {
