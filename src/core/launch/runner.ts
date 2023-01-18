@@ -12,10 +12,15 @@ export function runMinecraft(
   profile: MinecraftProfile
 ): void {
   let done = false;
-  const raw = spawn(java, ["-Dfile.encoding=UTF-8", ...buff], {
-    cwd: dir,
-    detached: true,
-  });
+  const wrapper = profile.wrapperCommand;
+  const raw = spawn(
+    wrapper ? wrapper : java,
+    [...(wrapper ? [java] : []), "-Dfile.encoding=UTF-8", ...buff],
+    {
+      cwd: dir,
+      detached: true,
+    }
+  );
   raw.stdout.setEncoding("utf8");
   raw.stderr.setEncoding("utf8");
   const proc = new Process(profile, raw);

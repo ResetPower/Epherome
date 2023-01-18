@@ -31,6 +31,7 @@ export interface MinecraftProfile extends WithUnderline {
   realVer?: string;
   // only available when this.from = "folder";
   parent?: MinecraftProfileFolder;
+  wrapperCommand?: string;
 }
 
 export type ChildProfile = Omit<

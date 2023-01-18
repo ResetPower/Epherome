@@ -15,6 +15,7 @@ import {
 import { call, DefaultFn } from "common/utils";
 import { defaultJvmArgs } from "core/java";
 import { ipcRenderer } from "electron";
+import SectionTitle from "eph/components/SectionTitle";
 import { t } from "eph/intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
@@ -29,75 +30,64 @@ export function ChangeProfileFragment(props: {
   const flag = useRef(true);
   const [more, setMore] = useState(false);
   const current = props.current;
-  const [name, setName] = useState(current?.name ?? "");
-  const [dir, setDir] = useState(current?.dir ?? "");
-  const [ver, setVer] = useState(current?.ver ?? "");
-  const [jvmArgs, setJvmArgs] = useState(current?.jvmArgs ?? defaultJvmArgs());
-  const [resolution, setResolution] = useState(current?.resolution ?? {});
-  const [java, setJava] = useState(current?.java ? current.java : "default");
-  const [showEpherome, setShowEpherome] = useState(
-    current?.showEpherome ?? true
-  );
-  const [safeLog4j, setSafeLog4j] = useState(current?.safeLog4j ?? true);
-  const [gameDirIsolation, setGameDirIsolation] = useState(
-    current?.gameDirIsolation ?? false
-  );
+  const [tempProf, setTempProf] = useState<MinecraftProfile>({
+    name: String(),
+    dir: String(),
+    ver: String(),
+    jvmArgs: defaultJvmArgs(),
+    resolution: {},
+    java: "default",
+    showEpherome: true,
+    safeLog4j: true,
+    gameDirIsolation: false,
+    wrapperCommand: String(),
+    ...current,
+  });
+
+  const setTempProfile = (a: Partial<MinecraftProfile>) =>
+    setTempProf((tp) => ({ ...tp, ...a }));
+  const tempProfSetters = Object.entries(tempProf)
+    .map<[string, (value: unknown) => void]>(([key, superValue]) => [
+      key,
+      (value: typeof superValue) => setTempProfile({ [key]: value }),
+    ])
+    .reduce<{ [key: string]: (value: unknown) => void }>((accum, [k, v]) => {
+      accum[k] = v;
+      return accum;
+    }, {});
 
   const handleCreate = () => {
     if (
       createProfile({
-        name,
-        dir,
-        ver,
+        ...tempProf,
         from: "create",
-        jvmArgs,
-        resolution,
-        java,
-        gameDirIsolation,
-        safeLog4j,
       })
     ) {
       call(props.onDone);
     }
   };
   const handleEdit = useCallback(() => {
-    if (current) {
-      editProfile(current, {
-        name,
-        dir,
-        ver,
-        jvmArgs,
-        resolution,
-        java,
-        gameDirIsolation,
-        safeLog4j,
-      });
+    if (current && editProfile(current, tempProf)) {
       call(props.onDone);
     }
-  }, [
-    name,
-    dir,
-    ver,
-    jvmArgs,
-    resolution,
-    java,
-    gameDirIsolation,
-    safeLog4j,
-    props.onDone,
-    current,
-  ]);
+  }, [tempProf, current, props.onDone]);
   const handleResolutionChange = (type: "width" | "height", ev: string) => {
     if (ev === "") {
-      setResolution((prev) => ({ ...prev, [type]: undefined }));
+      setTempProfile({
+        resolution: { ...tempProf.resolution, [type]: undefined },
+      });
     } else {
       const num = +ev;
-      num >= 0 && setResolution((prev) => ({ ...prev, [type]: num }));
+      num >= 0 &&
+        setTempProfile({
+          resolution: { ...tempProf.resolution, [type]: num },
+        });
     }
   };
   const handleOpenDirectory = () =>
     ipcRenderer
       .invoke("open-directory")
-      .then((value) => value && setDir(value));
+      .then((value) => value && setTempProfile({ dir: value }));
 
   useEffect(
     () => () => {
@@ -118,15 +108,15 @@ export function ChangeProfileFragment(props: {
       <div>
         <TextField
           label={t("name")}
-          value={name}
+          value={tempProf.name}
           maxLength={32}
-          onChange={setName}
+          onChange={tempProfSetters.name}
           required
         />
         <TextField
           label={t("directory")}
-          value={dir}
-          onChange={setDir}
+          value={tempProf.dir}
+          onChange={tempProfSetters.dir}
           helperText={t("profile.usuallyDotMinecraftEtc")}
           trailing={
             <Hyperlink button onClick={handleOpenDirectory}>
@@ -135,7 +125,11 @@ export function ChangeProfileFragment(props: {
           }
           required
         />
-        <VersionSelector dir={dir} value={ver} onChange={setVer} />
+        <VersionSelector
+          dir={tempProf.dir}
+          value={tempProf.ver}
+          onChange={tempProfSetters.ver}
+        />
         <div className="h-2" />
         {more && (
           <>
@@ -143,13 +137,13 @@ export function ChangeProfileFragment(props: {
               <TextField
                 className="flex-grow"
                 label={t("profile.jvmArgs")}
-                value={jvmArgs}
-                onChange={setJvmArgs}
+                value={tempProf.jvmArgs}
+                onChange={tempProfSetters.jvmArgs}
               />
               <Select
                 label="Java"
-                value={java}
-                onChange={setJava}
+                value={tempProf.java}
+                onChange={tempProfSetters.java}
                 options={[
                   { value: "default", text: t("useDefault") },
                   ...configStore.javas.map((val) => ({
@@ -163,7 +157,7 @@ export function ChangeProfileFragment(props: {
             <div className="flex items-center mb-3">
               <TextField
                 placeholder={t("useDefault")}
-                value={`${resolution.width ?? ""}`}
+                value={`${tempProf.resolution?.width ?? ""}`}
                 onChange={(ev) => handleResolutionChange("width", ev)}
                 className="flex-grow"
                 noSpinButton
@@ -171,7 +165,7 @@ export function ChangeProfileFragment(props: {
               <FaTimes className="text-contrast m-3" />
               <TextField
                 placeholder={t("useDefault")}
-                value={`${resolution.height ?? ""}`}
+                value={`${tempProf.resolution?.height ?? ""}`}
                 onChange={(ev) => handleResolutionChange("height", ev)}
                 className="flex-grow"
                 noSpinButton
@@ -180,16 +174,16 @@ export function ChangeProfileFragment(props: {
             <div className="flex">
               <Checkbox
                 className="m-1"
-                checked={gameDirIsolation}
-                onChange={setGameDirIsolation}
+                checked={tempProf.gameDirIsolation}
+                onChange={tempProfSetters.gameDirIsolation}
               >
                 {t("profile.gameDirIsolation")}
               </Checkbox>
               <div className="flex-grow" />
               <Checkbox
                 className="m-1"
-                checked={showEpherome}
-                onChange={setShowEpherome}
+                checked={tempProf.showEpherome}
+                onChange={tempProfSetters.showEpherome}
               >
                 {t("profile.showEpherome")}
               </Checkbox>
@@ -200,12 +194,24 @@ export function ChangeProfileFragment(props: {
             <p className="eph-helper-text text-right">
               {t("profile.showEpherome.description")}
             </p>
-            <Checkbox checked={safeLog4j} onChange={setSafeLog4j}>
+            <Checkbox
+              checked={tempProf.safeLog4j}
+              onChange={tempProfSetters.safeLog4j}
+            >
               {t("profile.safeLog4j")}
             </Checkbox>
             <p className="eph-helper-text">
               {t("profile.safeLog4j.description")}
             </p>
+            <p className="h-2"></p>
+            <SectionTitle>Advanced Settings</SectionTitle>
+            <TextField
+              helperText="Allows launching using an extra wrapper program like 'optirun' on Linux."
+              label="Wrapper Command"
+              placeholder="Wrapper Command"
+              value={tempProf.wrapperCommand}
+              onChange={tempProfSetters.wrapperCommand}
+            />
             <p className="h-2"></p>
           </>
         )}
