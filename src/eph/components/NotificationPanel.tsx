@@ -36,7 +36,7 @@ const NotificationPanelForwardRef = forwardRef(
       >
         {notificationStore.notifications.map(
           (n, i) =>
-            (n.read = true) && (
+            notificationStore.read(n) && (
               <div className="flex items-center" key={i}>
                 <div className="flex-grow">
                   <div className="flex items-center space-x-2">

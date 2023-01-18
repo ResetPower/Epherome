@@ -4,7 +4,7 @@ import { userDataPath } from "common/utils/info";
 import { t } from "eph/intl";
 import path from "path";
 import { useMemo, useState } from "react";
-import { MdExpandLess, MdExpandMore, MdFolder } from "react-icons/md";
+import { MdFolder } from "react-icons/md";
 import { VscExtensions } from "react-icons/vsc";
 import ReactMarkdown from "react-markdown";
 import fs from "fs";
@@ -16,61 +16,17 @@ import { openInFinder } from "common/utils/open";
 import { nanoid } from "nanoid";
 import { ipcRenderer } from "electron";
 import { parseExtension } from "eph/loader";
-
-function Panel(props: {
-  label: string;
-  controller: [EphExtension | null, (i: EphExtension) => unknown];
-  list: EphExtension[] | null;
-  open?: boolean;
-  forceOpen?: boolean;
-}): JSX.Element {
-  const [current, setCurrent] = props.controller;
-  const [expanded, setExpanded] = useState(props.open ?? false);
-
-  return (
-    <div>
-      {!props.forceOpen && (
-        <div
-          className="flex bg-slate-500 bg-opacity-0 hover:bg-opacity-10 active:bg-opacity-20 cursor-pointer select-none transition-colors text-sm font-medium px-1 "
-          onClick={() => setExpanded(!expanded)}
-        >
-          <p>{props.label}</p>
-          <div className="flex-grow" />
-          {props.list && props.list.length}
-          {expanded ? <MdExpandLess /> : <MdExpandMore />}
-        </div>
-      )}
-      {(props.forceOpen || expanded) &&
-        (props.list ? (
-          props.list.length === 0 ? (
-            <p className="text-shallow text-center">No Items</p>
-          ) : (
-            props.list.map((e) => (
-              <ListItem
-                active={current ? current.id === e.id : false}
-                className="p-3"
-                onClick={() => setCurrent(e)}
-                key={e.id}
-                dependent
-              >
-                <VscExtensions className="w-7 mr-3" /> {e.manifest.name}
-              </ListItem>
-            ))
-          )
-        ) : (
-          <Spinner />
-        ))}
-    </div>
-  );
-}
+import ExpansionPanel from "eph/components/ExpansionPanel";
 
 export default function ExtensionStore(): JSX.Element {
   const ephExtPath = useMemo(() => path.join(userDataPath, "ext"), []);
   const installed = [...extensionStore.extensions, ...extensionStore.imported];
 
-  const controller = useState<EphExtension | null>(installed[0] ?? null);
-  const current = controller[0];
+  const [current, setCurrent] = useState<EphExtension | null>(
+    installed[0] ?? null
+  );
   const [pending, setPending] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const extStat = current && extensionStore.stat(current.id);
 
@@ -94,7 +50,7 @@ export default function ExtensionStore(): JSX.Element {
       const ext = parseExtension(nid);
       if (ext) {
         extensionStore.import(ext);
-        controller[1](ext);
+        setCurrent(ext);
       }
     });
   };
@@ -113,12 +69,28 @@ export default function ExtensionStore(): JSX.Element {
     <div className="eph-h-full flex">
       <div className="w-1/4 bg-card shadow-md py-1 flex flex-col">
         <div className="overflow-y-auto flex-grow">
-          <Panel
+          <ExpansionPanel
             label={t("ext.installed")}
-            list={installed}
-            controller={controller}
-            open
-          />
+            length={installed.length}
+            onToggle={() => setOpen((v) => !v)}
+            open={open}
+          >
+            {installed.length === 0 ? (
+              <p className="text-shallow text-center">No Items</p>
+            ) : (
+              installed.map((e) => (
+                <ListItem
+                  active={current ? current.id === e.id : false}
+                  className="p-3"
+                  onClick={() => setCurrent(e)}
+                  key={e.id}
+                  dependent
+                >
+                  <VscExtensions className="w-7 mr-3" /> {e.manifest.name}
+                </ListItem>
+              ))
+            )}
+          </ExpansionPanel>
         </div>
         <div className="flex justify-center space-x-3 border-t border-divider">
           <IconButton onClick={handleImport}>

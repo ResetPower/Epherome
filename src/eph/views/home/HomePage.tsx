@@ -52,7 +52,7 @@ export function RequestPasswordDialog(props: {
 
 const HomePage = observer(() => {
   const account = useMemo(() => _.selected(configStore.accounts), []);
-  const profile = _.selected(configStore.profiles);
+  const profile = configStore.currentProfile;
 
   useEffect(() => {
     if (configStore.hitokoto && !homePageStore.hitokoto.content) {
@@ -173,32 +173,35 @@ const HomePage = observer(() => {
           </div>
         )}
         {profile ? (
-          <div>
-            <div className="flex items-center space-x-3 mx-3 mb-3">
-              <SlightText
-                className="flex-grow"
-                onClick={() => historyStore.push("profiles")}
-              >
-                {profile.name}
-              </SlightText>
-              {homePageStore.isLaunching ? (
-                <Button
-                  onClick={homePageStore.cancel}
-                  variant="pill"
-                  className="whitespace-nowrap bg-red-400 hover:bg-red-500 active:bg-red-600"
-                >
-                  {t("cancel")}
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => homePageStore.launch(account, profile)}
-                  variant="pill"
-                  className="whitespace-nowrap"
-                >
-                  {t("launch")}
-                </Button>
+          <div className="flex items-center space-x-3 mb-3">
+            <div
+              className="flex-grow cursor-pointer select-none"
+              onClick={() => historyStore.push("profiles")}
+            >
+              <SlightText>{profile.name}</SlightText>
+              {profile.from === "folder" && profile.parent && (
+                <div className="text-sm text-shallow">
+                  {profile.parent.nickname}
+                </div>
               )}
             </div>
+            {homePageStore.isLaunching ? (
+              <Button
+                onClick={homePageStore.cancel}
+                variant="pill"
+                className="whitespace-nowrap bg-red-400 hover:bg-red-500 active:bg-red-600"
+              >
+                {t("cancel")}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => homePageStore.launch(account, profile)}
+                variant="pill"
+                className="whitespace-nowrap"
+              >
+                {t("launch")}
+              </Button>
+            )}
           </div>
         ) : (
           <div>

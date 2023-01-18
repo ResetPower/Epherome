@@ -255,6 +255,8 @@ const enUs = {
     newsTitleAmount: "News Title Amount",
     "newsTitleAmount.description":
       "How many news titles are there on your home page? Accepted values are in {0}.",
+    folders: "Game Folders",
+    "folder.create": "New Game Folder",
   },
 };
 

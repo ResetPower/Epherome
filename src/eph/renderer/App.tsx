@@ -19,7 +19,7 @@ import {
 } from "react-icons/md";
 import { IconContext } from "react-icons/lib";
 import ProcessesPage from "../views/ProcessesPage";
-import { intlStore, t } from "../intl";
+import { intlStore, KeyOfLanguageDefinition, t } from "../intl";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { useEffect, useMemo } from "react";
 import { configStore } from "common/struct/config";
@@ -52,6 +52,8 @@ import { adapt } from "common/utils";
 import SettingsPage from "eph/views/settings/SettingsPage";
 import { NotificationPanelShower } from "eph/components/NotificationPanel";
 import { notificationStore } from "common/stores/notification";
+import FolderManagementPage from "eph/views/profile/FolderManagementPage";
+import FolderCreationPage from "eph/views/profile/FolderCreationPage";
 
 export const EphAppBar = observer((props: { pathname: Pathname }) => {
   // visit the key
@@ -59,7 +61,7 @@ export const EphAppBar = observer((props: { pathname: Pathname }) => {
   intlStore.language;
   // keep title bar style
   const isTitleBarEph = useMemo(() => configStore.titleBarStyle === "eph", []);
-  const title = t(props.pathname);
+  const title = t(props.pathname as KeyOfLanguageDefinition);
   const isAtHome = props.pathname === "home";
 
   const popMenuItems: MenuItem[] = [
@@ -73,7 +75,7 @@ export const EphAppBar = observer((props: { pathname: Pathname }) => {
       settings: <MdSettings />,
     }).map((value) => ({
       icon: value[1],
-      text: t(value[0] as Pathname),
+      text: t(value[0] as KeyOfLanguageDefinition),
       action: () => historyStore.push(value[0] as Pathname),
       active: historyStore.current === value[0],
     })),
@@ -228,6 +230,10 @@ export function RouterView({
           <ServerControlPage />
         ) : pathname === "marketplace" ? (
           <Marketplace />
+        ) : pathname === "folders" ? (
+          <FolderManagementPage />
+        ) : pathname === "folder.create" ? (
+          <FolderCreationPage />
         ) : (
           <></>
         )}

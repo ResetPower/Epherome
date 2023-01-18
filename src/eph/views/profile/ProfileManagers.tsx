@@ -117,6 +117,9 @@ export function ProfileGeneralFragment({
             current.ver
           )}
         </Info>
+        {current.from === "folder" && current.parent && (
+          <Info title="Parent Folder">{current.parent.nickname}</Info>
+        )}
         {current.modpackInfo && (
           <div>
             <Info title={t("modpack.name")}>{current.modpackInfo.name}</Info>

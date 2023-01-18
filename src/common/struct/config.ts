@@ -1,7 +1,18 @@
-import { MinecraftProfile } from "./profiles";
+import {
+  ChildProfile,
+  MinecraftProfile,
+  MinecraftProfileFolder,
+} from "./profiles";
 import { MinecraftAccount } from "./accounts";
 import { Java } from "./java";
-import { action, extendObservable, observable, runInAction, toJS } from "mobx";
+import {
+  action,
+  computed,
+  extendObservable,
+  observable,
+  runInAction,
+  toJS,
+} from "mobx";
 import { MinecraftDownloadProvider } from "core/url";
 import log4js from "log4js";
 import log4jsConfiguration from "common/utils/logging";
@@ -18,6 +29,7 @@ import { ensureDir } from "common/utils/files";
 import { RCSTheme } from "@resetpower/rcs";
 import { MinecraftServer } from "./server";
 import { Hitokoto } from "./hitokoto";
+import { _ } from "common/utils/arrays";
 
 export type TitleBarStyle = "os" | "eph";
 
@@ -38,6 +50,7 @@ export interface Dimension {
 export class ConfigStore {
   @observable accounts: MinecraftAccount[] = [];
   @observable profiles: MinecraftProfile[] = [];
+  @observable profileFolders: MinecraftProfileFolder[] = [];
   @observable servers: MinecraftServer[] = [];
   @observable javas: Java[] = [];
   @observable theme = "RCS Light";
@@ -66,6 +79,25 @@ export class ConfigStore {
     const defaultConfig = toJS(this);
     extendObservable(this, { ...defaultConfig, ...preferred });
     ensureDir(this.downloadTarget);
+  }
+  @computed
+  get currentProfile(): MinecraftProfile | undefined {
+    // if a child profile is available, then use the child profile,
+    // so if a standalone profile is selected,
+    // there must be _.deselect(configStore.profileFolders) invoked.
+    const folder = _.selected(this.profileFolders);
+    const childIndex = folder?.selectedChild ?? String();
+    const child: ChildProfile = folder?.children[childIndex] ?? {};
+    return folder && child
+      ? {
+          ...child,
+          name: childIndex,
+          dir: folder.pathname,
+          ver: childIndex,
+          from: "folder",
+          parent: folder,
+        }
+      : _.selected(this.profiles);
   }
   @action
   setConfig = (cb: (store: ConfigStore) => unknown, save = true): boolean => {

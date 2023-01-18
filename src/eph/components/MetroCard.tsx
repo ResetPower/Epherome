@@ -1,5 +1,5 @@
 import { configStore, FnBoardPlacement } from "common/struct/config";
-import { t } from "eph/intl";
+import { KeyOfLanguageDefinition, t } from "eph/intl";
 import { historyStore, Pathname } from "eph/renderer/history";
 import { createContext, ReactNode, useContext } from "react";
 
@@ -27,7 +27,7 @@ export function MetroCard(props: {
       }
     >
       <div className="text-2xl">{props.icon}</div>
-      {!enableBg && <div>{t(props.target)}</div>}
+      {!enableBg && <div>{t(props.target as KeyOfLanguageDefinition)}</div>}
     </div>
   );
 }

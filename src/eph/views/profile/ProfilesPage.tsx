@@ -1,8 +1,4 @@
 import {
-  Button,
-  Hyperlink,
-  TextField,
-  List,
   ListItem,
   TabBar,
   TabBarItem,
@@ -10,19 +6,17 @@ import {
   TabController,
   Center,
   IconButton,
-  ProgressBar,
 } from "@resetpower/rcs";
 import type { TabContext } from "@resetpower/rcs";
-import { createProfile } from "common/struct/profiles";
 import { configStore, setConfig } from "common/struct/config";
 import {
   MdCreate,
+  MdCreateNewFolder,
   MdFileDownload,
   MdGamepad,
   MdImportExport,
 } from "react-icons/md";
-import { DefaultFn } from "common/utils";
-import { useState, useRef, useReducer } from "react";
+import { useState, useRef } from "react";
 import { t } from "../../intl";
 import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
@@ -35,91 +29,13 @@ import {
   ProfileSavesFragment,
   ProfileSettingsFragment,
 } from "./ProfileManagers";
-import { ipcRenderer } from "electron";
 import { historyStore } from "eph/renderer/history";
 import { BiImport } from "react-icons/bi";
-import { importModpack } from "core/modpack";
-import { taskStore } from "common/task/store";
-import { Alert } from "eph/components/layouts";
 import { ChangeProfileFragment } from "./ChangeProfileFragment";
-
-export function ImportModpackFragment(props: {
-  onDone: DefaultFn;
-}): JSX.Element {
-  const theTask = useMemo(() => taskStore.findByType("importModpack"), []);
-  const task = useRef(theTask);
-  const [value, setValue] = useState("");
-  const [, update] = useReducer((x) => x + 1, 0);
-
-  task.current && (task.current.onSignal = update);
-
-  const handleImport = () => {
-    task.current = taskStore.register(
-      "Import Modpack",
-      "importModpack",
-      { value },
-      () => historyStore.push("profiles", "importModpack")
-    );
-    importModpack(value, task.current).then((profile) => {
-      if (profile) {
-        createProfile(profile);
-        props.onDone();
-      } else {
-        task.current && taskStore.error(task.current.id, new Error());
-      }
-    });
-  };
-  const handleBrowse = () =>
-    ipcRenderer
-      .invoke("import-modpack")
-      .then((value) => value && setValue(value));
-
-  return (
-    <div className="p-5 py-16 flex flex-col h-full">
-      <p className="font-medium text-xl pb-3">{t("modpack.import")}</p>
-      <TextField
-        value={value}
-        onChange={setValue}
-        placeholder={t("modpack.filePath")}
-        trailing={
-          <Hyperlink button onClick={handleBrowse}>
-            {t("profile.openDirectory")}
-          </Hyperlink>
-        }
-      />
-      {task.current?.percentage === -2 && (
-        <Alert severity="error">{t("errorOccurred")}</Alert>
-      )}
-      <div className="flex-grow pt-3">
-        {task.current?.subTasks.map(
-          (detail, index) =>
-            detail.inProgress && (
-              <div key={index}>
-                <p className="text-sm">
-                  {detail.name} ({detail.percentage}%)
-                </p>
-                <ProgressBar percentage={detail.percentage} />
-              </div>
-            )
-        )}
-      </div>
-      <div className="flex items-center">
-        <p className="text-sm">{task.current?.hashMap.get("helper")}</p>
-        <div className="flex-grow" />
-        <Button className="text-shallow" onClick={props.onDone}>
-          {t("cancel")}
-        </Button>
-        <Button
-          className="text-secondary"
-          disabled={!!task.current?.isRunning}
-          onClick={handleImport}
-        >
-          {t("profile.import")}
-        </Button>
-      </div>
-    </div>
-  );
-}
+import ExpansionPanel from "eph/components/ExpansionPanel";
+import path from "path";
+import fs from "fs";
+import { ImportModpackFragment } from "./ImportModpackFragment";
 
 const ProfilesPage = observer((props: { params: string }) => {
   const tabRef = useRef<TabContext>();
@@ -129,19 +45,115 @@ const ProfilesPage = observer((props: { params: string }) => {
   const handleCreate = () => setStatus("creating");
   const handleImport = () => setStatus("importing");
   const profiles = configStore.profiles;
-  const current = _.selected(profiles);
+  const folders = configStore.profileFolders;
+  const current = configStore.currentProfile;
   const _key = current?.gameDirIsolation;
   const manager = useMemo(() => {
     _key;
     return current ? new MinecraftProfileManagerStore(current) : undefined;
   }, [_key, current]);
+  const [open, setOpen] = useState(current?.from !== "folder");
+  const [openArgs, setOpenArgs] = useState<{ [key: number]: boolean }>({});
+
+  // automatically open the expandable panel that the selected profile is in
+  const openIndex = current?.parent && _.index(folders, current?.parent);
+  if (openIndex !== undefined) openArgs[openIndex] = true;
 
   return (
     <div className="flex eph-h-full">
-      <div className="overflow-y-auto bg-card z-10 shadow-md py-3 w-1/4">
-        <div className="flex items-center justify-center">
+      <div className="bg-card z-10 shadow-md py-1 w-1/4 flex flex-col">
+        <div className="overflow-y-auto flex-grow">
+          <ExpansionPanel
+            label="Standalone Profiles"
+            length={profiles.length}
+            open={open}
+            onToggle={() => setOpen((v) => !v)}
+          >
+            {_.map(profiles, (i, id) => (
+              <ListItem
+                className="px-3 py-2 overflow-x-hidden"
+                active={status !== "creating" && current === i}
+                onClick={() => {
+                  status && setStatus(false);
+                  i.selected
+                    ? setConfig(() => _.deselect(profiles))
+                    : setConfig(() => {
+                        _.select(profiles, i);
+                        // deselect other game folders' profiles in avoiding of conflict
+                        _.deselect(folders);
+                      });
+                  tabRef.current?.setValue(0);
+                }}
+                key={id}
+                dependent
+              >
+                <div className="flex items-center">
+                  <div className="w-7">
+                    {i.from === "download" ? (
+                      <MdFileDownload />
+                    ) : i.from === "import" ? (
+                      <MdImportExport />
+                    ) : (
+                      <MdGamepad />
+                    )}
+                  </div>
+                  {i.name}
+                </div>
+              </ListItem>
+            ))}
+          </ExpansionPanel>
+          {folders.map((folder) => {
+            const index = _.index(configStore.profileFolders, folder);
+            const versions = fs.readdirSync(
+              path.join(folder.pathname, "versions")
+            );
+            if (index === undefined) return false;
+            return (
+              <ExpansionPanel
+                label={folder.nickname}
+                open={openArgs[index] ?? false}
+                onToggle={() =>
+                  setOpenArgs({
+                    ...openArgs,
+                    [index]: !(openArgs[index] ?? false),
+                  })
+                }
+                length={versions.length}
+                key={index}
+              >
+                {versions ? (
+                  versions.map((i, id) => (
+                    <ListItem
+                      active={
+                        current?.from === "folder" && current.parent === folder
+                      }
+                      onClick={() =>
+                        setConfig((cfg) => {
+                          _.select(cfg.profileFolders, folder);
+                          folder.selectedChild = i;
+                        })
+                      }
+                      key={id}
+                      dependent
+                    >
+                      {i}
+                    </ListItem>
+                  ))
+                ) : (
+                  <div className="text-shallow">
+                    No versions in this folder.
+                  </div>
+                )}
+              </ExpansionPanel>
+            );
+          })}
+        </div>
+        <div className="flex justify-center space-x-3 border-t border-divider items-center">
           <IconButton onClick={handleCreate}>
             <MdCreate />
+          </IconButton>
+          <IconButton onClick={() => historyStore.push("folders")}>
+            <MdCreateNewFolder />
           </IconButton>
           <IconButton onClick={() => historyStore.push("download")}>
             <MdFileDownload />
@@ -150,35 +162,6 @@ const ProfilesPage = observer((props: { params: string }) => {
             <BiImport />
           </IconButton>
         </div>
-        <List className="space-y-1">
-          {_.map(profiles, (i, id) => (
-            <ListItem
-              className="px-3 py-2 mx-2 rounded-lg overflow-x-hidden"
-              active={status !== "creating" && current === i}
-              onClick={() => {
-                status && setStatus(false);
-                i.selected
-                  ? setConfig(() => _.deselect(profiles))
-                  : setConfig(() => _.select(profiles, i));
-                tabRef.current?.setValue(0);
-              }}
-              key={id}
-            >
-              <div className="flex items-center">
-                <div className="w-7">
-                  {i.from === "download" ? (
-                    <MdFileDownload />
-                  ) : i.from === "import" ? (
-                    <MdImportExport />
-                  ) : (
-                    <MdGamepad />
-                  )}
-                </div>
-                {i.name}
-              </div>
-            </ListItem>
-          ))}
-        </List>
       </div>
       <div className="flex-grow p-3 overflow-y-auto w-3/4">
         {status === "creating" ? (

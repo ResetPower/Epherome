@@ -8,6 +8,8 @@ export type Pathname =
   | "profiles"
   | "profile.install"
   | "profile.exportModpack"
+  | "folders"
+  | "folder.create"
   | "settings"
   | "extensions"
   | "download"
@@ -19,7 +21,7 @@ export type Pathname =
   | "marketplace";
 
 export interface Location {
-  pathname: string;
+  pathname: Pathname;
   params: string;
 }
 

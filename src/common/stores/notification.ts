@@ -20,6 +20,10 @@ export class NotificationStore {
     makeObservable(this);
   }
   @action
+  read(notification: Notification): boolean {
+    return (notification.read = true);
+  }
+  @action
   push(notification: Notification) {
     this.notifications.push(notification);
   }

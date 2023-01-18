@@ -135,7 +135,11 @@ export async function importModpack(
   ensureDir(destination);
   task.hashMap.put("helper", "Unzipping");
   task.signal();
-  await extractZip(filename, destination);
+  try {
+    await extractZip(filename, destination);
+  } catch (e) {
+    console.error(e);
+  }
   const manifest = path.join(destination, "manifest.json");
   const bbsMeta = path.join(destination, "mcbbs.packmeta");
   if (!fs.existsSync(manifest) || !fs.existsSync(bbsMeta)) {
