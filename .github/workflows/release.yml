@@ -13,12 +13,12 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16"
       - name: Cache node modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
@@ -34,7 +34,7 @@ jobs:
         run: npm install
       - name: Extract version
         id: ver
-        uses: Saionaro/extract-package-version@v1.0.6
+        uses: Saionaro/extract-package-version@v1.1.1
       - name: Build Webpack
         run: npm run prod
       - name: Build Electron for Windows
@@ -57,14 +57,14 @@ jobs:
         run: npm run make -- --linux
       - name: Upload Artifact
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: art
           retention-days: 1
           path: package/Epherome-${{ steps.ver.outputs.version }}.exe
       - name: Upload Artifact
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: art
           retention-days: 1
@@ -73,7 +73,7 @@ jobs:
             package/Epherome-${{ steps.ver.outputs.version }}-x64.dmg
       - name: Upload Artifact
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: art
           retention-days: 1
@@ -88,18 +88,18 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16"
       - name: Get Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: art
           path: package
       - name: Extract version
         id: ver
-        uses: Saionaro/extract-package-version@v1.0.6
+        uses: Saionaro/extract-package-version@v1.1.1
       - name: Install Dependencies
         run: npm install
       - name: Run Post Release Script
