@@ -96,6 +96,7 @@ const zhCn: Language = {
     "settings.downloadProvider.official": "官方",
     "settings.downloadConcurrency": "下载并发数",
     "settings.hitokoto": "一言",
+    "settings.languageHelper":"只有英语才被完全翻译。其他的翻译是由善良的志愿者提供的。",
     "settings.theme": "主题",
     "settings.theme.followOS": "跟随操作系统",
     "settings.titleBar": "标题栏",
@@ -232,6 +233,12 @@ const zhCn: Language = {
     serverControl: "服务器控制",
     "server.removing": "移除服务器",
     marketplace: "资源广场",
+    newsTitleAmount: "新闻标题数量",
+    "newsTitleAmount.description":"主页上的新闻标题数量。可接受的取值范围是 {0}.",
+    disabled: "禁用",
+    showRefreshButton: "显示刷新按钮",
+    custom: "自定义",
+    "settings.allowNotificationDot": "允许通知的红点", 
   },
 };
 
