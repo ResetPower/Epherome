@@ -241,12 +241,14 @@ const zhCn: Language = {
     showRefreshButton: "显示刷新按钮",
     custom: "自定义",
     "settings.allowNotificationDot": "允许通知的红点",
-    "news.description": "新闻由 Epherome 提供。内容包括 Minecraft 和 Epherome 的相关内容。",
-    "rememberWindowSize.description": "记住窗口大小",
-    "window.description": "如果你不勾选它，你的窗口下次启动将会是默认尺寸。",
+    "news.description":
+      "新闻由 Epherome 提供。内容包括 Minecraft 和 Epherome 的相关内容。",
+    rememberWindowSize: "记住窗口大小",
+    "rememberWindowSize.description":
+      "如果你不勾选它，你的窗口下次启动将会是默认尺寸。",
     backgroundPhoto: "背景图片",
     enableBackgroundPhoto: "启用背景图片",
-    "functionBoardPlacement": "功能板位置",
+    functionBoardPlacement: "功能板位置",
     "placement.off": "关闭",
     "placement.top": "顶部",
     "placement.right": "右侧",
@@ -266,7 +268,7 @@ const zhCn: Language = {
     noPlayersOnline: "没有玩家在线。",
     unableToShowTooManyPlayers: "无法显示太多玩家。",
     noItems: "没有拓展",
-    standaloneProfiles: "独立配置文件"
+    standaloneProfiles: "独立配置文件",
   },
 };
 

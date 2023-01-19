@@ -96,7 +96,7 @@ const ServerControlPage = observer(() => {
             creating && "rcs-hover-active"
           }`}
         >
-          <MdAdd /> {("newServer")}
+          <MdAdd /> {t("newServer")}
         </div>
         {servers.map((value, index) => (
           <ListItem
