@@ -76,7 +76,7 @@ export default function ExtensionStore(): JSX.Element {
             open={open}
           >
             {installed.length === 0 ? (
-              <p className="text-shallow text-center">No Items</p>
+              <p className="text-shallow text-center">{t("noItems")}</p>
             ) : (
               installed.map((e) => (
                 <ListItem

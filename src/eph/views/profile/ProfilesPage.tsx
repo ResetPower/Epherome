@@ -64,7 +64,7 @@ const ProfilesPage = observer((props: { params: string }) => {
       <div className="bg-card z-10 shadow-md py-1 w-1/4 flex flex-col">
         <div className="overflow-y-auto flex-grow">
           <ExpansionPanel
-            label="Standalone Profiles"
+            label={t("standaloneProfiles")}
             length={profiles.length}
             open={open}
             onToggle={() => setOpen((v) => !v)}
