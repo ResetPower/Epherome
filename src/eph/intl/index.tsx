@@ -5,6 +5,8 @@ import jaJp from "./ja-jp";
 import zhCn from "./zh-cn";
 import { action, makeObservable, observable } from "mobx";
 import ruRu from "./ru-ru";
+import { Hyperlink } from "@resetpower/rcs";
+import { openInBrowser } from "common/utils/open";
 
 export type LanguageDefinition = typeof enUs.definition;
 
@@ -42,5 +44,21 @@ export function t(key: KeyOfLanguageDefinition, ...args: string[]): string {
   return format(
     intlStore.language?.definition[key] ?? enUs.definition[key] ?? "",
     ...args
+  );
+}
+
+export function tLink(
+  key: KeyOfLanguageDefinition,
+  link: string,
+  linkText?: string
+): JSX.Element {
+  const def = intlStore.language?.definition[key] ?? enUs.definition[key] ?? "";
+  const split = def.split("{0}");
+  return (
+    <div className="flex space-x-1">
+      <div>{split[0]}</div>
+      <Hyperlink onClick={() => openInBrowser(link)}>{linkText}</Hyperlink>
+      <div>{split[1]}</div>
+    </div>
   );
 }

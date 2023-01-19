@@ -257,19 +257,22 @@ const enUs = {
       "How many news titles are there on your home page? Accepted values are in {0}.",
     folders: "Game Folders",
     "folder.create": "New Game Folder",
-    "news.description": "News are provided by Epherome. Minecraft and Epherome news involved.",
-    "rememberWindowSize.description": "Your window will be default size next time if you unchecked it.",
+    "news.description":
+      "News are provided by Epherome. Minecraft and Epherome news involved.",
+    "rememberWindowSize.description":
+      "Your window will be default size next time if you unchecked it.",
     rememberWindowSize: "Remember Window Size",
     backgroundPhoto: "Background Photo",
     enableBackgroundPhoto: "Enable Background Photo",
-    "functionBoardPlacement": "Function Board Placement",
+    functionBoardPlacement: "Function Board Placement",
     "placement.off": "Off",
     "placement.top": "Top",
     "placement.right": "Right",
     filePath: "File Path",
     "path.download": "Download Target",
     restoreDefault: "Restore Default",
-    "folder.description": "The target minecraft (or .minecraft) folder of Minecraft installations.",
+    "folder.description":
+      "The target minecraft (or .minecraft) folder of Minecraft installations.",
     noNotifications: "No Notifications",
     notifications: "Notifications",
     bugReport: "Bug Report",
@@ -282,7 +285,11 @@ const enUs = {
     noPlayersOnline: "No players online.",
     unableToShowTooManyPlayers: "Unable to show too many players.",
     noItems: "No Items",
-    standaloneProfiles: "Standalone Profiles"
+    standaloneProfiles: "Standalone Profiles",
+    hitokotoProvider: "Hitokoto",
+    "hitokoto.description":
+      "Display a random line of text provided by {0} on your homepage. (Chinese Simplified Contents)",
+    pleaseMoveTo: "Please move to {0}",
   },
 };
 

@@ -1,10 +1,4 @@
-import {
-  Button,
-  IconButton,
-  TextField,
-  BadgeButton,
-  Hyperlink,
-} from "@resetpower/rcs";
+import { Button, IconButton, TextField, BadgeButton } from "@resetpower/rcs";
 import { useEffect, useMemo } from "react";
 import { configStore } from "common/struct/config";
 import {
@@ -20,7 +14,7 @@ import {
 } from "react-icons/md";
 import { IoRefresh } from "react-icons/io5";
 import { showOverlay } from "../../overlay";
-import { t } from "../../intl";
+import { t, tLink } from "../../intl";
 import { _ } from "common/utils/arrays";
 import { observer } from "mobx-react-lite";
 import NewsView from "../NewsView";
@@ -28,7 +22,6 @@ import JavaManagementSheet from "../settings/JavaManagementSheet";
 import { historyStore } from "eph/renderer/history";
 import { apply } from "common/utils";
 import { BsServer } from "react-icons/bs";
-import { openInBrowser } from "common/utils/open";
 import { homePageStore } from "./store";
 import { MetroCardProvider, MetroCard } from "eph/components/MetroCard";
 import SlightText from "eph/components/SlightText";
@@ -224,21 +217,12 @@ const HomePage = observer(() => {
             className="flex-grow text-center"
             onClick={() =>
               showOverlay({
-                content: () => (
-                  <div>
-                    Please move to{" "}
-                    <Hyperlink
-                      onClick={() =>
-                        openInBrowser(
-                          "https://github.com/ResetPower/Epherome/issues"
-                        )
-                      }
-                    >
-                      GitHub Issues
-                    </Hyperlink>
-                    .
-                  </div>
-                ),
+                content: () =>
+                  tLink(
+                    "pleaseMoveTo",
+                    "https://github.com/ResetPower/Epherome/issues",
+                    "GitHub Issues"
+                  ),
               })
             }
           >

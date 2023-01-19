@@ -269,6 +269,10 @@ const zhCn: Language = {
     unableToShowTooManyPlayers: "无法显示太多玩家。",
     noItems: "没有拓展",
     standaloneProfiles: "独立配置文件",
+    hitokotoProvider: "一言",
+    "hitokoto.description":
+      "在你的首页展示一行由 {0} 提供的随机文本。 (仅简体中文内容)",
+    pleaseMoveTo: "请转到 {0} 提出你的问题。",
   },
 };
 

@@ -2,15 +2,13 @@ import {
   BadgeButton,
   Button,
   Checkbox,
-  Hyperlink,
   TextField,
   TinyTextField,
   WithHelper,
 } from "@resetpower/rcs";
 import { configStore, setConfig } from "common/struct/config";
-import { openInBrowser } from "common/utils/open";
 import SectionTitle from "eph/components/SectionTitle";
-import { t } from "eph/intl";
+import { t, tLink } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import { MdAdd } from "react-icons/md";
 import { homePageStore } from "../home/store";
@@ -66,11 +64,11 @@ const SettingsDisplayFragment = observer(() => {
         {t("settings.hitokoto")}
       </Checkbox>
       <div className="text-sm text-shallow">
-        Display a random line of text provided by{" "}
-        <Hyperlink onClick={() => openInBrowser("https://hitokoto.cn")}>
-          Hitokoto
-        </Hyperlink>{" "}
-        on your homepage. (Chinese Simplified Contents)
+        {tLink(
+          "hitokoto.description",
+          "https://hitokoto.cn",
+          t("hitokotoProvider")
+        )}
       </div>
       <Checkbox
         checked={configStore.hitokoto === "custom"}
