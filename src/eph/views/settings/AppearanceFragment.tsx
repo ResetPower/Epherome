@@ -67,36 +67,36 @@ const SettingsAppearanceFragment = observer(() => {
           ]}
           onChange={handleChangeTitleBarStyle}
         />
-        <WithHelper helper="Your window will be default size next time if you unchecked it.">
+        <WithHelper helper={t("rememberWindowSize.description")}>
           <Checkbox
             checked={configStore.rememberWindowSize}
             onChange={(checked) =>
               setConfig((cfg) => (cfg.rememberWindowSize = checked))
             }
           >
-            Remember Window Size
+            {t("rememberWindowSize")}
           </Checkbox>
         </WithHelper>
       </div>
       <div>
-        <SectionTitle>Background Photo</SectionTitle>
+        <SectionTitle>{t("backgroundPhoto")}</SectionTitle>
         <Checkbox
           checked={configStore.enableBg}
           onChange={(checked) => setConfig((cfg) => (cfg.enableBg = checked))}
         >
-          Enable Background Photo
+          {t("enableBackgroundPhoto")}
         </Checkbox>
         {configStore.enableBg && (
           <div className="mt-3">
             <Select
-              label="Function Board Placement"
+              label={t("functionBoardPlacement")}
               options={[
                 {
                   value: "off",
-                  text: "Off",
+                  text: t("placement.off"),
                 },
-                { value: "top", text: "Top" },
-                { value: "right", text: "Right" },
+                { value: "top", text: t("placement.top") },
+                { value: "right", text: t("placement.right") },
               ]}
               value={configStore.fnBoardPlacement}
               onChange={(value) =>
@@ -108,7 +108,7 @@ const SettingsAppearanceFragment = observer(() => {
             <TextField
               value={configStore.bgPath}
               onChange={(value) => setConfig((cfg) => (cfg.bgPath = value))}
-              label="File Path"
+              label={t("filePath")}
               trailing={
                 <Hyperlink button onClick={handleOpenBgPath}>
                   {t("profile.openDirectory")}

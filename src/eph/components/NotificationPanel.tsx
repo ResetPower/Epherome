@@ -2,6 +2,7 @@ import { shift, useFloating } from "@floating-ui/react-dom";
 import { IconButton } from "@resetpower/rcs";
 import { notificationStore } from "common/stores/notification";
 import { configStore } from "common/struct/config";
+import { t } from "eph/intl";
 import { observer } from "mobx-react-lite";
 import {
   CSSProperties,
@@ -30,7 +31,7 @@ const NotificationPanelForwardRef = forwardRef(
       style={props.style}
       className={`bg-card text-contrast shadow-md z-20 rounded-md p-3 ${props.className}`}
     >
-      <p className="mb-3 text-lg font-medium">Notifications</p>
+      <p className="mb-3 text-lg font-medium">{t("notifications")}</p>
       <JoinIn
         separator={<div className="border-t border-divider w-auto my-1" />}
       >
@@ -64,7 +65,7 @@ const NotificationPanelForwardRef = forwardRef(
         )}
       </JoinIn>
       {notificationStore.notifications.length === 0 && (
-        <div className="text-shallow text-sm">No Notifications</div>
+        <div className="text-shallow text-sm">{t("noNotifications")}</div>
       )}
     </div>
   )

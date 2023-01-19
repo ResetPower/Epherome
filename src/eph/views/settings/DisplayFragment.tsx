@@ -19,7 +19,7 @@ const SettingsDisplayFragment = observer(() => {
   return (
     <div className="space-y-2">
       <SectionTitle>{t("news")}</SectionTitle>
-      <WithHelper helper="News are provided by Epherome. Minecraft and Epherome news involved.">
+      <WithHelper helper={t("news.description")}>
         <Checkbox
           checked={configStore.news}
           onChange={(checked) => setConfig((cfg) => (cfg.news = checked))}

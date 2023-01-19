@@ -242,7 +242,7 @@ const HomePage = observer(() => {
               })
             }
           >
-            <MdBugReport /> Bug Report
+            <MdBugReport /> {t("bugReport")}
           </Button>
         </div>
         <div className="text-contrast flex items-center">

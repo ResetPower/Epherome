@@ -57,9 +57,9 @@ const SettingsDownloadFragment = observer(() => {
             setConfig((cfg) => (cfg.downloadConcurrency = value));
         }}
       />
-      <WithHelper helper="The target minecraft (or .minecraft) folder of Minecraft installations.">
+      <WithHelper helper={t("folder.description")}>
         <TextField
-          label="Download Target"
+          label={t("path.download")}
           value={configStore.downloadTarget}
           onChange={(value) => setConfig((cfg) => (cfg.downloadTarget = value))}
           trailing={
@@ -71,7 +71,7 @@ const SettingsDownloadFragment = observer(() => {
           }
         />
         <Button variant="pill" onClick={handleRestore}>
-          Restore Default
+          {t("restoreDefault")}
         </Button>
       </WithHelper>
     </div>

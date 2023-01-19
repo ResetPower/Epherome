@@ -54,10 +54,10 @@ function PlayerList(props: { state: JavaStatusResponse }): JSX.Element {
     <div className="h-full">
       {list.length === 0 ? (
         state.players?.online === 0 ? (
-          <Center className="text-shallow">No players online.</Center>
+          <Center className="text-shallow">{t("noPlayersOnline")}</Center>
         ) : (
           <Center className="text-shallow">
-            Unable to show too many players.
+            {t("unableToShowTooManyPlayers")}
           </Center>
         )
       ) : (
@@ -112,18 +112,18 @@ export default function ServerManagerFragment(props: {
         <div className="h-full flex flex-col">
           <Info title={t("name")}>{props.server.name}</Info>
           <Info title="IP">{props.server.ip}</Info>
-          <Info title="Status">
+          <Info title={t("status")}>
             {state === undefined ? (
-              <Dot variant="connecting">Connecting...</Dot>
+              <Dot variant="connecting">{t("connecting")}</Dot>
             ) : state === null ? (
-              <Dot variant="offline">Offline</Dot>
+              <Dot variant="offline">{t("offline")}</Dot>
             ) : (
               <>
-                <Dot variant="online">Online</Dot>
+                <Dot variant="online">{t("online")}</Dot>
                 <Info title="Players">
                   {state.players.online}/{state.players.max}
                 </Info>
-                <Info title="Version">{state.version.name}</Info>
+                <Info title={t("version")}>{state.version.name}</Info>
               </>
             )}
           </Info>
@@ -164,7 +164,7 @@ export default function ServerManagerFragment(props: {
         {state ? (
           <PlayerList state={state} />
         ) : (
-          <Center className="text-shallow">Server is offline.</Center>
+          <Center className="text-shallow">{t("serverIsOffline")}</Center>
         )}
       </TabBody>
     </TabController>
