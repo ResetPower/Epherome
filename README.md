@@ -23,6 +23,8 @@ _Epherome, which shocks the world, always surprises you by bringing you appallin
 If you want to contribute code to Epherome, please follow the guidelines provided by Epherome.
 They are in [Wiki](https://github.com/ResetPower/Epherome/wiki)!
 
+If you want to contribute translations, you must read [How to Contribute Translations](https://github.com/ResetPower/Epherome/wiki/How-to-Contribute-Translations) first.
+
 ## CI
 
 Our CI is public for everyone: [GitHub Actions](https://github.com/ResetPower/Epherome/actions)
