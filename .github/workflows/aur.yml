@@ -1,0 +1,51 @@
+name: aur
+
+on:
+  workflow_dispatch:
+    branches: [aur]
+
+jobs:
+  build:
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - name: Install Dependencies
+        run: npm install
+      - name: Extract version
+        id: ver
+        uses: Saionaro/extract-package-version@v1.1.1
+      - name: Build Webpack
+        run: npm run prod
+      - name: Build Electron for Linux
+        run: npm run make -- --linux deb
+      - name: Run Post Release Script
+        run: npx ts-node scripts/post-release.ts deb
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.ver.outputs.version }}
+          name: Epherome Beta ${{ steps.ver.outputs.version }} - Deb Only
+          draft: false
+          prerelease: true
+          files: |
+            package/Epherome-${{ steps.ver.outputs.version }}.deb
+            package/Epherome-${{ steps.ver.outputs.version }}.deb.hash
+      - name: Generate PKGBUILD
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: npx ts-node scripts/generate-pkgbuild.ts
+      - name: AUR Publish
+        uses: KSXGitHub/github-actions-deploy-aur@2
+        with:
+          pkgname: epherome
+          pkgbuild: ./PKGBUILD
+          commit_username: ResetPower
+          commit_email: resetpower20@gmail.com
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update AUR package, Epherome version ${{ steps.ver.outputs.version }}
+          ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
