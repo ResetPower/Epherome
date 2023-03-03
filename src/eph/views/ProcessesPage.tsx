@@ -139,7 +139,7 @@ const ProcessesPage = observer(() => {
                       </Button>
                     ))}
                 </div>
-                <div className="p-6 break-all">
+                <div className="p-6 break-all mono-font">
                   {current
                     ? current.outputs.map((value, index) => (
                         <p key={index}>{value}</p>

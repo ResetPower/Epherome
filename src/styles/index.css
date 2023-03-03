@@ -1,5 +1,6 @@
 @import "overlay.css";
 @import "anime.css";
+@import "fonts.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,6 +36,7 @@
 
 body {
   overflow-x: hidden;
+  font-family: "SF";
   @apply font-sans;
 }
 
@@ -58,4 +60,8 @@ body {
 }
 .eph-no-drag {
   -webkit-app-region: no-drag;
+}
+
+div.mono-font {
+    font-family: "JB";
 }
