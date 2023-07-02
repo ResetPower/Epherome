@@ -8,40 +8,47 @@ import got from "got";
 import { useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
+const ERROR_MESSAGES = {
+  INCOMPLETE_INFORMATION: "Incomplete Information",
+  WRONG_CREDENTIALS: "Password or username wrong.",
+  INTERNET_NOT_AVAILABLE: t("internetNotAvailable"),
+};
+
 export default function LoginPage(): JSX.Element {
   const [visible, setVisible] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLogin = () => {
-    if (username === "" || password === "") {
-      setMessage("Incomplete Information");
+  const handleLogin = async () => {
+    if (!username || !password) {
+      setMessage(ERROR_MESSAGES.INCOMPLETE_INFORMATION);
       return;
     }
+
     setMessage("Pending...");
     commonLogger.info(`Trying to login Epherome account. User: ${username}`);
-    got
-      .post("https://api.epherome.com/auth/login", {
+
+    try {
+      const response = await got.post("https://api.epherome.com/auth/login", {
         json: { name: username, password },
-      })
-      .then((resp) => {
-        personalStore.login(JSON.parse(resp.body).accessToken);
-        historyStore.back();
-        historyStore.push("ephPersonalCenter");
-        commonLogger.info(`Logged in.`);
-      })
-      .catch((error) => {
-        if (error?.response?.statusCode === 403) {
-          setMessage("Password or username wrong.");
-        } else {
-          setMessage(t("internetNotAvailable"));
-        }
-        console.error(error);
       });
+      const accessToken = JSON.parse(response.body).accessToken;
+      personalStore.login(accessToken);
+      historyStore.back();
+      historyStore.push("ephPersonalCenter");
+      commonLogger.info(`Logged in.`);
+    } catch (error) {
+      if ((error as any)?.response?.statusCode === 403) {
+        setMessage(ERROR_MESSAGES.WRONG_CREDENTIALS);
+      } else {
+        setMessage(ERROR_MESSAGES.INTERNET_NOT_AVAILABLE);
+      }
+      console.error(error);
+    }
   };
 
-  const pending = message === "Pending...";
+  const isPending = message === "Pending...";
 
   return (
     <div className="p-9 space-y-3">
@@ -65,14 +72,12 @@ export default function LoginPage(): JSX.Element {
         }
       />
       <div className="flex items-center space-x-3">
-        <Button variant="pill" onClick={handleLogin} disabled={pending}>
+        <Button variant="pill" onClick={handleLogin} disabled={isPending}>
           {t("personal.login")}
         </Button>
-        {pending && <Spinner />}
+        {isPending && <Spinner />}
         <p className="flex-grow">{message}</p>
-        <Hyperlink
-          onClick={() => openInBrowser("https://epherome.com/register")}
-        >
+        <Hyperlink onClick={() => openInBrowser("https://epherome.com/register")}>
           {t("personal.register")}...
         </Hyperlink>
       </div>
