@@ -8,6 +8,12 @@ Powerful Minecraft launcher
 
 [Official Site](https://epherome.com) · [Releases](https://github.com/ResetPower/Epherome/releases)
 
+## ⚠️ Important Notice
+
+Epherome have started its plan to renew completely in the beginning of 2024. Go to the [tauri branch](https://github.com/ResetPower/Epherome/tree/tauri) to see new codes.
+
+This branch may not update in the future and may be replaced by the new branch in somewhat distant future. Information in the rest of README file and other documents may be old and may not be of reference value.
+
 ## Brief
 
 **Redefine Minecraft Launching.**
