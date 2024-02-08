@@ -67,7 +67,7 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
-          tauriScript: npm run tauri build --target i686-pc-windows-msvc
+          args: --target i686-pc-windows-msvc
 
       - name: Downloading Dependencies for Windows on ARM64
         if: matrix.platform == 'windows-latest'
@@ -90,5 +90,5 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
-          tauriScript: npm run tauri build --target aarch64-pc-windows-msvc
+          args: --target aarch64-pc-windows-msvc
         
