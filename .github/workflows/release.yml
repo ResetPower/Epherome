@@ -43,6 +43,14 @@ jobs:
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
 
       - name: Reconfigure for Windows x86
         if: matrix.platform == 'windows-latest'
@@ -50,7 +58,16 @@ jobs:
 
       - name: Build the app for Windows x86
         if: matrix.platform == 'windows-latest'
-        run: npm run tauri build --target i686-pc-windows-msvc
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          tauriScript: npm run tauri build --target i686-pc-windows-msvc
 
       - name: Downloading Dependencies for Windows on ARM64
         if: matrix.platform == 'windows-latest'
@@ -64,7 +81,7 @@ jobs:
       
       - name: Build the app for Windows on ARM64
         if: matrix.platform == 'windows-latest'
-        run: npm run tauri build --target aarch64-pc-windows-msvc
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -73,3 +90,5 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
+          tauriScript: npm run tauri build --target aarch64-pc-windows-msvc
+        
