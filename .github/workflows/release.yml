@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies (ubuntu only)
+      - name: Install dependencies for Linux
         if: matrix.platform == 'ubuntu-20.04'
         # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
         run: |
@@ -41,7 +41,8 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # Change this to npm, yarn or pnpm.
 
-      - name: Build the app
+      - name: Build the app for Linux amd64 or Windows amd64
+        if: matrix.platform != 'macos-latest'
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -51,6 +52,75 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
+
+      - name: Reconfigure for MacOS Universal
+        if: matrix.platform == 'macos-latest'
+        run: rustup target add universal-apple-darwin
+
+      - name: Build the app for MacOS Universal
+        if: matrix.platform == 'macos-latest'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          args: --target universal-apple-darwin
+      
+      - name: Reconfigure for Linux on ARMv8(ARM64)
+        if: matrix.platform == 'ubuntu-20.04'
+        run: rustup target add aarch64-unknown-linux-gnu
+      
+      - name: Install dependencies for Linux on ARMv8(ARM64)
+        if: matrix.platform == 'ubuntu-20.04'
+        run: sudo apt install gcc-aarch64-linux-gnu
+
+      - name: Get prepared for Linux on ARMv8(ARM64)
+        if: matrix.platform == 'ubuntu-20.04'
+        uses: pguyot/arm-runner-action@v2
+        id: build_image
+        with: 
+          base_image: raspios_lite_arm64:latest
+          cpu: cortex-a53
+          command: |
+            echo "Enabling the respective architecture in the package manager."
+            sudo dpkg --add-architecture arm64
+            echo "Adjusting Package Sources."
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 main restricted" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates main restricted" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 universe" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates universe" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 multiverse" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates multiverse" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-backports main restricted" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security main restricted" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security universe" >> /etc/apt/sources.list
+            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security multiverse" >> /etc/apt/sources.list
+            echo "Updating the package information"
+            sudo apt-get update && sudo apt-get upgrade -y
+            echo "Installing the required webkitgtk library"
+            sudo apt install libwebkit2gtk-4.0-dev:arm64
+            echo "Installing OpenSSL"
+            sudo apt install libssl-dev:arm64
+            echo "Configuring"
+            export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu/
+      
+      - name: Build the app for Linux on ARMv8(ARM64)
+        if: matrix.platform == 'ubuntu-20.04'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          tauriScript: cargo tauri
+          args: --target aarch64-unknown-linux-gnu
 
       - name: Reconfigure for Windows x86
         if: matrix.platform == 'windows-latest'
@@ -69,7 +139,7 @@ jobs:
           prerelease: false
           args: --target i686-pc-windows-msvc
 
-      - name: Downloading Dependencies for Windows on ARM64
+      - name: Install dependencies for Windows on ARM64
         if: matrix.platform == 'windows-latest'
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
@@ -90,5 +160,5 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
-          args: --target aarch64-pc-windows-msvc
+          args: --target aarch64-pc-windows-msvc --bundles nsis
         
