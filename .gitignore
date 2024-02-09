@@ -22,9 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-<<<<<<< HEAD
 
 # Local Configuration
 .npmrc
-=======
->>>>>>> upstream/main
