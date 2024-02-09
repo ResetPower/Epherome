@@ -83,17 +83,6 @@ jobs:
         run: |
           echo "Enabling the respective architecture in the package manager."
           sudo dpkg --add-architecture arm64
-          echo "Adjusting Package Sources."
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 main restricted" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates main restricted" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 universe" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates universe" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 multiverse" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates multiverse" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-backports main restricted" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security main restricted" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security universe" >> /etc/apt/sources.list
-          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security multiverse" >> /etc/apt/sources.list
           echo "Updating the package information"
           sudo apt-get update && sudo apt-get upgrade -y
           echo "Installing the required webkitgtk library"
