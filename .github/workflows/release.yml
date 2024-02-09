@@ -55,7 +55,7 @@ jobs:
 
       - name: Reconfigure for MacOS Universal
         if: matrix.platform == 'macos-latest'
-        run: rustup target add universal-apple-darwin
+        run: rustup target add aarch64-apple-darwin && rustup target add x86_64-apple-darwin
 
       - name: Build the app for MacOS Universal
         if: matrix.platform == 'macos-latest'
@@ -79,34 +79,29 @@ jobs:
         run: sudo apt install gcc-aarch64-linux-gnu
 
       - name: Get prepared for Linux on ARMv8(ARM64)
-        if: matrix.platform == 'ubuntu-20.04'
-        uses: pguyot/arm-runner-action@v2
-        id: build_image
-        with: 
-          base_image: raspios_lite_arm64:latest
-          cpu: cortex-a53
-          command: |
-            echo "Enabling the respective architecture in the package manager."
-            sudo dpkg --add-architecture arm64
-            echo "Adjusting Package Sources."
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 main restricted" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates main restricted" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 universe" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates universe" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 multiverse" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates multiverse" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-backports main restricted" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security main restricted" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security universe" >> /etc/apt/sources.list
-            sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security multiverse" >> /etc/apt/sources.list
-            echo "Updating the package information"
-            sudo apt-get update && sudo apt-get upgrade -y
-            echo "Installing the required webkitgtk library"
-            sudo apt install libwebkit2gtk-4.0-dev:arm64
-            echo "Installing OpenSSL"
-            sudo apt install libssl-dev:arm64
-            echo "Configuring"
-            export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu/
+        if: matrix.platform == 'ubuntu-20.04' 
+        run: |
+          echo "Enabling the respective architecture in the package manager."
+          sudo dpkg --add-architecture arm64
+          echo "Adjusting Package Sources."
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 main restricted" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates main restricted" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 universe" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates universe" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04 multiverse" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-updates multiverse" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-backports main restricted" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security main restricted" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security universe" >> /etc/apt/sources.list
+          sudo echo "\ndeb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports ubuntu-20.04-security multiverse" >> /etc/apt/sources.list
+          echo "Updating the package information"
+          sudo apt-get update && sudo apt-get upgrade -y
+          echo "Installing the required webkitgtk library"
+          sudo apt install libwebkit2gtk-4.0-dev:arm64
+          echo "Installing OpenSSL"
+          sudo apt install libssl-dev:arm64
+          echo "Configuring"
+          export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu/
       
       - name: Build the app for Linux on ARMv8(ARM64)
         if: matrix.platform == 'ubuntu-20.04'
