@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies (ubuntu only)
+      - name: Install dependencies for Linux
         if: matrix.platform == 'ubuntu-20.04'
         # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
         run: |
@@ -41,9 +41,9 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # Change this to npm, yarn or pnpm.
 
-      - name: Build the app
+      - name: Build the app for Linux amd64 or Windows amd64
+        if: matrix.platform != 'macos-latest'
         uses: tauri-apps/tauri-action@v0
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -52,3 +52,61 @@ jobs:
           releaseBody: "See the assets to download and install this version."
           releaseDraft: true
           prerelease: false
+
+      - name: Reconfigure for MacOS Universal
+        if: matrix.platform == 'macos-latest'
+        run: rustup target add aarch64-apple-darwin && rustup target add x86_64-apple-darwin
+
+      - name: Build the app for MacOS Universal
+        if: matrix.platform == 'macos-latest'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          args: --target universal-apple-darwin
+
+      - name: Reconfigure for Windows x86
+        if: matrix.platform == 'windows-latest'
+        run: rustup target add i686-pc-windows-msvc
+
+      - name: Build the app for Windows x86
+        if: matrix.platform == 'windows-latest'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          args: --target i686-pc-windows-msvc
+
+      - name: Install dependencies for Windows on ARM64
+        if: matrix.platform == 'windows-latest'
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: amd64_arm64
+
+      - name: Reconfigure for Windows on ARM64
+        if: matrix.platform == 'windows-latest'
+        run: rustup target add aarch64-pc-windows-msvc
+      
+      - name: Build the app for Windows on ARM64
+        if: matrix.platform == 'windows-latest'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: __VERSION__
+          releaseName: "Epherome v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
+          releaseBody: "See the assets to download and install this version."
+          releaseDraft: true
+          prerelease: false
+          args: --target aarch64-pc-windows-msvc --bundles nsis
+        
