@@ -120,7 +120,7 @@ jobs:
           releaseDraft: true
           prerelease: false
           tauriScript: cargo tauri
-          args: --target aarch64-unknown-linux-gnu
+          args: --target aarch64-unknown-linux-gnu --bundles deb
 
       - name: Reconfigure for Windows x86
         if: matrix.platform == 'windows-latest'
