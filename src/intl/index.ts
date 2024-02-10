@@ -35,7 +35,7 @@ class IntlStore {
   };
 }
 
-export const intlStore = new IntlStore([root, zhCn,zhHk]);
+export const intlStore = new IntlStore([root, zhCn, zhHk]);
 
 // load language in the config
 intlStore.updateLanguage(cfg.language);
