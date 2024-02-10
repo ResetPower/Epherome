@@ -2,6 +2,7 @@ import { cfg } from "../stores/config";
 import { RecursivePartial, deepMerge } from "../utils";
 import root from "./root";
 import zhCn from "./zh-cn";
+import zhHk from "./zh-hk";
 
 export let t = root.messages;
 
@@ -34,7 +35,7 @@ class IntlStore {
   };
 }
 
-export const intlStore = new IntlStore([root, zhCn]);
+export const intlStore = new IntlStore([root, zhCn, zhHk]);
 
 // load language in the config
 intlStore.updateLanguage(cfg.language);
