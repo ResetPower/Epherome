@@ -3,7 +3,14 @@ import { IconContext } from "react-icons";
 import { RouteName, routeMap } from "./router/map";
 import { historyStore } from "./router";
 import Sidebar from "./router/Sidebar";
-import { MdAccountCircle, MdGamepad, MdHome, MdSettings } from "react-icons/md";
+import {
+  MdAccountCircle,
+  MdCalculate,
+  MdGamepad,
+  MdHome,
+  MdSettings,
+} from "react-icons/md";
+import { t } from "./intl";
 
 function App() {
   const [route, setRoute] = useState<RouteName>("home");
@@ -14,10 +21,19 @@ function App() {
       <div className="flex h-full">
         <Sidebar
           items={[
-            { path: "home", icon: <MdHome />, name: "Home" },
-            { path: "accounts", icon: <MdAccountCircle />, name: "Accounts" },
-            { path: "profiles", icon: <MdGamepad />, name: "Profiles" },
-            { path: "settings", icon: <MdSettings />, name: "Settings" },
+            { path: "home", icon: <MdHome />, name: t.sidebar.home },
+            {
+              path: "accounts",
+              icon: <MdAccountCircle />,
+              name: t.sidebar.accounts,
+            },
+            { path: "profiles", icon: <MdGamepad />, name: t.sidebar.profiles },
+            { path: "counter", icon: <MdCalculate />, name: t.sidebar.counter },
+            {
+              path: "settings",
+              icon: <MdSettings />,
+              name: t.sidebar.settings,
+            },
           ]}
         />
         {routeMap[route]}

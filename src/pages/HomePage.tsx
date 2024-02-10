@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import { launchMinecraft } from "../core/launch";
+import { t } from "../intl";
 import { cfg } from "../stores/config";
 import { tr } from "../internationalize";
 
