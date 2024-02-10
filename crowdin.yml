@@ -1,3 +1,4 @@
 files:
   - source: /src/internationalize/lang/en.json
     translation: /src/internationalize/lang/%two_letters_code%.json
+    multilingual: 1
