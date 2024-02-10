@@ -4,7 +4,7 @@ export default {
   messages: {
     counter: {
       increase: "增加",
-      clicked: (count: number) => `你已經click呢個按鈕 ${count} 次。`,
+      clicked: (count: number) => `你已經click咗呢個botton${count}次。`,
     },
     account: "帳戶",
     instance: "實例",
@@ -36,7 +36,7 @@ export default {
       offline: "離線登錄",
       authserver: "驗證伺服器",
       type: "帳戶類型",
-      removeConfirmation: (name: string) => `你真係想要移除帳戶 ${name} 嗎？`,
+      removeConfirmation: (name: string) => `你真係想要移除帳戶${name}嗎？`,
       token: {
         validate: "檢查token狀態",
         available: "token可用",
@@ -47,11 +47,11 @@ export default {
       empty: "仲未有實例。",
       gameDir: "遊戲文件夾",
       gameDirHelper:
-        "通常係 Windows 上嘅 '.minecraft' 文件夾同 macOS 或 Linux 上嘅 'minecraft' 文件夾。",
+        "通常係 Windows上嘅'.minecraft'文件夾同macOS或Linux上嘅'minecraft'文件夾。",
       version: "版本",
-      versionHelper: "遊戲文件夾中嘅 'versions' 文件夾中嘅文件夾名。",
+      versionHelper: "遊戲文件夾中嘅'versions'文件夾中嘅文件夾名。",
       unopened: "喺左邊打開一個實例或者創建新實例。",
-      removeConfirmation: (name: string) => `你真係想要移除實例 ${name} 嗎？`,
+      removeConfirmation: (name: string) => `你真係想要移除實例${name}嗎？`,
     },
     settings: {
       general: "一般",
@@ -66,7 +66,7 @@ export default {
       dataDir: "數據文件夾",
       officialSite: "官方網站",
       githubHomepage: "GitHub 首頁",
-      oss: "開源軟體",
+      oss: "開源軟件",
     },
   },
 };
