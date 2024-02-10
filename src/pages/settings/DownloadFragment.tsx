@@ -1,3 +1,5 @@
+import { t } from "../../intl";
+
 export default function DownloadFragment() {
-  return <p>No Options</p>;
+  return <p>{t.settings.noOptions}</p>;
 }

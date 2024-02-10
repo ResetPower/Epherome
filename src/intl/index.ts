@@ -13,16 +13,28 @@ export interface Language {
   messages: RecursivePartial<LanguageMessages>;
 }
 
-export const languages: Language[] = [root, zhCn];
+type ChangeLanguageCallback = (code: string) => unknown;
 
-export function updateLanguage(code: string) {
-  const lang = languages.find((x) => x.code === code);
-  if (lang) {
-    t = deepMerge(root.messages, lang.messages as Partial<LanguageMessages>);
-    console.log(t);
-    cfg.language = code;
+class IntlStore {
+  languages: Language[];
+  fn?: ChangeLanguageCallback;
+  constructor(languages: Language[]) {
+    this.languages = languages;
   }
+  subscribe = (fn: ChangeLanguageCallback) => {
+    this.fn = fn;
+  };
+  updateLanguage = (code: string) => {
+    const lang = this.languages.find((x) => x.code === code);
+    if (lang) {
+      t = deepMerge(root.messages, lang.messages as Partial<LanguageMessages>);
+      cfg.language = code;
+      this.fn && this.fn(code);
+    }
+  };
 }
 
+export const intlStore = new IntlStore([root, zhCn]);
+
 // load language in the config
-updateLanguage(cfg.language);
+intlStore.updateLanguage(cfg.language);

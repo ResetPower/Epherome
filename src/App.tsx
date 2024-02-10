@@ -10,11 +10,14 @@ import {
   MdHome,
   MdSettings,
 } from "react-icons/md";
-import { t } from "./intl";
+import { intlStore, t } from "./intl";
+import { useForceUpdate } from "./utils";
 
 function App() {
+  const forceUpdate = useForceUpdate();
   const [route, setRoute] = useState<RouteName>("home");
   historyStore.subscribe(setRoute);
+  intlStore.subscribe(forceUpdate);
 
   return (
     <IconContext.Provider value={{ size: "1.3em" }}>
@@ -36,7 +39,7 @@ function App() {
             },
           ]}
         />
-        {routeMap[route]}
+        {routeMap[route]()}
       </div>
     </IconContext.Provider>
   );

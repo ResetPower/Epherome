@@ -1,3 +1,5 @@
+import { useReducer } from "react";
+
 export function resolve<T>(formData: FormData): T {
   const obj: Record<string, string> = {};
   for (const [k, v] of formData.entries()) {
@@ -43,4 +45,9 @@ export function deepMerge<T>(alpha: T, beta: Partial<T>): T {
       } else result[key] = value;
   }
   return result;
+}
+
+export function useForceUpdate() {
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  return forceUpdate;
 }

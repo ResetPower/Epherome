@@ -5,11 +5,11 @@ import ProfilesPage from "../pages/profiles/ProfilesPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 
 export const routeMap = {
-  home: <HomePage />,
-  accounts: <AccountsPage />,
-  profiles: <ProfilesPage />,
-  counter: <CounterPage />,
-  settings: <SettingsPage />,
+  home: () => <HomePage />,
+  accounts: () => <AccountsPage />,
+  profiles: () => <ProfilesPage />,
+  counter: () => <CounterPage />,
+  settings: () => <SettingsPage />,
 };
 
 export type RouteName = keyof typeof routeMap;

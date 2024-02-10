@@ -7,6 +7,7 @@ import { cfg } from "../../stores/config";
 import WideButton from "../../components/WideButton";
 import Center from "../../components/Center";
 import { confirm } from "@tauri-apps/api/dialog";
+import { t } from "../../intl";
 
 export default function ProfilesPage() {
   const [state, setState] = useState(cfg.profiles.active);
@@ -17,7 +18,7 @@ export default function ProfilesPage() {
       <div className="w-1/4 border-r flex flex-col">
         <div className="flex-grow p-3 space-y-1">
           {cfg.profiles.isEmpty ? (
-            <Center className="text-gray-500">No profiles here.</Center>
+            <Center className="text-gray-500">{t.profiles.empty}</Center>
           ) : (
             cfg.profiles.map((prf, id) => (
               <ListTile
@@ -35,35 +36,39 @@ export default function ProfilesPage() {
         </div>
         <WideButton onClick={() => setState("create")} className="border-t">
           <MdAdd />
-          Create
+          {t.create}
         </WideButton>
       </div>
       <div className="flex-grow p-3">
-        {!state && (
-          <Center>Open a profile on the left or create a new profile.</Center>
-        )}
+        {!state && <Center>{t.profiles.unopened}</Center>}
         {state === "create" && (
           <CreateProfileFragment goBack={() => setState(cfg.profiles.active)} />
         )}
         {current && (
           <div>
-            <p>Name: {current.name}</p>
-            <p>Game Directory: {current.gameDir}</p>
-            <p>Version: {current.version}</p>
+            <p>
+              {t.name}: {current.name}
+            </p>
+            <p>
+              {t.profiles.gameDir}: {current.gameDir}
+            </p>
+            <p>
+              {t.profiles.version}: {current.version}
+            </p>
             <Button
               onClick={() =>
-                confirm(
-                  `Do you really want to remove profile ${current.name}?`
-                ).then((result) => {
-                  if (result) {
-                    cfg.profiles.remove(state);
-                    setState(undefined);
+                confirm(t.profiles.removeConfirmation(current.name)).then(
+                  (result) => {
+                    if (result) {
+                      cfg.profiles.remove(state);
+                      setState(undefined);
+                    }
                   }
-                }).catch
+                ).catch
               }
               dangerous
             >
-              Remove
+              {t.remove}
             </Button>
           </div>
         )}

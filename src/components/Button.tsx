@@ -16,7 +16,7 @@ export default function Button(props: {
     <button
       className={concat(
         props.className,
-        "flex items-center py-1 px-3 text-sm font-medium rounded transition-colors",
+        "flex items-center py-1 px-3 text-sm font-medium rounded transition-colors whitespace-nowrap",
         props.primary
           ? "text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
           : props.dangerous

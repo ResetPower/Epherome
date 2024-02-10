@@ -7,6 +7,7 @@ import AccountDetailFragment from "./AccountDetailFragment";
 import WideButton from "../../components/WideButton";
 import Center from "../../components/Center";
 import { confirm } from "@tauri-apps/api/dialog";
+import { t } from "../../intl";
 
 export default function AccountsPage() {
   const [state, setState] = useState(cfg.accounts.active);
@@ -17,7 +18,7 @@ export default function AccountsPage() {
       <div className="w-1/4 border-r flex flex-col">
         <div className="flex-grow p-3 space-y-1">
           {cfg.accounts.isEmpty ? (
-            <Center className="text-gray-500">No accounts here.</Center>
+            <Center className="text-gray-500">{t.accounts.empty}</Center>
           ) : (
             cfg.accounts.map((acc, id) => (
               <ListTile
@@ -35,27 +36,25 @@ export default function AccountsPage() {
         </div>
         <WideButton className="border-t" onClick={() => setState("create")}>
           <MdAdd />
-          Create
+          {t.create}
         </WideButton>
       </div>
       <div className="flex-grow p-3">
-        {!state && (
-          <Center>Open an account on the left or create a new account.</Center>
-        )}
+        {!state && <Center>{t.accounts.unopened}</Center>}
         {state === "create" && (
           <CreateAccountFragment goBack={() => setState(cfg.accounts.active)} />
         )}
         {current && (
           <AccountDetailFragment
             onRemove={() =>
-              confirm(
-                `Do you really want to remove account ${current.name}?`
-              ).then((result) => {
-                if (result) {
-                  cfg.accounts.remove(state);
-                  setState(undefined);
+              confirm(t.accounts.removeConfirmation(current.name)).then(
+                (result) => {
+                  if (result) {
+                    cfg.accounts.remove(state);
+                    setState(undefined);
+                  }
                 }
-              })
+              )
             }
             current={current}
           />

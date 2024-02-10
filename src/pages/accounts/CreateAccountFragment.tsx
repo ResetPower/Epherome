@@ -4,6 +4,8 @@ import Input from "../../components/Input";
 import createOfflineAccount from "../../core/auth/offline";
 import { YggdrasilAuthenticator } from "../../core/auth/yggdrasil";
 import TabBar from "../../components/TabBar";
+import { t } from "../../intl";
+import Center from "../../components/Center";
 
 export default function CreateAccountFragment(props: {
   goBack: () => unknown;
@@ -36,23 +38,26 @@ export default function CreateAccountFragment(props: {
       onSubmit={onSubmit}
     >
       <TabBar
-        tabs={["Authlib Injector", "Offline"]}
+        tabs={[t.accounts.authlib, t.accounts.offline, t.accounts.microsoft]}
         value={type}
         setValue={setType}
       />
       {type === 0 && (
         <Fragment>
-          <Input label="Auth Server" name="authserver" required />
-          <Input label="Email" name="username" required />
-          <Input label="Password" type="password" name="password" required />
+          <Input label={t.accounts.authserver} name="authserver" required />
+          <Input label={t.email} name="username" required />
+          <Input label={t.password} type="password" name="password" required />
         </Fragment>
       )}
-      {type === 1 && <Input largeLabel label="Username" name="name" required />}
+      {type === 1 && (
+        <Input largeLabel label={t.username} name="name" required />
+      )}
+      {type === 2 && <Center>{t.unsupported}</Center>}
       <div className="flex-grow" />
       <div className="flex my-3 space-x-3 justify-end">
-        <Button onClick={props.goBack}>Cancel</Button>
+        <Button onClick={props.goBack}>{t.cancel}</Button>
         <Button type="submit" primary>
-          Create
+          {t.create}
         </Button>
       </div>
     </form>

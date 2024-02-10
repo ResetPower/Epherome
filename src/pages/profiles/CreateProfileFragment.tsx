@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import { cfg } from "../../stores/config";
 import { resolve } from "../../utils";
 import { open } from "@tauri-apps/api/dialog";
+import { t } from "../../intl";
 
 export default function CreateProfileFragment(props: {
   goBack: () => unknown;
@@ -29,28 +30,28 @@ export default function CreateProfileFragment(props: {
   return (
     <form className="flex flex-col h-full py-3 pl-3 pr-6" onSubmit={onSubmit}>
       <div className="flex-grow space-y-6">
-        <Input largeLabel label="Name" name="name" required />
+        <Input largeLabel label={t.name} name="name" required />
         <Input
           largeLabel
-          label="Game Directory"
+          label={t.profiles.gameDir}
           name="gameDir"
-          trailing={<Button onClick={browse}>Browse</Button>}
+          trailing={<Button onClick={browse}>{t.browse}</Button>}
           ref={inputRef}
-          helper="Usually '.minecraft' on Windows or 'minecraft' on macOS and Linux."
+          helper={t.profiles.gameDirHelper}
           required
         />
         <Input
           largeLabel
-          label="Version"
+          label={t.profiles.version}
           name="version"
-          helper="The folder name in the 'version' folder in your game directory."
+          helper={t.profiles.versionHelper}
           required
         />
       </div>
       <div className="flex my-3 space-x-3 justify-end">
-        <Button onClick={props.goBack}>Cancel</Button>
+        <Button onClick={props.goBack}>{t.cancel}</Button>
         <Button type="submit" primary>
-          Create
+          {t.create}
         </Button>
       </div>
     </form>
