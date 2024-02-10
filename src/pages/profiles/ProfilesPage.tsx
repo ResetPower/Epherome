@@ -42,7 +42,7 @@ export default function ProfilesPage() {
       </div>
       <div className="flex-grow p-3">
         {!state && (
-          <Center>Open a profile on the left or create a new profile.</Center>
+          <Center>{tr.profile.action.selectProfile}</Center>
         )}
         {state === "create" && (
           <CreateProfileFragment goBack={() => setState(cfg.profiles.active)} />

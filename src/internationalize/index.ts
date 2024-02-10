@@ -60,6 +60,32 @@ interface EphIntl {
             selectProfile: string
         },
         noProfile: string
+    },
+    about: {
+        issue: string,
+        dataDir: string,
+        copyright: string,
+        githubRepo: string,
+        tauriVersion: string,
+        nightlyWarning: string,
+        officialWebsite: string,
+    },
+    setting: {
+        about: string,
+        noOpt: string,
+        general: string,
+        download: string,
+        appearance: string
+    },
+    counter: {
+        count: string,
+        increase: string
+    },
+    home: {
+        launch: string,
+        account: string,
+        profile: string,
+        unselected: string
     }
 };
 
