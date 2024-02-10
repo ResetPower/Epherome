@@ -66,7 +66,7 @@ export default {
       dataDir: "數據文件夾",
       officialSite: "官方網站",
       githubHomepage: "GitHub 首頁",
-      oss: "開源軟件",
+      oss: "開源軟體",
     },
   },
 };
