@@ -1,0 +1,29 @@
+{
+    "name": "English",
+    "body": {
+        "status": {
+            "loading": "Loading..."
+        },
+        "account": {
+            "detail": {
+                "uuid": "UUID",
+                "type": "Type",
+                "name": "Name",
+                "authServer": "Authserver",
+                "token": {
+                    "available": "Token is available.",
+                    "unavailable": "Token is unavailable.",
+                    "checkAvailability": "Check token availability"
+                }
+            },
+            "action": {
+                "remove": "Remove",
+                "create": "Create",
+                "cancel": "Cancel",
+                "ensureRemove": "Do you really want to remove account %s ?",
+                "selectAccount": "Open an account on the left or create a new account."
+            },
+            "noAccount": "No accounts here."
+        }
+    }
+}

@@ -25,6 +25,7 @@ const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
   accounts: new List<MinecraftAccount>(),
   profiles: new List<MinecraftProfile>(),
+  lang: "English",
   async load() {
     if (await exists(configFile)) {
       const data = JSON.parse(await readTextFile(configFile));
