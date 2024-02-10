@@ -21,7 +21,7 @@ const config: i18nConfig = {
     }
 };
 
-interface EphIntl {
+export interface EphIntl {
     status: {
         loading: string,
 
@@ -77,7 +77,8 @@ interface EphIntl {
         noOpt: string,
         general: string,
         download: string,
-        appearance: string
+        appearance: string,
+        displayLanguage: string
     },
     counter: {
         count: string,
@@ -87,14 +88,26 @@ interface EphIntl {
         launch: string,
         account: string,
         profile: string,
-        unselected: string
+        unselected: string,
+    },
+    sidebar: {
+        home: string,
+        counter: string,
+        profiles: string,
+        settings: string,
+        accounts: string
     }
 };
 
+let tr: EphIntl;
 await loadDefaultLanguages();
-const i18n = new i18nInstance<EphIntl>(config);
+const i18n = new i18nInstance(config);
 await i18n.init().then(() => {
-    i18n.setLang(cfg.lang);
+    i18n.setLang(cfg.language);
 });
-const tr = i18n.body();
+export function translationUpdate(new_tr: EphIntl) {
+    tr = new_tr;
+    console.log(tr);
+}
+
 export { i18n, tr }

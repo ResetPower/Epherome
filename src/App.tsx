@@ -10,7 +10,7 @@ import {
   MdHome,
   MdSettings,
 } from "react-icons/md";
-import { t } from "./intl";
+import { tr } from "./internationalize";
 
 function App() {
   const [route, setRoute] = useState<RouteName>("home");
@@ -21,18 +21,18 @@ function App() {
       <div className="flex h-full">
         <Sidebar
           items={[
-            { path: "home", icon: <MdHome />, name: t.sidebar.home },
+            { path: "home", icon: <MdHome />, name: tr.sidebar.home },
             {
               path: "accounts",
               icon: <MdAccountCircle />,
-              name: t.sidebar.accounts,
+              name: tr.sidebar.accounts,
             },
-            { path: "profiles", icon: <MdGamepad />, name: t.sidebar.profiles },
-            { path: "counter", icon: <MdCalculate />, name: t.sidebar.counter },
+            { path: "profiles", icon: <MdGamepad />, name: tr.sidebar.profiles },
+            { path: "counter", icon: <MdCalculate />, name: tr.sidebar.counter },
             {
               path: "settings",
               icon: <MdSettings />,
-              name: t.sidebar.settings,
+              name: tr.sidebar.settings,
             },
           ]}
         />
