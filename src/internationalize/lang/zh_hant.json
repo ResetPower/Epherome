@@ -66,6 +66,13 @@
             "account": "Account",
             "profile": "Profile",
             "unselected": "Unselected"
+        },
+        "sidebar": {
+            "home": "Home",
+            "counter": "Counter",
+            "accounts": "Accounts",
+            "profiles": "Profiles",
+            "settings": "Settings"
         }
     }
 }

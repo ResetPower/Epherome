@@ -9,7 +9,7 @@
                 "uuid": "UUID",
                 "type": "类型",
                 "name": "名称",
-                "authServer": "第三方登录服务器地址",
+                "authServer": "验证服务器",
                 "token": {
                     "available": "令牌有效",
                     "unavailable": "令牌无效",
@@ -20,7 +20,7 @@
                 "remove": "删除",
                 "create": "创建",
                 "cancel": "取消",
-                "ensureRemove": "是否确定删除账号 %s ?",
+                "ensureRemove": "是否确定删除游戏账户 %s ?",
                 "selectAccount": "在左侧选中一个游戏账户或创建一个游戏账户"
             },
             "noAccount": "没有游戏账户"
@@ -33,39 +33,46 @@
             },
             "action": {
                 "browse": "选择",
-                "remove": "Remove",
-                "create": "Create",
-                "cancel": "Cancel",
-                "ensureRemove": "Do you really want to remove profile %s ?",
-                "selectProfile": "Open a profile on the left or create a new profile."
+                "remove": "删除",
+                "create": "创建",
+                "cancel": "取消",
+                "ensureRemove": "是否确定删除游戏配置 %s ?",
+                "selectProfile": "在左侧选中一个游戏配置或创建一个游戏配置"
             },
-            "noProfile": "No profiles here."
+            "noProfile": "暂无游戏配置"
         },
         "about": {
-            "issue": "Go to GitHub Issues to ask questions or make suggestions.",
-            "dataDir": "Data Directory",
+            "issue": "前往 Github Issues 来向开发者反馈BUG或提出建议",
+            "dataDir": "数据目录",
             "copyright": "Copyright (C) 2021-2024 ResetPower.",
-            "githubRepo": "GitHub Homepage",
-            "tauriVersion": "Tauri Version",
-            "nightlyWarning": "Nightly versions are extremely unstable.",
-            "officialWebsite": "Official Website"
+            "githubRepo": "Github 主页",
+            "tauriVersion": "Tauri 版本",
+            "nightlyWarning": "每日构建版极不稳定.",
+            "officialWebsite": "官方网站"
         },
         "setting": {
-            "about": "About",
-            "noOpt": "No Options",
-            "general": "General",
-            "download": "Download",
-            "appearance": "About"
+            "about": "关于",
+            "noOpt": "暂无选项",
+            "general": "常规",
+            "download": "下载",
+            "appearance": "外观"
         },
         "counter": {
-            "count": "You've clicked the button for %s times.",
-            "increase": "Increase"
+            "count": "您已经点击按钮了 %s 次",
+            "increase": "+1"
         },
         "home": {
             "launch": "启动游戏",
-            "account": "Account",
-            "profile": "Profile",
+            "account": "账户",
+            "profile": "游戏配置",
             "unselected": "未选择"
+        },
+        "sidebar": {
+            "home": "Home",
+            "counter": "Counter",
+            "accounts": "Accounts",
+            "profiles": "Profiles",
+            "settings": "Settings"
         }
     }
 }
