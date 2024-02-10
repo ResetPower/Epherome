@@ -23,7 +23,7 @@ if (!(await exists(dataDir))) {
 
 const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
-  language: "en-ww",
+  language: "English",
   accounts: new List<MinecraftAccount>(),
   profiles: new List<MinecraftProfile>(),
   async load() {
@@ -31,7 +31,7 @@ const configStore = {
       const data = JSON.parse(await readTextFile(configFile));
       Object.assign(configStore, data);
       // note that stringifying objects in javascript
-      // does not copy methods in it,
+      // does not copy methods in it,c
       // which destroys the functionality of lists,
       // so we need to load lists manually
       this.accounts = List.from(this.accounts);

@@ -1,0 +1,78 @@
+{
+    "name": "简体中文",
+    "body": {
+        "status": {
+            "loading": "加载中…"
+        },
+        "account": {
+            "detail": {
+                "uuid": "UUID",
+                "type": "类型",
+                "name": "名称",
+                "authServer": "验证服务器",
+                "token": {
+                    "available": "令牌有效",
+                    "unavailable": "令牌无效",
+                    "checkAvailability": "检查 Token 是否可用"
+                }
+            },
+            "action": {
+                "remove": "删除",
+                "create": "创建",
+                "cancel": "取消",
+                "ensureRemove": "是否确定删除游戏账户 %s ?",
+                "selectAccount": "在左侧选中一个游戏账户或创建一个游戏账户"
+            },
+            "noAccount": "没有游戏账户"
+        },
+        "profile": {
+            "detail": {
+                "name": "名称",
+                "gameDir": "游戏目录",
+                "version": "版本"
+            },
+            "action": {
+                "browse": "选择",
+                "remove": "删除",
+                "create": "创建",
+                "cancel": "取消",
+                "ensureRemove": "是否确定删除游戏配置 %s ?",
+                "selectProfile": "在左侧选中一个游戏配置或创建一个游戏配置"
+            },
+            "noProfile": "暂无游戏配置"
+        },
+        "about": {
+            "issue": "前往 Github Issues 来向开发者反馈BUG或提出建议",
+            "dataDir": "数据目录",
+            "copyright": "Copyright (C) 2021-2024 ResetPower.",
+            "githubRepo": "Github 主页",
+            "tauriVersion": "Tauri 版本",
+            "nightlyWarning": "每日构建版极不稳定.",
+            "officialWebsite": "官方网站"
+        },
+        "setting": {
+            "about": "关于",
+            "noOpt": "暂无选项",
+            "general": "常规",
+            "download": "下载",
+            "appearance": "外观"
+        },
+        "counter": {
+            "count": "您已经点击按钮了 %s 次",
+            "increase": "+1"
+        },
+        "home": {
+            "launch": "启动游戏",
+            "account": "账户",
+            "profile": "游戏配置",
+            "unselected": "未选择"
+        },
+        "sidebar": {
+            "home": "Home",
+            "counter": "Counter",
+            "accounts": "Accounts",
+            "profiles": "Profiles",
+            "settings": "Settings"
+        }
+    }
+}

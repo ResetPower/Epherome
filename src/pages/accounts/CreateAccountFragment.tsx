@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import createOfflineAccount from "../../core/auth/offline";
 import { YggdrasilAuthenticator } from "../../core/auth/yggdrasil";
 import TabBar from "../../components/TabBar";
+import { tr } from "../../internationalize";
 
 export default function CreateAccountFragment(props: {
   goBack: () => unknown;
@@ -52,7 +53,7 @@ export default function CreateAccountFragment(props: {
       <div className="flex my-3 space-x-3 justify-end">
         <Button onClick={props.goBack}>Cancel</Button>
         <Button type="submit" primary>
-          Create
+          {tr.account.action.create}
         </Button>
       </div>
     </form>

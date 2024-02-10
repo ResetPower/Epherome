@@ -6,6 +6,7 @@ import { YggdrasilAuthenticator } from "../../core/auth/yggdrasil";
 import Spinner from "../../components/Spinner";
 import { MdCheckCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
+import { tr } from "../../internationalize";
 
 export default function AccountDetailFragment(props: {
   current: MinecraftAccount;
@@ -25,10 +26,10 @@ export default function AccountDetailFragment(props: {
 
   return (
     <div>
-      <p>UUID: {current.uuid}</p>
-      <p>Type: {current.type}</p>
-      <p>Name: {current.name}</p>
-      {current.authserver && <p>Authserver: {current.authserver}</p>}
+      <p>{tr.account.detail.uuid}: {current.uuid}</p>
+      <p>{tr.account.detail.type}: {current.type}</p>
+      <p>{tr.account.detail.name}: {current.name}</p>
+      {current.authserver && <p> {tr.account.detail.authServer}: {current.authserver}</p>}
       {current.type === "authlib" && (
         <div className="flex items-center my-3">
           <Button onClick={checkStatus} primary>

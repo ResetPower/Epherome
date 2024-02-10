@@ -1,3 +1,5 @@
+import { tr } from "../internationalize"
+
 export default function Spinner() {
   return (
     <div role="status">
@@ -17,7 +19,7 @@ export default function Spinner() {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only"> {tr.status.loading} </span>
     </div>
   );
 }

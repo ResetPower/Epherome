@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import { cfg } from "../../stores/config";
 import { resolve } from "../../utils";
 import { open } from "@tauri-apps/api/dialog";
+import { tr } from "../../internationalize";
 
 export default function CreateProfileFragment(props: {
   goBack: () => unknown;
@@ -34,7 +35,7 @@ export default function CreateProfileFragment(props: {
           largeLabel
           label="Game Directory"
           name="gameDir"
-          trailing={<Button onClick={browse}>Browse</Button>}
+          trailing={<Button onClick={browse}>{tr.profile.action.browse}</Button>}
           ref={inputRef}
           helper="Usually '.minecraft' on Windows or 'minecraft' on macOS and Linux."
           required
@@ -48,9 +49,9 @@ export default function CreateProfileFragment(props: {
         />
       </div>
       <div className="flex my-3 space-x-3 justify-end">
-        <Button onClick={props.goBack}>Cancel</Button>
+        <Button onClick={props.goBack}>{tr.profile.action.cancel}</Button>
         <Button type="submit" primary>
-          Create
+          {tr.profile.action.create}
         </Button>
       </div>
     </form>

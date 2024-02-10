@@ -1,0 +1,78 @@
+{
+    "name": "Deutsch",
+    "body": {
+        "status": {
+            "loading": "Loading..."
+        },
+        "account": {
+            "detail": {
+                "uuid": "UUID",
+                "type": "Type",
+                "name": "Name",
+                "authServer": "Authserver",
+                "token": {
+                    "available": "Token is available.",
+                    "unavailable": "Token is unavailable.",
+                    "checkAvailability": "Check token availability"
+                }
+            },
+            "action": {
+                "remove": "Remove",
+                "create": "Create",
+                "cancel": "Cancel",
+                "ensureRemove": "Do you really want to remove account %s ?",
+                "selectAccount": "Open an account on the left or create a new account."
+            },
+            "noAccount": "No accounts here."
+        },
+        "profile": {
+            "detail": {
+                "name": "Name",
+                "gameDir": "Game Directory",
+                "version": "Version"
+            },
+            "action": {
+                "browse": "Browse",
+                "remove": "Remove",
+                "create": "Create",
+                "cancel": "Cancel",
+                "ensureRemove": "Do you really want to remove profile %s ?",
+                "selectProfile": "Open a profile on the left or create a new profile."
+            },
+            "noProfile": "No profiles here."
+        },
+        "about": {
+            "issue": "Go to GitHub Issues to ask questions or make suggestions.",
+            "dataDir": "Data Directory",
+            "copyright": "Copyright (C) 2021-2024 ResetPower.",
+            "githubRepo": "GitHub Homepage",
+            "tauriVersion": "Tauri Version",
+            "nightlyWarning": "Nightly versions are extremely unstable.",
+            "officialWebsite": "Official Website"
+        },
+        "setting": {
+            "about": "About",
+            "noOpt": "No Options",
+            "general": "General",
+            "download": "Download",
+            "appearance": "About"
+        },
+        "counter": {
+            "count": "You've clicked the button for %s times.",
+            "increase": "Increase"
+        },
+        "home": {
+            "launch": "Launch",
+            "account": "Account",
+            "profile": "Profile",
+            "unselected": "Unselected"
+        },
+        "sidebar": {
+            "home": "Home",
+            "counter": "Counter",
+            "accounts": "Accounts",
+            "profiles": "Profiles",
+            "settings": "Settings"
+        }
+    }
+}
