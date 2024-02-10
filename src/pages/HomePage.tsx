@@ -4,14 +4,14 @@ import { t } from "../intl";
 import { cfg } from "../stores/config";
 
 export default function HomePage() {
-  const [account, profile] = [cfg.accounts.current(), cfg.profiles.current()];
-  const available = account && profile;
+  const [account, instance] = [cfg.accounts.current(), cfg.instances.current()];
+  const available = account && instance;
 
   const launch = () => {
     if (available) {
       launchMinecraft({
         account,
-        profile,
+        instance,
         provider: "official",
       }).then().catch;
     }
@@ -22,10 +22,10 @@ export default function HomePage() {
       <div className="flex-grow" />
       <div>
         <p>
-          {t.account}: {account?.name ?? "Unselected"}
+          {t.account}: {account?.name ?? t.unselected}
         </p>
         <p>
-          {t.profile}: {profile?.name ?? "Unselected"}
+          {t.instance}: {instance?.name ?? t.unselected}
         </p>
       </div>
       <div className="flex justify-end">

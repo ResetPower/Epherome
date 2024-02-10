@@ -1,5 +1,5 @@
 import { path } from "@tauri-apps/api";
-import { MinecraftProfile } from "../../stores/struct";
+import { MinecraftInstance } from "../../stores/struct";
 import { ClientJson } from "./struct";
 import { exists, readTextFile } from "@tauri-apps/api/fs";
 
@@ -31,20 +31,20 @@ export function mergeClientJson(
 }
 
 export async function parseJson(
-  profile: MinecraftProfile,
+  instance: MinecraftInstance,
   reserveId = false
 ): Promise<ClientJson> {
-  const dir = await path.resolve(profile.gameDir);
+  const dir = await path.resolve(instance.gameDir);
   const jsonFile = await path.join(
     dir,
     "versions",
-    profile.version,
-    `${profile.version}.json`
+    instance.version,
+    `${instance.version}.json`
   );
   const vanillaJsonFile = await path.join(
     dir,
     "versions",
-    profile.version,
+    instance.version,
     "vanilla.json"
   );
   let parsed: ClientJson = JSON.parse(await readTextFile(jsonFile));

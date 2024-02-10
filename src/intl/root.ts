@@ -8,7 +8,7 @@ export default {
         `You've clicked the button for ${count} times.`,
     },
     account: "Account",
-    profile: "Profile",
+    instance: "Instance",
     remove: "Remove",
     create: "Create",
     cancel: "Cancel",
@@ -18,10 +18,11 @@ export default {
     username: "Username",
     email: "Email",
     password: "Password",
+    unselected: "Unselected",
     sidebar: {
       home: "Home",
       accounts: "Accounts",
-      profiles: "Profiles",
+      instances: "Instances",
       counter: "Counter",
       settings: "Settings",
     },
@@ -44,17 +45,17 @@ export default {
         unavailable: "Token is unavailable",
       },
     },
-    profiles: {
-      empty: "No profiles here.",
+    instances: {
+      empty: "No instances here.",
       gameDir: "Game Directory",
       gameDirHelper:
         "Usually '.minecraft' on Windows or 'minecraft' on macOS and Linux.",
       version: "Version",
       versionHelper:
         "The folder name in the 'versions' folder in your game directory.",
-      unopened: "Open a profile on the left or create a new profile.",
+      unopened: "Open an instance on the left or create a new instance.",
       removeConfirmation: (name: string) =>
-        `Do you really want to remove profile ${name}?`,
+        `Do you really want to remove instance ${name}?`,
     },
     settings: {
       general: "General",

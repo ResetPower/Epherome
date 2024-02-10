@@ -5,7 +5,7 @@ import {
   writeTextFile,
 } from "@tauri-apps/api/fs";
 import { appDataDir, resolve } from "@tauri-apps/api/path";
-import { MinecraftAccount, MinecraftProfile } from "./struct";
+import { MinecraftAccount, MinecraftInstance } from "./struct";
 import { List } from "./list";
 import { MinecraftDownloadProvider } from "../core/url";
 import { app } from "@tauri-apps/api";
@@ -25,7 +25,7 @@ const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
   language: "en-ww",
   accounts: new List<MinecraftAccount>(),
-  profiles: new List<MinecraftProfile>(),
+  instances: new List<MinecraftInstance>(),
   async load() {
     if (await exists(configFile)) {
       const data = JSON.parse(await readTextFile(configFile));
@@ -35,7 +35,7 @@ const configStore = {
       // which destroys the functionality of lists,
       // so we need to load lists manually
       this.accounts = List.from(this.accounts);
-      this.profiles = List.from(this.profiles);
+      this.instances = List.from(this.instances);
     }
   },
   async save() {

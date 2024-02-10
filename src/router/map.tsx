@@ -1,13 +1,13 @@
 import CounterPage from "../pages/CounterPage";
 import HomePage from "../pages/HomePage";
 import AccountsPage from "../pages/accounts/AccountsPage";
-import ProfilesPage from "../pages/profiles/ProfilesPage";
+import InstancesPage from "../pages/instances/InstancesPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 
 export const routeMap = {
   home: () => <HomePage />,
   accounts: () => <AccountsPage />,
-  profiles: () => <ProfilesPage />,
+  instances: () => <InstancesPage />,
   counter: () => <CounterPage />,
   settings: () => <SettingsPage />,
 };

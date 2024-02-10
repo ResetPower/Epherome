@@ -6,12 +6,12 @@ import Sidebar from "./router/Sidebar";
 import {
   MdAccountCircle,
   MdCalculate,
-  MdGamepad,
   MdHome,
   MdSettings,
 } from "react-icons/md";
 import { intlStore, t } from "./intl";
 import { useForceUpdate } from "./utils";
+import { IoLogoGameControllerA } from "react-icons/io";
 
 function App() {
   const forceUpdate = useForceUpdate();
@@ -30,7 +30,11 @@ function App() {
               icon: <MdAccountCircle />,
               name: t.sidebar.accounts,
             },
-            { path: "profiles", icon: <MdGamepad />, name: t.sidebar.profiles },
+            {
+              path: "instances",
+              icon: <IoLogoGameControllerA />,
+              name: t.sidebar.instances,
+            },
             { path: "counter", icon: <MdCalculate />, name: t.sidebar.counter },
             {
               path: "settings",

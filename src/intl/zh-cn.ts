@@ -7,7 +7,7 @@ export default {
       clicked: (count: number) => `你已经点击这个按钮 ${count} 次。`,
     },
     account: "账户",
-    profile: "档案",
+    instance: "实例",
     remove: "移除",
     create: "创建",
     cancel: "取消",
@@ -17,12 +17,13 @@ export default {
     username: "用户名",
     email: "电子邮箱",
     password: "密码",
+    unselected: "未选定",
     sidebar: {
       home: "首页",
       accounts: "账户",
-      profiles: "档案",
+      instances: "实例",
       counter: "计数器",
-      settings: "设定",
+      settings: "设置",
     },
     home: {
       launch: "启动",
@@ -42,15 +43,15 @@ export default {
         unavailable: "令牌不可用",
       },
     },
-    profiles: {
-      empty: "还没有档案",
+    instances: {
+      empty: "还没有实例。",
       gameDir: "游戏文件夹",
       gameDirHelper:
         "通常是 Windows 上的 '.minecraft' 文件夹和 macOS 或 Linux 上的 'minecraft' 文件夹。",
       version: "版本",
       versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
-      unopened: "在左侧打开一个档案或者创建新档案。",
-      removeConfirmation: (name: string) => `你真的想要移除档案 ${name} 吗？`,
+      unopened: "在左侧打开一个实例或者创建新实例。",
+      removeConfirmation: (name: string) => `你真的想要移除实例 ${name} 吗？`,
     },
     settings: {
       general: "常规",

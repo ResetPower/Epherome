@@ -1,5 +1,5 @@
 import { invoke, path } from "@tauri-apps/api";
-import { MinecraftAccount, MinecraftProfile } from "../../stores/struct";
+import { MinecraftAccount, MinecraftInstance } from "../../stores/struct";
 import { MinecraftDownloadProvider, MinecraftUrlUtil } from "../url";
 import { dataDir } from "../../stores/config";
 import { YggdrasilAuthenticator, prefetch } from "../auth/yggdrasil";
@@ -14,7 +14,7 @@ import { installAuthlibInjector } from "../install/authlib";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
-  profile: MinecraftProfile;
+  instance: MinecraftInstance;
   provider: MinecraftDownloadProvider;
 }
 
@@ -25,7 +25,7 @@ export async function launchMinecraft(
 
   console.info("Launching Minecraft ...");
   const account = options.account;
-  const profile = options.profile;
+  const instance = options.instance;
   const authlibInjectorPath = await path.join(dataDir, "authlib-injector.jar");
 
   const buff: string[] = [];
@@ -54,22 +54,22 @@ export async function launchMinecraft(
 
   // parsing json file
 
-  const dir = await path.resolve(profile.gameDir);
-  const parsed = await parseJson(profile);
+  const dir = await path.resolve(instance.gameDir);
+  const parsed = await parseJson(instance);
 
   let clientJar = parsed.jar // use jar file in json if it has
     ? await path.join(dir, "versions", parsed.jar, `${parsed.jar}.jar`)
     : await path.join(
         dir,
         "versions",
-        profile.version,
-        `${profile.version}.jar`
+        instance.version,
+        `${instance.version}.jar`
       );
   const nativeDir = await path.join(
     dir,
     "versions",
-    profile.version,
-    `${profile.version}-natives`
+    instance.version,
+    `${instance.version}-natives`
   );
   await ensureDir(nativeDir);
 
@@ -136,7 +136,7 @@ export async function launchMinecraft(
   const argumentsMap = {
     // game args
     auth_player_name: account.name,
-    version_name: parsed.inheritsFrom ?? profile.version,
+    version_name: parsed.inheritsFrom ?? instance.version,
     auth_session: `token:${account.token}`,
     game_directory: dir,
     game_assets: assetsRoot,

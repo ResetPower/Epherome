@@ -8,7 +8,7 @@ export interface MinecraftAccount {
   token?: string;
 }
 
-export interface MinecraftProfile {
+export interface MinecraftInstance {
   name: string;
   gameDir: string;
   version: string;

@@ -6,7 +6,7 @@ import { resolve } from "../../utils";
 import { open } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
 
-export default function CreateProfileFragment(props: {
+export default function CreateInstanceFragment(props: {
   goBack: () => unknown;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,7 +14,7 @@ export default function CreateProfileFragment(props: {
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const data = new FormData(e.target as HTMLFormElement);
-    cfg.profiles.add({ ...resolve(data), isFolder: false }, true);
+    cfg.instances.add({ ...resolve(data), isFolder: false }, true);
     props.goBack();
   };
 
@@ -33,18 +33,18 @@ export default function CreateProfileFragment(props: {
         <Input largeLabel label={t.name} name="name" required />
         <Input
           largeLabel
-          label={t.profiles.gameDir}
+          label={t.instances.gameDir}
           name="gameDir"
           trailing={<Button onClick={browse}>{t.browse}</Button>}
           ref={inputRef}
-          helper={t.profiles.gameDirHelper}
+          helper={t.instances.gameDirHelper}
           required
         />
         <Input
           largeLabel
-          label={t.profiles.version}
+          label={t.instances.version}
           name="version"
-          helper={t.profiles.versionHelper}
+          helper={t.instances.versionHelper}
           required
         />
       </div>
