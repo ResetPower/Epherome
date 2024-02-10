@@ -1,71 +1,71 @@
 {
-    "name": "",
+    "name": "Français",
     "body": {
         "status": {
-            "loading": ""
+            "loading": "Loading..."
         },
         "account": {
             "detail": {
-                "uuid": "",
-                "type": "",
-                "name": "",
-                "authServer": "",
+                "uuid": "UUID",
+                "type": "Type",
+                "name": "Name",
+                "authServer": "Authserver",
                 "token": {
-                    "available": "",
-                    "unavailable": "",
-                    "checkAvailability": ""
+                    "available": "Token is available.",
+                    "unavailable": "Token is unavailable.",
+                    "checkAvailability": "Check token availability"
                 }
             },
             "action": {
-                "remove": "",
-                "create": "",
-                "cancel": "",
-                "ensureRemove": "",
-                "selectAccount": ""
+                "remove": "Remove",
+                "create": "Create",
+                "cancel": "Cancel",
+                "ensureRemove": "Do you really want to remove account %s ?",
+                "selectAccount": "Open an account on the left or create a new account."
             },
-            "noAccount": ""
+            "noAccount": "No accounts here."
         },
         "profile": {
             "detail": {
-                "name": "",
-                "gameDir": "",
-                "version": ""
+                "name": "Name",
+                "gameDir": "Game Directory",
+                "version": "Version"
             },
             "action": {
-                "browse": "",
-                "remove": "",
-                "create": "",
-                "cancel": "",
-                "ensureRemove": "",
-                "selectAccount": ""
+                "browse": "Browse",
+                "remove": "Remove",
+                "create": "Create",
+                "cancel": "Cancel",
+                "ensureRemove": "Do you really want to remove profile %s ?",
+                "selectProfile": "Open a profile on the left or create a new profile."
             },
-            "noProfileAccount": ""
+            "noProfile": "No profiles here."
         },
         "about": {
-            "issue": "",
-            "dataDir": "",
-            "copyright": "",
-            "githubRepo": "",
-            "tauriVersion": "",
-            "nightlyWarning": "",
-            "officialWebsite": ""
+            "issue": "Go to GitHub Issues to ask questions or make suggestions.",
+            "dataDir": "Data Directory",
+            "copyright": "Copyright (C) 2021-2024 ResetPower.",
+            "githubRepo": "GitHub Homepage",
+            "tauriVersion": "Tauri Version",
+            "nightlyWarning": "Nightly versions are extremely unstable.",
+            "officialWebsite": "Official Website"
         },
         "setting": {
-            "about": "",
-            "noOpt": "",
-            "general": "",
-            "download": "",
-            "appearance": ""
+            "about": "About",
+            "noOpt": "No Options",
+            "general": "General",
+            "download": "Download",
+            "appearance": "About"
         },
         "counter": {
-            "count": "",
-            "increase": ""
+            "count": "You've clicked the button for %s times.",
+            "increase": "Increase"
         },
         "home": {
-            "launch": "",
-            "account": "",
-            "profile": "",
-            "unselected": ""
+            "launch": "Launch",
+            "account": "Account",
+            "profile": "Profile",
+            "unselected": "Unselected"
         }
     }
 }
