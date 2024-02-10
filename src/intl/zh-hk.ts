@@ -4,7 +4,7 @@ export default {
   messages: {
     counter: {
       increase: "增加",
-      clicked: (count: number) => `你已經click咗呢個按鈕 ${count} 次。`,
+      clicked: (count: number) => `你已經 click 咗呢個按鈕 ${count} 次。`,
     },
     account: "帳戶",
     instance: "實例",
