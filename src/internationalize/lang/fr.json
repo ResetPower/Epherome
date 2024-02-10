@@ -1,0 +1,71 @@
+{
+    "name": "",
+    "body": {
+        "status": {
+            "loading": ""
+        },
+        "account": {
+            "detail": {
+                "uuid": "",
+                "type": "",
+                "name": "",
+                "authServer": "",
+                "token": {
+                    "available": "",
+                    "unavailable": "",
+                    "checkAvailability": ""
+                }
+            },
+            "action": {
+                "remove": "",
+                "create": "",
+                "cancel": "",
+                "ensureRemove": "",
+                "selectAccount": ""
+            },
+            "noAccount": ""
+        },
+        "profile": {
+            "detail": {
+                "name": "",
+                "gameDir": "",
+                "version": ""
+            },
+            "action": {
+                "browse": "",
+                "remove": "",
+                "create": "",
+                "cancel": "",
+                "ensureRemove": "",
+                "selectAccount": ""
+            },
+            "noProfileAccount": ""
+        },
+        "about": {
+            "issue": "",
+            "dataDir": "",
+            "copyright": "",
+            "githubRepo": "",
+            "tauriVersion": "",
+            "nightlyWarning": "",
+            "officialWebsite": ""
+        },
+        "setting": {
+            "about": "",
+            "noOpt": "",
+            "general": "",
+            "download": "",
+            "appearance": ""
+        },
+        "counter": {
+            "count": "",
+            "increase": ""
+        },
+        "home": {
+            "launch": "",
+            "account": "",
+            "profile": "",
+            "unselected": ""
+        }
+    }
+}

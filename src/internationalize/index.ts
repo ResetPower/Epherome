@@ -1,10 +1,12 @@
-import { i18nConfig, i18nInstance } from "./i18n";
+import i18nInstance  from "./i18n/instance";
+import { i18nConfig } from "./i18n/interface"
 import { fs } from "@tauri-apps/api";
-import { appDataDir } from '@tauri-apps/api/path';
+import { appDataDir, resolve } from '@tauri-apps/api/path';
 import { cfg } from '../stores/config'
+import loadDefaultLanguages from "./defaultLoader";
 
 const config: i18nConfig = {
-    lang_path: await appDataDir(),
+    lang_path: await resolve(await appDataDir(), "lang"),
     dir_reader: async (path: string) => { 
         const dirs: string[] = [];
         (await fs.readDir(path)).forEach((v) => {
@@ -89,7 +91,10 @@ interface EphIntl {
     }
 };
 
-export const i18n = new i18nInstance<EphIntl>(config);
-await i18n.init();
-i18n.setLang(cfg.lang);
-export const tr = i18n.body();
+await loadDefaultLanguages();
+const i18n = new i18nInstance<EphIntl>(config);
+await i18n.init().then(() => {
+    i18n.setLang(cfg.lang);
+});
+const tr = i18n.body();
+export { i18n, tr }

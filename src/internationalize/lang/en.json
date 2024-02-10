@@ -37,9 +37,9 @@
                 "create": "Create",
                 "cancel": "Cancel",
                 "ensureRemove": "Do you really want to remove profile %s ?",
-                "selectAccount": "Open a profile on the left or create a new profile."
+                "selectProfile": "Open a profile on the left or create a new profile."
             },
-            "noProfileAccount": "No profiles here."
+            "noProfile": "No profiles here."
         },
         "about": {
             "issue": "Go to GitHub Issues to ask questions or make suggestions.",
