@@ -24,3 +24,23 @@ export function concat(...elements: ConcatElement[]) {
 }
 
 export type Status = "unavailable" | "loading" | "positive" | "negative";
+
+export type RecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? RecursivePartial<U>[]
+    : T[P] extends object | undefined
+      ? RecursivePartial<T[P]>
+      : T[P];
+};
+
+export function deepMerge<T>(alpha: T, beta: Partial<T>): T {
+  const result: T = Object.assign({}, alpha);
+  for (const key of Object.keys(beta) as (keyof typeof beta)[]) {
+    const value = beta[key];
+    if (value)
+      if (typeof value === "object") {
+        result[key] = deepMerge(result[key], value);
+      } else result[key] = value;
+  }
+  return result;
+}

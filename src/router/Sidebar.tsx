@@ -11,7 +11,7 @@ export interface SidebarItem {
 
 export default function Sidebar(props: { items: SidebarItem[] }) {
   return (
-    <div className="p-2 m-1 rounded border shadow flex flex-col space-y-1">
+    <div className="p-2 m-1 rounded border shadow flex flex-col space-y-1 whitespace-nowrap">
       {props.items.map((item, index) => (
         <button
           onClick={() => historyStore.go(item.path)}

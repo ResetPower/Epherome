@@ -4,6 +4,7 @@ import AboutFragment from "./AboutFragment";
 import GeneralFragment from "./GeneralFragment";
 import AppearanceFragment from "./AppearanceFragment";
 import DownloadFragment from "./DownloadFragment";
+import { t } from "../../intl";
 
 export default function SettingsPage() {
   const [value, setValue] = useState(0);
@@ -11,7 +12,12 @@ export default function SettingsPage() {
   return (
     <div className="w-full">
       <TabBar
-        tabs={["General", "Appearance", "Download", "About"]}
+        tabs={[
+          t.settings.general,
+          t.settings.appearance,
+          t.settings.download,
+          t.settings.about,
+        ]}
         value={value}
         setValue={setValue}
       />

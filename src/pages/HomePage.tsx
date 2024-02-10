@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import { launchMinecraft } from "../core/launch";
+import { t } from "../intl";
 import { cfg } from "../stores/config";
 
 export default function HomePage() {
@@ -25,7 +26,7 @@ export default function HomePage() {
       </div>
       <div className="flex justify-end">
         <Button onClick={launch} disabled={!available} primary>
-          Launch
+          {t.home.launch}
         </Button>
       </div>
     </div>

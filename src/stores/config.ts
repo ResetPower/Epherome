@@ -23,6 +23,7 @@ if (!(await exists(dataDir))) {
 
 const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
+  language: "en-ww",
   accounts: new List<MinecraftAccount>(),
   profiles: new List<MinecraftProfile>(),
   async load() {
