@@ -19,6 +19,7 @@ export default {
     email: "Email",
     password: "Password",
     unselected: "Unselected",
+    download: "Download",
     sidebar: {
       home: "Home",
       accounts: "Accounts",
@@ -56,6 +57,13 @@ export default {
       unopened: "Open an instance on the left or create a new instance.",
       removeConfirmation: (name: string) =>
         `Do you really want to remove instance ${name}?`,
+      release: "Release",
+      snapshot: "Snapshot",
+      old: "Ancient",
+      old_alpha: "Ancient (Alpha)",
+      old_beta: "Ancient (Beta)",
+      latestRelease: "Latest Release",
+      latestSnapshot: "Latest Snapshot",
     },
     settings: {
       general: "General",

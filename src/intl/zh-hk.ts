@@ -18,6 +18,7 @@ export default {
     email: "電郵",
     password: "密碼",
     unselected: "未選定",
+    download: "下載",
     sidebar: {
       home: "首頁",
       accounts: "帳戶",
@@ -47,11 +48,18 @@ export default {
       empty: "仲未有實例。",
       gameDir: "遊戲文件夾",
       gameDirHelper:
-        "通常係 Windows 上嘅' .minecraft ' 文件夾同 macOS 或 Linux 上嘅 'minecraft' 文件夾。",
+        "通常係 Windows 上嘅 '.minecraft ' 文件夾同 macOS 或 Linux 上嘅 'minecraft' 文件夾。",
       version: "版本",
       versionHelper: "遊戲文件夾中嘅 'versions' 文件夾中嘅文件夾名。",
       unopened: "喺左邊打開一個實例或者創建新實例。",
       removeConfirmation: (name: string) => `你真係想要移除實例 ${name} 嗎？`,
+      release: "正式版",
+      snapshot: "快照",
+      old: "遠古版",
+      old_alpha: "遠古版 (Alpha)",
+      old_beta: "遠古版 (Beta)",
+      latestRelease: "最新正式版",
+      latestSnapshot: "最新快照",
     },
     settings: {
       general: "一般",
@@ -60,8 +68,7 @@ export default {
       about: "關於",
       noOptions: "仲未有設置項。",
       displayLanguage: "顯示語言",
-      warning:
-        "Nightly 版好唔穩定。\n歡迎喺 GitHub Issues 提出問題同建議。",
+      warning: "Nightly 版好唔穩定。\n歡迎喺 GitHub Issues 提出問題同建議。",
       tauriVersion: "Tauri 版本",
       dataDir: "數據文件夾",
       officialSite: "官方網站",

@@ -18,6 +18,7 @@ export default {
     email: "电子邮箱",
     password: "密码",
     unselected: "未选定",
+    download: "下载",
     sidebar: {
       home: "首页",
       accounts: "账户",
@@ -52,6 +53,13 @@ export default {
       versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
       removeConfirmation: (name: string) => `你真的想要移除实例 ${name} 吗？`,
+      release: "正式版",
+      snapshot: "快照",
+      old: "远古版",
+      old_alpha: "远古版 (Alpha)",
+      old_beta: "远古版 (Beta)",
+      latestRelease: "最新正式版",
+      latestSnapshot: "最新快照",
     },
     settings: {
       general: "常规",

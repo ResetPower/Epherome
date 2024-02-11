@@ -4,10 +4,20 @@ export type MinecraftVersionType =
   | "old_beta"
   | "old_alpha";
 
+export interface MinecraftVersionManifest {
+  latest: {
+    release: string;
+    snapshot: string;
+  };
+  versions: MinecraftVersion[];
+}
+
 export interface MinecraftVersion {
   id: string;
   type: MinecraftVersionType;
   url: string;
+  time: string;
+  releaseTime: string;
 }
 
 export interface MinecraftVersionDetail {

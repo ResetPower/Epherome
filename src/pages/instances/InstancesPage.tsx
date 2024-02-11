@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../../components/Button";
-import { MdAdd } from "react-icons/md";
+import { MdAdd, MdDownload } from "react-icons/md";
 import ListTile from "../../components/ListTile";
 import { cfg } from "../../stores/config";
 import WideButton from "../../components/WideButton";
@@ -8,10 +8,17 @@ import Center from "../../components/Center";
 import { confirm } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
 import CreateInstanceFragment from "./CreateInstanceFragment";
+import DownloadInstanceFragment from "./DownloadInstanceFragment";
 
 export default function InstancesPage() {
   const [state, setState] = useState(cfg.instances.active);
-  const current = state && state !== "create" && cfg.instances.find(state);
+  const current =
+    state &&
+    state !== "create" &&
+    state !== "download" &&
+    cfg.instances.find(state);
+
+  const goBack = () => setState(cfg.instances.active);
 
   return (
     <div className="flex w-full">
@@ -34,6 +41,10 @@ export default function InstancesPage() {
             ))
           )}
         </div>
+        <WideButton onClick={() => setState("download")} className="border-t">
+          <MdDownload />
+          {t.download}
+        </WideButton>
         <WideButton onClick={() => setState("create")} className="border-t">
           <MdAdd />
           {t.create}
@@ -41,11 +52,8 @@ export default function InstancesPage() {
       </div>
       <div className="flex-grow p-3">
         {!state && <Center>{t.instances.unopened}</Center>}
-        {state === "create" && (
-          <CreateInstanceFragment
-            goBack={() => setState(cfg.instances.active)}
-          />
-        )}
+        {state === "create" && <CreateInstanceFragment goBack={goBack} />}
+        {state === "download" && <DownloadInstanceFragment goBack={goBack} />}
         {current && (
           <div>
             <p>
