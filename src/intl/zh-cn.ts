@@ -52,7 +52,7 @@ export default {
       version: "版本",
       versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
-      removeConfirmation: (name: string) => `你真的想要移除实例 ${name} 吗？`,
+      removeConfirmation: (name: string) => `是否要移除实例 ${name} ？`,
       release: "正式版",
       snapshot: "快照",
       old: "远古版",
