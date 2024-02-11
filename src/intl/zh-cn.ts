@@ -37,7 +37,7 @@ export default {
       offline: "离线登录",
       authserver: "验证服务器",
       type: "账户类型",
-      removeConfirmation: (name: string) => `你真的想要移除账户 ${name} 吗？`,
+      removeConfirmation: (name: string) => `是否要移除账户 ${name} ？`,
       token: {
         validate: "检查令牌状态",
         available: "令牌可用",
@@ -52,7 +52,7 @@ export default {
       version: "版本",
       versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
-      removeConfirmation: (name: string) => `你真的想要移除实例 ${name} 吗？`,
+      removeConfirmation: (name: string) => `是否要移除实例 ${name} ？`,
       release: "正式版",
       snapshot: "快照",
       old: "远古版",
