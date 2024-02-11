@@ -37,7 +37,7 @@ export default {
       offline: "离线登录",
       authserver: "验证服务器",
       type: "账户类型",
-      removeConfirmation: (name: string) => `你真的想要移除账户 ${name} 吗？`,
+      removeConfirmation: (name: string) => `是否要移除账户 ${name} ？`,
       token: {
         validate: "检查令牌状态",
         available: "令牌可用",
