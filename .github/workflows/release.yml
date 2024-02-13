@@ -96,7 +96,7 @@ jobs:
       - name: Reconfigure for Windows on ARM64
         if: matrix.platform == 'windows-latest'
         run: rustup target add aarch64-pc-windows-msvc
-      
+
       - name: Build the app for Windows on ARM64
         if: matrix.platform == 'windows-latest'
         uses: tauri-apps/tauri-action@v0
@@ -109,4 +109,3 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: --target aarch64-pc-windows-msvc --bundles nsis
-        
