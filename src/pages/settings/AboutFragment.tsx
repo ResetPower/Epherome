@@ -1,21 +1,21 @@
 import { MdWarning } from "react-icons/md";
 import Link from "../../components/Link";
-import { appVersion, dataDir, tauriVersion } from "../../stores/config";
 import { t } from "../../intl";
+import { meta } from "../../stores";
 
 export default function AboutFragment() {
   return (
     <div>
-      <div>Epherome {appVersion}</div>
+      <div>Epherome {meta.appVersion}</div>
       <div className="flex items-center space-x-2">
         <MdWarning className="text-2xl text-red-500" />
         <pre>{t.settings.warning}</pre>
       </div>
       <div>
-        {t.settings.tauriVersion}: {tauriVersion}
+        {t.settings.tauriVersion}: {meta.tauriVersion}
       </div>
       <div>
-        {t.settings.dataDir}: {dataDir}
+        {t.settings.dataDir}: {meta.appDataDir}
       </div>
       <div>
         {t.settings.officialSite}: <Link to="https://epherome.com" />

@@ -1,16 +1,16 @@
 import { invoke, path } from "@tauri-apps/api";
 import { MinecraftAccount, MinecraftInstance } from "../../stores/struct";
 import { MinecraftDownloadProvider, MinecraftUrlUtil } from "../url";
-import { dataDir } from "../../stores/config";
 import { YggdrasilAuthenticator, prefetch } from "../auth/yggdrasil";
 import { parseJson } from "./parser";
 import { downloadFile, ensureDir } from "../../utils/file";
 import { runMinecraft } from "./runner";
-import { isCompliant, osName } from "./rules";
+import { isCompliant } from "./rules";
 import { ClientJsonArguments } from "./struct";
 import { exists } from "@tauri-apps/api/fs";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { installAuthlibInjector } from "../install/authlib";
+import { meta } from "../../stores";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
@@ -26,7 +26,10 @@ export async function launchMinecraft(
   console.info("Launching Minecraft ...");
   const account = options.account;
   const instance = options.instance;
-  const authlibInjectorPath = await path.join(dataDir, "authlib-injector.jar");
+  const authlibInjectorPath = await path.join(
+    meta.appDataDir,
+    "authlib-injector.jar"
+  );
 
   const buff: string[] = [];
 
@@ -189,7 +192,7 @@ export async function launchMinecraft(
   if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {
-    if (osName === "darwin") {
+    if (meta.osPlatform === "darwin") {
       buff.push("-Xdock:name=Minecraft");
     }
     buff.push(

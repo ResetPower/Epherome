@@ -1,12 +1,12 @@
-import { os } from "@tauri-apps/api";
+import { meta } from "../../stores";
 import {
   ClientJsonRules,
   ClientJsonOSRule,
   ClientJsonFeaturesRule,
 } from "./struct";
 
-export const osName = await os.platform();
-export const osVer = await os.version();
+const osName = meta.osPlatform;
+const osVer = meta.osVersion;
 
 export function equalOS(name: string): boolean {
   if (osName === name) return true;
