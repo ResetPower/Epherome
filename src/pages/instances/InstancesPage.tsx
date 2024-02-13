@@ -30,7 +30,7 @@ export default function InstancesPage() {
             cfg.instances.map((instance, id) => (
               <ListTile
                 onClick={() => {
-                  cfg.instances.selected(id);
+                  cfg.instances.select(id);
                   setState(id);
                 }}
                 active={cfg.instances.selected(id) && state !== "create"}
