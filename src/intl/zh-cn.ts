@@ -31,6 +31,7 @@ export default {
     },
     accounts: {
       empty: "还没有账户。",
+      uuid: "UUID",
       unopened: "在左侧打开一个账户或者创建新账户。",
       microsoft: "微软账户",
       authlib: "外置登录",
@@ -75,6 +76,9 @@ export default {
       officialSite: "官方网站",
       githubHomepage: "GitHub 首页",
       oss: "开源软件",
+    },
+    toast: {
+      copied: "已成功复制。",
     },
   },
 };

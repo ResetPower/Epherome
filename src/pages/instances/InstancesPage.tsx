@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "../../components/Button";
 import { MdAdd, MdDownload } from "react-icons/md";
 import ListTile from "../../components/ListTile";
 import { cfg } from "../../stores/config";
@@ -9,6 +8,7 @@ import { confirm } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
 import CreateInstanceFragment from "./CreateInstanceFragment";
 import DownloadInstanceFragment from "./DownloadInstanceFragment";
+import InstanceDetailFragment from "./InstanceDetailFragment";
 
 export default function InstancesPage() {
   const [state, setState] = useState(cfg.instances.active);
@@ -55,32 +55,19 @@ export default function InstancesPage() {
         {state === "create" && <CreateInstanceFragment goBack={goBack} />}
         {state === "download" && <DownloadInstanceFragment goBack={goBack} />}
         {current && (
-          <div>
-            <p>
-              {t.name}: {current.name}
-            </p>
-            <p>
-              {t.instances.gameDir}: {current.gameDir}
-            </p>
-            <p>
-              {t.instances.version}: {current.version}
-            </p>
-            <Button
-              onClick={() =>
-                confirm(t.instances.removeConfirmation(current.name)).then(
-                  (result) => {
-                    if (result) {
-                      cfg.instances.remove(state);
-                      setState(undefined);
-                    }
+          <InstanceDetailFragment
+            onRemove={() =>
+              confirm(t.instances.removeConfirmation(current.name)).then(
+                (result) => {
+                  if (result) {
+                    cfg.instances.remove(state);
+                    setState(undefined);
                   }
-                ).catch
-              }
-              dangerous
-            >
-              {t.remove}
-            </Button>
-          </div>
+                }
+              )
+            }
+            current={current}
+          />
         )}
       </div>
     </div>

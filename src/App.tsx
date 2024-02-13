@@ -12,6 +12,7 @@ import {
 import { intlStore, t } from "./intl";
 import { useForceUpdate } from "./utils";
 import { IoLogoGameControllerA } from "react-icons/io";
+import ToastWrapper from "./components/ToastWrapper";
 
 function App() {
   const forceUpdate = useForceUpdate();
@@ -44,6 +45,7 @@ function App() {
           ]}
         />
         {routeMap[route]()}
+        <ToastWrapper />
       </div>
     </IconContext.Provider>
   );

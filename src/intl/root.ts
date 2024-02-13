@@ -32,6 +32,7 @@ export default {
     },
     accounts: {
       empty: "No accounts here.",
+      uuid: "UUID",
       unopened: "Open an account on the left or create a new account.",
       microsoft: "Microsoft Account",
       authlib: "Authlib Injector",
@@ -78,7 +79,11 @@ export default {
       dataDir: "Data Directory",
       officialSite: "Official Website",
       githubHomepage: "GitHub Homepage",
+      downloadProvider: "Download Provider",
       oss: "Open Source Software",
+    },
+    toast: {
+      copied: "Copied successfully.",
     },
   },
 };
