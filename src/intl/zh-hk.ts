@@ -49,7 +49,7 @@ export default {
       empty: "仲未有實例。",
       gameDir: "遊戲文件夾",
       gameDirHelper:
-        "通常係 Windows 上嘅 '.minecraft ' 文件夾同 macOS 或 Linux 上嘅 'minecraft' 文件夾。",
+        "通常係 Windows 或 Linux上嘅 '.minecraft ' 文件夾同 macOS 上嘅 'minecraft' 文件夾。",
       version: "版本",
       versionHelper: "遊戲文件夾中嘅 'versions' 文件夾中嘅文件夾名。",
       unopened: "喺左邊打開一個實例或者創建新實例。",
