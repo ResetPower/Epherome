@@ -59,8 +59,8 @@ export default {
       old: "遠古版",
       old_alpha: "遠古版 (Alpha)",
       old_beta: "遠古版 (Beta)",
-      latestRelease: "最新正式版",
-      latestSnapshot: "最新快照",
+      latestRelease: "最新嘅正式版本",
+      latestSnapshot: "最新嘅快照",
     },
     settings: {
       general: "一般",
