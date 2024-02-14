@@ -8,8 +8,8 @@ export default {
         `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
     },
     launching: {
-      preparing: "预备发射……",
-      waiting: "请等待发射开始……",
+      preparing: "预备发射",
+      waiting: "请等待发射开始",
     },
     downloading: {
       lib: "向下加载图书馆",
@@ -86,7 +86,7 @@ export default {
       latestRelease: "最后的一次释放",
       latestSnapshot: "最后拍摄的闪烁照片",
       backToVersionList: "滚回版本列表",
-      saves: "存储",
+      saves: "拯救",
       resourcePacks: "资源打包",
       mods: "游戏修改增强程序",
       options: "选项",
