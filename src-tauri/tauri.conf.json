@@ -5,34 +5,15 @@
     "devPath": "http://localhost:1420",
     "distDir": "../dist"
   },
-  "package": {
-    "productName": "Epherome",
-    "version": "1.0.0-1"
-  },
+  "package": { "productName": "Epherome", "version": "1.0.0-2" },
   "tauri": {
     "allowlist": {
       "all": true,
-      "app": {
-        "all": true
-      },
-      "shell": {
-        "all": true,
-        "execute": true,
-        "sidecar": true,
-        "open": true
-      },
-      "fs": {
-        "all": true,
-        "scope": ["**", "**/*", "/**/*"]
-      },
-      "http": {
-        "all": true,
-        "request": true,
-        "scope": ["https://**/*"]
-      },
-      "path": {
-        "all": true
-      },
+      "app": { "all": true },
+      "shell": { "all": true, "execute": true, "sidecar": true, "open": true },
+      "fs": { "all": true, "scope": ["**", "**/*", "/**/*"] },
+      "http": { "all": true, "request": true, "scope": ["https://**/*"] },
+      "path": { "all": true },
       "dialog": {
         "all": true,
         "ask": true,
@@ -41,14 +22,8 @@
         "open": true,
         "save": true
       },
-      "os": {
-        "all": true
-      },
-      "protocol": {
-        "all": true,
-        "asset": true,
-        "assetScope": ["*"]
-      }
+      "os": { "all": true },
+      "protocol": { "all": true, "asset": true, "assetScope": ["*"] }
     },
     "bundle": {
       "active": true,
@@ -62,9 +37,7 @@
         "icons/icon.ico"
       ]
     },
-    "security": {
-      "csp": null
-    },
+    "security": { "csp": null },
     "windows": [
       {
         "fullscreen": false,

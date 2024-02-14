@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "../../components/Button";
 import { MdAdd, MdDownload } from "react-icons/md";
 import ListTile from "../../components/ListTile";
 import { cfg } from "../../stores/config";
@@ -9,6 +8,8 @@ import { confirm } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
 import CreateInstanceFragment from "./CreateInstanceFragment";
 import DownloadInstanceFragment from "./DownloadInstanceFragment";
+import InstanceDetailFragment from "./InstanceDetailFragment";
+import { useForceUpdate } from "../../utils";
 
 export default function InstancesPage() {
   const [state, setState] = useState(cfg.instances.active);
@@ -19,6 +20,7 @@ export default function InstancesPage() {
     cfg.instances.find(state);
 
   const goBack = () => setState(cfg.instances.active);
+  const forceUpdate = useForceUpdate();
 
   return (
     <div className="flex w-full">
@@ -30,7 +32,7 @@ export default function InstancesPage() {
             cfg.instances.map((instance, id) => (
               <ListTile
                 onClick={() => {
-                  cfg.instances.selected(id);
+                  cfg.instances.select(id);
                   setState(id);
                 }}
                 active={cfg.instances.selected(id) && state !== "create"}
@@ -53,34 +55,27 @@ export default function InstancesPage() {
       <div className="flex-grow p-3">
         {!state && <Center>{t.instances.unopened}</Center>}
         {state === "create" && <CreateInstanceFragment goBack={goBack} />}
-        {state === "download" && <DownloadInstanceFragment goBack={goBack} />}
+        {state === "download" && (
+          <DownloadInstanceFragment
+            onUpdate={() => setState(cfg.instances.active)}
+            goBack={goBack}
+          />
+        )}
         {current && (
-          <div>
-            <p>
-              {t.name}: {current.name}
-            </p>
-            <p>
-              {t.instances.gameDir}: {current.gameDir}
-            </p>
-            <p>
-              {t.instances.version}: {current.version}
-            </p>
-            <Button
-              onClick={() =>
-                confirm(t.instances.removeConfirmation(current.name)).then(
-                  (result) => {
-                    if (result) {
-                      cfg.instances.remove(state);
-                      setState(undefined);
-                    }
+          <InstanceDetailFragment
+            forceUpdate={forceUpdate}
+            onRemove={() =>
+              confirm(t.instances.removeConfirmation(current.name)).then(
+                (result) => {
+                  if (result) {
+                    cfg.instances.remove(state);
+                    setState(undefined);
                   }
-                ).catch
-              }
-              dangerous
-            >
-              {t.remove}
-            </Button>
-          </div>
+                }
+              )
+            }
+            current={current}
+          />
         )}
       </div>
     </div>

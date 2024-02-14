@@ -1,12 +1,16 @@
+import { useState } from "react";
+import Checkbox from "../../components/Checkbox";
+import Info from "../../components/Info";
 import Select from "../../components/Select";
 import { intlStore, t } from "../../intl";
 import { cfg } from "../../stores/config";
 
 export default function GeneralFragment() {
+  const [autoCollapse, setAutoCollapse] = useState(cfg.autoCollapse);
+
   return (
-    <div>
-      <div>
-        <div>{t.settings.displayLanguage}</div>
+    <div className="space-y-6 p-3">
+      <Info name={t.settings.displayLanguage}>
         <Select
           value={cfg.language}
           onChange={intlStore.updateLanguage}
@@ -14,7 +18,16 @@ export default function GeneralFragment() {
             intlStore.languages.map((x) => [x.code, x.name])
           )}
         />
-      </div>
+      </Info>
+      <Checkbox
+        value={autoCollapse}
+        onChange={(newValue) => {
+          setAutoCollapse(newValue);
+          cfg.autoCollapse = newValue;
+        }}
+      >
+        Automatically Collapse Sidebar
+      </Checkbox>
     </div>
   );
 }

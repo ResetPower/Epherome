@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import "./styles.css";
+import { initMetadata } from "./stores";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+initMetadata()
+  .then(() => import("./App")) // initialize app component after initializing metadata
+  .then((App) =>
+    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+      <React.StrictMode>
+        <App.default />
+      </React.StrictMode>
+    )
+  )
+  .catch(() => console.error("Failed to init app metadata!"));

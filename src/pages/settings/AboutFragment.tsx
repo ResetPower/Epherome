@@ -1,31 +1,35 @@
 import { MdWarning } from "react-icons/md";
 import Link from "../../components/Link";
-import { appVersion, dataDir, tauriVersion } from "../../stores/config";
 import { t } from "../../intl";
+import { meta } from "../../stores";
+import Info from "../../components/Info";
 
 export default function AboutFragment() {
   return (
-    <div>
-      <div>Epherome {appVersion}</div>
-      <div className="flex items-center space-x-2">
-        <MdWarning className="text-2xl text-red-500" />
-        <pre>{t.settings.warning}</pre>
+    <div className="p-3">
+      <div className="m-1">Epherome {meta.appVersion}</div>
+      <div className="flex items-center space-x-2 rounded bg-red-100 dark:bg-red-900 p-3">
+        {/*TODO*/}
+        <MdWarning className="text-xl text-red-500 dark:text-red-300" />
+        <pre className="text-sm">{t.settings.warning}</pre>
       </div>
-      <div>
-        {t.settings.tauriVersion}: {tauriVersion}
-      </div>
-      <div>
-        {t.settings.dataDir}: {dataDir}
-      </div>
-      <div>
-        {t.settings.officialSite}: <Link to="https://epherome.com" />
-      </div>
-      <div>
-        {t.settings.githubHomepage}:{" "}
+      <Info name="Operating System">
+        {meta.osPlatform}-{meta.osVersion}
+      </Info>
+      <Info name={t.settings.tauriVersion}>{meta.tauriVersion}</Info>
+      <Info copyable={meta.appDataDir} code name={t.settings.dataDir}>
+        {meta.appDataDir}
+      </Info>
+      <Info name={t.settings.officialSite}>
+        <Link to="https://epherome.com" />
+      </Info>
+      <Info name={t.settings.githubHomepage}>
         <Link to="https://github.com/ResetPower/Epherome" />
+      </Info>
+      <div className="text-sm text-center">
+        <div>Copyright &copy; 2021-2024 ResetPower.</div>
+        <div>{t.settings.oss} | GNU General Public License 3.0</div>
       </div>
-      <div>Copyright (C) 2021-2024 ResetPower.</div>
-      <div>{t.settings.oss} | GNU General Public License 3.0</div>
     </div>
   );
 }

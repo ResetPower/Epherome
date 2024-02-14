@@ -4,31 +4,22 @@ import {
   readTextFile,
   writeTextFile,
 } from "@tauri-apps/api/fs";
-import { appDataDir, resolve } from "@tauri-apps/api/path";
 import { MinecraftAccount, MinecraftInstance } from "./struct";
 import { List } from "./list";
 import { MinecraftDownloadProvider } from "../core/url";
-import { app } from "@tauri-apps/api";
-
-export const appVersion = await app.getVersion();
-export const tauriVersion = await app.getTauriVersion();
-
-// acquire basic information
-export const dataDir = await appDataDir();
-const configFile = await resolve(dataDir, "config.json");
-// create the directory if not exist
-if (!(await exists(dataDir))) {
-  await createDir(dataDir);
-}
+import { meta } from ".";
+import { Theme } from "./theme";
 
 const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
   language: "en-ww",
+  autoCollapse: false,
+  theme: "follow" as Theme,
   accounts: new List<MinecraftAccount>(),
   instances: new List<MinecraftInstance>(),
   async load() {
-    if (await exists(configFile)) {
-      const data = JSON.parse(await readTextFile(configFile));
+    if (await exists(meta.configFile)) {
+      const data = JSON.parse(await readTextFile(meta.configFile));
       Object.assign(configStore, data);
       // note that stringifying objects in javascript
       // does not copy methods in it,
@@ -36,10 +27,13 @@ const configStore = {
       // so we need to load lists manually
       this.accounts = List.from(this.accounts);
       this.instances = List.from(this.instances);
+    } else {
+      // create the directory if not exist
+      await createDir(meta.appDataDir);
     }
   },
   async save() {
-    await writeTextFile(configFile, JSON.stringify(this));
+    await writeTextFile(meta.configFile, JSON.stringify(this));
   },
   saveAsync() {
     this.save().then().catch;
@@ -53,6 +47,3 @@ export const cfg = new Proxy(configStore, {
     return true;
   },
 });
-
-// load existing config
-await configStore.load();

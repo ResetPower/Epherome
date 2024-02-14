@@ -1,7 +1,10 @@
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode, useState } from "react";
 import { concat } from "../utils";
 import { historyStore } from ".";
 import { RouteName } from "./map";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { t } from "../intl";
+import { cfg } from "../stores/config";
 
 export interface SidebarItem {
   path: RouteName;
@@ -9,22 +12,49 @@ export interface SidebarItem {
   name: string;
 }
 
-export default function Sidebar(props: { items: SidebarItem[] }) {
+function SidebarButton(props: {
+  onClick?: MouseEventHandler;
+  active?: boolean;
+  icon: ReactNode;
+  children?: ReactNode;
+}) {
   return (
-    <div className="p-2 m-1 rounded border shadow flex flex-col space-y-1 whitespace-nowrap">
+    <button
+      onClick={props.onClick}
+      className={concat(
+        "flex space-x-1 items-center rounded p-1 transition-colors font-medium",
+        "hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600",
+        props.active && "bg-gray-100 dark:bg-gray-700"
+      )}
+    >
+      <div className="text-lg">{props.icon}</div>
+      {props.children && <div className="text-sm">{props.children}</div>}
+    </button>
+  );
+}
+
+export default function Sidebar(props: { items: SidebarItem[] }) {
+  const [expanded, setExpanded] = useState(!cfg.autoCollapse);
+
+  return (
+    <div className="p-1 m-1 rounded border shadow flex flex-col space-y-1 whitespace-nowrap">
       {props.items.map((item, index) => (
-        <button
+        <SidebarButton
           onClick={() => historyStore.go(item.path)}
-          className={concat(
-            "flex space-x-1 items-center rounded p-1 transition-colors hover:bg-gray-100 active:bg-gray-200",
-            historyStore.location === item.path && "bg-gray-100"
-          )}
+          active={historyStore.location === item.path}
           key={index}
+          icon={item.icon}
         >
-          {item.icon}
-          <p className="text-sm font-medium">{item.name}</p>
-        </button>
+          {expanded && item.name}
+        </SidebarButton>
       ))}
+      <div className="flex-grow" />
+      <SidebarButton
+        icon={expanded ? <IoIosArrowBack /> : <IoIosArrowForward />}
+        onClick={() => setExpanded((x) => !x)}
+      >
+        {expanded && t.sidebar.collapse}
+      </SidebarButton>
     </div>
   );
 }

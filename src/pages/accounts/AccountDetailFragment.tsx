@@ -7,6 +7,7 @@ import Spinner from "../../components/Spinner";
 import { MdCheckCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
 import { t } from "../../intl";
+import Info from "../../components/Info";
 
 export default function AccountDetailFragment(props: {
   current: MinecraftAccount;
@@ -26,24 +27,16 @@ export default function AccountDetailFragment(props: {
 
   return (
     <div>
-      <p>UUID: {current.uuid}</p>
-      <p>
-        {t.accounts.type}: {t.accounts[current.type]}
-      </p>
-      <p>
-        {t.username}: {current.name}
-      </p>
+      <Info name={t.accounts.uuid}>{current.uuid}</Info>
+      <Info name={t.accounts.type}>{t.accounts[current.type]}</Info>
+      <Info name={t.username}>{current.name}</Info>
       {current.authserver && (
-        <p>
-          {t.accounts.authserver}: {current.authserver}
-        </p>
+        <Info copyable={current.authserver} name={t.accounts.authserver}>
+          {current.authserver}
+        </Info>
       )}
       {current.type === "authlib" && (
         <div className="flex items-center my-3">
-          <Button onClick={checkStatus} primary>
-            {t.accounts.token.validate}
-          </Button>
-          <div className="flex-grow" />
           {status === "loading" && <Spinner />}
           {status === "positive" && (
             <div className="flex items-center text-green-500">
@@ -55,9 +48,13 @@ export default function AccountDetailFragment(props: {
               <IoMdCloseCircle /> {t.accounts.token.unavailable}
             </div>
           )}
+          <div className="flex-grow" />
+          <Button onClick={checkStatus} primary>
+            {t.accounts.token.validate}
+          </Button>
         </div>
       )}
-      <div className="flex">
+      <div className="flex justify-end">
         <Button onClick={props.onRemove} dangerous>
           {t.remove}
         </Button>

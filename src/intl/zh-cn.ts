@@ -4,8 +4,28 @@ export default {
   messages: {
     counter: {
       increase: "增加",
-      clicked: (count: number) => `你已经点击这个按钮 ${count} 次。`,
+      clicked: (count: number) => 
+        `你已经点击这个按钮 ${count} 次。`,
     },
+    launching: {
+      preparing: "准备中",
+      waiting: "等待游戏启动中",
+    },
+    downloading: {
+      lib: "正在下载游戏库",
+      asset: "正在下载游戏资源",
+      clientJar: "正在下载客户端 jar 文件",
+      clientJson: "正在下载客户端 json 文件",
+      minecraft: {
+        success: (version: string) =>
+          `Minecraft ${version} 安装成功。`,
+        failed: (version: string) => `Minecraft ${version} 下载失败。`,
+      },
+    },
+    installs: {
+      minecraft: (version: string) => `正在安装 Minecraft ${version}`,
+    },
+    general: "常规",
     account: "账户",
     instance: "实例",
     remove: "移除",
@@ -25,19 +45,22 @@ export default {
       instances: "实例",
       counter: "计数器",
       settings: "设置",
+      collapse: "收起",
     },
     home: {
       launch: "启动",
     },
     accounts: {
       empty: "还没有账户。",
+      uuid: "UUID",
       unopened: "在左侧打开一个账户或者创建新账户。",
       microsoft: "微软账户",
       authlib: "外置登录",
       offline: "离线登录",
       authserver: "验证服务器",
       type: "账户类型",
-      removeConfirmation: (name: string) => `是否要移除账户 ${name} ？`,
+      removeConfirmation: (name: string) =>
+        `是否要移除账户 ${name} ？`,
       token: {
         validate: "检查令牌状态",
         available: "令牌可用",
@@ -50,9 +73,11 @@ export default {
       gameDirHelper:
         "通常是 Windows 上的 '.minecraft' 文件夹和 macOS 或 Linux 上的 'minecraft' 文件夹。",
       version: "版本",
-      versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
+      versionHelper: 
+        "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
-      removeConfirmation: (name: string) => `是否要移除实例 ${name} ？`,
+      removeConfirmation: (name: string) => 
+        `是否要移除实例 ${name} ？`,
       release: "正式版",
       snapshot: "快照",
       old: "远古版",
@@ -60,9 +85,13 @@ export default {
       old_beta: "远古版 (Beta)",
       latestRelease: "最新正式版",
       latestSnapshot: "最新快照",
+      backToVersionList: "返回版本列表",
+      saves: "存档",
+      resourcePacks: "资源包",
+      mods: "Mods",
+      options: "选项",
     },
     settings: {
-      general: "常规",
       appearance: "外观",
       download: "下载",
       about: "关于",
@@ -74,7 +103,11 @@ export default {
       dataDir: "数据文件夹",
       officialSite: "官方网站",
       githubHomepage: "GitHub 首页",
+      downloadProvider: "下载源",
       oss: "开源软件",
+    },
+    toast: {
+      copied: "已成功复制。",
     },
   },
 };

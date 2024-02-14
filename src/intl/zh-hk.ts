@@ -31,6 +31,7 @@ export default {
     },
     accounts: {
       empty: "仲未有帳戶。",
+      uuid: "UUID",
       unopened: "喺左邊打開一個帳戶或者創建新帳戶。",
       microsoft: "微軟帳戶",
       authlib: "外置登錄",
@@ -74,6 +75,9 @@ export default {
       officialSite: "官方網站",
       githubHomepage: "GitHub 首頁",
       oss: "開源軟件",
+    },
+    toast: {
+      copied: "複製成功。",
     },
   },
 };

@@ -10,10 +10,10 @@ export default function SettingsPage() {
   const [value, setValue] = useState(0);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <TabBar
         tabs={[
-          t.settings.general,
+          t.general,
           t.settings.appearance,
           t.settings.download,
           t.settings.about,

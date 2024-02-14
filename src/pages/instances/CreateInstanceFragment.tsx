@@ -18,14 +18,13 @@ export default function CreateInstanceFragment(props: {
     props.goBack();
   };
 
-  const browse = () => {
+  const browse = () =>
     open({ multiple: false, directory: true }).then(
       (data) =>
         typeof data === "string" &&
         inputRef.current &&
         (inputRef.current.value = data)
     ).catch;
-  };
 
   return (
     <form className="flex flex-col h-full py-3 pl-3 pr-6" onSubmit={onSubmit}>

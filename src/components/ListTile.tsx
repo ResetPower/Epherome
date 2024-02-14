@@ -13,8 +13,8 @@ export default function ListTile(props: {
       className={concat(
         props.className,
         "flex rounded p-2 w-full text-sm font-medium transition-colors",
-        props.active && "bg-gray-200",
-        "hover:bg-gray-200 active:bg-gray-300"
+        props.active && "bg-gray-200 dark:bg-gray-700",
+        "hover:bg-gray-200 active:bg-gray-300 dark:hover:bg-gray-700 dark:active:bg-gray-600"
       )}
     >
       {props.children}

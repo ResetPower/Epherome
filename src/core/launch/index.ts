@@ -1,32 +1,41 @@
 import { invoke, path } from "@tauri-apps/api";
 import { MinecraftAccount, MinecraftInstance } from "../../stores/struct";
 import { MinecraftDownloadProvider, MinecraftUrlUtil } from "../url";
-import { dataDir } from "../../stores/config";
 import { YggdrasilAuthenticator, prefetch } from "../auth/yggdrasil";
 import { parseJson } from "./parser";
 import { downloadFile, ensureDir } from "../../utils/file";
 import { runMinecraft } from "./runner";
-import { isCompliant, osName } from "./rules";
+import { isCompliant } from "./rules";
 import { ClientJsonArguments } from "./struct";
 import { exists } from "@tauri-apps/api/fs";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { installAuthlibInjector } from "../install/authlib";
+import { meta } from "../../stores";
+import { t } from "../../intl";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   instance: MinecraftInstance;
   provider: MinecraftDownloadProvider;
+  setHelper: (helper: string) => unknown;
 }
 
 export async function launchMinecraft(
   options: MinecraftLaunchOptions
 ): Promise<"tokenUnavailable" | void> {
+  const setHelper = options.setHelper;
+
+  setHelper(t.launching.preparing);
+
   const urlUtil = new MinecraftUrlUtil(options.provider);
 
   console.info("Launching Minecraft ...");
   const account = options.account;
   const instance = options.instance;
-  const authlibInjectorPath = await path.join(dataDir, "authlib-injector.jar");
+  const authlibInjectorPath = await path.join(
+    meta.appDataDir,
+    "authlib-injector.jar"
+  );
 
   const buff: string[] = [];
 
@@ -97,7 +106,9 @@ export async function launchMinecraft(
     size: val.size,
   }));
   if (missingLibList.length > 0) {
-    for (const lib of missingLibList) {
+    for (const i in missingLibList) {
+      const lib = missingLibList[i];
+      setHelper(`${t.downloading.lib} (${i}/${missingLibList.length})`);
       await downloadFile(lib.url, lib.target);
     }
   }
@@ -110,10 +121,14 @@ export async function launchMinecraft(
     size: val.size,
   }));
   if (missingAssetList.length > 0) {
-    for (const asset of missingAssetList) {
+    for (const i in missingAssetList) {
+      const asset = missingAssetList[i];
+      setHelper(`${t.downloading.asset} (${i}/${missingAssetList.length})`);
       await downloadFile(asset.url, asset.target);
     }
   }
+
+  setHelper(t.launching.waiting);
 
   // inject authlib injector
   if (account.type === "authlib" && account.authserver) {
@@ -189,7 +204,7 @@ export async function launchMinecraft(
   if (parsed.arguments && parsed.arguments.jvm) {
     resolveMinecraftArgs(parsed.arguments.jvm);
   } else {
-    if (osName === "darwin") {
+    if (meta.osPlatform === "darwin") {
       buff.push("-Xdock:name=Minecraft");
     }
     buff.push(
@@ -214,4 +229,7 @@ export async function launchMinecraft(
     buff,
     dir
   );
+
+  // clear helper
+  setHelper(String());
 }
