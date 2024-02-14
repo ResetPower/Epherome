@@ -7,6 +7,25 @@ export default {
       clicked: (count: number) =>
         `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
     },
+    launching: {
+      preparing: "预备发射……",
+      waiting: "请等待发射开始……",
+    },
+    downloading: {
+      lib: "向下加载图书馆",
+      asset: "向下加载资产",
+      clientJar: "向下加载客户端储物罐",
+      clientJson: "正在下载客户端爪哇岛脚本对象符号",
+      minecraft: {
+        success: (version: string) =>
+          `安设 Minecraft ${version} 是成功的。`,
+        failed: (version: string) => `失败的安设 Minecraft ${version} 。`,
+      },
+    },
+    installs: {
+      minecraft: (version: string) => `安设 Minecraft ${version}`,
+    },
+    general: "常规",
     account: "帐单",
     instance: "举例",
     remove: "除掉",
@@ -26,6 +45,7 @@ export default {
       instances: "举例",
       counter: "柜台",
       settings: "设定",
+      collapse: "崩溃",
     },
     home: {
       launch: "发射",
@@ -39,7 +59,8 @@ export default {
       offline: "脱机",
       authserver: "身份验证服务器",
       type: "您的帐单类别",
-      removeConfirmation: (name: string) => `您真的想要除掉帐单 ${name} 吗？`,
+      removeConfirmation: (name: string) => 
+        `您真的想要除掉帐单 ${name} 吗？`,
       token: {
         validate: "查询令牌状态",
         available: "令牌是可以使用的。",
@@ -52,7 +73,8 @@ export default {
       gameDirHelper:
         "通常在 Windows 为 '.minecraft' 目录，在 macOS 或 Linux 为 'minecraft' 目录。",
       version: "版本",
-      versionHelper: "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
+      versionHelper: 
+        "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
       unopened: "在左侧选择你曾经举过的例子或者创造一个新的例子。",
       removeConfirmation: (name: string) =>
         `您真的想要除掉您的举例 ${name} 吗？`,
@@ -63,9 +85,13 @@ export default {
       old_beta: "古代 贝塔",
       latestRelease: "最后的一次释放",
       latestSnapshot: "最后拍摄的闪烁照片",
+      backToVersionList: "滚回版本列表",
+      saves: "存储",
+      resourcePacks: "资源打包",
+      mods: "游戏修改增强程序",
+      options: "选项",
     },
     settings: {
-      general: "通常",
       appearance: "看上去",
       download: "向下加载",
       about: "有关",
@@ -77,6 +103,7 @@ export default {
       dataDir: "数据目录",
       officialSite: "官方网址",
       githubHomepage: "版本控制系统枢纽 首页",
+      downloadProvider: "向下加载提供商",
       oss: "开放源代码软件",
     },
     toast: {
