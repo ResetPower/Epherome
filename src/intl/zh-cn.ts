@@ -8,14 +8,14 @@ export default {
         `你已经点击这个按钮 ${count} 次。`,
     },
     launching: {
-      preparing: "准备中……",
-      waiting: "请等待游戏启动……",
+      preparing: "准备中",
+      waiting: "等待游戏启动中",
     },
     downloading: {
       lib: "正在下载游戏库",
       asset: "正在下载游戏资源",
-      clientJar: "正在下载客户端 Jar 文件",
-      clientJson: "正在下载客户端 Json 文件",
+      clientJar: "正在下载客户端 jar 文件",
+      clientJson: "正在下载客户端 json 文件",
       minecraft: {
         success: (version: string) =>
           `Minecraft ${version} 安装成功。`,
@@ -86,7 +86,7 @@ export default {
       latestRelease: "最新正式版",
       latestSnapshot: "最新快照",
       backToVersionList: "返回版本列表",
-      saves: "保存",
+      saves: "存档",
       resourcePacks: "资源包",
       mods: "Mods",
       options: "选项",
