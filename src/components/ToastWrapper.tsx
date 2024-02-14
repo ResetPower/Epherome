@@ -8,11 +8,5 @@ export default function ToastWrapper() {
 
   const toast = toastStore.state;
 
-  return (
-    toast && (
-      <Toast type={toast.type} out={toast.out}>
-        {toast.message}
-      </Toast>
-    )
-  );
+  return toast && <Toast {...toast} />;
 }

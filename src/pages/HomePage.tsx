@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../components/Button";
 import Info from "../components/Info";
 import { launchMinecraft } from "../core/launch";
@@ -7,14 +8,18 @@ import { cfg } from "../stores/config";
 export default function HomePage() {
   const [account, instance] = [cfg.accounts.current(), cfg.instances.current()];
   const available = account && instance;
+  const [helper, setHelper] = useState(String());
+  const [launching, setLaunching] = useState(false);
 
   const launch = () => {
     if (available) {
       launchMinecraft({
         account,
         instance,
-        provider: "official",
-      }).then().catch;
+        provider: cfg.downloadProvider,
+        setHelper,
+      }).then(() => setLaunching(false)).catch;
+      setLaunching(true);
     }
   };
 
@@ -27,10 +32,11 @@ export default function HomePage() {
           <Info name={t.instance}>{instance?.name ?? t.unselected}</Info>
         </div>
         <div className="flex justify-end">
-          <Button onClick={launch} disabled={!available} primary>
+          <Button onClick={launch} disabled={!available || launching} primary>
             {t.home.launch}
           </Button>
         </div>
+        <div className="text-gray-500 px-3">{helper}</div>
       </div>
     </div>
   );

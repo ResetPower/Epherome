@@ -1,12 +1,9 @@
 import { MdCheckCircle } from "react-icons/md";
-import { ToastType } from "../stores/toast";
+import { ToastState } from "../stores/toast";
 import { concat } from "../utils";
+import { IoMdCloseCircle } from "react-icons/io";
 
-export default function Toast(props: {
-  type?: ToastType;
-  out?: boolean;
-  children: string;
-}) {
+export default function Toast(props: ToastState) {
   return (
     <div
       className={concat(
@@ -18,8 +15,14 @@ export default function Toast(props: {
           : "animate-in slide-in-from-left fade-in duration-300"
       )}
     >
+      {props.type === "fail" && <IoMdCloseCircle className="text-red-400" />}
       {props.type === "success" && <MdCheckCircle className="text-green-400" />}
-      <div className="text-sm font-medium">{props.children}</div>
+      <div>
+        <div className="text-sm font-medium">{props.message}</div>
+        {props.description && (
+          <div className="text-xs text-slate-200">{props.description}</div>
+        )}
+      </div>
     </div>
   );
 }

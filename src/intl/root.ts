@@ -7,6 +7,25 @@ export default {
       clicked: (count: number) =>
         `You've clicked the button for ${count} times.`,
     },
+    launching: {
+      preparing: "Preparing",
+      waiting: "Waiting to Launch",
+    },
+    downloading: {
+      lib: "Downloading Libraries",
+      asset: "Downloading Assets",
+      clientJar: "Downloading Client Jar",
+      clientJson: "Downloading Client Json",
+      minecraft: {
+        success: (version: string) =>
+          `Installed Minecraft ${version} successfully.`,
+        failed: (version: string) => `Failed to install Minecraft ${version}.`,
+      },
+    },
+    installs: {
+      minecraft: (version: string) => `Install Minecraft ${version}`,
+    },
+    general: "General",
     account: "Account",
     instance: "Instance",
     remove: "Remove",
@@ -26,6 +45,7 @@ export default {
       instances: "Instances",
       counter: "Counter",
       settings: "Settings",
+      collapse: "Collapse",
     },
     home: {
       launch: "Launch",
@@ -65,9 +85,13 @@ export default {
       old_beta: "Ancient (Beta)",
       latestRelease: "Latest Release",
       latestSnapshot: "Latest Snapshot",
+      backToVersionList: "Back to version list",
+      saves: "Saves",
+      resourcePacks: "Resource Packs",
+      mods: "Mods",
+      options: "Options",
     },
     settings: {
-      general: "General",
       appearance: "Appearance",
       download: "Download",
       about: "About",

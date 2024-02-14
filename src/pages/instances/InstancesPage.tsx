@@ -9,6 +9,7 @@ import { t } from "../../intl";
 import CreateInstanceFragment from "./CreateInstanceFragment";
 import DownloadInstanceFragment from "./DownloadInstanceFragment";
 import InstanceDetailFragment from "./InstanceDetailFragment";
+import { useForceUpdate } from "../../utils";
 
 export default function InstancesPage() {
   const [state, setState] = useState(cfg.instances.active);
@@ -19,6 +20,7 @@ export default function InstancesPage() {
     cfg.instances.find(state);
 
   const goBack = () => setState(cfg.instances.active);
+  const forceUpdate = useForceUpdate();
 
   return (
     <div className="flex w-full">
@@ -53,9 +55,15 @@ export default function InstancesPage() {
       <div className="flex-grow p-3">
         {!state && <Center>{t.instances.unopened}</Center>}
         {state === "create" && <CreateInstanceFragment goBack={goBack} />}
-        {state === "download" && <DownloadInstanceFragment goBack={goBack} />}
+        {state === "download" && (
+          <DownloadInstanceFragment
+            onUpdate={() => setState(cfg.instances.active)}
+            goBack={goBack}
+          />
+        )}
         {current && (
           <InstanceDetailFragment
+            forceUpdate={forceUpdate}
             onRemove={() =>
               confirm(t.instances.removeConfirmation(current.name)).then(
                 (result) => {

@@ -1,8 +1,9 @@
-export type ToastType = "success";
+export type ToastType = "success" | "fail";
 
 export interface ToastState {
   type: ToastType;
   message: string;
+  description?: string;
   out: boolean;
 }
 
@@ -27,8 +28,18 @@ class ToastStore {
       }, 300);
     }
   }
-  success(message: string) {
-    this.state = { type: "success", message, out: false };
+  show(state: ToastState) {
+    this.state = state;
+    setTimeout(() => this.clear(), 3000);
+    this.invoke();
+  }
+  success(message: string, description?: string) {
+    this.state = { type: "success", message, description, out: false };
+    setTimeout(() => this.clear(), 3000);
+    this.invoke();
+  }
+  fail(message: string, description?: string) {
+    this.state = { type: "fail", message, description, out: false };
     setTimeout(() => this.clear(), 3000);
     this.invoke();
   }

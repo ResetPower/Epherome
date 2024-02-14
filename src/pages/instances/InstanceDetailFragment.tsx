@@ -4,11 +4,12 @@ import TabBar from "../../components/TabBar";
 import { t } from "../../intl";
 import { MinecraftInstance } from "../../stores/struct";
 import Info from "../../components/Info";
-import Center from "../../components/Center";
+import { cfg } from "../../stores/config";
 
 export default function InstanceDetailFragment(props: {
   current: MinecraftInstance;
   onRemove: () => unknown;
+  forceUpdate: () => unknown;
 }) {
   const [value, setValue] = useState(0);
   const current = props.current;
@@ -16,13 +17,28 @@ export default function InstanceDetailFragment(props: {
   return (
     <div className="h-full">
       <TabBar
-        tabs={["General", "Saves", "Resource Packs", "Mods", "Options"]}
+        tabs={[
+          t.general,
+          t.instances.saves,
+          t.instances.resourcePacks,
+          t.instances.mods,
+          t.instances.options,
+        ]}
         value={value}
         setValue={setValue}
       />
       {value === 0 && (
         <div>
-          <Info name={t.name}>{current.name}</Info>
+          <Info
+            editable={(newValue) => {
+              current.name = newValue;
+              cfg.saveAsync();
+              props.forceUpdate();
+            }}
+            name={t.name}
+          >
+            {current.name}
+          </Info>
           <Info copyable={current.gameDir} code name={t.instances.gameDir}>
             {current.gameDir}
           </Info>

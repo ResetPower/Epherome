@@ -13,7 +13,7 @@ export default function SettingsPage() {
     <div className="w-full h-full">
       <TabBar
         tabs={[
-          t.settings.general,
+          t.general,
           t.settings.appearance,
           t.settings.download,
           t.settings.about,

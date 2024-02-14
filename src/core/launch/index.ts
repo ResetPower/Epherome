@@ -11,16 +11,22 @@ import { exists } from "@tauri-apps/api/fs";
 import { analyzeAssets, analyzeLibrary } from "./libraries";
 import { installAuthlibInjector } from "../install/authlib";
 import { meta } from "../../stores";
+import { t } from "../../intl";
 
 export interface MinecraftLaunchOptions {
   account: MinecraftAccount;
   instance: MinecraftInstance;
   provider: MinecraftDownloadProvider;
+  setHelper: (helper: string) => unknown;
 }
 
 export async function launchMinecraft(
   options: MinecraftLaunchOptions
 ): Promise<"tokenUnavailable" | void> {
+  const setHelper = options.setHelper;
+
+  setHelper(t.launching.preparing);
+
   const urlUtil = new MinecraftUrlUtil(options.provider);
 
   console.info("Launching Minecraft ...");
@@ -100,7 +106,9 @@ export async function launchMinecraft(
     size: val.size,
   }));
   if (missingLibList.length > 0) {
-    for (const lib of missingLibList) {
+    for (const i in missingLibList) {
+      const lib = missingLibList[i];
+      setHelper(`${t.downloading.lib} (${i}/${missingLibList.length})`);
       await downloadFile(lib.url, lib.target);
     }
   }
@@ -113,10 +121,14 @@ export async function launchMinecraft(
     size: val.size,
   }));
   if (missingAssetList.length > 0) {
-    for (const asset of missingAssetList) {
+    for (const i in missingAssetList) {
+      const asset = missingAssetList[i];
+      setHelper(`${t.downloading.asset} (${i}/${missingAssetList.length})`);
       await downloadFile(asset.url, asset.target);
     }
   }
+
+  setHelper(t.launching.waiting);
 
   // inject authlib injector
   if (account.type === "authlib" && account.authserver) {
@@ -217,4 +229,7 @@ export async function launchMinecraft(
     buff,
     dir
   );
+
+  // clear helper
+  setHelper(String());
 }

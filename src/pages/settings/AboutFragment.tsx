@@ -16,12 +16,7 @@ export default function AboutFragment() {
         {meta.osPlatform}-{meta.osVersion}
       </Info>
       <Info name={t.settings.tauriVersion}>{meta.tauriVersion}</Info>
-      <Info
-        className="flex"
-        copyable={meta.appDataDir}
-        code
-        name={t.settings.dataDir}
-      >
+      <Info copyable={meta.appDataDir} code name={t.settings.dataDir}>
         {meta.appDataDir}
       </Info>
       <Info name={t.settings.officialSite}>
