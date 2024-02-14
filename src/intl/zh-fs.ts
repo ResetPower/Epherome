@@ -18,8 +18,8 @@ export default {
       clientJson: "正在下载客户端爪哇岛脚本对象符号",
       minecraft: {
         success: (version: string) =>
-          `安设 Minecraft ${version} 是成功的。`,
-        failed: (version: string) => `失败的安设 Minecraft ${version} 。`,
+          `非常好下载源，使您对 Minecraft ${version} 的安设成功。`,
+        failed: (version: string) => `非常坏下载源，使您对于 Minecraft ${version} 的安设成功。`,
       },
     },
     installs: {
@@ -58,7 +58,7 @@ export default {
       authlib: "身份验证库喷油器",
       offline: "脱机",
       authserver: "身份验证服务器",
-      type: "您的帐单类别",
+      type: "打字",
       removeConfirmation: (name: string) => 
         `您真的想要除掉帐单 ${name} 吗？`,
       token: {
@@ -71,7 +71,7 @@ export default {
       empty: "你还没有举过例。",
       gameDir: "游戏目录",
       gameDirHelper:
-        "通常在 Windows 为 '.minecraft' 目录，在 macOS 或 Linux 为 'minecraft' 目录。",
+        "通常在 Windows 或 Linux 为 '.minecraft' 目录，在 macOS 为 'minecraft' 目录。",
       version: "版本",
       versionHelper: 
         "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
