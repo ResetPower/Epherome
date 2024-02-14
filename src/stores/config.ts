@@ -8,10 +8,13 @@ import { MinecraftAccount, MinecraftInstance } from "./struct";
 import { List } from "./list";
 import { MinecraftDownloadProvider } from "../core/url";
 import { meta } from ".";
+import { Theme } from "./theme";
 
 const configStore = {
   downloadProvider: "official" as MinecraftDownloadProvider,
   language: "en-ww",
+  autoCollapse: false,
+  theme: "follow" as Theme,
   accounts: new List<MinecraftAccount>(),
   instances: new List<MinecraftInstance>(),
   async load() {

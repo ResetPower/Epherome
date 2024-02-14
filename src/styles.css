@@ -1,5 +1,12 @@
 @tailwind base;
 @tailwind components;
+
+@layer components {
+  * {
+    @apply dark:border-gray-700;
+  }
+}
+
 @tailwind utilities;
 
 html,

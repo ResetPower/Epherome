@@ -25,7 +25,7 @@ export default function Info(props: {
 
   return (
     <div className="p-1">
-      <div className="text-gray-600 text-sm font-medium flex items-center">
+      <div className="text-gray-600 dark:text-gray-400 text-sm font-medium flex items-center">
         <div>{props.name}</div>
         <div className="text-xs mx-1 cursor-pointer text-blue-500 hover:text-blue-600">
           {props.editable &&

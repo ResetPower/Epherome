@@ -4,6 +4,7 @@ import Info from "../components/Info";
 import { launchMinecraft } from "../core/launch";
 import { t } from "../intl";
 import { cfg } from "../stores/config";
+import Shallow from "../components/Shallow";
 
 export default function HomePage() {
   const [account, instance] = [cfg.accounts.current(), cfg.instances.current()];
@@ -36,7 +37,7 @@ export default function HomePage() {
             {t.home.launch}
           </Button>
         </div>
-        <div className="text-gray-500 px-3">{helper}</div>
+        <Shallow className="px-3">{helper}</Shallow>
       </div>
     </div>
   );

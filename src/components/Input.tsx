@@ -5,6 +5,7 @@ import {
   forwardRef,
 } from "react";
 import { concat } from "../utils";
+import Shallow from "./Shallow";
 
 const Input = forwardRef(
   (
@@ -23,15 +24,14 @@ const Input = forwardRef(
     return (
       <div>
         {props.label && (
-          <label
+          <Shallow
             className={concat(
-              "block font-medium text-gray-800",
+              "block font-medium",
               props.largeLabel ? "text-lg" : "text-sm"
             )}
-            htmlFor={props.name}
           >
             {props.label}
-          </label>
+          </Shallow>
         )}
         <div className="flex items-center space-x-1">
           <input

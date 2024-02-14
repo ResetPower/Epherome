@@ -21,7 +21,7 @@ export default function Button(props: {
           ? "text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
           : props.dangerous
             ? "text-white bg-red-500 hover:bg-red-600 active:bg-red-700"
-            : "border hover:bg-gray-100 active:bg-gray-200",
+            : "border hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600",
         props.disabled && "cursor-not-allowed"
       )}
       type={props.type ?? "button"}

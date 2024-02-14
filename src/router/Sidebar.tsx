@@ -4,6 +4,7 @@ import { historyStore } from ".";
 import { RouteName } from "./map";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { t } from "../intl";
+import { cfg } from "../stores/config";
 
 export interface SidebarItem {
   path: RouteName;
@@ -21,8 +22,9 @@ function SidebarButton(props: {
     <button
       onClick={props.onClick}
       className={concat(
-        "flex space-x-1 items-center rounded p-1 transition-colors hover:bg-gray-100 active:bg-gray-200 font-medium",
-        props.active && "bg-gray-100"
+        "flex space-x-1 items-center rounded p-1 transition-colors font-medium",
+        "hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600",
+        props.active && "bg-gray-100 dark:bg-gray-700"
       )}
     >
       <div className="text-lg">{props.icon}</div>
@@ -32,7 +34,7 @@ function SidebarButton(props: {
 }
 
 export default function Sidebar(props: { items: SidebarItem[] }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(!cfg.autoCollapse);
 
   return (
     <div className="p-1 m-1 rounded border shadow flex flex-col space-y-1 whitespace-nowrap">

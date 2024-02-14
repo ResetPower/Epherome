@@ -4,6 +4,7 @@ import {
   MinecraftVersionType,
 } from "../../core/versions";
 import { t } from "../../intl";
+import Shallow from "../../components/Shallow";
 
 export default function VersionList(props: {
   select: (id: string) => unknown;
@@ -14,7 +15,7 @@ export default function VersionList(props: {
     (version) =>
       props.filter(version.type) && (
         <div
-          className="p-3 m-3 rounded cursor-pointer hover:bg-gray-200 flex items-center text-left"
+          className="p-3 m-3 rounded cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center text-left"
           key={version.id}
           onClick={() => props.select(version.id)}
         >
@@ -32,16 +33,16 @@ export default function VersionList(props: {
                 </div>
               )}
             </div>
-            <div className="text-gray-500 text-sm font-medium">
+            <Shallow className=" text-sm font-medium">
               {t.instances[version.type]}
-            </div>
-            <div className="text-gray-500 text-xs">
+            </Shallow>
+            <Shallow className="text-xs">
               {new Date(version.releaseTime).toString()}
-            </div>
+            </Shallow>
           </div>
-          <div className="text-gray-500 text-sm">
+          <Shallow className="text-sm">
             <MdArrowForwardIos />
-          </div>
+          </Shallow>
         </div>
       )
   );

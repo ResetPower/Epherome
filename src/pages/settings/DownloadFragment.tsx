@@ -6,7 +6,7 @@ import { cfg } from "../../stores/config";
 
 export default function DownloadFragment() {
   return (
-    <div>
+    <div className="p-3">
       <Info name={t.settings.downloadProvider}>
         <Select
           value={cfg.downloadProvider}

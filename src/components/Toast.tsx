@@ -9,7 +9,7 @@ export default function Toast(props: ToastState) {
       className={concat(
         "z-50 absolute bottom-5 left-5",
         "flex items-center space-x-3 rounded-lg shadow-lg px-5 py-3",
-        "bg-opacity-70 bg-slate-800 text-white",
+        "bg-opacity-70 bg-slate-800 text-white dark:bg-slate-200 dark:text-black",
         props.out
           ? "animate-out slide-out-to-left fade-out duration-300"
           : "animate-in slide-in-from-left fade-in duration-300"

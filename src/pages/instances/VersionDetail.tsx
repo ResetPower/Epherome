@@ -8,6 +8,7 @@ import { MinecraftVersion } from "../../core/versions";
 import { installMinecraft } from "../../core/install/minecraft";
 import { toastStore } from "../../stores/toast";
 import { cfg } from "../../stores/config";
+import Shallow from "../../components/Shallow";
 
 export default function VersionDetail(props: {
   version: MinecraftVersion;
@@ -67,7 +68,7 @@ export default function VersionDetail(props: {
           Install
         </Button>
       </div>
-      <div className="text-sm font-medium text-gray-700">{helper}</div>
+      <Shallow className="text-sm font-medium">{helper}</Shallow>
     </div>
   );
 }

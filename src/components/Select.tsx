@@ -37,7 +37,7 @@ export default function Select(props: {
               className={concat(
                 "px-4 py-2 w-full block text-left",
                 "hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white",
-                props.value === key && "bg-gray-100"
+                props.value === key && "bg-gray-100 dark:bg-gray-600"
               )}
             >
               {value}
