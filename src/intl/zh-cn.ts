@@ -71,7 +71,7 @@ export default {
       empty: "还没有实例。",
       gameDir: "游戏文件夹",
       gameDirHelper:
-        "通常是 Windows 上的 '.minecraft' 文件夹和 macOS 或 Linux 上的 'minecraft' 文件夹。",
+        "通常是 Windows 或 Linux 上的 '.minecraft' 文件夹和 macOS 上的 'minecraft' 文件夹。",
       version: "版本",
       versionHelper: 
         "游戏文件夹中的 'versions' 文件夹中的文件夹名。",

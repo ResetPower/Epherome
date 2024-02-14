@@ -71,7 +71,7 @@ export default {
       empty: "No instances here.",
       gameDir: "Game Directory",
       gameDirHelper:
-        "Usually '.minecraft' on Windows or 'minecraft' on macOS and Linux.",
+        "Usually '.minecraft' on Windows and Linux or 'minecraft' on macOS.",
       version: "Version",
       versionHelper:
         "The folder name in the 'versions' folder in your game directory.",
