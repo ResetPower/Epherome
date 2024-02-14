@@ -13,7 +13,7 @@ export default function DownloadFragment() {
           onChange={(newValue) => {
             cfg.downloadProvider = newValue as MinecraftDownloadProvider;
           }}
-          options={{ official: "Official", bmclapi: "BMCLAPI", mcbbs: "MCBBS" }}
+          options={{ official: t.official, bmclapi: "BMCLAPI", mcbbs: "MCBBS" }}
         ></Select>
       </Info>
     </div>

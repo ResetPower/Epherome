@@ -11,6 +11,8 @@ export default {
       preparing: "Preparing",
       waiting: "Waiting to Launch",
     },
+    install: "Install",
+    official: "Official",
     downloading: {
       lib: "Downloading Libraries",
       asset: "Downloading Assets",
@@ -105,6 +107,14 @@ export default {
       githubHomepage: "GitHub Homepage",
       downloadProvider: "Download Provider",
       oss: "Open Source Software",
+      theme: "Theme",
+      os: "Operating System",
+      themes: {
+        followOs: "Follow OS",
+        light: "Light",
+        dark: "Dark",
+      },
+      autoCollapse: "Automatically Collapse Sidebar",
     },
     toast: {
       copied: "Copied successfully.",

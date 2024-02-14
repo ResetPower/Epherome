@@ -4,21 +4,21 @@ export default {
   messages: {
     counter: {
       increase: "增加",
-      clicked: (count: number) => 
-        `你已经点击这个按钮 ${count} 次。`,
+      clicked: (count: number) => `你已经点击这个按钮 ${count} 次。`,
     },
     launching: {
       preparing: "准备中",
       waiting: "等待游戏启动中",
     },
+    install: "安装",
+    official: "官方",
     downloading: {
       lib: "正在下载游戏库",
       asset: "正在下载游戏资源",
       clientJar: "正在下载客户端 jar 文件",
       clientJson: "正在下载客户端 json 文件",
       minecraft: {
-        success: (version: string) =>
-          `Minecraft ${version} 安装成功。`,
+        success: (version: string) => `Minecraft ${version} 安装成功。`,
         failed: (version: string) => `Minecraft ${version} 下载失败。`,
       },
     },
@@ -59,8 +59,7 @@ export default {
       offline: "离线登录",
       authserver: "验证服务器",
       type: "账户类型",
-      removeConfirmation: (name: string) =>
-        `是否要移除账户 ${name} ？`,
+      removeConfirmation: (name: string) => `是否要移除账户 ${name} ？`,
       token: {
         validate: "检查令牌状态",
         available: "令牌可用",
@@ -73,11 +72,9 @@ export default {
       gameDirHelper:
         "通常是 Windows 或 Linux 上的 '.minecraft' 文件夹和 macOS 上的 'minecraft' 文件夹。",
       version: "版本",
-      versionHelper: 
-        "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
+      versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
-      removeConfirmation: (name: string) => 
-        `是否要移除实例 ${name} ？`,
+      removeConfirmation: (name: string) => `是否要移除实例 ${name} ？`,
       release: "正式版",
       snapshot: "快照",
       old: "远古版",
@@ -105,6 +102,14 @@ export default {
       githubHomepage: "GitHub 首页",
       downloadProvider: "下载源",
       oss: "开源软件",
+      theme: "主题",
+      os: "操作系统",
+      themes: {
+        followOs: "跟随操作系统",
+        light: "浅色主题",
+        dark: "深色主题",
+      },
+      autoCollapse: "自动收起侧边栏",
     },
     toast: {
       copied: "已成功复制。",

@@ -10,7 +10,7 @@ const TinyInput = forwardRef(
     ref?: LegacyRef<HTMLInputElement>
   ) => (
     <input
-      className="border-b border-blue-500 focus:outline-none"
+      className="border-b border-blue-500 dark:bg-gray-800 focus:outline-none"
       defaultValue={props.initialValue}
       onKeyDown={(e) => {
         if (e.key === "Enter") props.onSubmit(e.currentTarget.value);

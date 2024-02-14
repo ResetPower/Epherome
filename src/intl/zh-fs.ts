@@ -11,6 +11,8 @@ export default {
       preparing: "预备发射",
       waiting: "请等待发射开始",
     },
+    install: "安设",
+    official: "负责人的",
     downloading: {
       lib: "向下加载图书馆",
       asset: "向下加载资产",
@@ -19,7 +21,8 @@ export default {
       minecraft: {
         success: (version: string) =>
           `非常好下载源，使您对 Minecraft ${version} 的安设成功。`,
-        failed: (version: string) => `非常坏下载源，使您对于 Minecraft ${version} 的安设成功。`,
+        failed: (version: string) =>
+          `非常坏下载源，使您对于 Minecraft ${version} 的安设成功。`,
       },
     },
     installs: {
@@ -59,8 +62,7 @@ export default {
       offline: "脱机",
       authserver: "身份验证服务器",
       type: "打字",
-      removeConfirmation: (name: string) => 
-        `您真的想要除掉帐单 ${name} 吗？`,
+      removeConfirmation: (name: string) => `您真的想要除掉帐单 ${name} 吗？`,
       token: {
         validate: "查询令牌状态",
         available: "令牌是可以使用的。",
@@ -73,8 +75,7 @@ export default {
       gameDirHelper:
         "通常在 Windows 或 Linux 为 '.minecraft' 目录，在 macOS 为 'minecraft' 目录。",
       version: "版本",
-      versionHelper: 
-        "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
+      versionHelper: "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
       unopened: "在左侧选择你曾经举过的例子或者创造一个新的例子。",
       removeConfirmation: (name: string) =>
         `您真的想要除掉您的举例 ${name} 吗？`,
@@ -105,6 +106,14 @@ export default {
       githubHomepage: "版本控制系统枢纽 首页",
       downloadProvider: "向下加载提供商",
       oss: "开放源代码软件",
+      theme: "主旋律",
+      os: "运转制度",
+      themes: {
+        followOs: "跟踪运转制度",
+        light: "光线",
+        dark: "黑暗",
+      },
+      autoCollapse: "自动崩溃的一旁的酒吧",
     },
     toast: {
       copied: "复制是成功的。",
