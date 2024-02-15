@@ -8,9 +8,11 @@ export default {
         `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
     },
     launching: {
-      preparing: "预备发射……",
-      waiting: "请等待发射开始……",
+      preparing: "预备发射",
+      waiting: "请等待发射开始",
     },
+    install: "安设",
+    official: "负责人的",
     downloading: {
       lib: "向下加载图书馆",
       asset: "向下加载资产",
@@ -18,8 +20,9 @@ export default {
       clientJson: "正在下载客户端爪哇岛脚本对象符号",
       minecraft: {
         success: (version: string) =>
-          `安设 Minecraft ${version} 是成功的。`,
-        failed: (version: string) => `失败的安设 Minecraft ${version} 。`,
+          `非常好下载源，使您对 Minecraft ${version} 的安设成功。`,
+        failed: (version: string) =>
+          `非常坏下载源，使您对于 Minecraft ${version} 的安设成功。`,
       },
     },
     installs: {
@@ -58,9 +61,8 @@ export default {
       authlib: "身份验证库喷油器",
       offline: "脱机",
       authserver: "身份验证服务器",
-      type: "您的帐单类别",
-      removeConfirmation: (name: string) => 
-        `您真的想要除掉帐单 ${name} 吗？`,
+      type: "打字",
+      removeConfirmation: (name: string) => `您真的想要除掉帐单 ${name} 吗？`,
       token: {
         validate: "查询令牌状态",
         available: "令牌是可以使用的。",
@@ -71,7 +73,7 @@ export default {
       empty: "你还没有举过例。",
       gameDir: "游戏目录",
       gameDirHelper:
-        "通常在 Windows 为 '.minecraft' 目录，在 macOS 或 Linux 为 'minecraft' 目录。",
+        "通常在 Windows 或 Linux 为 '.minecraft' 目录，在 macOS 为 'minecraft' 目录。",
       version: "版本",
       versionHelper: 
         "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
@@ -86,7 +88,7 @@ export default {
       latestRelease: "最后的一次释放",
       latestSnapshot: "最后拍摄的闪烁照片",
       backToVersionList: "滚回版本列表",
-      saves: "存储",
+      saves: "拯救",
       resourcePacks: "资源打包",
       mods: "游戏修改增强程序",
       options: "选项",
@@ -105,6 +107,14 @@ export default {
       githubHomepage: "版本控制系统枢纽 首页",
       downloadProvider: "向下加载提供商",
       oss: "开放源代码软件",
+      theme: "主旋律",
+      os: "运转制度",
+      themes: {
+        followOs: "跟踪运转制度",
+        light: "光线",
+        dark: "黑暗",
+      },
+      autoCollapse: "自动崩溃的一旁的酒吧",
     },
     toast: {
       copied: "复制是成功的。",

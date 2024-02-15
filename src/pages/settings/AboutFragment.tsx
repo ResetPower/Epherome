@@ -13,7 +13,7 @@ export default function AboutFragment() {
         <MdWarning className="text-xl text-red-500 dark:text-red-300" />
         <pre className="text-sm">{t.settings.warning}</pre>
       </div>
-      <Info name="Operating System">
+      <Info name={t.settings.os}>
         {meta.osPlatform}-{meta.osVersion}
       </Info>
       <Info name={t.settings.tauriVersion}>{meta.tauriVersion}</Info>

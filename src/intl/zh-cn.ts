@@ -8,17 +8,18 @@ export default {
         `你已经点击这个按钮 ${count} 次。`,
     },
     launching: {
-      preparing: "准备中……",
-      waiting: "请等待游戏启动……",
+      preparing: "准备中",
+      waiting: "等待游戏启动中",
     },
+    install: "安装",
+    official: "官方",
     downloading: {
       lib: "正在下载游戏库",
       asset: "正在下载游戏资源",
-      clientJar: "正在下载客户端 Jar 文件",
-      clientJson: "正在下载客户端 Json 文件",
+      clientJar: "正在下载客户端 jar 文件",
+      clientJson: "正在下载客户端 json 文件",
       minecraft: {
-        success: (version: string) =>
-          `Minecraft ${version} 安装成功。`,
+        success: (version: string) => `Minecraft ${version} 安装成功。`,
         failed: (version: string) => `Minecraft ${version} 下载失败。`,
       },
     },
@@ -71,7 +72,7 @@ export default {
       empty: "还没有实例。",
       gameDir: "游戏文件夹",
       gameDirHelper:
-        "通常是 Windows 上的 '.minecraft' 文件夹和 macOS 或 Linux 上的 'minecraft' 文件夹。",
+        "通常是 Windows 或 Linux 上的 '.minecraft' 文件夹和 macOS 上的 'minecraft' 文件夹。",
       version: "版本",
       versionHelper: 
         "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
@@ -86,7 +87,7 @@ export default {
       latestRelease: "最新正式版",
       latestSnapshot: "最新快照",
       backToVersionList: "返回版本列表",
-      saves: "保存",
+      saves: "存档",
       resourcePacks: "资源包",
       mods: "Mods",
       options: "选项",
@@ -105,6 +106,14 @@ export default {
       githubHomepage: "GitHub 首页",
       downloadProvider: "下载源",
       oss: "开源软件",
+      theme: "主题",
+      os: "操作系统",
+      themes: {
+        followOs: "跟随操作系统",
+        light: "浅色主题",
+        dark: "深色主题",
+      },
+      autoCollapse: "自动收起侧边栏",
     },
     toast: {
       copied: "已成功复制。",

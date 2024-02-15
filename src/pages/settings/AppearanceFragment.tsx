@@ -3,19 +3,24 @@ import Info from "../../components/Info";
 import Select from "../../components/Select";
 import { cfg } from "../../stores/config";
 import { Theme, themeStore } from "../../stores/theme";
+import { t } from "../../intl";
 
 export default function AppearanceFragment() {
   const [theme, setTheme] = useState(cfg.theme);
 
   return (
     <div className="p-3">
-      <Info name="Color Theme">
+      <Info name={t.settings.theme}>
         <Select
-          options={{ follow: "Follow OS", light: "Light", dark: "Dark" }}
+          options={{
+            follow: t.settings.themes.followOs,
+            light: t.settings.themes.light,
+            dark: t.settings.themes.dark,
+          }}
           value={theme}
           onChange={(newValue) => {
-            setTheme(newValue as Theme);
             themeStore.updateTheme(newValue as Theme);
+            setTheme(newValue as Theme);
           }}
         />
       </Info>

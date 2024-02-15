@@ -26,7 +26,7 @@ export default function GeneralFragment() {
           cfg.autoCollapse = newValue;
         }}
       >
-        Automatically Collapse Sidebar
+        {t.settings.autoCollapse}
       </Checkbox>
     </div>
   );

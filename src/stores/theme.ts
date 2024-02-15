@@ -17,6 +17,7 @@ class ThemeStore {
   }
   updateTheme(theme: Theme) {
     this.theme = theme;
+    cfg.theme = theme;
     this.loadTheme();
   }
 }

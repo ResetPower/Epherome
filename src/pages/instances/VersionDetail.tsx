@@ -65,7 +65,7 @@ export default function VersionDetail(props: {
       <div className="flex space-x-3 justify-end">
         <Button onClick={browse}>{t.browse}</Button>
         <Button disabled={!!helper} onClick={install} primary>
-          Install
+          {t.install}
         </Button>
       </div>
       <Shallow className="text-sm font-medium">{helper}</Shallow>

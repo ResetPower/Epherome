@@ -11,6 +11,8 @@ export default {
       preparing: "Preparing",
       waiting: "Waiting to Launch",
     },
+    install: "Install",
+    official: "Official",
     downloading: {
       lib: "Downloading Libraries",
       asset: "Downloading Assets",
@@ -71,7 +73,7 @@ export default {
       empty: "No instances here.",
       gameDir: "Game Directory",
       gameDirHelper:
-        "Usually '.minecraft' on Windows or 'minecraft' on macOS and Linux.",
+        "Usually '.minecraft' on Windows and Linux or 'minecraft' on macOS.",
       version: "Version",
       versionHelper:
         "The folder name in the 'versions' folder in your game directory.",
@@ -105,6 +107,14 @@ export default {
       githubHomepage: "GitHub Homepage",
       downloadProvider: "Download Provider",
       oss: "Open Source Software",
+      theme: "Theme",
+      os: "Operating System",
+      themes: {
+        followOs: "Follow OS",
+        light: "Light",
+        dark: "Dark",
+      },
+      autoCollapse: "Automatically Collapse Sidebar",
     },
     toast: {
       copied: "Copied successfully.",

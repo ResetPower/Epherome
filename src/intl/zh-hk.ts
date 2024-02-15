@@ -49,7 +49,7 @@ export default {
       empty: "仲未有實例。",
       gameDir: "遊戲文件夾",
       gameDirHelper:
-        "通常係 Windows 上嘅 '.minecraft ' 文件夾同 macOS 或 Linux 上嘅 'minecraft' 文件夾。",
+        "通常喺 Windows 同 Linux 度係 '.minecraft' 文件夾，而喺 macOS 度係 'minecraft' 文件夾。",
       version: "版本",
       versionHelper: "遊戲文件夾中嘅 'versions' 文件夾中嘅文件夾名。",
       unopened: "喺左邊打開一個實例或者創建新實例。",
@@ -59,8 +59,8 @@ export default {
       old: "遠古版",
       old_alpha: "遠古版 (Alpha)",
       old_beta: "遠古版 (Beta)",
-      latestRelease: "最新正式版",
-      latestSnapshot: "最新快照",
+      latestRelease: "最新嘅正式版本",
+      latestSnapshot: "最新嘅快照版本",
     },
     settings: {
       general: "一般",
