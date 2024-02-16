@@ -14,6 +14,7 @@ export default function TabBar(props: {
     >
       {props.tabs.map((tab, ind) => (
         <button
+          type="button"
           key={ind}
           onClick={() => props.setValue(ind)}
           className={concat(

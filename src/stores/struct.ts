@@ -6,6 +6,7 @@ export interface MinecraftAccount {
   type: MinecraftAccountType;
   authserver?: string;
   token?: string;
+  refreshToken?: string;
   time?: number;
 }
 

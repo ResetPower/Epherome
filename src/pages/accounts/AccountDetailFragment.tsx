@@ -8,6 +8,7 @@ import { MdCheckCircle } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
 import { t } from "../../intl";
 import Info from "../../components/Info";
+import { validateMicrosoft } from "../../core/auth/microsoft";
 
 export default function AccountDetailFragment(props: {
   current: MinecraftAccount;
@@ -18,10 +19,12 @@ export default function AccountDetailFragment(props: {
 
   const checkStatus = () => {
     setStatus("loading");
-    if (current.authserver && current.token) {
+    if (current.type === "authlib" && current.authserver && current.token) {
       new YggdrasilAuthenticator(current.authserver)
         .validate(current.token)
         .then((result) => setStatus(result ? "positive" : "negative")).catch;
+    } else if (current.type === "microsoft" && current.token) {
+      setStatus(validateMicrosoft(current.token) ? "positive" : "negative");
     }
   };
 
@@ -38,7 +41,7 @@ export default function AccountDetailFragment(props: {
       {current.time && (
         <Info name={t.createTime}>{getDateTimeString(current.time)}</Info>
       )}
-      {current.type === "authlib" && (
+      {current.type !== "offline" && (
         <div className="flex items-center my-3">
           {status === "loading" && <Spinner />}
           {status === "positive" && (
