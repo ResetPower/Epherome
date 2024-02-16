@@ -51,3 +51,15 @@ export function useForceUpdate() {
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   return forceUpdate;
 }
+
+export function getDateTimeString(timestamp: number): string {
+  return new Date(timestamp).toLocaleString("zh-cn", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}

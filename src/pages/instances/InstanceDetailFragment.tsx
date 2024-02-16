@@ -5,6 +5,7 @@ import { t } from "../../intl";
 import { MinecraftInstance } from "../../stores/struct";
 import Info from "../../components/Info";
 import { cfg } from "../../stores/config";
+import { getDateTimeString } from "../../utils";
 
 export default function InstanceDetailFragment(props: {
   current: MinecraftInstance;
@@ -43,6 +44,9 @@ export default function InstanceDetailFragment(props: {
             {current.gameDir}
           </Info>
           <Info name={t.instances.version}>{current.version}</Info>
+          {current.time && (
+            <Info name={t.createTime}>{getDateTimeString(current.time)}</Info>
+          )}
           <div className="flex justify-end">
             <Button onClick={props.onRemove} dangerous>
               {t.remove}

@@ -5,7 +5,7 @@
     "devPath": "http://localhost:1420",
     "distDir": "../dist"
   },
-  "package": { "productName": "Epherome", "version": "1.0.0-3" },
+  "package": { "productName": "Epherome", "version": "1.0.0-4" },
   "tauri": {
     "allowlist": {
       "all": true,

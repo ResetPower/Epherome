@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import { MinecraftAccount } from "../../stores/struct";
-import { Status } from "../../utils";
+import { Status, getDateTimeString } from "../../utils";
 import { YggdrasilAuthenticator } from "../../core/auth/yggdrasil";
 import Spinner from "../../components/Spinner";
 import { MdCheckCircle } from "react-icons/md";
@@ -34,6 +34,9 @@ export default function AccountDetailFragment(props: {
         <Info copyable={current.authserver} name={t.accounts.authserver}>
           {current.authserver}
         </Info>
+      )}
+      {current.time && (
+        <Info name={t.createTime}>{getDateTimeString(current.time)}</Info>
       )}
       {current.type === "authlib" && (
         <div className="flex items-center my-3">

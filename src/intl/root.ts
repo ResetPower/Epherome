@@ -119,5 +119,6 @@ export default {
     toast: {
       copied: "Copied successfully.",
     },
+    createTime: "Create Time",
   },
 };

@@ -46,6 +46,7 @@ export class YggdrasilAuthenticator {
         uuid: result.selectedProfile.id,
         authserver: this.server,
         token: result.accessToken,
+        time: Date.now(),
       },
       true
     );
