@@ -14,7 +14,10 @@ export default function CreateInstanceFragment(props: {
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const data = new FormData(e.target as HTMLFormElement);
-    cfg.instances.add({ ...resolve(data), isFolder: false }, true);
+    cfg.instances.add(
+      { ...resolve(data), isFolder: false, time: Date.now() },
+      true
+    );
     props.goBack();
   };
 

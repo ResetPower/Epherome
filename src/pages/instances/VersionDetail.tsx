@@ -37,6 +37,7 @@ export default function VersionDetail(props: {
               gameDir: dest,
               version: props.version.id,
               isFolder: false,
+              time: Date.now(),
             },
             true
           );

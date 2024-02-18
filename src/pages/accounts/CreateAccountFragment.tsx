@@ -6,11 +6,14 @@ import { YggdrasilAuthenticator } from "../../core/auth/yggdrasil";
 import TabBar from "../../components/TabBar";
 import { t } from "../../intl";
 import Center from "../../components/Center";
+import { createMicrosoftAccount } from "../../core/auth/microsoft";
+import { toastStore } from "../../stores/toast";
 
 export default function CreateAccountFragment(props: {
   goBack: () => unknown;
 }) {
   const [type, setType] = useState(0);
+  const [working, setWorking] = useState(false);
 
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -29,6 +32,14 @@ export default function CreateAccountFragment(props: {
       const name = data.get("name") as string;
       createOfflineAccount(name);
       props.goBack();
+    } else if (type === 2) {
+      createMicrosoftAccount()
+        .then(() => props.goBack())
+        .catch((e) => {
+          toastStore.fail("Failed to create Microsoft account.");
+          throw e;
+        });
+      setWorking(true);
     }
   };
 
@@ -52,11 +63,11 @@ export default function CreateAccountFragment(props: {
       {type === 1 && (
         <Input largeLabel label={t.username} name="name" required />
       )}
-      {type === 2 && <Center>{t.unsupported}</Center>}
+      {type === 2 && <Center>Click "Create" to continue.</Center>}
       <div className="flex-grow" />
       <div className="flex my-3 space-x-3 justify-end">
         <Button onClick={props.goBack}>{t.cancel}</Button>
-        <Button type="submit" primary>
+        <Button disabled={working} type="submit" primary>
           {t.create}
         </Button>
       </div>

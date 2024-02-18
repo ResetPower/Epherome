@@ -6,6 +6,8 @@ export interface MinecraftAccount {
   type: MinecraftAccountType;
   authserver?: string;
   token?: string;
+  refreshToken?: string;
+  time?: number;
 }
 
 export interface MinecraftInstance {
@@ -13,4 +15,5 @@ export interface MinecraftInstance {
   gameDir: string;
   version: string;
   isFolder: boolean;
+  time?: number;
 }
