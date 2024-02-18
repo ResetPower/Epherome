@@ -116,6 +116,7 @@ export default {
       },
       autoCollapse: "自动崩溃的一旁的酒吧",
     },
+    createTime: "创造次数",
     toast: {
       copied: "复制是成功的。",
     },

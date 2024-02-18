@@ -118,5 +118,13 @@ export default {
     toast: {
       copied: "已成功复制。",
     },
+    createTime: "创建时间",
+    dialog: {
+      ok: "确定",
+      cancel: "取消",
+      yes: "是",
+      no: "否",
+      copylog: "复制报错信息",
+    },
   },
 };
