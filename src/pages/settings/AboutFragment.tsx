@@ -9,7 +9,6 @@ export default function AboutFragment() {
     <div className="p-3">
       <div className="m-1">Epherome {meta.appVersion}</div>
       <div className="flex items-center space-x-2 rounded bg-red-100 dark:bg-red-900 p-3">
-        {/*TODO*/}
         <MdWarning className="text-xl text-red-500 dark:text-red-300" />
         <pre className="text-sm">{t.settings.warning}</pre>
       </div>

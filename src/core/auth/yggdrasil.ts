@@ -3,6 +3,8 @@ import { YggdrasilAuthenticateResult, YggdrasilRefreshResult } from "./struct";
 import { cfg } from "../../stores/config";
 import { MinecraftAccount } from "../../stores/struct";
 
+const clientToken = "epherome";
+
 export class YggdrasilAuthenticator {
   server: string;
   constructor(server: string) {
@@ -15,6 +17,7 @@ export class YggdrasilAuthenticator {
         body: Body.json({
           username,
           password,
+          clientToken,
           agent: {
             name: "Minecraft",
             version: 1,
@@ -26,14 +29,14 @@ export class YggdrasilAuthenticator {
   async refresh(accessToken: string): Promise<string> {
     const result = await fetch(`${this.server}/authserver/refresh`, {
       method: "POST",
-      body: Body.json({ accessToken }),
+      body: Body.json({ accessToken, clientToken }),
     });
     return (result.data as YggdrasilRefreshResult).accessToken;
   }
   async validate(accessToken: string): Promise<boolean> {
     const result = await fetch(`${this.server}/authserver/validate`, {
       method: "POST",
-      body: Body.json({ accessToken }),
+      body: Body.json({ accessToken, clientToken }),
     });
     return result.ok;
   }

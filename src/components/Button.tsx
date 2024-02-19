@@ -18,7 +18,7 @@ export default function Button(props: {
         props.className,
         "flex items-center py-1 px-3 text-sm font-medium rounded transition-colors whitespace-nowrap",
         props.primary
-          ? "text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
+          ? "text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700 border border-transparent"
           : props.dangerous
             ? "text-white bg-red-500 hover:bg-red-600 active:bg-red-700"
             : "border hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600",

@@ -5,7 +5,7 @@ import authlibUrlUtil from "./authlib";
 import fabricUrlUtil from "./fabric";
 import liteloaderUrlUtil from "./liteloader";
 
-export type MinecraftDownloadProvider = "official" | "bmclapi" | "mcbbs";
+export type MinecraftDownloadProvider = "official" | "bmclapi";
 
 function replaceHost(source: string, host: string): string {
   const url = new URL(source);
@@ -31,8 +31,6 @@ export class MinecraftUrlUtil {
     switch (this.provider) {
       case "bmclapi":
         return replaceHost(source, "bmclapi2.bangbang93.com");
-      case "mcbbs":
-        return replaceHost(source, "download.mcbbs.net");
       default:
         return source;
     }
@@ -55,15 +53,13 @@ export class MinecraftUrlUtil {
     switch (this.provider) {
       case "bmclapi":
         return `https://bmclapi2.bangbang93.com/assets/${startHash}/${hash}`;
-      case "mcbbs":
-        return `https://download.mcbbs.net/assets/${startHash}/${hash}`;
       default:
         return `https://resources.download.minecraft.net/${startHash}/${hash}`;
     }
   }
   library(source: string): string {
     if (this.provider === "official") return source;
-    const bmclapi = source
+    return source
       .replace(
         "https://libraries.minecraft.net",
         "https://bmclapi2.bangbang93.com/maven"
@@ -80,11 +76,5 @@ export class MinecraftUrlUtil {
         "https://maven.fabricmc.net",
         "https://bmclapi2.bangbang93.com/maven"
       );
-    switch (this.provider) {
-      case "mcbbs":
-        return bmclapi.replace("bmclapi2.bangbang93.com", "download.mcbbs.net");
-      default:
-        return bmclapi;
-    }
   }
 }
