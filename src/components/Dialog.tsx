@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { ReactNode, MouseEventHandler } from "react";
 import { concat } from "../utils";
 import { clipboard } from "@tauri-apps/api";
 import { t } from "../intl";
@@ -7,18 +7,18 @@ import Button from "./Button";
 
 export type DialogType = "default" | "whether" | "errorlog" | "noneready" | undefined;
 
-function Default(props :{
+function DefaultDialog(props :{
     dialogTitle?: string;
-    dialogContent?: string;
+    dialogContent?: ReactNode;
     onClickOk?: MouseEventHandler;
     onClickCancel?: MouseEventHandler;
 }) {
     return (
         <div className={concat(
-            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-75 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
+            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-95 dark:bg-opacity-95 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
         )}>
             <h1 className={concat(
-                "text-center font-bold text-gray-800 dark:text-gray-200"
+                "text-center font-bold text-gray-800 dark:text-gray-200  cursor-default"
             )}
             >{props.dialogTitle}</h1>
             <hr></hr>
@@ -26,25 +26,24 @@ function Default(props :{
                 {props.dialogContent}
             </div>
             <div className="flex justify-end space-x-5">
-                <Button onClick={props.onClickCancel}>{t.dialog.cancel}</Button>
                 <Button primary onClick={props.onClickOk}>{t.dialog.ok}</Button>
             </div>
         </div>
     )
 }
 
-function Whether(props :{
+function WhetherDialog(props :{
     dialogTitle?: string;
-    dialogContent?: string;
+    dialogContent?: ReactNode;
     onClickYes?: MouseEventHandler;
     onClickNo?: MouseEventHandler;
 }) {
     return (
         <div className={concat(
-            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-75 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
+            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-95 dark:bg-opacity-95 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
         )}>
             <h1 className={concat(
-                "text-center font-bold text-gray-800 dark:text-gray-200"
+                "text-center font-bold text-gray-800 dark:text-gray-200  cursor-default"
             )}
             >{props.dialogTitle}</h1>
             <hr></hr>
@@ -59,46 +58,46 @@ function Whether(props :{
     )
 }
 
-function ErrorLog(props :{
+function ErrorLogDialog(props :{
     dialogTitle?: string;
-    dialogContent?: string;
+    dialogContent?: ReactNode;
     onClickOk?: MouseEventHandler;
 }) {
     return (
         <div className={concat(
-            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-75 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
+            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-95 dark:bg-opacity-95 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
         )}>
             <h1 className={concat(
-                "text-center font-bold text-gray-800 dark:text-gray-200"
+                "text-center font-bold text-gray-800 dark:text-gray-200  cursor-default"
             )}
             >{props.dialogTitle}</h1>
             <hr></hr>
-            <div className="m-5">
-                {props.dialogContent}
-            </div>
+            <textarea className={concat(
+                "m-3 p-3 resize-none bg-neutral-50 dark:bg-neutral-950 cursor-auto"
+            )} rows={12} cols={50} spellCheck={false} disabled value={props.dialogContent as string} />
             <div className="flex justify-end space-x-5">
-                <Button dangerous onClick={() =>
+                <Button dangerous className="" onClick={() =>
                     props.dialogContent &&
                     clipboard
-                        .writeText(props.dialogContent)
+                        .writeText(props.dialogContent as string)
                         .then(() => toastStore.success(t.toast.copied)).catch
-                }>{t.dialog.copylog}</Button>
-                <Button primary onClick={props.onClickOk}>{t.dialog.ok}</Button>
+                }>{t.dialog.copyLog}</Button>
+                <Button primary className="" onClick={props.onClickOk}>{t.dialog.ok}</Button>
             </div>
         </div>
     )
 }
 
-function NoneReady(props: {
+function NoneReadyDialog(props: {
     dialogTitle?: string;
-    dialogContent?: string;
+    dialogContent?: ReactNode;
 }) {
     return (
         <div className={concat(
-            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-75 p-5 shadow-xl max-w-[80%] max-h-300 overflow-auto"
+            "table bg-stone-150 dark:bg-stone-900 rounded-md bg-opacity-95 p-5 dark:bg-opacity-95 shadow-xl max-w-[80%] max-h-300 overflow-auto"
         )}>
             <h1 className={concat(
-                "text-center font-bold text-gray-800 dark:text-gray-200"
+                "text-center font-bold text-gray-800 dark:text-gray-200  cursor-default"
             )}
             >{props.dialogTitle}</h1>
             <hr></hr>
@@ -117,20 +116,19 @@ export default function Dialog(props :{
     onClickCancel?: MouseEventHandler;
     onClickYes?: MouseEventHandler;
     onClickNo?: MouseEventHandler;
-    children?: string;
+    children?: ReactNode;
 }) {
     return (
         <div
             className={concat(
-                props.className,
-                "fixed w-full h-full flex justify-center items-center bg-stone-100 bg-opacity-70 dark:bg-stone-900 dark:bg-opacity-70"
+                "fixed w-full h-full flex justify-center items-center bg-stone-100 bg-opacity-90 dark:bg-stone-900 dark:bg-opacity-80 select-none"
             )}
         >
-            {props.type === "default" && <Default onClickOk={props.onClickOk} onClickCancel={props.onClickCancel} dialogTitle={props.title} dialogContent={props.children}/>}
-            {props.type === undefined && <Default onClickOk={props.onClickOk} onClickCancel={props.onClickCancel} dialogTitle={props.title} dialogContent={props.children}/>}
-            {props.type === "whether" && <Whether onClickYes={props.onClickYes} onClickNo={props.onClickNo} dialogTitle={props.title} dialogContent={props.children}/>}
-            {props.type === "errorlog" && <ErrorLog onClickOk={props.onClickOk} dialogTitle={props.title} dialogContent={props.children}/>}
-            {props.type === "noneready" && <NoneReady dialogTitle={props.title} dialogContent={props.children}/>}
+            {props.type === "default" && <DefaultDialog onClickOk={props.onClickOk} onClickCancel={props.onClickCancel} dialogTitle={props.title} dialogContent={props.children}/>}
+            {props.type === undefined && <DefaultDialog onClickOk={props.onClickOk} onClickCancel={props.onClickCancel} dialogTitle={props.title} dialogContent={props.children}/>}
+            {props.type === "whether" && <WhetherDialog onClickYes={props.onClickYes} onClickNo={props.onClickNo} dialogTitle={props.title} dialogContent={props.children}/>}
+            {props.type === "errorlog" && <ErrorLogDialog onClickOk={props.onClickOk} dialogTitle={props.title} dialogContent={props.children}/>}
+            {props.type === "noneready" && <NoneReadyDialog dialogTitle={props.title} dialogContent={props.children}/>}
         </div>
     )
 }

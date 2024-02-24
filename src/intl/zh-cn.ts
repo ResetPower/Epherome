@@ -4,8 +4,7 @@ export default {
   messages: {
     counter: {
       increase: "增加",
-      clicked: (count: number) => 
-        `你已经点击这个按钮 ${count} 次。`,
+      clicked: (count: number) => `你已经点击这个按钮 ${count} 次。`,
     },
     launching: {
       preparing: "准备中",
@@ -60,8 +59,7 @@ export default {
       offline: "离线登录",
       authserver: "验证服务器",
       type: "账户类型",
-      removeConfirmation: (name: string) =>
-        `是否要移除账户 ${name} ？`,
+      removeConfirmation: (name: string) => `是否要移除账户 ${name} ？`,
       token: {
         validate: "检查令牌状态",
         available: "令牌可用",
@@ -124,7 +122,7 @@ export default {
       cancel: "取消",
       yes: "是",
       no: "否",
-      copylog: "复制报错信息",
+      copyLog: "复制报错信息",
     },
   },
 };

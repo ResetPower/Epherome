@@ -4,8 +4,7 @@ export default {
   messages: {
     counter: {
       increase: "增添",
-      clicked: (count: number) =>
-        `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
+      clicked: (count: number) => `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
     },
     launching: {
       preparing: "预备发射",

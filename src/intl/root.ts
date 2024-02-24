@@ -125,7 +125,7 @@ export default {
       cancel: "Cancel",
       yes: "Yes",
       no: "No",
-      copylog: "Copy Error Log",
+      copyLog: "Copy Error Log",
     },
   },
 };
