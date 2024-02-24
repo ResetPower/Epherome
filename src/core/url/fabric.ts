@@ -1,6 +1,6 @@
 const fabricUrlUtil = () => ({
   meta(): string {
-    // bmclapi or mcbbs support is not available
+    // bmclapi support is not available
     return "https://meta.fabricmc.net";
   },
   loaders(): string {
