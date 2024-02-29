@@ -4,8 +4,7 @@ export default {
   messages: {
     counter: {
       increase: "增添",
-      clicked: (count: number) =>
-        `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
+      clicked: (count: number) => `您已经轰！嚓嚓嚓！推推这个按钮 ${count} 次。`,
     },
     launching: {
       preparing: "预备发射",
@@ -75,7 +74,8 @@ export default {
       gameDirHelper:
         "通常在 Windows 或 Linux 为 '.minecraft' 目录，在 macOS 为 'minecraft' 目录。",
       version: "版本",
-      versionHelper: "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
+      versionHelper: 
+        "文件夹名称在 'versions' 文件夹在您的游戏目录中。",
       unopened: "在左侧选择你曾经举过的例子或者创造一个新的例子。",
       removeConfirmation: (name: string) =>
         `您真的想要除掉您的举例 ${name} 吗？`,
@@ -115,6 +115,7 @@ export default {
       },
       autoCollapse: "自动崩溃的一旁的酒吧",
     },
+    createTime: "创造次数",
     toast: {
       copied: "复制是成功的。",
     },

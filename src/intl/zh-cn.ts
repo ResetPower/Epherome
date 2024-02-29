@@ -72,9 +72,11 @@ export default {
       gameDirHelper:
         "通常是 Windows 或 Linux 上的 '.minecraft' 文件夹和 macOS 上的 'minecraft' 文件夹。",
       version: "版本",
-      versionHelper: "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
+      versionHelper: 
+        "游戏文件夹中的 'versions' 文件夹中的文件夹名。",
       unopened: "在左侧打开一个实例或者创建新实例。",
-      removeConfirmation: (name: string) => `是否要移除实例 ${name} ？`,
+      removeConfirmation: (name: string) => 
+        `是否要移除实例 ${name} ？`,
       release: "正式版",
       snapshot: "快照",
       old: "远古版",
@@ -113,6 +115,14 @@ export default {
     },
     toast: {
       copied: "已成功复制。",
+    },
+    createTime: "创建时间",
+    dialog: {
+      ok: "确定",
+      cancel: "取消",
+      yes: "是",
+      no: "否",
+      copyLog: "复制报错信息",
     },
   },
 };

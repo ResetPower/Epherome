@@ -120,5 +120,12 @@ export default {
       copied: "Copied successfully.",
     },
     createTime: "Create Time",
+    dialog: {
+      ok: "OK",
+      cancel: "Cancel",
+      yes: "Yes",
+      no: "No",
+      copyLog: "Copy Error Log",
+    },
   },
 };
