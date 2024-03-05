@@ -4,12 +4,12 @@ import ListTile from "../../components/ListTile";
 import { cfg } from "../../stores/config";
 import WideButton from "../../components/WideButton";
 import Center from "../../components/Center";
-import { confirm } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
 import CreateInstanceFragment from "./CreateInstanceFragment";
 import DownloadInstanceFragment from "./DownloadInstanceFragment";
 import InstanceDetailFragment from "./InstanceDetailFragment";
 import { useForceUpdate } from "../../utils";
+import { dialogStore } from "../../stores/dialog";
 
 export default function InstancesPage() {
   const [state, setState] = useState(cfg.instances.active);
@@ -65,14 +65,16 @@ export default function InstancesPage() {
           <InstanceDetailFragment
             forceUpdate={forceUpdate}
             onRemove={() =>
-              confirm(t.instances.removeConfirmation(current.name)).then(
-                (result) => {
-                  if (result) {
-                    cfg.instances.remove(state);
-                    setState(undefined);
-                  }
-                }
-              )
+              dialogStore.show({
+                title: "Confirmation",
+                message: t.instances.removeConfirmation(current.name),
+                actionName: t.remove,
+                dangerous: true,
+                action: () => {
+                  cfg.instances.remove(state);
+                  setState(undefined);
+                },
+              })
             }
             current={current}
           />

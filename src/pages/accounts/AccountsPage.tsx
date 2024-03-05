@@ -6,8 +6,8 @@ import ListTile from "../../components/ListTile";
 import AccountDetailFragment from "./AccountDetailFragment";
 import WideButton from "../../components/WideButton";
 import Center from "../../components/Center";
-import { confirm } from "@tauri-apps/api/dialog";
 import { t } from "../../intl";
+import { dialogStore } from "../../stores/dialog";
 
 export default function AccountsPage() {
   const [state, setState] = useState(cfg.accounts.active);
@@ -47,14 +47,16 @@ export default function AccountsPage() {
         {current && (
           <AccountDetailFragment
             onRemove={() =>
-              confirm(t.accounts.removeConfirmation(current.name)).then(
-                (result) => {
-                  if (result) {
-                    cfg.accounts.remove(state);
-                    setState(undefined);
-                  }
-                }
-              )
+              dialogStore.show({
+                title: "Confirmation",
+                message: t.accounts.removeConfirmation(current.name),
+                actionName: t.remove,
+                dangerous: true,
+                action: () => {
+                  cfg.accounts.remove(state);
+                  setState(undefined);
+                },
+              })
             }
             current={current}
           />
