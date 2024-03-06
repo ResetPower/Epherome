@@ -1,7 +1,7 @@
 {
   "name": "epherome-beta",
   "private": true,
-  "version": "1.0.0-4",
+  "version": "1.0.0-5",
   "type": "module",
   "scripts": {
     "dev": "vite",

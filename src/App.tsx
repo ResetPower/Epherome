@@ -3,12 +3,7 @@ import { IconContext } from "react-icons";
 import { RouteName, routeMap } from "./router/map";
 import { historyStore } from "./router";
 import Sidebar from "./router/Sidebar";
-import {
-  MdAccountCircle,
-  MdCalculate,
-  MdHome,
-  MdSettings,
-} from "react-icons/md";
+import { MdAccountCircle, MdHome, MdSettings } from "react-icons/md";
 import { intlStore, t } from "./intl";
 import { useForceUpdate } from "./utils";
 import { IoLogoGameControllerA } from "react-icons/io";
@@ -37,7 +32,6 @@ function App() {
               icon: <IoLogoGameControllerA />,
               name: t.sidebar.instances,
             },
-            { path: "counter", icon: <MdCalculate />, name: t.sidebar.counter },
             {
               path: "settings",
               icon: <MdSettings />,

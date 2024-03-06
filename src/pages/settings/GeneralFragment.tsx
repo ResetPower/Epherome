@@ -4,6 +4,8 @@ import Info from "../../components/Info";
 import Select from "../../components/Select";
 import { intlStore, t } from "../../intl";
 import { cfg } from "../../stores/config";
+import Button from "../../components/Button";
+import { historyStore } from "../../router";
 
 export default function GeneralFragment() {
   const [autoCollapse, setAutoCollapse] = useState(cfg.autoCollapse);
@@ -28,6 +30,9 @@ export default function GeneralFragment() {
       >
         {t.settings.autoCollapse}
       </Checkbox>
+      <Button onClick={() => historyStore.go("debug")} primary>
+        Debug Panel
+      </Button>
     </div>
   );
 }

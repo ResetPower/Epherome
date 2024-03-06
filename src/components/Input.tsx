@@ -18,6 +18,7 @@ const Input = forwardRef(
       required?: boolean;
       trailing?: ReactNode;
       largeLabel?: boolean;
+      defaultValue?: string;
     },
     ref?: LegacyRef<HTMLInputElement>
   ) => {
@@ -45,6 +46,7 @@ const Input = forwardRef(
             type={props.type}
             placeholder={props.placeholder}
             required={props.required}
+            defaultValue={props.defaultValue}
           />
           {props.trailing}
         </div>

@@ -12,7 +12,7 @@ export default function DialogWrapper() {
     dialog && (
       <div
         className={concat(
-          "z-50 absolute bg-gray-300 bg-opacity-50 h-full w-full grid place-items-center",
+          "z-50 absolute bg-gray-300 dark:bg-gray-600 bg-opacity-50 dark:bg-opacity-50 h-full w-full grid place-items-center",
           dialog.out
             ? "animate-out fade-out duration-300"
             : "animate-in fade-in duration-300"
