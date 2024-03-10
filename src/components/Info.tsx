@@ -1,17 +1,26 @@
 import { ReactNode, useRef, useState } from "react";
 import { concat } from "../utils";
 import { IoMdCopy } from "react-icons/io";
-import { clipboard } from "@tauri-apps/api";
+import { clipboard, invoke } from "@tauri-apps/api";
 import { toastStore } from "../stores/toast";
 import { t } from "../intl";
-import { MdCheck, MdEdit } from "react-icons/md";
+import { MdCheck, MdEdit, MdOpenInNew } from "react-icons/md";
 import TinyInput from "./TinyInput";
+
+function TinyButton(props: { children: ReactNode }) {
+  return (
+    <div className="text-xs ml-1 cursor-pointer text-blue-500 hover:text-blue-700">
+      {props.children}
+    </div>
+  );
+}
 
 export default function Info(props: {
   name: string;
   children: ReactNode;
   code?: boolean;
   editable?: (newValue: string) => unknown;
+  openable?: string;
   copyable?: string;
 }) {
   const [editing, setEditing] = useState(false);
@@ -27,14 +36,17 @@ export default function Info(props: {
     <div className="p-1">
       <div className="text-gray-600 dark:text-gray-400 text-sm font-medium flex items-center">
         <div>{props.name}</div>
-        <div className="text-xs mx-1 cursor-pointer text-blue-500 hover:text-blue-600">
-          {props.editable &&
-            (editing ? (
+        {props.editable && (
+          <TinyButton>
+            {editing ? (
               <MdCheck onClick={onSubmit} />
             ) : (
               <MdEdit onClick={() => setEditing(true)} />
-            ))}
-          {props.copyable && (
+            )}
+          </TinyButton>
+        )}
+        {props.copyable && (
+          <TinyButton>
             <IoMdCopy
               onClick={() =>
                 props.copyable &&
@@ -43,8 +55,18 @@ export default function Info(props: {
                   .then(() => toastStore.success(t.toast.copied)).catch
               }
             />
-          )}
-        </div>
+          </TinyButton>
+        )}
+        {props.openable && (
+          <TinyButton>
+            <MdOpenInNew
+              onClick={() =>
+                props.openable &&
+                invoke("reveal_path", { pathname: props.openable }).then().catch
+              }
+            />
+          </TinyButton>
+        )}
       </div>
       {typeof props.children === "string" ? (
         editing ? (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Button from "../../components/Button";
 import TabBar from "../../components/TabBar";
 import { t } from "../../intl";
@@ -6,6 +6,11 @@ import { MinecraftInstance } from "../../stores/struct";
 import Info from "../../components/Info";
 import { cfg } from "../../stores/config";
 import { getDateTimeString } from "../../utils";
+import { InstanceService } from "../../services/instance";
+import SavesView from "./SavesView";
+import GameOptionsView from "./GameOptionsView";
+import ResourcePacksView from "./ResourcePacksView";
+import ModsView from "./ModsView";
 
 export default function InstanceDetailFragment(props: {
   current: MinecraftInstance;
@@ -14,10 +19,12 @@ export default function InstanceDetailFragment(props: {
 }) {
   const [value, setValue] = useState(0);
   const current = props.current;
+  const service = useMemo(() => new InstanceService(current), [current]);
 
   return (
-    <div className="h-full">
+    <div className="h-full overflow-auto">
       <TabBar
+        className="sticky top-0 bg-white dark:bg-gray-800"
         tabs={[
           t.general,
           t.instances.saves,
@@ -40,7 +47,12 @@ export default function InstanceDetailFragment(props: {
           >
             {current.name}
           </Info>
-          <Info copyable={current.gameDir} code name={t.instances.gameDir}>
+          <Info
+            copyable={current.gameDir}
+            openable={current.gameDir}
+            code
+            name={t.instances.gameDir}
+          >
             {current.gameDir}
           </Info>
           <Info name={t.instances.version}>{current.version}</Info>
@@ -54,7 +66,10 @@ export default function InstanceDetailFragment(props: {
           </div>
         </div>
       )}
-      {value >= 1 && value <= 4 && <div>{t.unsupported}</div>}
+      {value === 1 && <SavesView service={service} />}
+      {value === 2 && <ResourcePacksView service={service} />}
+      {value === 3 && <ModsView service={service} />}
+      {value === 4 && <GameOptionsView service={service} />}
     </div>
   );
 }

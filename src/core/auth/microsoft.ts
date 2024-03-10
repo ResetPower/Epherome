@@ -184,7 +184,6 @@ export async function createMicrosoftAccount(): Promise<boolean> {
       else reject("Auth code does not exist on the search params.");
     }).catch(reject);
   });
-  console.log(authCode);
   const authToken = await getAuthToken(authCode);
   const [xblToken, userHash] = await getXblToken(authToken);
   const xstsToken = await getXstsToken(xblToken);

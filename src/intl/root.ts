@@ -100,7 +100,7 @@ export default {
       noOptions: "No Options",
       displayLanguage: "Display Language",
       warning:
-        "Nightly versions are extremely unstable.\nGo to GitHub Issues to ask questions or make suggestions.",
+        "Pre-release versions are extremely unstable.\nGo to GitHub Issues to ask questions or make suggestions.",
       tauriVersion: "Tauri Version",
       dataDir: "Data Directory",
       officialSite: "Official Website",

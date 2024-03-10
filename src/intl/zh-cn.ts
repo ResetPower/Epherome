@@ -94,8 +94,7 @@ export default {
       about: "关于",
       noOptions: "还没有设置项。",
       displayLanguage: "显示语言",
-      warning:
-        "Nightly 版本极端不稳定。\n欢迎在 GitHub Issues 提出问题和建议。",
+      warning: "测试版本极端不稳定。\n欢迎在 GitHub Issues 提出问题和建议。",
       tauriVersion: "Tauri 版本",
       dataDir: "数据文件夹",
       officialSite: "官方网站",

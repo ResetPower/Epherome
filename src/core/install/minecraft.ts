@@ -32,7 +32,6 @@ export async function installMinecraft(
   await createDirByPath(target);
   await writeTextFile(target, JSON.stringify(data));
   onStartJar();
-  console.log(data);
   const jarTarget = await path.resolve(
     dest,
     "versions",

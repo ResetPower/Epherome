@@ -13,4 +13,8 @@ html,
 body,
 #root {
   height: 100%;
+  width: 100%;
+  overscroll-behavior-y: none;
+  overflow: hidden;
+  position: fixed;
 }

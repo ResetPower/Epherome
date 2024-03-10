@@ -69,7 +69,8 @@ export default {
       about: "關於",
       noOptions: "仲未有設置項。",
       displayLanguage: "顯示語言",
-      warning: "Nightly 版好唔穩定。\n歡迎喺 GitHub Issues 提出問題同建議。",
+      warning:
+        "Pre-release 版好唔穩定。\n歡迎喺 GitHub Issues 提出問題同建議。",
       tauriVersion: "Tauri 版本",
       dataDir: "數據文件夾",
       officialSite: "官方網站",

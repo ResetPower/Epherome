@@ -3,11 +3,13 @@ import { concat } from "../utils";
 export default function TabBar(props: {
   tabs: string[];
   value: number;
+  className?: string;
   setValue: (newValue: number) => unknown;
 }) {
   return (
     <div
       className={concat(
+        props.className,
         "text-sm font-medium text-center border-b",
         "text-gray-500 border-gray-200 dark:text-gray-400 dark:border-gray-700"
       )}

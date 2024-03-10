@@ -99,7 +99,7 @@ export default {
       noOptions: "这里还没有设定项。",
       displayLanguage: "显示语言",
       warning:
-        "夜间版本 容易出现锟斤拷。\n欢迎在 版本控制系统枢纽 议题区 提出议题和提议。",
+        "预发布版本 容易出现锟斤拷。\n欢迎在 版本控制系统枢纽 议题区 提出议题和提议。",
       tauriVersion: "金牛座 版本",
       dataDir: "数据目录",
       officialSite: "官方网址",

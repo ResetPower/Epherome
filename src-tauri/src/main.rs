@@ -7,6 +7,7 @@ use tauri::AppHandle;
 pub static INSTANCE: OnceCell<AppHandle> = OnceCell::new();
 
 mod core;
+mod utils;
 
 fn main() {
     tauri::Builder::default()
@@ -18,6 +19,7 @@ fn main() {
             core::zip::extract_zip,
             core::runner::run_minecraft,
             core::auth::get_microsoft_auth_code,
+            utils::reveal_path
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

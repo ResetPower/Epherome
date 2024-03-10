@@ -1,17 +1,14 @@
-import { MdWarning } from "react-icons/md";
 import Link from "../../components/Link";
 import { t } from "../../intl";
 import { meta } from "../../stores";
 import Info from "../../components/Info";
+import Alert from "../../components/Alert";
 
 export default function AboutFragment() {
   return (
     <div className="p-3">
       <div className="m-1">Epherome {meta.appVersion}</div>
-      <div className="flex items-center space-x-2 rounded bg-red-100 dark:bg-red-900 p-3">
-        <MdWarning className="text-xl text-red-500 dark:text-red-300" />
-        <pre className="text-sm">{t.settings.warning}</pre>
-      </div>
+      <Alert>{t.settings.warning}</Alert>
       <Info name={t.settings.os}>
         {meta.osPlatform}-{meta.osVersion}
       </Info>

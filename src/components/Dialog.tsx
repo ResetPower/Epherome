@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { DialogState, dialogStore } from "../stores/dialog";
 import { concat } from "../utils";
 import Button from "./Button";
+import { t } from "../intl";
 
 export default function Dialog(props: DialogState) {
   return (
@@ -18,7 +19,7 @@ export default function Dialog(props: DialogState) {
       <div className="flex items-center space-x-3 justify-end">
         {props.action ? (
           <Fragment>
-            <Button onClick={() => dialogStore.clear()}>Cancel</Button>
+            <Button onClick={() => dialogStore.clear()}>{t.cancel}</Button>
             <Button
               onClick={() => {
                 props.action && props.action();
