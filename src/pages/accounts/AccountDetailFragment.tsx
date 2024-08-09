@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import { MinecraftAccount } from "../../stores/struct";
 import { Status, getDateTimeString } from "../../utils";
@@ -16,6 +16,9 @@ export default function AccountDetailFragment(props: {
 }) {
   const current = props.current;
   const [status, setStatus] = useState<Status>("unavailable");
+
+  // clear status on account change
+  useEffect(() => setStatus("unavailable"), [current]);
 
   const checkStatus = () => {
     setStatus("loading");

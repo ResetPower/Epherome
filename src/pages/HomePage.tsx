@@ -1,10 +1,10 @@
-import { useState } from "react";
 import Button from "../components/Button";
 import Info from "../components/Info";
 import { launchMinecraft } from "../core/launch";
 import { t } from "../intl";
 import { cfg } from "../stores/config";
 import Shallow from "../components/Shallow";
+import { useState } from "react";
 
 export default function HomePage() {
   const [account, instance] = [cfg.accounts.current(), cfg.instances.current()];
@@ -33,7 +33,7 @@ export default function HomePage() {
           <Info name={t.instance}>{instance?.name ?? t.unselected}</Info>
         </div>
         <div className="flex justify-end">
-          <Button onClick={launch} disabled={!available || launching} primary>
+          <Button onClick={launch} disabled={!available || !!launching} primary>
             {t.home.launch}
           </Button>
         </div>

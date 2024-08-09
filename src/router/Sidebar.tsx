@@ -22,12 +22,12 @@ function SidebarButton(props: {
     <button
       onClick={props.onClick}
       className={concat(
-        "flex space-x-1 items-center rounded p-1 transition-colors font-medium",
+        "flex space-x-1 items-center p-3 transition-colors font-medium",
         "hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600",
         props.active && "bg-gray-100 dark:bg-gray-700"
       )}
     >
-      <div className="text-lg">{props.icon}</div>
+      <div className="text-xl">{props.icon}</div>
       {props.children && <div className="text-sm">{props.children}</div>}
     </button>
   );
@@ -37,7 +37,7 @@ export default function Sidebar(props: { items: SidebarItem[] }) {
   const [expanded, setExpanded] = useState(!cfg.autoCollapse);
 
   return (
-    <div className="p-1 m-1 rounded border shadow flex flex-col space-y-1 whitespace-nowrap">
+    <div className="shadow flex flex-col whitespace-nowrap">
       {props.items.map((item, index) => (
         <SidebarButton
           onClick={() => historyStore.go(item.path)}
